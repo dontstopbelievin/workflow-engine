@@ -17,6 +17,27 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::group(['middleware' => ['auth', 'admin']], function () {
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    });
+
+    Route::get('/role-register', 'Admin\DashboardController@registered');
+    Route::get('/role-edit/{id}', 'Admin\DashboardController@registeredit');
+    Route::put('/role-register-update/{id}', 'Admin\DashboardController@registerupdate');
+    Route::delete('/role-delete/{id}', 'Admin\DashboardController@registerdelete');
+
+
+    Route::get('/roles', 'RoleController@index');
+    Route::get('/roles/create', 'RoleController@create');
+    Route::post('/roles/create', 'RoleController@store');
+
+    
+});
