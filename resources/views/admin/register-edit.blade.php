@@ -27,8 +27,6 @@
                                     <select name="role_name" class="form-control">
                                         @foreach($roles as $role)
                                             <option value="{{$role}}">{{$role}}</option>
-                                            <!-- <option value="vendor">Vendor</option>
-                                            <option value="">None</option> -->
                                         @endforeach
                                     </select>
                                     <button type="submit" class="btn btn-success">Update</button>

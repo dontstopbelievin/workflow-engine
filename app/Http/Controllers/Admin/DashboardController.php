@@ -11,15 +11,14 @@ class DashboardController extends Controller
     public function registered() 
     {
         $users = User::all();
+        // dd($users);
         return view('admin.register')->with('users', $users);
     }
 
     public function registeredit(Request $request, $id) 
     {
        $users = User::findOrFail($id);
-       $roles = Role::pluck('role_name')->toArray();
-      //  dd($roles);
-      //  return view('admin.register-edit')->with('users', $users);
+       $roles = Role::pluck('role_name')->toArray();  
       return view('admin.register-edit')->with(compact('users', 'roles'));
     }
 

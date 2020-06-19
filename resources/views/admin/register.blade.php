@@ -24,7 +24,7 @@
                                 <th>Name</th>
                                 <th>Phone</th>
                                 <th>Email</th>
-                                <th>UserType</th>
+                                <th>Role Name</th>
                                 <th>EDIT</th>
                                 <th>DELETE</th>
                                 
@@ -36,7 +36,7 @@
                                 <td>{{$user->name}}</td>
                                 <td>{{$user->phone}}</td>
                                 <td>{{$user->email}}</td>
-                                <td>{{$user->usertype}}</td>
+                                <td>{{$user->role->role_name}}</td>
                                 <td><a href="/role-edit/{{$user->id}}" class="btn btn-success">EDIT</a></td>
                                 <td>
                                     <form action="/role-delete/{{$user->id}}" method="post">
