@@ -24,10 +24,12 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Give Role</label>
-                                    <select name="usertype" class="form-control">
-                                        <option value="admin">Admin</option>
-                                        <option value="vendor">Vendor</option>
-                                        <option value="">None</option>
+                                    <select name="role_name" class="form-control">
+                                        @foreach($roles as $role)
+                                            <option value="{{$role}}">{{$role}}</option>
+                                            <!-- <option value="vendor">Vendor</option>
+                                            <option value="">None</option> -->
+                                        @endforeach
                                     </select>
                                     <button type="submit" class="btn btn-success">Update</button>
                                     <a href="/role-register" class="btn btn-danger">Cancel</a>
