@@ -36,17 +36,19 @@
                                 <td>{{$user->name}}</td>
                                 <td>{{$user->phone}}</td>
                                 <td>{{$user->email}}</td>
+                                @if ($user->role)
                                 <td>{{$user->role->role_name}}</td>
-                                <td><a href="/role-edit/{{$user->id}}" class="btn btn-success">EDIT</a></td>
+                                @else 
+                                <td>-</td>
+                                @endif
+                                <td><a href="/user-edit/{{$user->id}}" class="btn btn-success">EDIT</a></td>
                                 <td>
-                                    <form action="/role-delete/{{$user->id}}" method="post">
+                                    <form action="/user-delete/{{$user->id}}" method="post">
                                         {{csrf_field()}}
                                         {{method_field('DELETE')}}
                                         <button type="submit" class="btn btn-danger">DELETE</button>
                                     </form>
-                                </td>
-
-                               
+                                </td>  
                               </tr>   
                               @endforeach                             
                             </tbody>

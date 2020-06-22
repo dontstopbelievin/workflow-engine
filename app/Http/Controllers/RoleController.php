@@ -12,11 +12,16 @@ class RoleController extends Controller
         return view('role.index')->with('roles', $roles);
     }
 
+    public function view($id) {
+        $role = Role::findOrFail($id);
+        $users = $role->users;
+        return view('role.view')->with(compact('role', 'users'));
+    }
+ 
     public function create() {
         return view('role.create');
     }
     public function store(Request $request) {
-        // dd($request->get('role_name'));
         $request->validate([
             'role_name'=>'required',
         ]);
@@ -24,8 +29,28 @@ class RoleController extends Controller
         $role = new Role([
             'role_name' => $request->get('role_name')
         ]);
-        // dd($role);
         $role->save();
         return redirect('/roles')->with('status', 'Role was succesfully Added');
+    }
+
+    public function edit($id) {
+        $role = Role::findOrFail($id);
+        return view('role.edit')->with('role', $role);
+    }
+
+    public function update(Request $request, $id) 
+    {
+      $role = Role::find($id);
+      $role->role_name = $request->input('role_name');
+      $role->update();
+      return redirect('/roles')->with('status','Your Data Is Updated');
+    }
+
+    public function delete($id)
+    {
+        $role = Role::findOrFail($id);
+        $role->users()->delete();
+        $role->delete();
+        return redirect('/roles')->with('status','Your Data Is Deleted');
     }
 }

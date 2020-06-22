@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Role Creation
+    Field Creation
 @endsection
 
 @section('content')
@@ -9,7 +9,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Please, create a role</h4>
+                    <h4 class="card-title">Please, create a field</h4>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -19,12 +19,12 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form action="/roles/create" method="POST">
+                            <form action="/manual/create" method="POST">
                                 @csrf
                                 <div class="form-group">
-                                    <label for="role_name">Role Name</label>
-                                    <input type="text" class="form-control" name="role_name" placeholder="Enter role name">
-                                    <small id="emailHelp" class="form-text text-muted">Make sure entered roles is not in list of roles</small>
+                                    <label for="field_name">Field Name</label>
+                                    <input type="text" class="form-control" name="field_name" placeholder="Enter field name">
+                                    <small id="emailHelp" class="form-text text-muted">Make sure entered fields is not in list of fields</small>
                                 </div>
                                 <button type="submit" class="btn btn-success">Submit</button>
                             </form>

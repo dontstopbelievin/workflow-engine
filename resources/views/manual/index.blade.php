@@ -1,15 +1,16 @@
 @extends('layouts.master')
 
 @section('title')
-    List of Roles
+   Справочник
 @endsection
 
 @section('content')
+<div class="container">
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">List of Roles</h4>
+                    <h1>Справочник</h1>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -21,39 +22,38 @@
                         <table class="table">
                             <thead class="text-primary">
                                 <th>ID</th>
-                                <th>Name</th>
-                                <th>Created at</th>
+                                <th>Field Name</th>
+                                <th>Created At</th>
                                 <th>EDIT</th>
                                 <th>DELETE</th>
                             </thead>
                             <tbody>
-                                @foreach($roles as $role)
+                                @foreach($fieldValue as $value)
                                 <tr>
-                                    <td><a href="/role/{{$role->id}}">{{$role->id}}</a></td>
-                                    <td>{{$role->role_name}}</td>
-                                    <td>{{$role->created_at}}</td>
-                                    <td><a href="/role-edit/{{$role->id}}" class="btn btn-success">EDIT</a></td>
+                                    <td>{{$value->id}}</td>
+                                    <td>{{$value->field_name}}</td>
+                                    <td>{{$value->created_at}}</td>
+                                    <td><a href="/manual-edit/{{$value->id}}" class="btn btn-success">EDIT</a></td>
                                     <td>
-                                        <form action="/role-delete/{{$role->id}}" method="post">
+                                        <form action="/manual-delete/{{$value->id}}" method="post">
                                             {{csrf_field()}}
                                             {{method_field('DELETE')}}
                                             <button type="submit" class="btn btn-danger">DELETE</button>
                                         </form>
                                     </td>
                                 </tr>
-                               
+                            
                                 @endforeach  
                             </tbody>
                         </tablе>
-                        <a href="/roles/create" class="btn btn-primary">Please, create a role</a>
+                        <a href="/manual/create" class="btn btn-primary">Please, create a field</a>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
+</div>
 @endsection
 
 @section('scripts')
-
 @endsection
