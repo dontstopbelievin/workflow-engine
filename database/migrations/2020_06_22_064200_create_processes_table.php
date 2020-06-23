@@ -15,6 +15,11 @@ class CreateProcessesTable extends Migration
     {
         Schema::create('processes', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name')->comment('Наименоваие процесса');
+            $table->integer('deadline')->comment('Количество дней на заявку');
+            $table->dateTime('deadline_until')->nullable();
+            $table->string('approve_sketch')->nullable();
+            $table->string('reject_sketch')->nullable();
             $table->timestamps();
         });
     }
