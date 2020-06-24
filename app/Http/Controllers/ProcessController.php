@@ -31,6 +31,15 @@ class ProcessController extends Controller
             'deadline_until' => $deadline
         ]);
         $process->save();
-        return view('process.create')->with('process', $process);
+        $fields = FieldValue::all();
+        return view('process.create')->with(compact( 'fields'));
+    }
+
+    public function getfields(Request $request) {
+        $choosenFields = $request->input('fields');
+        return view('process.create')->with(compact('choosenFields'));
+    }
+    public function savefields(Request $request) {
+        dd($request->all());
     }
 }

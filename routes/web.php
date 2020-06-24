@@ -51,6 +51,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/process/create', 'ProcessController@create');
     Route::post('/process/create', 'ProcessController@store');
     Route::get('/process/fields', 'ProcessController@getfields');
+    Route::post('/process/save-fields', 'ProcessController@savefields');
 
     
 
