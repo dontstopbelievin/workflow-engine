@@ -13,4 +13,7 @@ class Process extends Model
     public function fieldValues() {
         return $this->hasMany(FieldValue::class);
     }
+    public function templates() {
+        return $this->hasMany(Template::class);
+    }
 }

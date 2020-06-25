@@ -20,7 +20,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table">
-                            <thead class="text-primary">
+                            <thead>
                                 <th>ID</th>
                                 <th>Field Name</th>
                                 <th>Created At</th>
@@ -32,7 +32,7 @@
                                 <tr>
                                     <td>{{$value->id}}</td>
                                     <td>{{$value->field_name}}</td>
-                                    <td>{{$value->created_at}}</td>
+                                    <td>{{$value->created_at->toDateString() }}</td>
                                     <td><a href="/manual-edit/{{$value->id}}" class="btn btn-success">EDIT</a></td>
                                     <td>
                                         <form action="/manual-delete/{{$value->id}}" method="post">

@@ -19,7 +19,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table">
-                            <thead class="text-primary">
+                            <thead>
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>Phone</th>

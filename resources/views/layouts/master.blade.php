@@ -65,7 +65,7 @@
             </a>
           </li>
           <li>
-            <a href="./icons.html">
+            <a href="/routes">
               <i class="now-ui-icons education_atom"></i>
               <p>Маршруты</p>
             </a>
@@ -83,7 +83,7 @@
             </a>
           </li>
           <li>
-            <a href="./user.html">
+            <a href="/templates">
               <i class="now-ui-icons users_single-02"></i>
               <p>Шаблоны</p>
             </a>

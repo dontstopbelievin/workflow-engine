@@ -19,7 +19,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table">
-                            <thead class="text-primary">
+                            <thead>
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>Created at</th>
@@ -31,7 +31,7 @@
                                 <tr>
                                     <td><a href="/role/{{$role->id}}">{{$role->id}}</a></td>
                                     <td>{{$role->role_name}}</td>
-                                    <td>{{$role->created_at}}</td>
+                                    <td>{{$role->created_at->toDateString() }}</td>
                                     <td><a href="/role-edit/{{$role->id}}" class="btn btn-success">EDIT</a></td>
                                     <td>
                                         <form action="/role-delete/{{$role->id}}" method="post">

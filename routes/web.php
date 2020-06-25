@@ -40,6 +40,15 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::put('/role-update/{id}', 'RoleController@update');
     Route::delete('/role-delete/{id}', 'RoleController@delete');
 
+
+    Route::get('/templates', 'TemplateController@index');
+    Route::get('/template/{id}', 'TemplateController@view');
+    Route::get('/templates/create', 'TemplateController@create');
+    Route::post('/templates/create', 'TemplateController@store');
+    Route::get('/template-edit/{id}', 'TemplateController@edit');
+    Route::put('/template-update/{id}', 'TemplateController@update');
+    Route::delete('/template-delete/{id}', 'TemplateController@delete');
+
     Route::get('/manual', 'FieldValueController@index');
     Route::get('/manual/create', 'FieldValueController@create');
     Route::post('/manual/create', 'FieldValueController@store');

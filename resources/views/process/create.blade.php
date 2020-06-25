@@ -35,9 +35,18 @@
                                         <input type="text" class="form-control" name="name" placeholder="Введите наименование проекта">
                                         <label for="duration">Срок(количество дней)</label>
                                         <input type="number" min="0" class="form-control" name="deadline" placeholder="Введите срок">
-                                    
+                                        <label for="accept_template">Шаблон одобрения:</label>
+                                        <select class="form-control" id="accept_template">
+                                            <option>1</option>
+                                            <option>2</option>
+                                        </select>
+                                        <label for="reject_template">Шаблон отказа:</label>
+                                        <select class="form-control" id="reject_template">
+                                            <option>1</option>
+                                            <option>2</option>
+                                        </select>
                                 </div>
-                                <button type="submit" class="btn btn-basic">Submit</button>
+                                <button type="submit" class="btn btn-basic">Отправить</button>
                                 @endempty
                             </form>
                             @empty($choosenFields)
