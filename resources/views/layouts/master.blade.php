@@ -43,54 +43,51 @@
         Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
     -->
       <div class="logo">
-        <a href="http://www.creative-tim.com" class="simple-text logo-mini">
-          WE
-        </a>
-        <a href="http://www.creative-tim.com" class="simple-text logo-normal">
-        Электронные услуги
+        <a href="/dashboard" class="d-flex justify-content-center simple-text logo-normal">
+          Электронные услуги
         </a>
       </div>
       <div class="sidebar-wrapper" id="sidebar-wrapper">
         <ul class="nav">
         <li class="{{'dashboard' == request()->path() ? 'active' : ''}}">
             <a href="/dashboard">
-              <i class="now-ui-icons design_app"></i>
+              <i class="now-ui-icons tech_tv"></i>
               <p>Приборная Панель</p>
             </a>
           </li>
-          <li>
+          <li class="{{'process' == request()->path() ? 'active' : ''}}">
             <a href="/process">
-              <i class="now-ui-icons design_app"></i>
+              <i class="now-ui-icons media-2_sound-wave"></i>
               <p>Процессы</p>
             </a>
           </li>
-          <li>
+          <li class="{{'routes' == request()->path() ? 'active' : ''}}">
             <a href="/routes">
-              <i class="now-ui-icons education_atom"></i>
+              <i class="now-ui-icons location_compass-05"></i>
               <p>Маршруты</p>
             </a>
           </li>
-          <li>
+          <li class="{{'manual' == request()->path() ? 'active' : ''}}">
             <a href="/manual">
-              <i class="now-ui-icons location_map-big"></i>
+              <i class="now-ui-icons travel_info"></i>
               <p>Справочники</p>
             </a>
           </li>
-          <li>
+          <li class="{{'roles' == request()->path() ? 'active' : ''}}">
             <a href="/roles">
-              <i class="now-ui-icons ui-1_bell-53"></i>
+              <i class="now-ui-icons users_circle-08"></i>
               <p>Роли</p>
             </a>
           </li>
-          <li>
+          <li class="{{'templates' == request()->path() ? 'active' : ''}}">
             <a href="/templates">
-              <i class="now-ui-icons users_single-02"></i>
+              <i class="now-ui-icons education_agenda-bookmark"></i>
               <p>Шаблоны</p>
             </a>
           </li>
           <li class="{{'role-register' == request()->path() ? 'active' : ''}}">
-            <a href="role-register">
-              <i class="now-ui-icons design_bullet-list-67"></i>
+            <a href="/role-register">
+              <i class="now-ui-icons users_single-02"></i>
               <p>Пользователи</p>
             </a>
           </li>
@@ -100,26 +97,11 @@
     <div class="main-panel" id="main-panel">
       <!-- Navbar -->
       <nav class="navbar navbar-expand-lg navbar-transparent  bg-primary  navbar-absolute">
-        <div class="container-fluid">
-          <div class="navbar-wrapper">
-            <div class="navbar-toggle">
-              <button type="button" class="navbar-toggler">
-                <span class="navbar-toggler-bar bar1"></span>
-                <span class="navbar-toggler-bar bar2"></span>
-                <span class="navbar-toggler-bar bar3"></span>
-              </button>
-            </div>
-            <a class="navbar-brand" href="#pablo">Table List</a>
-          </div>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-bar navbar-kebab"></span>
-            <span class="navbar-toggler-bar navbar-kebab"></span>
-            <span class="navbar-toggler-bar navbar-kebab"></span>
-          </button>
+        <div class="container-fluid">          
           <div class="collapse navbar-collapse justify-content-end" id="navigation">
             <form>
               <div class="input-group no-border">
-                <input type="text" value="" class="form-control" placeholder="Search...">
+                <input type="text" value="" class="form-control" placeholder="Поиск...">
                 <div class="input-group-append">
                   <div class="input-group-text">
                     <i class="now-ui-icons ui-1_zoom-bold"></i>
@@ -128,23 +110,15 @@
               </div>
             </form>
             <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="#pablo">
-                  <i class="now-ui-icons media-2_sound-wave"></i>
-                  <p>
-                    <span class="d-lg-none d-md-block">Stats</span>
-                  </p>
-                </a>
-              </li>
               <li class="nav-item dropdown">
                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                    {{ Auth::user()->name }} <span class="caret"></span>
+                    {{ Auth::user()->name }}
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
-                                      document.getElementById('logout-form').submit();">
+                        document.getElementById('logout-form').submit();">
                         {{ __('Logout') }}
                     </a>
 
@@ -152,15 +126,6 @@
                         @csrf
                     </form>
                 </div>
-              </li>
-
-              <li class="nav-item">
-                <a class="nav-link" href="#pablo">
-                  <i class="now-ui-icons users_single-02"></i>
-                  <p>
-                    <span class="d-lg-none d-md-block">Account</span>
-                  </p>
-                </a>
               </li>
             </ul>
           </div>

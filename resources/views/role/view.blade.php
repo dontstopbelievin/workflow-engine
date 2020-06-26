@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-   View Role
+   Роли
 @endsection
 
 @section('content')
@@ -9,7 +9,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Users with Role {{$role->role_name}}</h4>
+                    <h4 class="card-title">Пользователи с ролями {{$role->role_name}}</h4>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -18,11 +18,10 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table">
                             <thead class="text-primary">
                                 <th>ID</th>
-                                <th>Name</th>
-                                <th>Phone</th>
+                                <th>Имя</th>
+                                <th>Номер</th>
                                 <th>Email</th>
                             </thead>
                             <tbody>
@@ -35,7 +34,6 @@
                               </tr>   
                               @endforeach                             
                             </tbody>
-                        </tablе>
                     </div>
 
                 </div>

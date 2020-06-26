@@ -1,16 +1,15 @@
 @extends('layouts.master')
 
 @section('title')
-   Справочник
+   Справочники
 @endsection
 
 @section('content')
-<div class="container">
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h1>Справочник</h1>
+                    <h4 class="card-title">Справочники</h4>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -52,7 +51,6 @@
             </div>
         </div>
     </div>
-</div>
 @endsection
 
 @section('scripts')

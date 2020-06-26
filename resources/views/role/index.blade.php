@@ -45,7 +45,7 @@
                                 @endforeach  
                             </tbody>
                         </tablе>
-                        <a href="/roles/create" class="btn btn-primary">Please, create a role</a>
+                        <a href="/roles/create" class="btn btn-primary">Создать Роль</a>
                     </div>
 
                 </div>

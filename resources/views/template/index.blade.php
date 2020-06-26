@@ -5,7 +5,6 @@
 @endsection
 
 @section('content')
-<div class="container">
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -19,7 +18,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table" name="accepted_table">
-                        <label for="accepted_table"><h2>Шаблоны одобрения</h2></label>
+                            <h4 class="card-title">Шаблоны одобрения</h4>
                             <thead>
                                 <tr>
                                     <th>№</th>
@@ -51,7 +50,7 @@
                             </tbody>
                         </tablе>
                         <table class="table" name="reject_table">
-                        <label for="reject_table"><h2>Шаблоны отказа</h2></label>
+                        <h4 class="card-title">Шаблоны отказа</h4>
                         <thead>
                             <tr>
                                 <th>№</th>
@@ -87,10 +86,7 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-                    
+    </div>                   
 
 @endsection
 
