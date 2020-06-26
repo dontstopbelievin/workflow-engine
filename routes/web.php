@@ -40,6 +40,14 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::put('/role-update/{id}', 'RoleController@update');
     Route::delete('/role-delete/{id}', 'RoleController@delete');
 
+    Route::get('/routes', 'RouteController@index');
+    Route::get('/route/{id}', 'RouteController@view');
+    Route::get('/routes/create', 'RouteController@create');
+    Route::post('/routes/create', 'RouteController@store');
+    Route::get('/route-edit/{id}', 'RouteController@edit');
+    Route::put('/route-update/{id}', 'RouteController@update');
+    Route::delete('/route-delete/{id}', 'RouteController@delete');
+
 
     Route::get('/templates', 'TemplateController@index');
     Route::get('/template/{id}', 'TemplateController@view');

@@ -36,6 +36,28 @@ class TemplateController extends Controller
         // return view('template.index')->with(compact('accepted_templates', 'rejected_templates'));
         return redirect('/templates');
     }
+
+    public function edit($id) {
+        $template = Template::findOrFail($id);
+        return view('template.edit')->with('template', $template);
+    }
+
+
+    public function update(Request $request, $id) 
+    {
+        // $request->validate([
+        //     'name' => ['required'],
+        //     'file_input' => ['required', 'file'] // max size of 5 mb
+        // ]);
+        $template = Template::find($id);
+        // dd($template);
+        $template->name = $request->input('name');
+        $template->doc_path = $request->input('file_input');
+        // dd($template);
+        $template->update();
+        return redirect('/templates')->with('status','Your Data Is Updated');
+    }
+
     public function delete($id) 
     {
         $value = Template::findOrFail($id);
