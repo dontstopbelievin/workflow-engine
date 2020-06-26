@@ -19,7 +19,7 @@
                                 {{ csrf_field( )}}
                                 {{ method_field('PUT') }}
                                 <div class="form-group">
-                                    <label>Имя</label>
+                                    <label>Имя пользователя</label>
                                     <input type="text" name="username" value="{{ $users->name}}" class="form-control">
                                 </div>
                                 <div class="form-group">
