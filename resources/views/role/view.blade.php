@@ -21,8 +21,8 @@
                         <table class="table">
                             <thead class="text-primary">
                                 <th>ID</th>
-                                <th>Имя пользователя</th>
-                                <th>Номер</th>
+                                <th>Name</th>
+                                <th>Phone</th>
                                 <th>Email</th>
                             </thead>
                             <tbody>

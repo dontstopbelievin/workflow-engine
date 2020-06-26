@@ -9,7 +9,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Создать роль</h4>
+                    <h4 class="card-title">Please, create a role</h4>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -22,7 +22,7 @@
                             <form action="/roles/create" method="POST">
                                 @csrf
                                 <div class="form-group">
-                                    <label for="role_name">Роль</label>
+                                    <label for="role_name">Role Name</label>
                                     <input type="text" class="form-control" name="role_name" placeholder="Enter role name">
                                     <small id="emailHelp" class="form-text text-muted">Make sure entered roles is not in list of roles</small>
                                 </div>

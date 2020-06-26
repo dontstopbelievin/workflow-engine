@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Зарегистрированные роли
+    Registered Roles
 @endsection
 
 @section('content')
@@ -9,7 +9,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Зарегистрированные роли</h4>
+                    <h4 class="card-title">Registered Roles</h4>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -21,12 +21,12 @@
                         <table class="table">
                             <thead>
                                 <th>ID</th>
-                                <th>Имя пользователя</th>
-                                <th>Номер</th>
+                                <th>Name</th>
+                                <th>Phone</th>
                                 <th>Email</th>
-                                <th>Роль</th>
-                                <th>Изменить</th>
-                                <th>Удалить</th>
+                                <th>Role Name</th>
+                                <th>EDIT</th>
+                                <th>DELETE</th>
                                 
                             </thead>
                             <tbody>
@@ -41,12 +41,12 @@
                                 @else 
                                 <td>-</td>
                                 @endif
-                                <td><a href="/user-edit/{{$user->id}}" class="btn btn-success">Изменить</a></td>
+                                <td><a href="/user-edit/{{$user->id}}" class="btn btn-success">EDIT</a></td>
                                 <td>
                                     <form action="/user-delete/{{$user->id}}" method="post">
                                         {{csrf_field()}}
-                                        {{method_field('Удалить')}}
-                                        <button type="submit" class="btn btn-danger">Удалить</button>
+                                        {{method_field('DELETE')}}
+                                        <button type="submit" class="btn btn-danger">DELETE</button>
                                     </form>
                                 </td>  
                               </tr>   

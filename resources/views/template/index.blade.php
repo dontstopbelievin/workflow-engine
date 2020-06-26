@@ -5,6 +5,7 @@
 @endsection
 
 @section('content')
+<div class="container">
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -18,7 +19,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table" name="accepted_table">
-                        <h4 class="card-title">Шаблоны одобрения</h4>
+                        <label for="accepted_table"><h2>Шаблоны одобрения</h2></label>
                             <thead>
                                 <tr>
                                     <th>ИД</th>
@@ -35,12 +36,12 @@
                                         <td>{{$template->id}}</td>
                                         <td>{{$template->name}}</td>
                                         <td>{{$template->created_at->toDateString() }}</td>
-                                        <td><a href="/manual-edit/{{$template->id}}" class="btn btn-success">Изменить</a></td>
+                                        <td><a href="/manual-edit/{{$template->id}}" class="btn btn-success">EDIT</a></td>
                                         <td>
                                             <form action="/manual-delete/{{$template->id}}" method="post">
                                                 {{csrf_field()}}
-                                                {{method_field('Удалить')}}
-                                                <button type="submit" class="btn btn-danger">Удалить</button>
+                                                {{method_field('DELETE')}}
+                                                <button type="submit" class="btn btn-danger">DELETE</button>
                                             </form>
                                         </td>
                                     </tr>
@@ -50,7 +51,7 @@
                             </tbody>
                         </tablе>
                         <table class="table" name="reject_table">
-                        <h4 class="card-title">Шаблоны отказа</h4>
+                        <label for="reject_table"><h2>Шаблоны отказа</h2></label>
                         <thead>
                             <tr>
                             <th>ИД</th>
@@ -67,12 +68,12 @@
                                 <td>{{$template->id}}</td>
                                         <td>{{$template->name}}</td>
                                         <td>{{$template->created_at->toDateString() }}</td>
-                                        <td><a href="/manual-edit/{{$template->id}}" class="btn btn-success">Изменить</a></td>
+                                        <td><a href="/manual-edit/{{$template->id}}" class="btn btn-success">EDIT</a></td>
                                         <td>
                                             <form action="/manual-delete/{{$template->id}}" method="post">
                                                 {{csrf_field()}}
-                                                {{method_field('Удалить')}}
-                                                <button type="submit" class="btn btn-danger">Удалить</button>
+                                                {{method_field('DELETE')}}
+                                                <button type="submit" class="btn btn-danger">DELETE</button>
                                             </form>
                                         </td>
                                 </tr>
@@ -86,6 +87,10 @@
             </div>
         </div>
     </div>
+</div>
+
+                    
+
 @endsection
 
 @section('scripts')
