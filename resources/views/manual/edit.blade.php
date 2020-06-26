@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-   Edit Field Name
+   Изменение названия поля
 @endsection
 
 @section('content')
@@ -10,7 +10,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h1>Edit Field {{$fieldValue->field_name}}</h1>
+                    <h1>Изменение Поля: {{$fieldValue->field_name}}</h1>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -19,12 +19,12 @@
                                 {{ csrf_field( )}}
                                 {{ method_field('PUT') }}
                                 <div class="form-group">
-                                    <label>Name</label>
+                                    <label>Название поля</label>
                                     <input type="text" name="field_name" value="{{ $fieldValue->field_name}}" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-success">Update</button>
-                                    <a href="/manual" class="btn btn-danger">Cancel</a>
+                                    <button type="submit" class="btn btn-success">Обновить</button>
+                                    <a href="/manual" class="btn btn-danger">Отмена</a>
                                 </div>
                             </form>
                         </div>

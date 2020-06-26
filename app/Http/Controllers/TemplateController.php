@@ -33,7 +33,15 @@ class TemplateController extends Controller
         $template->save();
         $accepted_templates = Template::all()->where('accept_template', 1);
         $rejected_templates = Template::all()->where('accept_template', 0);
-        return view('template.index')->with(compact('accepted_templates', 'rejected_templates'));
+        // return view('template.index')->with(compact('accepted_templates', 'rejected_templates'));
+        return redirect('/templates');
     }
+    public function delete($id) 
+    {
+        $value = Template::findOrFail($id);
+        $value->delete();
+        return redirect('/templates')->with('status','Your Data Is Deleted');
+    }
+    
     
 }

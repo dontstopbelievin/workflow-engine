@@ -21,11 +21,11 @@
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
-                                <th>ID</th>
-                                <th>Field Name</th>
-                                <th>Created At</th>
-                                <th>EDIT</th>
-                                <th>DELETE</th>
+                                <th>№</th>
+                                <th>Название поля</th>
+                                <th>Дата создания</th>
+                                <th>ИЗМЕНЕНИЕ</th>
+                                <th>УДАЛЕНИЕ</th>
                             </thead>
                             <tbody>
                                 @foreach($fieldValue as $value)
@@ -33,12 +33,12 @@
                                     <td>{{$value->id}}</td>
                                     <td>{{$value->field_name}}</td>
                                     <td>{{$value->created_at->toDateString() }}</td>
-                                    <td><a href="/manual-edit/{{$value->id}}" class="btn btn-success">EDIT</a></td>
+                                    <td><a href="/manual-edit/{{$value->id}}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
                                     <td>
                                         <form action="/manual-delete/{{$value->id}}" method="post">
                                             {{csrf_field()}}
                                             {{method_field('DELETE')}}
-                                            <button type="submit" class="btn btn-danger">DELETE</button>
+                                            <button type="submit" class="btn btn-danger">УДАЛИТЬ</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -46,7 +46,7 @@
                                 @endforeach  
                             </tbody>
                         </tablе>
-                        <a href="/manual/create" class="btn btn-primary">Please, create a field</a>
+                        <a href="/manual/create" class="btn btn-primary">Создать Поле</a>
                     </div>
                 </div>
             </div>

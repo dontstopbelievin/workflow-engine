@@ -22,11 +22,11 @@
                         <label for="accepted_table"><h2>Шаблоны одобрения</h2></label>
                             <thead>
                                 <tr>
-                                    <th>ИД</th>
+                                    <th>№</th>
                                     <th>Название Шаблона</th>
                                     <th>Дата создания</th>
-                                    <th>ИЗМЕНИТЬ</th>
-                                    <th>УДАЛИТЬ</th>
+                                    <th><button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Изменить"><i class="fa fa-edit"></i></button></th>
+                                    <th> <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Удалить"><i class="fa fa-trash"></i></button></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -36,9 +36,9 @@
                                         <td>{{$template->id}}</td>
                                         <td>{{$template->name}}</td>
                                         <td>{{$template->created_at->toDateString() }}</td>
-                                        <td><a href="/manual-edit/{{$template->id}}" class="btn btn-success">EDIT</a></td>
+                                        <td><a href="/template-edit/{{$template->id}}" class="btn btn-success">EDIT</a></td>
                                         <td>
-                                            <form action="/manual-delete/{{$template->id}}" method="post">
+                                            <form action="/template-delete/{{$template->id}}" method="post">
                                                 {{csrf_field()}}
                                                 {{method_field('DELETE')}}
                                                 <button type="submit" class="btn btn-danger">DELETE</button>
@@ -54,28 +54,29 @@
                         <label for="reject_table"><h2>Шаблоны отказа</h2></label>
                         <thead>
                             <tr>
-                            <th>ИД</th>
-                            <th>Название Шаблона</th>
-                            <th>Дата создания</th>
-                            <th>ИЗМЕНИТЬ</th>
-                            <th>УДАЛИТЬ</th>
+                                <th>№</th>
+                                <th>Название Шаблона</th>
+                                <th>Дата создания</th>
+                                <th><button class="btn btn-success btn-sm px-auto" type="button" data-toggle="tooltip" data-placement="top" title="Изменить"><i class="fa fa-edit"></i></button></th>
+                               
+                                <th> <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Удалить"><i class="fa fa-trash"></i></button></th>
                             </tr>
                         </thead>
                         <tbody>
                         @isset($rejected_templates)
                             @foreach($rejected_templates as $template)
                                 <tr>
-                                <td>{{$template->id}}</td>
-                                        <td>{{$template->name}}</td>
-                                        <td>{{$template->created_at->toDateString() }}</td>
-                                        <td><a href="/manual-edit/{{$template->id}}" class="btn btn-success">EDIT</a></td>
-                                        <td>
-                                            <form action="/manual-delete/{{$template->id}}" method="post">
-                                                {{csrf_field()}}
-                                                {{method_field('DELETE')}}
-                                                <button type="submit" class="btn btn-danger">DELETE</button>
-                                            </form>
-                                        </td>
+                                    <td>{{$template->id}}</td>
+                                    <td>{{$template->name}}</td>
+                                    <td>{{$template->created_at->toDateString() }}</td>
+                                    <td><a href="/template-edit/{{$template->id}}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
+                                    <td>
+                                        <form action="/template-delete/{{$template->id}}" method="post">
+                                            {{csrf_field()}}
+                                            {{method_field('DELETE')}}
+                                            <button type="submit" class="btn btn-danger">УДАЛИТЬ</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             @endforeach
                         @endisset

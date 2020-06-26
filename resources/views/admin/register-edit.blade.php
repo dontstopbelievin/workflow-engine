@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Edit-registered
+    Изменение данных пользователя
 @endsection
 
 @section('content')
@@ -10,7 +10,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h1>Edit Role for registered User</h1>
+                    <h1>Изменение данных пользователя</h1>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -19,18 +19,18 @@
                                 {{ csrf_field( )}}
                                 {{ method_field('PUT') }}
                                 <div class="form-group">
-                                    <label>Name</label>
+                                    <label>Имя</label>
                                     <input type="text" name="username" value="{{ $users->name}}" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label>Give Role</label>
+                                    <label>Присвоить роль</label>
                                     <select name="role_name" class="form-control">
                                         @foreach($roles as $role)
                                             <option value="{{$role}}">{{$role}}</option>
                                         @endforeach
                                     </select>
-                                    <button type="submit" class="btn btn-success">Update</button>
-                                    <a href="/role-register" class="btn btn-danger">Cancel</a>
+                                    <button type="submit" class="btn btn-success">ОБНОВИТЬ</button>
+                                    <a href="/role-register" class="btn btn-danger">ИЗМЕНИТЬ</a>
                                 </div>
                             </form>
                         </div>

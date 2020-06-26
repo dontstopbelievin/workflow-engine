@@ -64,12 +64,17 @@ class RegisterController extends Controller
      * @return \App\User
      */
     protected function create(array $data)
-    {
+    {   
+        $usertype = NULL;
+        if ($data['name'] === 'Admin') {
+            $usertype = 'admin';
+        }
         return User::create([
             'name' => $data['name'],
             'phone' => $data['phone'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'usertype' => $usertype,
         ]);
     }
 }
