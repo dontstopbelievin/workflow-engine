@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12" >
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Создать Роль</h4>
@@ -23,10 +23,10 @@
                                 @csrf
                                 <div class="form-group">
                                     <label for="role_name">Роль</label>
-                                    <input type="text" class="form-control" name="role_name" placeholder="Enter role name">
-                                    <small id="emailHelp" class="form-text text-muted">Make sure entered roles is not in list of roles</small>
+                                    <input type="text" class="form-control" name="role_name" placeholder="Введите название роли">
+                                    <small id="emailHelp" class="form-text text-muted">Убедитесь, что вводимой Вами роли нет в списке ролей</small>
                                 </div>
-                                <button type="submit" class="btn btn-success">Submit</button>
+                                <button type="submit" class="btn btn-success">Создать</button>
                             </form>
                         </div>
                     </div>

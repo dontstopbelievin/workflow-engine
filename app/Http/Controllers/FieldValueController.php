@@ -25,7 +25,7 @@ class FieldValueController extends Controller
             'field_name' => $request->get('field_name')
         ]);
         $field->save();
-        return redirect('/manual')->with('status', 'Field was succesfully Added');
+        return redirect('/manual')->with('status', 'Поле успешно создано');
     }
     public function edit($id) {
         $fieldValue = FieldValue::findOrFail($id);
@@ -37,13 +37,13 @@ class FieldValueController extends Controller
       $field = FieldValue::find($id);
       $field->field_name = $request->input('field_name');
       $field->update();
-      return redirect('/manual')->with('status','Your Data Is Updated');
+      return redirect('/manual')->with('status','Поле успешно обновлено');
     }
 
     public function delete($id)
     {
         $value = FieldValue::findOrFail($id);
         $value->delete();
-        return redirect('/manual')->with('status','Your Data Is Deleted');
+        return redirect('/manual')->with('status','Поле успешно создано');
     }
 }

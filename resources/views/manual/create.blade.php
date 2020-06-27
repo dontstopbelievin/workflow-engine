@@ -23,10 +23,10 @@
                                 @csrf
                                 <div class="form-group">
                                     <label for="field_name">Название Поля</label>
-                                    <input type="text" class="form-control" name="field_name" placeholder="Enter field name">
+                                    <input type="text" class="form-control" name="field_name" placeholder="Введите название поля">
                                     <small id="emailHelp" class="form-text text-muted">Убедитесь, что вводимого Вами поля нет в списке полей</small>
                                 </div>
-                                <button type="submit" class="btn btn-success">Сощдать</button>
+                                <button type="submit" class="btn btn-success">Создать</button>
                             </form>
                         </div>
                     </div>

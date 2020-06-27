@@ -27,9 +27,7 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                              </tr>
-                                    
-                               
+                              </tr> 
                             </tbody>
 
                         </tablе>

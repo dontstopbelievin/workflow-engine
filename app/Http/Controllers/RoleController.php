@@ -30,7 +30,7 @@ class RoleController extends Controller
             'role_name' => $request->get('role_name')
         ]);
         $role->save();
-        return redirect('/roles')->with('status', 'Role was succesfully Added');
+        return redirect('/roles')->with('status', 'Роль успешно создана');
     }
 
     public function edit($id) {
@@ -43,7 +43,7 @@ class RoleController extends Controller
       $role = Role::find($id);
       $role->role_name = $request->input('role_name');
       $role->update();
-      return redirect('/roles')->with('status','Your Data Is Updated');
+      return redirect('/roles')->with('status','Роль успешно обновлена');
     }
 
     public function delete($id)
@@ -51,6 +51,6 @@ class RoleController extends Controller
         $role = Role::findOrFail($id);
         $role->users()->delete();
         $role->delete();
-        return redirect('/roles')->with('status','Your Data Is Deleted');
+        return redirect('/roles')->with('status','Роль успешно удалена');
     }
 }

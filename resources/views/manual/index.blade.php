@@ -23,8 +23,8 @@
                                 <th>№</th>
                                 <th>Название поля</th>
                                 <th>Дата создания</th>
-                                <th>ИЗМЕНЕНИЕ</th>
-                                <th>УДАЛЕНИЕ</th>
+                                <th><button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Изменить"><i class="fa fa-edit"></i></button></th>
+                                <th> <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Удалить"><i class="fa fa-trash"></i></button></th>
                             </thead>
                             <tbody>
                                 @foreach($fieldValue as $value)
