@@ -70,7 +70,7 @@
           <li class="{{'manual' == request()->path() ? 'active' : ''}}">
             <a href="/manual">
               <i class="now-ui-icons travel_info"></i>
-              <p>Справочники</p>
+              <p>Справочник</p>
             </a>
           </li>
           <li class="{{'roles' == request()->path() ? 'active' : ''}}">

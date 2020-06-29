@@ -24,26 +24,21 @@
                                 @csrf
                                 @empty($process)
                                 <div class="form-group">
-                                    <!-- @isset($process)
-                                        <label for="role_name">Наименование</label>
-                                        <input type="text" class="form-control" name="name" value={{$process->name}}>
-                                        <label for="duration">Срок(количество дней)</label>
-                                        <input type="number" min="0" class="form-control" name="deadline" value={{$process->deadline}}>
-                                    @endisset -->
-                                    
                                         <label for="role_name">Наименование</label>
                                         <input type="text" class="form-control" name="name" placeholder="Введите наименование проекта">
                                         <label for="duration">Срок(количество дней)</label>
                                         <input type="number" min="0" class="form-control" name="deadline" placeholder="Введите срок">
                                         <label for="accept_template">Шаблон одобрения:</label>
-                                        <select class="form-control" id="accept_template">
-                                            <option>1</option>
-                                            <option>2</option>
+                                        <select class="form-control" id="accept_template" name="accepted_template">
+                                            @foreach($accepted as $accepted_template)
+                                                <option>{{$accepted_template->name}}</option>
+                                            @endforeach
                                         </select>
                                         <label for="reject_template">Шаблон отказа:</label>
-                                        <select class="form-control" id="reject_template">
-                                            <option>1</option>
-                                            <option>2</option>
+                                        <select class="form-control" id="reject_template" name="rejected_template">
+                                            @foreach($rejected as $rejected_template)
+                                                <option>{{$rejected_template->name}}</option>
+                                            @endforeach
                                         </select>
                                 </div>
                                 <button type="submit" class="btn btn-basic">Отправить</button>

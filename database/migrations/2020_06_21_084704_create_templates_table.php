@@ -14,12 +14,10 @@ class CreateTemplatesTable extends Migration
     public function up()
     {
         Schema::create('templates', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('name');
             $table->string('doc_path')->nullable();
             $table->boolean('accept_template')->nullable();
-            $table->integer('process_id')->unsigned()->nullable();
-            $table->foreign('process_id')->references('id')->on('processes');
             $table->timestamps();
         });
     }

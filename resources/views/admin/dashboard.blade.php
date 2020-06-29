@@ -13,7 +13,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table>
+                        <table class="table">
                             <thead class="text-primary">
                                 <th>ИД</th>
                                 <th>Имя</th>

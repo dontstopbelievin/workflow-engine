@@ -35,7 +35,7 @@
                                         <td>{{$template->id}}</td>
                                         <td>{{$template->name}}</td>
                                         <td>{{$template->created_at->toDateString() }}</td>
-                                        <td><a href="/manual-edit/{{$template->id}}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
+                                        <td><a href="/template-edit/{{$template->id}}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
                                         <td>
                                             <form action="/template-delete/{{$template->id}}" method="post">
                                                 {{csrf_field()}}

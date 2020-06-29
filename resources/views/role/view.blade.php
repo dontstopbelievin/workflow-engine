@@ -9,7 +9,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Пользователи с ролями {{$role->role_name}}</h4>
+                    <h4 class="card-title">Пользователи с ролью {{$role->role_name}}</h4>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -18,22 +18,27 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                            <thead class="text-primary">
-                                <th>ID</th>
-                                <th>Имя</th>
-                                <th>Номер</th>
-                                <th>Email</th>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>№</th>
+                                    <th>Имя</th>
+                                    <th>Телефон</th>
+                                    <th>Почта</th>
+                                </tr>
                             </thead>
                             <tbody>
                                 @foreach($users as $user)
-                              <tr>
-                                <td>{{$user->id}}</td>
-                                <td>{{$user->name}}</td>
-                                <td>{{$user->phone}}</td>
-                                <td>{{$user->email}}</td> 
-                              </tr>   
-                              @endforeach                             
+                                <tr>
+                                    <td>{{$user->id}}</td>
+                                    <td>{{$user->name}}</td>
+                                    <td>{{$user->phone}}</td>
+                                    <td>{{$user->email}}</td> 
+                                </tr>   
+                                @endforeach                             
                             </tbody>
+                        </table>
+                            
                     </div>
 
                 </div>
