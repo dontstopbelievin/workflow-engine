@@ -22,8 +22,8 @@
                             <form action="/manual/create" method="POST">
                                 @csrf
                                 <div class="form-group">
-                                    <label for="field_name">Название Поля</label>
-                                    <input type="text" class="form-control" name="field_name" placeholder="Введите название поля">
+                                    <label for="name">Название Поля</label>
+                                    <input type="text" class="form-control" name="name" placeholder="Введите название поля">
                                     <small id="emailHelp" class="form-text text-muted">Убедитесь, что вводимого Вами поля нет в списке полей</small>
                                 </div>
                                 <button type="submit" class="btn btn-success">Создать</button>

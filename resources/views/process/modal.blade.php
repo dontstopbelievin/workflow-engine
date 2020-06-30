@@ -16,7 +16,7 @@
                             @isset($fields)
                                 @foreach ($fields as $field)
                                     <div class="checkbox">
-                                        <label><input type="checkbox" name="fields[]" value="{{$field->field_name}}">{{$field->field_name}}</label>
+                                        <label><input type="checkbox" name="fields[]" value="{{$field->name}}">{{$field->name}}</label>
                                     </div>
                                 @endforeach   
                             @endisset

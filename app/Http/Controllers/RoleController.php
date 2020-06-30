@@ -23,11 +23,11 @@ class RoleController extends Controller
     }
     public function store(Request $request) {
         $request->validate([
-            'role_name'=>'required',
+            'name'=>'required',
         ]);
 
         $role = new Role([
-            'role_name' => $request->get('role_name')
+            'name' => $request->get('name')
         ]);
         $role->save();
         return redirect('/roles')->with('status', 'Роль успешно создана');
@@ -41,7 +41,7 @@ class RoleController extends Controller
     public function update(Request $request, $id) 
     {
       $role = Role::find($id);
-      $role->role_name = $request->input('role_name');
+      $role->name = $request->input('name');
       $role->update();
       return redirect('/roles')->with('status','Роль успешно обновлена');
     }

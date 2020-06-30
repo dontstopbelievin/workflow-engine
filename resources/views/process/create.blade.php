@@ -24,12 +24,13 @@
                                 @csrf
                                 @empty($process)
                                 <div class="form-group">
-                                        <label for="role_name">Наименование</label>
+                                        <label for="name">Наименование</label>
                                         <input type="text" class="form-control" name="name" placeholder="Введите наименование проекта">
                                         <label for="duration">Срок(количество дней)</label>
                                         <input type="number" min="0" class="form-control" name="deadline" placeholder="Введите срок">
                                         <label for="accept_template">Шаблон одобрения:</label>
-                                        <select class="form-control" id="accept_template" name="accepted_template">
+                                        @isset($accepted, $rejected)
+                                        <select class="form-control" id="accept_template" name="accepted_template">  
                                             @foreach($accepted as $accepted_template)
                                                 <option>{{$accepted_template->name}}</option>
                                             @endforeach
@@ -40,6 +41,7 @@
                                                 <option>{{$rejected_template->name}}</option>
                                             @endforeach
                                         </select>
+                                        @endisset
                                 </div>
                                 <button type="submit" class="btn btn-basic">Отправить</button>
                                 @endempty
@@ -57,10 +59,10 @@
                                             </div>
                                             <form action="/process/fields" method="GET">
                                                 <div class="modal-body">
-                                                    @isset($fields)
-                                                        @foreach ($fields as $field)
+                                                    @isset($columns)
+                                                        @foreach ($columns as $column)
                                                             <div class="checkbox">
-                                                                <label><input type="checkbox" name="fields[]" value="{{$field->field_name}}">{{$field->field_name}}</label>
+                                                                <label><input type="checkbox" name="fields[]" value="{{$column}}">{{$column}}</label>
                                                             </div>
                                                         @endforeach   
                                                     @endisset
@@ -78,11 +80,9 @@
                             @isset($choosenFields)
                                 <form action="/process/save-fields" method="POST">
                                     @csrf
-                                    @foreach($choosenFields as $choosenField)
-                                        
+                                    @foreach($choosenFields as $choosenField)                        
                                         <label for="{{$choosenField.'_field'}}">{{$choosenField}}</label>
-                                        <input type="text" class="form-control" name="{{$choosenField.'_field'}}">
-                                        
+                                        <input type="text" class="form-control" name="{{$choosenField.'_field'}}">                                        
                                     @endforeach
                                     <button type="submit" class="btn btn-basic">Выбрать</button>
                                 </form>

@@ -37,7 +37,7 @@
                                 <td>{{$user->phone}}</td>
                                 <td>{{$user->email}}</td>
                                 @if ($user->role)
-                                <td>{{$user->role->role_name}}</td>
+                                <td>{{$user->role->name}}</td>
                                 @else 
                                 <td>-</td>
                                 @endif

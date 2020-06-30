@@ -10,7 +10,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h1>Изменение Роли {{$role->role_name}}</h1>
+                    <h1>Изменение Роли {{$role->name}}</h1>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -20,7 +20,7 @@
                                 {{ method_field('PUT') }}
                                 <div class="form-group">
                                     <label>Наиманование роли</label>
-                                    <input type="text" name="role_name" value="{{ $role->role_name}}" class="form-control">
+                                    <input type="text" name="name" value="{{ $role->name}}" class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-success">Обновить</button>

@@ -18,7 +18,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table">
+                        <!-- <table class="table">
                             <thead>
                                 <th>№</th>
                                 <th>Название поля</th>
@@ -30,7 +30,7 @@
                                 @foreach($fieldValue as $value)
                                 <tr>
                                     <td>{{$value->id}}</td>
-                                    <td>{{$value->field_name}}</td>
+                                    <td>{{$value->name}}</td>
                                     <td>{{$value->created_at->toDateString() }}</td>
                                     <td><a href="/manual-edit/{{$value->id}}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
                                     <td>
@@ -40,6 +40,19 @@
                                             <button type="submit" class="btn btn-danger">УДАЛИТЬ</button>
                                         </form>
                                     </td>
+                                </tr>
+                            
+                                @endforeach  
+                            </tbody>
+                        </tablе> -->
+                        <table class="table">
+                            <thead>
+                                <th>Название поля</th>
+                            </thead>
+                            <tbody>
+                                @foreach($columns as $column)
+                                <tr>
+                                    <td>{{$column}}</td>
                                 </tr>
                             
                                 @endforeach  

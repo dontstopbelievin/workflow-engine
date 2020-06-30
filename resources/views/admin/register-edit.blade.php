@@ -15,18 +15,18 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form action="/role-register-update/{{$users->id}}" method="POST">
+                            <form action="/role-register-update/{{$user->id}}" method="POST">
                                 {{ csrf_field( )}}
                                 {{ method_field('PUT') }}
                                 <div class="form-group">
                                     <label>Имя пользователя</label>
-                                    <input type="text" name="username" value="{{ $users->name}}" class="form-control">
+                                    <input type="text" name="username" value="{{ $user->name}}" class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <label>Присвоить роль</label>
-                                    <select name="role_name" class="form-control">
+                                    <select name="role_id" class="form-control">
                                         @foreach($roles as $role)
-                                            <option value="{{$role}}">{{$role}}</option>
+                                            <option value="{{$role->id}}">{{$role->name}}</option>
                                         @endforeach
                                     </select>
                                     <button type="submit" class="btn btn-success">ОБНОВИТЬ</button>

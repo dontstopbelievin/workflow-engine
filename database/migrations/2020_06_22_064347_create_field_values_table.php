@@ -17,7 +17,7 @@ class CreateFieldValuesTable extends Migration
             $table->increments('id');
             $table->integer('process_id')->unsigned()->nullable();
             $table->foreign('process_id')->references('id')->on('processes');
-            $table->string('field_name')->comment('Наименование поля');
+            $table->string('name')->comment('Наименование поля');
             $table->timestamps();
         });
     }

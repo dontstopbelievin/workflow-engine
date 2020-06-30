@@ -10,7 +10,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h1>Изменение Поля: {{$fieldValue->field_name}}</h1>
+                    <h1>Изменение Поля: {{$fieldValue->name}}</h1>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -20,7 +20,7 @@
                                 {{ method_field('PUT') }}
                                 <div class="form-group">
                                     <label>Название поля</label>
-                                    <input type="text" name="field_name" value="{{ $fieldValue->field_name}}" class="form-control">
+                                    <input type="text" name="name" value="{{ $fieldValue->name}}" class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-success">Обновить</button>

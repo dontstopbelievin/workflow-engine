@@ -22,8 +22,8 @@
                             <form action="/roles/create" method="POST">
                                 @csrf
                                 <div class="form-group">
-                                    <label for="role_name">Роль</label>
-                                    <input type="text" class="form-control" name="role_name" placeholder="Введите название роли">
+                                    <label for="name">Роль</label>
+                                    <input type="text" class="form-control" name="name" placeholder="Введите название роли">
                                     <small id="emailHelp" class="form-text text-muted">Убедитесь, что вводимой Вами роли нет в списке ролей</small>
                                 </div>
                                 <button type="submit" class="btn btn-success">Создать</button>

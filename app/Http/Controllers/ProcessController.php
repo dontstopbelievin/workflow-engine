@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\FieldValue;
 use App\Process;
 use App\Template;
+use App\Handbook;
 use Carbon\Carbon;
 
 class ProcessController extends Controller
@@ -16,9 +17,12 @@ class ProcessController extends Controller
 
     public function create() {
         $fields = FieldValue::all();
+        $handbook = new Handbook;
+        $columns = $handbook->getTableColumns();
+        $columns = array_slice($columns, 0, -2);
         $accepted = Template::where('accept_template', '1')->get();
         $rejected = Template::where('accept_template', '0')->get();
-        return view('process.create')->with(compact('fields', 'accepted', 'rejected'));
+        return view('process.create')->with(compact('fields', 'accepted', 'rejected','columns'));
     }
 
     public function store(Request $request) {
@@ -26,16 +30,13 @@ class ProcessController extends Controller
         $numberOfDays = intval($request->get('deadline'));
         $deadline = Carbon::now()->addDays($numberOfDays);
         $accepted_template_id = Template::where('name', $request->input('accepted_template'))->pluck('id');
-        // dd($accepted_template_id[0]);
         $rejected_template_id = Template::where('name', $request->input('rejected_template'))->pluck('id');
-        // dd($rejected_template_id[0]);
         $request->validate([
             'name' => 'required',
             'deadline' => 'required',
             'accepted_template' => 'required',
             'rejected_template' => 'required',
         ]);
-        // dd($deadline);
         $process = new Process ([
             'name' => $request->get('name'),
             'deadline' => $numberOfDays,
@@ -45,15 +46,18 @@ class ProcessController extends Controller
         ]);
         $process->save();
         $fields = FieldValue::all();
-        // return view('process.create')->with(compact( 'fields'));
         return redirect()->back();
     }
 
     public function getfields(Request $request) {
         $choosenFields = $request->input('fields');
         return view('process.create')->with(compact('choosenFields'));
+        // return redirect('/process/create')->with(compact('choosenFields'));
     }
     public function savefields(Request $request) {
-        dd($request->all());
+        $array = $request->all();
+        $remove=array_shift($array);
+        dd($array);
+        // dd($remove);
     }
 }

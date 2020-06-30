@@ -16,18 +16,18 @@ class DashboardController extends Controller
 
     public function registeredit(Request $request, $id) 
     {
-       $users = User::findOrFail($id);
-       $roles = Role::pluck('role_name')->toArray();  
-      return view('admin.register-edit')->with(compact('users', 'roles'));
+       $user = User::findOrFail($id);
+      $roles = Role::all();
+      return view('admin.register-edit')->with(compact('user', 'roles'));
     }
 
     public function registerupdate(Request $request, $id) 
     {
-      $users = User::find($id);
-      $users->name = $request->input('username');
-      $id = Role::where('role_name', $request->input('role_name'))->pluck('id');
-      $users->role_id = $id[0];
-      $users->update();
+      $user = User::find($id);
+      $user->name = $request->input('username');
+      $id = $request->input('role_id');
+      $user->role_id = $id;
+      $user->update();
       return redirect('/role-register')->with('status','Your Data Is Updated');
    }
 

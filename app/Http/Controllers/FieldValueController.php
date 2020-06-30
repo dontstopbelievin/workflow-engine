@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\FieldValue;
+use App\Handbook;
 
 class FieldValueController extends Controller
 {
     public function index() {
         $fieldValue = FieldValue::all();
-        return view('manual.index')->with('fieldValue', $fieldValue);
+        $handbook = new Handbook;
+        $columns = $handbook->getTableColumns();
+        $columns = array_slice($columns, 0, -2);
+        return view('manual.index')->with(compact('fieldValue', 'columns'));
     }
 
     public function create() {
@@ -18,11 +22,11 @@ class FieldValueController extends Controller
 
     public function store(Request $request) {
         $request->validate([
-            'field_name'=>'required',
+            'name'=>'required',
         ]);
 
         $field = new FieldValue([
-            'field_name' => $request->get('field_name')
+            'name' => $request->get('name')
         ]);
         $field->save();
         return redirect('/manual')->with('status', 'Поле успешно создано');
@@ -35,7 +39,7 @@ class FieldValueController extends Controller
     public function update(Request $request, $id) 
     {
       $field = FieldValue::find($id);
-      $field->field_name = $request->input('field_name');
+      $field->name = $request->input('name');
       $field->update();
       return redirect('/manual')->with('status','Поле успешно обновлено');
     }
