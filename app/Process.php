@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Process extends Model
 {
 
-    protected $fillable = [
-        'name', 'deadline', 'deadline_until', 'accepted_template_id', 'rejected_template_id',
-    ];
+    // protected $fillable = [
+    //     'name', 'deadline', 'deadline_until', 'accepted_template_id', 'rejected_template_id',
+    // ];
+    protected $guarded;
     public function fieldValues() {
         return $this->hasMany(FieldValue::class);
     }

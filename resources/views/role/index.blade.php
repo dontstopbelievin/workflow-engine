@@ -31,7 +31,7 @@
                                 <tr>
                                     <td><a href="/role/{{$role->id}}">{{$role->id}}</a></td>
                                     <td>{{$role->name}}</td>
-                                    <td>{{$role->created_at->toDateString() }}</td>
+                                    <td>{{$time->toDateString() }}</td>
                                     <td><a href="/role-edit/{{$role->id}}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
                                     <td>
                                         <form action="/role-delete/{{$role->id}}" method="post">

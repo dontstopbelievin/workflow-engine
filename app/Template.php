@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Template extends Model
 {
-
-    protected $fillable = [
-        'name', 'accept_template', 'doc_path'
-    ];
+    protected $guarded = [];
+    // protected $fillable = [
+    //     'name', 'accept_template', 'doc_path'
+    // ];
     public function processes() {
         return $this->hasMany(Process::class);
     }

@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Role;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class RoleController extends Controller
 {
     public function index() {
         $roles = Role::all();
-        return view('role.index')->with('roles', $roles);
+        $time = Carbon::now();
+        return view('role.index')->with(compact('roles', 'time'));
     }
 
     public function view($id) {
