@@ -10,9 +10,12 @@ class Process extends Model
     // protected $fillable = [
     //     'name', 'deadline', 'deadline_until', 'accepted_template_id', 'rejected_template_id',
     // ];
-    protected $guarded;
+    protected $guarded = [];
     public function fieldValues() {
         return $this->hasMany(FieldValue::class);
+    }
+    public function handbook() {
+        return $this->belongsTo(Handbook::class);
     }
     public function accepted_template() {
         return $this->belongsTo(Template::class, 'accepted_template_id');

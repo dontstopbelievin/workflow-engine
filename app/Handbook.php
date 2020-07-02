@@ -9,4 +9,8 @@ class Handbook extends Model
     public function getTableColumns() {
         return $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable());
     }
+
+    public function process() {
+        return $this->hasOne(Process::class);
+    }
 }

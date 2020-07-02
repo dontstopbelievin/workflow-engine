@@ -5,6 +5,9 @@
 @endsection
 
 @section('content')
+    @isset($id)
+    <h1>{{$id}}</h1>
+    @endisset
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -66,6 +69,7 @@
                                                             </div>
                                                         @endforeach   
                                                     @endisset
+
                                                 </div>
                                                 <div class="modal-footer">
                                                 <button type="submit" class="btn btn-success">Выбрать</button>
@@ -78,12 +82,16 @@
                             </div>  
                             @endempty
                             @isset($choosenFields)
+
                                 <form action="/process/save-fields" method="POST">
                                     @csrf
                                     @foreach($choosenFields as $choosenField)                        
-                                        <label for="{{$choosenField.'_field'}}">{{$choosenField}}</label>
-                                        <input type="text" class="form-control" name="{{$choosenField.'_field'}}">                                        
+
+                                    <h6>{{$choosenField}}</h6>
+                                    <input type="hidden" class="form-control" name="{{$choosenField}}" value="{{$choosenField}}">  
+
                                     @endforeach
+                                    <!-- <input type="hidden" name="processID" value="{{$id}}">   -->
                                     <button type="submit" class="btn btn-basic">Выбрать</button>
                                 </form>
                             @endisset

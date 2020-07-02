@@ -26,11 +26,12 @@ class ProcessController extends Controller
     }
 
     public function store(Request $request) {
-
+        // dd($request->input());
         $numberOfDays = intval($request->get('deadline'));
         $deadline = Carbon::now()->addDays($numberOfDays);
         $accepted_template_id = Template::where('name', $request->input('accepted_template'))->pluck('id');
         $rejected_template_id = Template::where('name', $request->input('rejected_template'))->pluck('id');
+        
         $request->validate([
             'name' => 'required',
             'deadline' => 'required',
@@ -45,19 +46,21 @@ class ProcessController extends Controller
             'rejected_template_id'=> $rejected_template_id[0],
         ]);
         $process->save();
-        $fields = FieldValue::all();
-        return redirect()->back();
+        $id = $process->id;
+        // dd($id);
+        return redirect()->back()->with( 'id', $id);
     }
 
     public function getfields(Request $request) {
         $choosenFields = $request->input('fields');
-        return view('process.create')->with(compact('choosenFields'));
+        return view('process.create')->with('choosenFields', $choosenFields);
         // return redirect('/process/create')->with(compact('choosenFields'));
     }
     public function savefields(Request $request) {
-        $array = $request->all();
+        $array = $request->input();
+        dd($array);
         $remove=array_shift($array);
         dd($array);
-        // dd($remove);
+        // 
     }
 }
