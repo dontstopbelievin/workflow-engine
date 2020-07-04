@@ -58,7 +58,7 @@
           <li class="{{'process' == request()->path() ? 'active' : ''}}">
             <a href="/process">
               <i class="now-ui-icons media-2_sound-wave"></i>
-              <p>Процессы</p>
+              <p>Процессы({{$processesCount}})</p>
             </a>
           </li>
           <li class="{{'routes' == request()->path() ? 'active' : ''}}">
@@ -70,25 +70,25 @@
           <li class="{{'manual' == request()->path() ? 'active' : ''}}">
             <a href="/manual">
               <i class="now-ui-icons travel_info"></i>
-              <p>Справочник</p>
+              <p>Справочник({{$fieldsCount}})</p>
             </a>
           </li>
           <li class="{{'roles' == request()->path() ? 'active' : ''}}">
             <a href="/roles">
               <i class="now-ui-icons users_circle-08"></i>
-              <p>Роли</p>
+              <p>Роли({{$rolesCount}})</p>
             </a>
           </li>
           <li class="{{'templates' == request()->path() ? 'active' : ''}}">
             <a href="/templates">
               <i class="now-ui-icons education_agenda-bookmark"></i>
-              <p>Шаблоны</p>
+              <p>Шаблоны({{$templatesCount}})</p>
             </a>
           </li>
           <li class="{{'role-register' == request()->path() ? 'active' : ''}}">
             <a href="/role-register">
               <i class="now-ui-icons users_single-02"></i>
-              <p>Пользователи</p>
+              <p>Пользователи({{$usersCount}})</p>
             </a>
           </li>
         </ul>

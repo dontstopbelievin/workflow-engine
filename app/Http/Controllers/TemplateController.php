@@ -8,8 +8,10 @@ use App\Template;
 class TemplateController extends Controller
 {
     public function index() {
-        $accepted_templates = Template::all()->where('accept_template', 1);
-        $rejected_templates = Template::all()->where('accept_template', 0);
+        // $accepted_templates = Template::all()->where('accept_template', 1);
+        // $rejected_templates = Template::all()->where('accept_template', 0);
+        $accepted_templates = Template::where('accept_template', 1)->get();
+        $rejected_templates = Template::where('accept_template', 0)->get();
         return view('template.index')->with(compact('accepted_templates', 'rejected_templates'));
     }
 

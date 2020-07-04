@@ -18,7 +18,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table" name="accepted_table">
-                            <h4 class="card-title">Шаблоны одобрения</h4>
+                            <h4 class="card-title">Шаблоны одобрения | Всего: {{count($accepted_templates)}}</h4>
                             <thead>
                                 <tr>
                                     <th>№</th>
@@ -50,7 +50,7 @@
                             </tbody>
                         </tablе>
                         <table class="table" name="reject_table">
-                        <h4 class="card-title">Шаблоны отказа</h4>
+                        <h4 class="card-title">Шаблоны отказа | Всего: {{count($rejected_templates)}}</h4>
                         <thead>
                             <tr>
                                 <th>№</th>

@@ -1,6 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\User;
+use App\Role;
+use App\FieldValue;
+use App\Template;
+use App\Process;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,14 +22,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['middleware' => ['auth', 'admin']], function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    });
+
+    Route::get('/dashboard', 'Admin\DashboardController@index');
 
     Route::get('/role-register', 'Admin\DashboardController@registered');
     Route::get('/user-edit/{id}', 'Admin\DashboardController@registeredit');
@@ -71,5 +76,12 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::post('/process/save-fields', 'ProcessController@savefields');
 
     
-
+    View::composer(['*'], function($view) {
+        $usersCount = count(User::where('usertype', NULL )->get());
+        $rolesCount = count(Role::all());
+        $fieldsCount = count(FieldValue::all());
+        $templatesCount = count(Template::all());
+        $processesCount = count(Process::all());
+        $view->with(compact('usersCount', 'rolesCount','fieldsCount', 'templatesCount','processesCount'));
+    });
 });
