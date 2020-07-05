@@ -23,15 +23,13 @@ class RoleController extends Controller
     public function create() {
         return view('role.create');
     }
+
     public function store(Request $request) {
-        $request->validate([
+        $data = $request->validate([
             'name'=>'required',
         ]);
 
-        $role = new Role([
-            'name' => $request->get('name')
-        ]);
-        $role->save();
+        Role::create($data);
         return redirect('/roles')->with('status', 'Роль успешно создана');
     }
 

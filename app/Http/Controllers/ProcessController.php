@@ -53,8 +53,7 @@ class ProcessController extends Controller
 
     public function getfields(Request $request) {
         $choosenFields = $request->input('fields');
-        return view('process.create')->with('choosenFields', $choosenFields);
-        // return redirect('/process/create')->with(compact('choosenFields'));
+        return view('process.create')->with('choosenFields', $choosenFields);;
     }
     public function savefields(Request $request) {
         $array = $request->input();
