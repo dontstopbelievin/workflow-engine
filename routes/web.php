@@ -1,11 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\User;
 use App\Role;
 use App\FieldValue;
 use App\Template;
 use App\Process;
+use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,5 +85,15 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         $templatesCount = count(Template::all());
         $processesCount = count(Process::all());
         $view->with(compact('usersCount', 'rolesCount','fieldsCount', 'templatesCount','processesCount'));
+    });
+
+    Route::post('/search',function(Request $request){
+        $q = $request->input('q');
+        $searchRoles = Role::where('name','LIKE','%'.$q.'%')->get();
+        $roles = Role::all();
+        $time = Carbon::now();
+        if(count($searchRoles) > 0)
+            return view('role.index')->withDetails($searchRoles)->withQuery ( $q )->withRoles($roles)->withTime($time);
+        else return view ('role.index')->withMessage('No Details found. Try to search again !')->withRoles($roles)->withTime($time);
     });
 });

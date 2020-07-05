@@ -10,12 +10,53 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Список Ролей | Всего: {{$rolesCount}}</h4>
+                    <form action="/search" method="POST" role="search">
+                        {{ csrf_field() }}
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="q"
+                                placeholder="Введите название Роли"> <span class="input-group-btn">
+                                <button type="submit"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                    </form>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
                         </div>
                     @endif
                 </div>
+                <div class="container">
+                    @if(isset($details))
+                        <p> Результаты поиска на <b> {{ $query }} </b> :</p>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>Имя</th>
+                                <th><button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Изменить"><i class="fa fa-edit"></i></button></th>
+                                <th> <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Удалить"><i class="fa fa-trash"></i></button></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($details as $detail)
+                            <tr>
+                                <td><a href="/role/{{$detail->id}}">{{$detail->id}}</a></td>
+                                <td>{{$detail->name}}</td>
+                                <td><a href="/role-edit/{{$detail->id}}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
+                                <td>
+                                    <form action="/role-delete/{{$detail->id}}" method="post">
+                                        {{csrf_field()}}
+                                        {{method_field('DELETE')}}
+                                        <button type="submit" class="btn btn-danger">УДАЛИТЬ</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    @endif
+                </div>
+                @if(empty($details))
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table">
@@ -49,6 +90,7 @@
                     </div>
 
                 </div>
+                @endif
             </div>
         </div>
     </div>
