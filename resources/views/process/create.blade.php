@@ -60,7 +60,8 @@
                                             <div class="modal-header">
                                                 <h4 class="modal-title">Список Полей</h4>
                                             </div>
-                                            <form action="/process/fields" method="GET">
+                                            <form action="/process/save-fields" method="POST">
+                                            @csrf
                                                 <div class="modal-body">
                                                     @isset($columns)
                                                         @foreach ($columns as $column)
@@ -69,11 +70,13 @@
                                                             </div>
                                                         @endforeach   
                                                     @endisset
-
+                                                    <!-- @if(isset($id)) -->
+                                                    <input type="hidden" name="id" value="12345">
+                                                    <!-- @endif -->
                                                 </div>
                                                 <div class="modal-footer">
                                                 <button type="submit" class="btn btn-success">Выбрать</button>
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                                                 </div>      
                                             </form>
                                         </div>                                          
@@ -81,7 +84,7 @@
                                 </div>     
                             </div>  
                             @endempty
-                            @isset($choosenFields)
+                            <!-- @isset($choosenFields)
 
                                 <form action="/process/save-fields" method="POST">
                                     @csrf
@@ -91,10 +94,9 @@
                                     <input type="hidden" class="form-control" name="{{$choosenField}}" value="{{$choosenField}}">  
 
                                     @endforeach
-                                    <!-- <input type="hidden" name="processID" value="{{$id}}">   -->
                                     <button type="submit" class="btn btn-basic">Выбрать</button>
                                 </form>
-                            @endisset
+                            @endisset -->
                         </div>
                     </div>
                 </div>

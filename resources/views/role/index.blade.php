@@ -10,7 +10,7 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Список Ролей | Всего: {{$rolesCount}}</h4>
-                    <form action="/search" method="POST" role="search">
+                    <form action="/roles/search" method="POST" role="search">
                         {{ csrf_field() }}
                         <div class="input-group">
                             <input type="text" class="form-control" name="q"

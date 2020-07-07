@@ -34,18 +34,19 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/dashboard', 'Admin\DashboardController@index');
 
     Route::get('/role-register', 'Admin\DashboardController@registered');
-    Route::get('/user-edit/{id}', 'Admin\DashboardController@registeredit');
-    Route::put('/role-register-update/{id}', 'Admin\DashboardController@registerupdate');
-    Route::delete('/user-delete/{id}', 'Admin\DashboardController@registerdelete');
+    Route::get('/user-edit/{user}', 'Admin\DashboardController@registeredit');
+    Route::put('/role-register-update/{user}', 'Admin\DashboardController@registerupdate');
+    Route::delete('/user-delete/{user}', 'Admin\DashboardController@registerdelete');
 
 
     Route::get('/roles', 'RoleController@index');
-    Route::get('/role/{id}', 'RoleController@view');
+    Route::get('/role/{role}', 'RoleController@view');
     Route::get('/roles/create', 'RoleController@create');
     Route::post('/roles/create', 'RoleController@store');
-    Route::get('/role-edit/{id}', 'RoleController@edit');
-    Route::put('/role-update/{id}', 'RoleController@update');
-    Route::delete('/role-delete/{id}', 'RoleController@delete');
+    Route::get('/role-edit/{role}', 'RoleController@edit');
+    Route::put('/role-update/{role}', 'RoleController@update');
+    Route::delete('/role-delete/{role}', 'RoleController@delete');
+    Route::post('/roles/search', 'RoleController@search');
 
     Route::get('/routes', 'RouteController@index');
     Route::get('/route/{id}', 'RouteController@view');
@@ -57,12 +58,11 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
 
 
     Route::get('/templates', 'TemplateController@index');
-    Route::get('/template/{id}', 'TemplateController@view');
     Route::get('/templates/create', 'TemplateController@create');
     Route::post('/templates/create', 'TemplateController@store');
-    Route::get('/template-edit/{id}', 'TemplateController@edit');
-    Route::put('/template-update/{id}', 'TemplateController@update');
-    Route::delete('/template-delete/{id}', 'TemplateController@delete');
+    Route::get('/template-edit/{template}', 'TemplateController@edit');
+    Route::put('/template-update/{template}', 'TemplateController@update');
+    Route::delete('/template-delete/{template}', 'TemplateController@delete');
 
     Route::get('/manual', 'FieldValueController@index');
     Route::get('/manual/create', 'FieldValueController@create');
@@ -79,7 +79,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
 
     
     View::composer(['*'], function($view) {
-        $usersCount = count(User::where('usertype', NULL )->get());
+        $usersCount = count(User::active()->get());
         $rolesCount = count(Role::all());
         $fieldsCount = count(FieldValue::all());
         $templatesCount = count(Template::all());
@@ -87,13 +87,4 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         $view->with(compact('usersCount', 'rolesCount','fieldsCount', 'templatesCount','processesCount'));
     });
 
-    Route::post('/search',function(Request $request){
-        $q = $request->input('q');
-        $searchRoles = Role::where('name','LIKE','%'.$q.'%')->get();
-        $roles = Role::all();
-        $time = Carbon::now();
-        if(count($searchRoles) > 0)
-            return view('role.index')->withDetails($searchRoles)->withQuery ( $q )->withRoles($roles)->withTime($time);
-        else return view ('role.index')->withMessage('No Details found. Try to search again !')->withRoles($roles)->withTime($time);
-    });
 });
