@@ -20,13 +20,12 @@ class ProcessController extends Controller
         $handbook = new Handbook;
         $columns = $handbook->getTableColumns();
         $columns = array_slice($columns, 0, -2);
-        $accepted = Template::where('accept_template', '1')->get();
-        $rejected = Template::where('accept_template', '0')->get();
+        $accepted = Template::accepted()->get();
+        $rejected = Template::rejected()->get();
         return view('process.create')->with(compact('fields', 'accepted', 'rejected','columns'));
     }
 
     public function store(Request $request) {
-        // dd($request->input());
         $numberOfDays = intval($request->get('deadline'));
         $deadline = Carbon::now()->addDays($numberOfDays);
         $accepted_template_id = Template::where('name', $request->input('accepted_template'))->pluck('id');
@@ -47,19 +46,23 @@ class ProcessController extends Controller
         ]);
         $process->save();
         $id = $process->id;
-        // dd($id);
-        return redirect()->back()->with( 'id', $id);
+        $handbook = new Handbook;
+        $columns = $handbook->getTableColumns();
+        $columns = array_slice($columns, 0, -2);
+        return view('process.create')->with(compact('id','columns'));
     }
 
     public function getfields(Request $request) {
+        
         $choosenFields = $request->input('fields');
-        return view('process.create')->with('choosenFields', $choosenFields);;
+        return view('process.create')->with(compact('choosenFields'));;
     }
     public function savefields(Request $request) {
-        $array = $request->input();
+        $array = $request->input('fields');
+        $id = $request->input('id');
         dd($array);
-        $remove=array_shift($array);
-        dd($array);
+        // $remove=array_shift($array);
+        // dd($array);
         // 
     }
 }

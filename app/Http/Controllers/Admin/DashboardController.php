@@ -14,20 +14,18 @@ class DashboardController extends Controller
     }
     public function registered() 
     {
-        $users = User::where('usertype', NULL )->get();
+        $users = User::active()->get();
         return view('admin.register')->with('users', $users);
     }
 
-    public function registeredit(Request $request, $id) 
+    public function registeredit(Request $request, User $user) 
     {
-       $user = User::findOrFail($id);
       $roles = Role::all();
       return view('admin.register-edit')->with(compact('user', 'roles'));
     }
 
-    public function registerupdate(Request $request, $id) 
+    public function registerupdate(Request $request, User $user) 
     {
-      $user = User::find($id);
       $user->name = $request->input('username');
       $id = $request->input('role_id');
       $user->role_id = $id;
@@ -35,7 +33,7 @@ class DashboardController extends Controller
       return redirect('/role-register')->with('status','Your Data Is Updated');
    }
 
-    public function registerdelete($id) 
+    public function registerdelete(User $user) 
     {
        $users = User::findOrFail($id);
        $users->delete();

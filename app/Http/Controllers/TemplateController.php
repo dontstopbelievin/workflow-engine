@@ -35,24 +35,21 @@ class TemplateController extends Controller
         return redirect('/templates')->with('status','Шаблон успешно создан');;
     }
 
-    public function edit($id) {
-        $template = Template::findOrFail($id);
-        return view('template.edit')->with('template', $template);
+    public function edit(Template $template) {
+        return view('template.edit')->with(compact('template'));
     }
 
-    public function update(Request $request, $id) 
+    public function update(Request $request, Template $template) 
     {
-        $template = Template::find($id);
         $template->name = $request->input('name');
         $template->doc_path = $request->input('file_input');
         $template->update();
         return redirect('/templates')->with('status','Шаблон успешно обновлен');
     }
 
-    public function delete($id) 
+    public function delete(Template $template) 
     {
-        $value = Template::findOrFail($id);
-        $value->delete();
+        $template->delete();
         return redirect('/templates')->with('status','Шаблон успешно удален');
     }
 }

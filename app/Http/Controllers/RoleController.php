@@ -7,17 +7,16 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class RoleController extends Controller
-{
+{   
     public function index() {
         $roles = Role::all();
         $time = Carbon::now();
         return view('role.index')->with(compact('roles', 'time'));
     }
 
-    public function view($id) {
-        $role = Role::findOrFail($id);
-        $users = $role->users;
-        return view('role.view')->with(compact('role', 'users'));
+    public function view(Role $role) {
+
+        return view('role.view')->with(compact('role'));
     }
  
     public function create() {
@@ -28,29 +27,35 @@ class RoleController extends Controller
         $data = $request->validate([
             'name'=>'required',
         ]);
-
         Role::create($data);
         return redirect('/roles')->with('status', 'Роль успешно создана');
     }
 
-    public function edit($id) {
-        $role = Role::findOrFail($id);
-        return view('role.edit')->with('role', $role);
+    public function edit(Role $role) {
+        return view('role.edit')->with(compact('role'));
     }
 
-    public function update(Request $request, $id) 
+    public function update(Request $request, Role $role) 
     {
-      $role = Role::find($id);
       $role->name = $request->input('name');
       $role->update();
       return redirect('/roles')->with('status','Роль успешно обновлена');
     }
 
-    public function delete($id)
+    public function delete(Role $role)
     {
-        $role = Role::findOrFail($id);
         $role->users()->delete();
         $role->delete();
         return redirect('/roles')->with('status','Роль успешно удалена');
+    }
+
+    public function search(Request $request) {
+        $q = $request->input('q');
+        $searchRoles = Role::search($q)->get();
+        $roles = Role::all();
+        $time = Carbon::now();
+        if(count($searchRoles) > 0)
+            return view('role.index')->withDetails($searchRoles)->withQuery ( $q )->withRoles($roles)->withTime($time);
+        else return view ('role.index')->withStatus('No Details found. Try to search again !')->withRoles($roles)->withTime($time);
     }
 }
