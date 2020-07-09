@@ -70,11 +70,12 @@
                                                             </div>
                                                         @endforeach   
                                                     @endisset
-                                                    <!-- @if(isset($id)) -->
-                                                    <input type="hidden" name="id" value="12345">
-                                                    <!-- @endif -->
+
                                                 </div>
                                                 <div class="modal-footer">
+                                                @if(isset($id))
+                                                    <input type="hidden" name="id" value="{{$id}}">
+                                                    @endif
                                                 <button type="submit" class="btn btn-success">Выбрать</button>
                                                 <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                                                 </div>      

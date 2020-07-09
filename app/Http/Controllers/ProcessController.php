@@ -12,7 +12,12 @@ use Carbon\Carbon;
 class ProcessController extends Controller
 {
     public function index() {
-        return view('process.index');
+        $processes = Process::all();
+        return view('process.index')->with(compact('processes'));
+    }
+
+    public function view(Process $process) {
+        return view('process.view')->with(compact('process'));
     }
 
     public function create() {
@@ -51,6 +56,13 @@ class ProcessController extends Controller
         $columns = array_slice($columns, 0, -2);
         return view('process.create')->with(compact('id','columns'));
     }
+    public function edit(Process $process) {
+        return view('process.edit')->with(compact('$process'));
+    }
+
+    public function update(Request $request, Process $process) {
+        
+    }
 
     public function getfields(Request $request) {
         
@@ -58,11 +70,10 @@ class ProcessController extends Controller
         return view('process.create')->with(compact('choosenFields'));;
     }
     public function savefields(Request $request) {
-        $array = $request->input('fields');
-        $id = $request->input('id');
-        dd($array);
-        // $remove=array_shift($array);
-        // dd($array);
-        // 
+        $arrayJson = json_encode($request->input('fields'));
+        $process = Process::find($request->input('id'));
+        $process->fields = $arrayJson;
+        $process->save();
+        return redirect('/processes');
     }
 }

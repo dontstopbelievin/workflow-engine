@@ -7,6 +7,7 @@ use App\Role;
 use App\FieldValue;
 use App\Template;
 use App\Process;
+use App\Handbook;
 use Carbon\Carbon;
 
 /*
@@ -72,6 +73,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::delete('/manual-delete/{id}', 'FieldValueController@delete');
 
     Route::get('/process', 'ProcessController@index');
+    Route::get('/process/{process}', 'ProcessController@view');
     Route::get('/process/create', 'ProcessController@create');
     Route::post('/process/create', 'ProcessController@store');
     Route::get('/process/fields', 'ProcessController@getfields');
@@ -84,7 +86,9 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         $fieldsCount = count(FieldValue::all());
         $templatesCount = count(Template::all());
         $processesCount = count(Process::all());
-        $view->with(compact('usersCount', 'rolesCount','fieldsCount', 'templatesCount','processesCount'));
+        $handbook = new Handbook;
+        $handbookCount = count($handbook->getTableColumns());
+        $view->with(compact('usersCount', 'rolesCount','fieldsCount', 'templatesCount','processesCount','handbookCount'));
     });
 
 });
