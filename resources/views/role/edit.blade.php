@@ -10,7 +10,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h1>Изменение Роли {{$role->name}}</h1>
+                    <h2>Изменение Роли {{$role->name}}</h2>
                 </div>
                 <div class="card-body">
                     <div class="row">

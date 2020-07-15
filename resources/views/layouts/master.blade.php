@@ -56,7 +56,7 @@
             </a>
           </li>
           <li class="{{'process' == request()->path() ? 'active' : ''}}">
-            <a href="/process">
+            <a href="{{ route('processes.index') }}">
               <i class="now-ui-icons media-2_sound-wave"></i>
               <p>Процессы({{$processesCount}})</p>
             </a>

@@ -11,6 +11,6 @@ class Handbook extends Model
     }
 
     public function process() {
-        return $this->hasOne(Process::class);
+        return $this->belongsTo(Process::class);
     }
 }

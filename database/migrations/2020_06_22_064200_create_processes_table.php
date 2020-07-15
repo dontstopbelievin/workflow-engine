@@ -23,8 +23,6 @@ class CreateProcessesTable extends Migration
             $table->foreign('accepted_template_id')->references('id')->on('templates');
             $table->integer('rejected_template_id')->unsigned()->nullable();
             $table->foreign('rejected_template_id')->references('id')->on('templates');
-            $table->integer('handbook_id')->unsigned()->nullable();
-            $table->foreign('handbook_id')->references('id')->on('handbooks');
             $table->timestamps();
         });
     }

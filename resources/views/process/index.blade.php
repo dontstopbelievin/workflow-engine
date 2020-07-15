@@ -28,15 +28,16 @@
                                 
                             </thead>
                             <tbody>
+                            
                                 @foreach($processes as $process)
                               <tr>
-                                <td><a href="/process/{{$process->id}}">{{$process->id}}</a></td>
+                                <td><a href="{{ route('processes.view', ['process' => $process]) }}">{{$process->id}}</a></td>
                                 <td>{{$process->name}}</td>
                                 <td>{{$process->deadline}}</td>
 
-                                <td><a href="/user-edit/{{$process->id}}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
+                                <td><a href="{{ route('processes.edit', ['process' => $process]) }}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
                                 <td>
-                                    <form action="/user-delete/{{$process->id}}" method="post">
+                                    <form action="{{ route('processes.delete', ['process' => $process]) }}" method="post">
                                         {{csrf_field()}}
                                         {{method_field('DELETE')}}
                                         <button type="submit" class="btn btn-danger">УДАЛИТЬ</button>
@@ -52,7 +53,7 @@
             </div>
         </div>
     </div>
-    <a href="/process/create" class="btn btn-primary">Создать Процесс</a>
+    <a href="{{ route('processes.create') }}" class="btn btn-primary">Создать Процесс</a>
 @endsection
 
 @section('scripts')

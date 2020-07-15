@@ -5,9 +5,6 @@
 @endsection
 
 @section('content')
-    @isset($id)
-    <h1>{{$id}}</h1>
-    @endisset
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -23,7 +20,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form action="/process/create" method="POST">
+                            <form action="{{ route('processes.store') }}" method="POST"> 
                                 @csrf
                                 @empty($process)
                                 <div class="form-group">
@@ -46,58 +43,9 @@
                                         </select>
                                         @endisset
                                 </div>
-                                <button type="submit" class="btn btn-basic">Отправить</button>
+                                <button type="submit" class="btn btn-basic">Сохранить</button>
                                 @endempty
                             </form>
-                            @empty($choosenFields)
-                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">Выбрать Поля</button>
-                            <div class="container"> 
-                                <!-- Modal -->
-                                <div class="modal fade" id="myModal" role="dialog">
-                                    <div class="modal-dialog">
-                                    <!-- Modal content-->
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h4 class="modal-title">Список Полей</h4>
-                                            </div>
-                                            <form action="/process/save-fields" method="POST">
-                                            @csrf
-                                                <div class="modal-body">
-                                                    @isset($columns)
-                                                        @foreach ($columns as $column)
-                                                            <div class="checkbox">
-                                                                <label><input type="checkbox" name="fields[]" value="{{$column}}">{{$column}}</label>
-                                                            </div>
-                                                        @endforeach   
-                                                    @endisset
-
-                                                </div>
-                                                <div class="modal-footer">
-                                                @if(isset($id))
-                                                    <input type="hidden" name="id" value="{{$id}}">
-                                                    @endif
-                                                <button type="submit" class="btn btn-success">Выбрать</button>
-                                                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                                                </div>      
-                                            </form>
-                                        </div>                                          
-                                    </div>
-                                </div>     
-                            </div>  
-                            @endempty
-                            <!-- @isset($choosenFields)
-
-                                <form action="/process/save-fields" method="POST">
-                                    @csrf
-                                    @foreach($choosenFields as $choosenField)                        
-
-                                    <h6>{{$choosenField}}</h6>
-                                    <input type="hidden" class="form-control" name="{{$choosenField}}" value="{{$choosenField}}">  
-
-                                    @endforeach
-                                    <button type="submit" class="btn btn-basic">Выбрать</button>
-                                </form>
-                            @endisset -->
                         </div>
                     </div>
                 </div>

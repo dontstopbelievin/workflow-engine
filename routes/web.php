@@ -72,12 +72,16 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::put('/manual-update/{id}', 'FieldValueController@update');
     Route::delete('/manual-delete/{id}', 'FieldValueController@delete');
 
-    Route::get('/process', 'ProcessController@index');
-    Route::get('/process/{process}', 'ProcessController@view');
-    Route::get('/process/create', 'ProcessController@create');
-    Route::post('/process/create', 'ProcessController@store');
-    Route::get('/process/fields', 'ProcessController@getfields');
-    Route::post('/process/save-fields', 'ProcessController@savefields');
+    Route::get('/processes', 'ProcessController@index')->name('processes.index');
+    Route::get('/processes/{process}', 'ProcessController@view')->name('processes.view');
+    Route::get('/process/create', 'ProcessController@create')->name('processes.create');
+    Route::post('/processes', 'ProcessController@store')->name('processes.store');
+    Route::get('/processes-edit/{process}', 'ProcessController@add')->name('processes.edit');
+    Route::put('/processes-update/{process}', 'ProcessController@update')->name('processes.update');;
+    // Route::get('/process/fields', 'ProcessController@getfields')->name('processes.getfields');
+    Route::post('/process-save-fields/{process}', 'ProcessController@savefields')->name('processes.savefields');
+    Route::post('/process-add-role/{process}', 'ProcessController@addRole')->name('processes.addrole');
+    Route::post('/process-delete/{process}', 'ProcessController@delete')->name('processes.delete');
 
     
     View::composer(['*'], function($view) {

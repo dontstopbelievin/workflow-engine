@@ -27,8 +27,7 @@ class DashboardController extends Controller
     public function registerupdate(Request $request, User $user) 
     {
       $user->name = $request->input('username');
-      $id = $request->input('role_id');
-      $user->role_id = $id;
+      $user->role_id = $request->input('role_id');
       $user->update();
       return redirect('/role-register')->with('status','Your Data Is Updated');
    }
