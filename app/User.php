@@ -41,7 +41,16 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
+    public function handbooks() {
+        return $this->hasMany(Handbook::class);
+    }
+
     public function scopeActive($query) {
         return $query->where('usertype', NULL );
+    }
+
+    public function isAdmin()
+    {
+        return $this->usertype === 'admin';
     }
 }

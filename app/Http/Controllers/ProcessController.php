@@ -27,7 +27,7 @@ class ProcessController extends Controller
     public function create() {
         $handbook = new Handbook;
         $columns = $handbook->getTableColumns();
-        $columns = array_slice($columns, 0, -2);
+        $columns = array_slice($columns, 1, -5);
         $accepted = Template::accepted()->get();
         $rejected = Template::rejected()->get();
         return view('process.create')->with(compact('accepted', 'rejected','columns'));
@@ -57,10 +57,14 @@ class ProcessController extends Controller
         $handbook = new Handbook;
         $columns = $handbook->getTableColumns();
         $columns = array_slice($columns, 0, -2);
-        // return view('process.create')->with(compact('id','columns'));
         $accepted = Template::accepted()->get();
         $rejected = Template::rejected()->get();
-        return view('process.edit')->with(compact('process', 'accepted', 'rejected', 'columns'));
+        $array = [];
+        foreach ($process->routes as $route) {
+            array_push($array, $route->name);
+        }
+        $roles = Role::all();
+        return view('process.edit')->with(compact('process', 'accepted', 'rejected', 'columns', 'array', 'roles'));
     }
 
     public function add(Process $process) {
@@ -68,13 +72,13 @@ class ProcessController extends Controller
         $rejected = Template::rejected()->get();
         $handbook = new Handbook;
         $columns = $handbook->getTableColumns();
-        $columns = array_slice($columns, 0, -2);
+        $columns = array_slice($columns, 1, -4);
         $array = [];
         foreach ($process->routes as $route) {
             array_push($array, $route->name);
         }
-        dd($array);
-        return view('process.edit')->with(compact('process', 'accepted', 'rejected', 'columns'));
+        $roles = Role::all();
+        return view('process.edit')->with(compact('process', 'accepted', 'rejected', 'columns', 'array', 'roles'));
     }
 
     public function update(Request $request, Process $process) 
@@ -88,20 +92,9 @@ class ProcessController extends Controller
         $process->accepted_template_id = $accepted_template_id[0];
         $process->rejected_template_id = $rejected_template_id[0];
         $process->update();
-        $accepted = Template::accepted()->get();
-        $rejected = Template::rejected()->get();
-        $handbook = new Handbook;
-        $columns = $handbook->getTableColumns();
-        $columns = array_slice($columns, 0, -2);
-        return view('process.edit')->with(compact('process', 'accepted', 'rejected', 'columns'));
+        return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был обновлен');
     }
 
-
-    // public function getfields(Request $request) {
-        
-    //     $choosenFields = $request->input('fields');
-    //     return view('processes.create')->with(compact('choosenFields'));
-    // }
     public function savefields(Request $request, Process $process) {
         if (!$process->handbook()->exists()) {
             $handbook = new Handbook;
@@ -119,10 +112,7 @@ class ProcessController extends Controller
         $arrayJson = json_encode($request->input('fields'));
         $process->fields = $arrayJson;
         $process->save();
-        $accepted = Template::accepted()->get();
-        $rejected = Template::rejected()->get();
-        $roles = Role::all();
-        return view('process.edit')->with(compact('process', 'accepted', 'rejected', 'roles'));
+        return Redirect::route('processes.edit', [$process])->with('status', 'Справочники успешно сохранены');
     }
 
     public function addRole(Request $request, Process $process) {
@@ -134,4 +124,12 @@ class ProcessController extends Controller
         $route->save();
         return Redirect::route('processes.edit', [$process])->with('status', 'Роль добавлена к процессу');  
     } 
+
+    public function delete(Process $process)
+    {
+        $process->routes()->delete();
+        $process->handbook()->delete();
+        $process->delete();
+        return Redirect::route('processes.index')->with('status', 'Процесс успешно удален');  
+    }
 }

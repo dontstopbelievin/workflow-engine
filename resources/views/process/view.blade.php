@@ -35,6 +35,17 @@
                                                             </div>
                                                         </div>
                             </li>
+                            <li class="list-group-item"><div class="dropdown">
+                                                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                Маршруты данного процесса
+                                                            </button>
+                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                            @foreach($process->routes as $route)
+                                                                <p class="dropdown-item">{{$route->name}}</p>
+                                                            @endforeach
+                                                            </div>
+                                                        </div>
+                            </li>
                         </ul>
 
                     </div>

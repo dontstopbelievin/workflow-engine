@@ -91,8 +91,10 @@
                             @endempty
                             <h5>Поля процесса:</h5>
                             @isset($process->fields)
-                                @foreach(json_decode($process->fields) as $choosenField)                        
-                                <h6>{{$choosenField}}</h6>                                
+                                @foreach(json_decode($process->fields) as $choosenField)  
+                                <ul>
+                                    <li>{{$choosenField}}</li>
+                                </ul>                                                    
                                 @endforeach
                             @endisset
                             <h2>Создание маршрутов</h2>
@@ -109,6 +111,14 @@
                                 </div>
                                 <button type="submit" class="btn btn-success">Выбрать</button>
                                 </form>
+                            @endisset
+                            @isset($array)
+                                <h3>Созданные маршруты процесса</h3>
+                                @foreach($array as $route_name)
+                                <ul>
+                                    <li>{{$route_name}}</li>
+                                </ul> 
+                                @endforeach
                             @endisset
                         </div>
                     </div>

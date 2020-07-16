@@ -49,7 +49,9 @@
       </div>
       <div class="sidebar-wrapper" id="sidebar-wrapper">
         <ul class="nav">
-        <li class="{{'dashboard' == request()->path() ? 'active' : ''}}">
+        @if(Auth::check())
+            @if (Auth::user()->isAdmin())
+            <li class="{{'dashboard' == request()->path() ? 'active' : ''}}">
             <a href="/dashboard">
               <i class="now-ui-icons tech_tv"></i>
               <p>Приборная Панель</p>
@@ -91,6 +93,16 @@
               <p>Пользователи({{$usersCount}})</p>
             </a>
           </li>
+            @endif
+        @endif
+          <li class="{{'role-register' == request()->path() ? 'active' : ''}}">
+            <a href="{{ route('applications.index') }}">
+              <i class="now-ui-icons users_single-02"></i>
+              <p>Создать заявку</p>
+            </a>
+          </li>
+
+         
         </ul>
       </div>
     </div>
@@ -112,7 +124,7 @@
             <ul class="navbar-nav">
               <li class="nav-item dropdown">
                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                    {{ Auth::user()->name }}
+                    {{ Auth::user()->name }} {{Auth::user()->role->name ?? ''}}
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">

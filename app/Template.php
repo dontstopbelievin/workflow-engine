@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Template extends Model
 {
     protected $guarded = [];
-    
+
     public function scopeAccepted($query) {
         return $query->where('accept_template', 1);
     }

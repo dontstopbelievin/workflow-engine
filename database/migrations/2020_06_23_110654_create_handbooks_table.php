@@ -28,7 +28,9 @@ class CreateHandbooksTable extends Migration
             $table->string('district')->nullable();
             $table->string('city')->nullable();
             $table->integer('process_id')->unsigned()->nullable();
-            $table->foreign('process_id')->references('id')->on('processes')->onDelete('cascade');
+            $table->foreign('process_id')->references('id')->on('processes');
+            $table->integer('user_id')->unsigned()->nullable();
+            $table->foreign('user_id')->references('id')->on('users');
             $table->boolean('active')->default(0);
             $table->timestamps();
         });
