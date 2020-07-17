@@ -28,7 +28,9 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('applications', 'ApplicationController@index')->name('applications.index');
+Route::get('services', 'ApplicationController@service')->name('applications.service');
+Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');
+Route::get('view/{application}', 'ApplicationController@view')->name('applications.view');
 Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
 Route::post('applications/store', 'ApplicationController@store')->name('applications.store');
 

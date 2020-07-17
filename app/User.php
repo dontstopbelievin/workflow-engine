@@ -41,8 +41,8 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function handbooks() {
-        return $this->hasMany(Handbook::class);
+    public function applications() {
+        return $this->hasMany(Application::class);
     }
 
     public function scopeActive($query) {

@@ -14,7 +14,4 @@ class Handbook extends Model
         return $this->belongsTo(Process::class);
     }
 
-    public function users() {
-        return $this->belongsTo(User::class);
-    }
 }

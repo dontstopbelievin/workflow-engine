@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateHandbooksTable extends Migration
+class CreateApplicationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class CreateHandbooksTable extends Migration
      */
     public function up()
     {
-        Schema::create('handbooks', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('applications', function (Blueprint $table) {
+            $table->id();
             $table->string('name')->nullable();
             $table->string('surname')->nullable();
             $table->string('email')->nullable();
@@ -29,7 +29,8 @@ class CreateHandbooksTable extends Migration
             $table->string('city')->nullable();
             $table->integer('process_id')->unsigned()->nullable();
             $table->foreign('process_id')->references('id')->on('processes');
-            $table->boolean('active')->default(0);
+            $table->integer('user_id')->unsigned()->nullable();
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
@@ -41,6 +42,6 @@ class CreateHandbooksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('handbooks');
+        Schema::dropIfExists('applications');
     }
 }

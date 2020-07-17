@@ -9,12 +9,13 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Все услуги</h4>
+                    <h4 class="card-title">Все заявки по услуге {{$process->name}}</h4>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
                         </div>
                     @endif
+                    <a href="{{ route('applications.create', ['process' => $process]) }}" class="btn btn-primary">Создать Заявку</a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -22,14 +23,18 @@
                             <thead class="text-primary">
                                 
                                 <th>#</th>
-                                <th>Наименование услуги</th>
+                                <th>Имя заявителя</th>
+                                <th>Фамилия заявителя</th>
+                                <th>Название Компании</th>
                                 
                             </thead>
                             <tbody>
-                            @foreach($processes as $process)
+                            @foreach($applications as $app)
                               <tr>
-                                <td><a href="{{ route('applications.index', ['process' => $process]) }}">{{$process->id}}</a></td>
-                                <td><a href="{{ route('applications.index', ['process' => $process]) }}">{{$process->name}}</a></td>                              
+                                <td><a href="{{ route('applications.view', ['application' => $app]) }}">{{$app->id}}</a></td>
+                                <td>{{$app->name ?? ''}}</td>  
+                                <td>{{$app->surname ?? '' }}</td> 
+                                <td>{{$app->company_name ?? ''}}</td>                             
                               </tr> 
                               @endforeach
                             </tbody>
