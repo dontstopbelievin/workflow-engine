@@ -118,11 +118,22 @@ class ProcessController extends Controller
     public function addRole(Request $request, Process $process) {
         $role_id = Role::where('name', $request->input('role'))->pluck('id');
         $route = new Route;
-        $route->name = "Отправлено к ". $request->input('role');
+        $route->name = $request->input('role');
         $route->role_id = $role_id[0];
         $route->process_id = $process->id;
         $route->save();
+        $process_routes = array();
+        if (empty($process->process_routes )) {
+            array_push($process_routes, $request->input('role'));
+            $process->process_routes = json_encode($process_routes);
+        } else {
+            $decoded_process_routes = json_decode($process->process_routes);
+            array_push($decoded_process_routes, $request->input('role'));
+            $process->process_routes = json_encode($decoded_process_routes);
+        }
+        $process->save();
         return Redirect::route('processes.edit', [$process])->with('status', 'Роль добавлена к процессу');  
+        
     } 
 
     public function delete(Process $process)

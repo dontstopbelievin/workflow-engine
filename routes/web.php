@@ -33,6 +33,8 @@ Route::get('index/{process}', 'ApplicationController@index')->name('applications
 Route::get('view/{application}', 'ApplicationController@view')->name('applications.view');
 Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
 Route::post('applications/store', 'ApplicationController@store')->name('applications.store');
+Route::post('applications/approve/{application}', 'ApplicationController@approve')->name('applications.approve');
+Route::post('applications/tocitizen/{application}', 'ApplicationController@tocitizen')->name('applications.tocitizen');
 
 Route::group(['middleware' => ['admin', 'auth']], function () {
 

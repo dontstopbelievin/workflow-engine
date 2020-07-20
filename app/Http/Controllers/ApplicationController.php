@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Process;
 use App\Handbook;
 use App\Application;
+use App\Role;
+use App\Status;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 
@@ -23,7 +25,19 @@ class ApplicationController extends Controller
 
     public function view(Application $application) {
         $process = Process::find($application->process_id);
-        return view('application.view')->with(compact('application', 'process'));
+        $user = Auth::user();
+        // $role_ids = Role::where('id', $user->role_id)->pluck('id');
+        // $role_id = $role_ids[0];
+        $roleId = $user->role->id;
+        $canApprove = $roleId === $application->status_id;
+        $toCitizen = false;
+        $userRole = Role::find($roleId);
+        $appRoutes = json_decode($application->application_routes);
+
+        if ($appRoutes[sizeof($appRoutes)-1] === $userRole->name) {
+            $toCitizen = true;
+        }
+        return view('application.view')->with(compact('application', 'process','canApprove', 'toCitizen'));
     }
 
     public function create(Request $request, Process $process) {
@@ -52,8 +66,32 @@ class ApplicationController extends Controller
         $user = Auth::user();
         $application->user_id = $user->id;
         $application->process_id = $process->id;
+        $application->status_id = 1;
+        $application->application_routes = $process->process_routes;
         $application->save();
         
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
     }
+
+    public function approve(Application $application, Request $request) {
+        $index = $application->index;
+        $appRoutes = json_decode($application->application_routes); // array of roles in the process
+        $nextRole = $appRoutes[$index]; // find next role 
+        $nextR = Role::where('name', $nextRole)->pluck('id'); //find $nextRole in Role table
+        $idOfNextR = $nextR[0]; // get first element of array
+        $application->status_id = $idOfNextR;
+        $application->index = $index + 1;
+        $application->save();
+        $status = Status::find($idOfNextR);
+        return Redirect::route('applications.service')->with('status', $status->name);
+    }
+
+    public function toCitizen(Application $application, Request $request) {
+        $statusCount = count(Status::all());
+        // dd($statusCount);
+        $application->status_id = $statusCount;
+        $application->save();
+        $status = Status::find($statusCount);
+        return Redirect::route('applications.service')->with('status', $status->name);
+    }   
 }

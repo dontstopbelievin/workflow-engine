@@ -23,18 +23,18 @@
                             <thead class="text-primary">
                                 
                                 <th>#</th>
+                                <th>Наименование услуги</th>
                                 <th>Имя заявителя</th>
-                                <th>Фамилия заявителя</th>
-                                <th>Название Компании</th>
+                                <th>Статус заявки</th>
                                 
                             </thead>
                             <tbody>
                             @foreach($applications as $app)
                               <tr>
                                 <td><a href="{{ route('applications.view', ['application' => $app]) }}">{{$app->id}}</a></td>
-                                <td>{{$app->name ?? ''}}</td>  
+                                <td>{{$process->name ?? ''}}</td>  
                                 <td>{{$app->surname ?? '' }}</td> 
-                                <td>{{$app->company_name ?? ''}}</td>                             
+                                <td>{{$app->status->name ?? ''}}</td>                             
                               </tr> 
                               @endforeach
                             </tbody>

@@ -28,6 +28,21 @@
 
                     </div>
                 </div>
+                @if($canApprove)
+                    @if($toCitizen)
+                    <form action="{{ route('applications.tocitizen', ['application' => $application]) }}" method="post">
+                        @csrf
+                        <input type="hidden" name="process_id" value = {{$application->id}}>
+                        <button class="btn btn-basic" type="submit">Отправить заявителю</button>
+                    </form>
+                    @else 
+                    <form action="{{ route('applications.approve', ['application' => $application]) }}" method="post">
+                        @csrf
+                        <input type="hidden" name="process_id" value = {{$application->id}}>
+                        <button class="btn btn-basic" type="submit">Отправить на согласование</button>
+                    </form>
+                    @endif
+                @endif
             </div>
         </div>
     </div>
