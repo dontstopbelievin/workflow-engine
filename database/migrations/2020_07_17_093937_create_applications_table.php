@@ -14,11 +14,11 @@ class CreateApplicationsTable extends Migration
     public function up()
     {
         Schema::create('applications', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('name')->nullable();
             $table->string('surname')->nullable();
             $table->string('email')->nullable();
-            $table->string('adress')->nullable();
+            $table->string('address')->nullable();
             $table->string('iin')->nullable();
             $table->string('bin')->nullable();
             $table->string('company_name')->nullable();
@@ -31,8 +31,6 @@ class CreateApplicationsTable extends Migration
             $table->foreign('process_id')->references('id')->on('processes');
             $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->integer('status_id')->unsigned()->nullable();
-            $table->foreign('status_id')->references('id')->on('statuses');
             $table->integer('index')->default(0);
             $table->json('application_routes')->nullable();
             $table->timestamps();

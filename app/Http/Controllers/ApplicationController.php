@@ -81,6 +81,7 @@ class ApplicationController extends Controller
         $application->index = $index + 1;
         $application->save();
         $status = Status::find($idOfNextR); // находим следующую роль в маршрутах и присваиваем заявке его статус
+        $application->statuses()->attach($status);
         return Redirect::route('applications.service')->with('status', $status->name);
     }
 

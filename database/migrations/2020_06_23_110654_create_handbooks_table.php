@@ -18,7 +18,7 @@ class CreateHandbooksTable extends Migration
             $table->string('name')->nullable();
             $table->string('surname')->nullable();
             $table->string('email')->nullable();
-            $table->string('adress')->nullable();
+            $table->string('address')->nullable();
             $table->string('iin')->nullable();
             $table->string('bin')->nullable();
             $table->string('company_name')->nullable();

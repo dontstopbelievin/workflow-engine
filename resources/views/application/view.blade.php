@@ -23,7 +23,7 @@
                             <li class="list-group-item">Наименование заявителя: {{$application->name ?? ''}}</li>
                             <li class="list-group-item">Фамилия заявителя: {{$application->surname ?? ''}}</li>
                             <li class="list-group-item">Электронный адрес заявителя: {{$application->email ?? ''}}</li>
-                            <li class="list-group-item">Адрес: {{$application->adress ?? ''}}</li>
+                            <li class="list-group-item">Адрес: {{$application->address ?? ''}}</li>
                         </ul>
 
                     </div>

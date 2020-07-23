@@ -68,7 +68,7 @@
                                             <div class="modal-header">
                                                 <h4 class="modal-title">Список Полей</h4>
                                             </div>
-                                            <form action="{{ route('processes.savefields', ['process' => $process]) }}" method="POST">
+                                            <form action="{{ route('processes.saveFields', ['process' => $process]) }}" method="POST">
                                             @csrf
                                                 <div class="modal-body">
                                                     @isset($columns)
@@ -99,7 +99,7 @@
                             @endisset
                             <h2>Создание маршрутов</h2>
                             @isset($roles)
-                                <form action="{{ route('processes.addrole', ['process' => $process]) }}" method="POST">
+                                <form action="{{ route('processes.addRole', ['process' => $process]) }}" method="POST">
                                 @csrf
                                 <div class="form-group">
                                     <label>Выбрать участников процесса</label>
