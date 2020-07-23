@@ -18,7 +18,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table" name="accepted_table">
-                            <h4 class="card-title">Шаблоны одобрения | Всего: {{count($accepted_templates)}}</h4>
+                            <h4 class="card-title">Шаблоны одобрения | Всего: {{count($acceptedTemplates)}}</h4>
                             <thead>
                                 <tr>
                                     <th>№</th>
@@ -29,8 +29,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @isset($accepted_templates)
-                                @foreach ($accepted_templates as $template)
+                            @isset($acceptedTemplates)
+                                @foreach ($acceptedTemplates as $template)
                                     <tr>
                                         <td>{{$template->id}}</td>
                                         <td>{{$template->name}}</td>
@@ -50,7 +50,7 @@
                             </tbody>
                         </tablе>
                         <table class="table" name="reject_table">
-                        <h4 class="card-title">Шаблоны отказа | Всего: {{count($rejected_templates)}}</h4>
+                        <h4 class="card-title">Шаблоны отказа | Всего: {{count($rejectedTemplates)}}</h4>
                         <thead>
                             <tr>
                                 <th>№</th>
@@ -62,8 +62,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @isset($rejected_templates)
-                            @foreach($rejected_templates as $template)
+                        @isset($rejectedTemplates)
+                            @foreach($rejectedTemplates as $template)
                                 <tr>
                                     <td>{{$template->id}}</td>
                                     <td>{{$template->name}}</td>

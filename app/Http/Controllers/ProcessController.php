@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\FieldValue;
 use App\Process;
 use App\Template;
 use App\Handbook;
 use App\Role;
 use App\Route;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Redirect;
 
@@ -36,8 +35,9 @@ class ProcessController extends Controller
     public function store(Request $request) {
         $numberOfDays = intval($request->get('deadline'));
         $deadline = Carbon::now()->addDays($numberOfDays);
-        $accepted_template_id = Template::where('name', $request->input('accepted_template'))->pluck('id');
-        $rejected_template_id = Template::where('name', $request->input('rejected_template'))->pluck('id');
+        // dd($accepted_template_id = Template::where('name', $request->input('accepted_template'))->first()->only('id'));
+        $acceptedTemplateIds = Template::where('name', $request->input('accepted_template'))->pluck('id');
+        $rejectedTemplateIds = Template::where('name', $request->input('rejected_template'))->pluck('id');
         
         $request->validate([
             'name' => 'required',
@@ -49,14 +49,14 @@ class ProcessController extends Controller
             'name' => $request->get('name'),
             'deadline' => $numberOfDays,
             'deadline_until' => $deadline,
-            'accepted_template_id'=> $accepted_template_id[0],
-            'rejected_template_id'=> $rejected_template_id[0],
+            'accepted_template_id'=> $acceptedTemplateIds[0],
+            'rejected_template_id'=> $rejectedTemplateIds[0],
         ]);
         $process->save();
         $id = $process->id;
         $handbook = new Handbook;
         $columns = $handbook->getTableColumns();
-        $columns = array_slice($columns, 0, -2);
+        $columns = array_slice($columns, 1, -4);
         $accepted = Template::accepted()->get();
         $rejected = Template::rejected()->get();
         $array = [];
@@ -85,17 +85,17 @@ class ProcessController extends Controller
     {   
         $numberOfDays = intval($request->get('deadline'));
         $deadline = Carbon::now()->addDays($numberOfDays);
-        $accepted_template_id = Template::where('name', $request->input('accepted_template'))->pluck('id');
-        $rejected_template_id = Template::where('name', $request->input('rejected_template'))->pluck('id');
+        $acceptedTemplateIds = Template::where('name', $request->input('accepted_template'))->pluck('id');
+        $rejectedTemplateIds = Template::where('name', $request->input('rejected_template'))->pluck('id');
         $process->name = $request->input('name');
         $process->deadline = $request->input('deadline');
-        $process->accepted_template_id = $accepted_template_id[0];
-        $process->rejected_template_id = $rejected_template_id[0];
+        $process->accepted_template_id = $acceptedTemplateIds[0];
+        $process->rejected_template_id = $rejectedTemplateIds[0];
         $process->update();
         return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был обновлен');
     }
 
-    public function savefields(Request $request, Process $process) {
+    public function saveFields(Request $request, Process $process) {
         if (!$process->handbook()->exists()) {
             $handbook = new Handbook;
             $fields = $request->input('fields');
@@ -116,10 +116,10 @@ class ProcessController extends Controller
     }
 
     public function addRole(Request $request, Process $process) {
-        $role_id = Role::where('name', $request->input('role'))->pluck('id');
+        $roleIds = Role::where('name', $request->input('role'))->pluck('id');
         $route = new Route;
         $route->name = $request->input('role');
-        $route->role_id = $role_id[0];
+        $route->role_id = $roleIds[0];
         $route->process_id = $process->id;
         $route->save();
         $process_routes = array();

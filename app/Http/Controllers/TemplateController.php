@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Redirect;
 class TemplateController extends Controller
 {
     public function index() {
-        $accepted_templates = Template::accepted()->get();
-        $rejected_templates = Template::rejected()->get();
-        return view('template.index')->with(compact('accepted_templates', 'rejected_templates'));
+        $acceptedTemplates = Template::accepted()->get(); // make camelcase
+        $rejectedTemplates = Template::rejected()->get();
+        return view('template.index')->with(compact('acceptedTemplates', 'rejectedTemplates'));
     }
 
     public function create() {
@@ -19,8 +19,8 @@ class TemplateController extends Controller
     }
 
     public function store(Request $request) {
-        $template_state = $request->template_state === "accepted";
-        $docpath = request()->file_input->store('templates', 'public');
+        $templateState = $request->template_state === "accepted";
+        $docPath = request()->file_input->store('templates', 'public');
         $request->validate([
             'name' => 'required',
             'template_state' => 'required',
@@ -29,8 +29,8 @@ class TemplateController extends Controller
 
         $template = new Template([
             'name' => $request->get('name'),
-            'doc_path' => $docpath,
-            'accept_template' => $template_state,
+            'doc_path' => $docPath,
+            'accept_template' => $templateState,
         ]);
         $template->save(); 
         return Redirect::route('template.index')->with('status','Шаблон успешно создан');;

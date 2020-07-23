@@ -84,8 +84,8 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::post('processes', 'ProcessController@store')->name('processes.store');
     Route::get('processes-edit/{process}', 'ProcessController@add')->name('processes.edit');
     Route::put('processes-update/{process}', 'ProcessController@update')->name('processes.update');
-    Route::post('process-save-fields/{process}', 'ProcessController@savefields')->name('processes.savefields');
-    Route::post('process-add-role/{process}', 'ProcessController@addRole')->name('processes.addrole');
+    Route::post('process-save-fields/{process}', 'ProcessController@savefields')->name('processes.saveFields');
+    Route::post('process-add-role/{process}', 'ProcessController@addRole')->name('processes.addRole');
     Route::delete('process-delete/{process}', 'ProcessController@delete')->name('processes.delete');
 
     
