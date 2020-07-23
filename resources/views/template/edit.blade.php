@@ -15,7 +15,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form action="/template-update/{{$template->id}}" method="POST">
+                            <form action="{{ route('template.update', ['template' => $template]) }}" method="POST">
                                 {{ csrf_field( )}}
                                 {{ method_field('PUT') }}
                                 <div class="form-group">

@@ -5,6 +5,7 @@ use App\User;
 use App\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class DashboardController extends Controller
 {   
@@ -30,13 +31,12 @@ class DashboardController extends Controller
       $user->name = $request->input('username');
       $user->role_id = $request->input('role_id');
       $user->update();
-      return redirect('/role-register')->with('status','Your Data Is Updated');
+      return Redirect::route('user-role.register')->with('status','Данные пользователя изменены');
    }
 
     public function registerdelete(User $user) 
     {
-       $users = User::findOrFail($id);
-       $users->delete();
-       return redirect('/role-register')->with('status','Your Data Is Deleted');
+       $user->delete();
+       return Redirect::route('user-role.register')->with('status','Пользователь удален');
     }
 }

@@ -52,7 +52,7 @@
         @if(Auth::check())
             @if (Auth::user()->isAdmin())
             <li class="{{'dashboard' == request()->path() ? 'active' : ''}}">
-            <a href="/dashboard">
+            <a href="{{ route('dashboard.index') }}">
               <i class="now-ui-icons tech_tv"></i>
               <p>Приборная Панель</p>
             </a>
@@ -64,31 +64,31 @@
             </a>
           </li>
           <li class="{{'routes' == request()->path() ? 'active' : ''}}">
-            <a href="/routes">
+            <a href="{{ route('route.index') }}">
               <i class="now-ui-icons location_compass-05"></i>
               <p>Маршруты</p>
             </a>
           </li>
           <li class="{{'manual' == request()->path() ? 'active' : ''}}">
-            <a href="/manual">
+            <a href="{{ route('manual.index') }}">
               <i class="now-ui-icons travel_info"></i>
               <p>Справочник({{$handbookCount}})</p>
             </a>
           </li>
           <li class="{{'roles' == request()->path() ? 'active' : ''}}">
-            <a href="/roles">
+            <a href="{{ route('role.index') }}">
               <i class="now-ui-icons users_circle-08"></i>
               <p>Роли({{$rolesCount}})</p>
             </a>
           </li>
           <li class="{{'templates' == request()->path() ? 'active' : ''}}">
-            <a href="/templates">
+            <a href="{{ route('template.index') }}">
               <i class="now-ui-icons education_agenda-bookmark"></i>
               <p>Шаблоны({{$templatesCount}})</p>
             </a>
           </li>
           <li class="{{'role-register' == request()->path() ? 'active' : ''}}">
-            <a href="/role-register">
+            <a href="{{ route('user-role.register') }}">
               <i class="now-ui-icons users_single-02"></i>
               <p>Пользователи({{$usersCount}})</p>
             </a>

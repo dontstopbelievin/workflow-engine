@@ -10,7 +10,7 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Список Ролей | Всего: {{$rolesCount}}</h4>
-                    <form action="/roles/search" method="POST" role="search">
+                    <form action="{{ route('role.search') }}" method="POST" role="search">
                         {{ csrf_field() }}
                         <div class="input-group">
                             <input type="text" class="form-control" name="q"
@@ -40,11 +40,11 @@
                         <tbody>
                             @foreach($details as $detail)
                             <tr>
-                                <td><a href="/role/{{$detail->id}}">{{$detail->id}}</a></td>
+                                <td><a href="{{ route('role.view', ['detail' => $detail]) }}">{{$detail->id}}</a></td>
                                 <td>{{$detail->name}}</td>
-                                <td><a href="/role-edit/{{$detail->id}}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
+                                <td><a href="{{ route('role.edit', ['detail' => $detail]) }}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
                                 <td>
-                                    <form action="/role-delete/{{$detail->id}}" method="post">
+                                    <form action="{{ route('role.delete', ['detail' => $detail]) }}" method="post">
                                         {{csrf_field()}}
                                         {{method_field('DELETE')}}
                                         <button type="submit" class="btn btn-danger">УДАЛИТЬ</button>
@@ -70,23 +70,22 @@
                             <tbody>
                                 @foreach($roles as $role)
                                 <tr>
-                                    <td><a href="/role/{{$role->id}}">{{$role->id}}</a></td>
+                                    <td><a href="{{ route('role.view', ['role' => $role]) }}">{{$role->id}}</a></td>
                                     <td>{{$role->name}}</td>
                                     <td>{{$time->toDateString() }}</td>
-                                    <td><a href="/role-edit/{{$role->id}}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
+                                    <td><a href="{{ route('role.edit', ['role' => $role]) }}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
                                     <td>
-                                        <form action="/role-delete/{{$role->id}}" method="post">
+                                        <form action="{{ route('role.delete', ['role' => $role]) }}" method="post">
                                             {{csrf_field()}}
                                             {{method_field('DELETE')}}
                                             <button type="submit" class="btn btn-danger">УДАЛИТЬ</button>
                                         </form>
                                     </td>
                                 </tr>
-                               
                                 @endforeach  
                             </tbody>
                         </tablе>
-                        <a href="/roles/create" class="btn btn-primary">Создать Роль</a>
+                        <a href="{{ route('role.create') }}" class="btn btn-primary">Создать Роль</a>
                     </div>
 
                 </div>

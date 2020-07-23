@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Role;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class RoleController extends Controller
 {   
@@ -28,7 +29,7 @@ class RoleController extends Controller
             'name'=>'required',
         ]);
         Role::create($data);
-        return redirect('/roles')->with('status', 'Роль успешно создана');
+        return Redirect::route('role.index')->with('status', 'Роль успешно создана');
     }
 
     public function edit(Role $role) {
@@ -39,23 +40,25 @@ class RoleController extends Controller
     {
       $role->name = $request->input('name');
       $role->update();
-      return redirect('/roles')->with('status','Роль успешно обновлена');
+      return Redirect::route('role.index')->with('status','Роль успешно обновлена');
     }
 
     public function delete(Role $role)
     {
         $role->users()->delete();
         $role->delete();
-        return redirect('/roles')->with('status','Роль успешно удалена');
+        return Redirect::route('role.index')->with('status','Роль успешно удалена');
     }
 
     public function search(Request $request) {
         $q = $request->input('q');
+        
         $searchRoles = Role::search($q)->get();
+        dd($searchRoles);
         $roles = Role::all();
         $time = Carbon::now();
         if(count($searchRoles) > 0)
-            return view('role.index')->withDetails($searchRoles)->withQuery ( $q )->withRoles($roles)->withTime($time);
-        else return view ('role.index')->withStatus('No Details found. Try to search again !')->withRoles($roles)->withTime($time);
+            return view('role.index')->withDetails($searchRoles)->withQuery($q)->withRoles($roles)->withTime($time);
+        else return view ('role.index')->withStatus('Нет найденных совпадений')->withRoles($roles)->withTime($time);
     }
 }

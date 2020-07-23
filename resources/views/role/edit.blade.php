@@ -15,7 +15,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form action="/role-update/{{$role->id}}" method="POST">
+                            <form action="{{ route('role.update', ['role' => $role]) }}" method="POST">
                                 {{ csrf_field( )}}
                                 {{ method_field('PUT') }}
                                 <div class="form-group">
@@ -24,7 +24,7 @@
                                 </div>
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-success">Обновить</button>
-                                    <a href="/roles" class="btn btn-danger">Отмена</a>
+                                    <a href="{{ route('role.index') }}" class="btn btn-danger">Отмена</a>
                                 </div>
                             </form>
                         </div>

@@ -19,7 +19,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form action="/roles/create" method="POST">
+                            <form action="{{ route('role.store') }}" method="POST">
                                 @csrf
                                 <div class="form-group">
                                     <label for="name">Роль</label>

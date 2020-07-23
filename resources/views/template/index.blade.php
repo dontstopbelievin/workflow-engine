@@ -35,9 +35,9 @@
                                         <td>{{$template->id}}</td>
                                         <td>{{$template->name}}</td>
                                         <td>{{$template->created_at->toDateString() }}</td>
-                                        <td><a href="/template-edit/{{$template->id}}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
+                                        <td><a href="{{ route('template.edit', ['template' => $template]) }}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
                                         <td>
-                                            <form action="/template-delete/{{$template->id}}" method="post">
+                                            <form action="{{ route('template.delete', ['template' => $template]) }}" method="post">
                                                 {{csrf_field()}}
                                                 {{method_field('DELETE')}}
                                                 <button type="submit" class="btn btn-danger">УДАЛИТЬ</button>
@@ -68,9 +68,9 @@
                                     <td>{{$template->id}}</td>
                                     <td>{{$template->name}}</td>
                                     <td>{{$template->created_at->toDateString() }}</td>
-                                    <td><a href="/template-edit/{{$template->id}}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
+                                    <td><a href="{{ route('template.edit', ['template' => $template]) }}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
                                     <td>
-                                        <form action="/template-delete/{{$template->id}}" method="post">
+                                        <form action="{{ route('template.delete', ['template' => $template]) }}" method="post">
                                             {{csrf_field()}}
                                             {{method_field('DELETE')}}
                                             <button type="submit" class="btn btn-danger">УДАЛИТЬ</button>
@@ -81,7 +81,7 @@
                         @endisset
                         </tbody>
                         </table>
-                        <a href="/templates/create" class="btn btn-primary">Создать Шаблон</a>
+                        <a href="{{ route('template.create') }}" class="btn btn-primary">Создать Шаблон</a>
                     </div>
                 </div>
             </div>

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Template;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class TemplateController extends Controller
 {
@@ -32,7 +33,7 @@ class TemplateController extends Controller
             'accept_template' => $template_state,
         ]);
         $template->save(); 
-        return redirect('/templates')->with('status','Шаблон успешно создан');;
+        return Redirect::route('template.index')->with('status','Шаблон успешно создан');;
     }
 
     public function edit(Template $template) {
@@ -44,12 +45,12 @@ class TemplateController extends Controller
         $template->name = $request->input('name');
         $template->doc_path = $request->input('file_input');
         $template->update();
-        return redirect('/templates')->with('status','Шаблон успешно обновлен');
+        return Redirect::route('template.index')->with('status','Шаблон успешно обновлен');
     }
 
     public function delete(Template $template) 
     {
         $template->delete();
-        return redirect('/templates')->with('status','Шаблон успешно удален');
+        return Redirect::route('template.index')->with('status','Шаблон успешно удален');
     }
 }

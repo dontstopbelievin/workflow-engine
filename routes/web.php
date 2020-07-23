@@ -38,40 +38,40 @@ Route::post('applications/tocitizen/{application}', 'ApplicationController@tocit
 
 Route::group(['middleware' => ['admin', 'auth']], function () {
 
-    Route::get('dashboard', 'Admin\DashboardController@index');
+    Route::get('dashboard', 'Admin\DashboardController@index')->name('dashboard.index');
 
-    Route::get('role-register', 'Admin\DashboardController@registered');
-    Route::get('user-edit/{user}', 'Admin\DashboardController@registeredit');
-    Route::put('role-register-update/{user}', 'Admin\DashboardController@registerupdate');
-    Route::delete('user-delete/{user}', 'Admin\DashboardController@registerdelete');
-
-
-    Route::get('roles', 'RoleController@index');
-    Route::get('role/{role}', 'RoleController@view');
-    Route::get('roles/create', 'RoleController@create');
-    Route::post('roles/create', 'RoleController@store');
-    Route::get('role-edit/{role}', 'RoleController@edit');
-    Route::put('role-update/{role}', 'RoleController@update');
-    Route::delete('role-delete/{role}', 'RoleController@delete');
-    Route::post('roles/search', 'RoleController@search');
-
-    Route::get('routes', 'RouteController@index');
-    Route::get('route/{id}', 'RouteController@view');
-    Route::get('routes/create', 'RouteController@create');
-    Route::post('routes/create', 'RouteController@store');
-    Route::get('route-edit/{id}', 'RouteController@edit');
-    Route::put('route-update/{id}', 'RouteController@update');
-    Route::delete('route-delete/{id}', 'RouteController@delete');
+    Route::get('role-register', 'Admin\DashboardController@registered')->name('user-role.register');
+    Route::get('user-edit/{user}', 'Admin\DashboardController@registeredit')->name('user-role.edit');
+    Route::put('role-register-update/{user}', 'Admin\DashboardController@registerupdate')->name('user-role.update');
+    Route::delete('user-delete/{user}', 'Admin\DashboardController@registerdelete')->name('user-role.delete');
 
 
-    Route::get('templates', 'TemplateController@index');
-    Route::get('templates/create', 'TemplateController@create');
-    Route::post('templates/create', 'TemplateController@store');
-    Route::get('template-edit/{template}', 'TemplateController@edit');
-    Route::put('template-update/{template}', 'TemplateController@update');
-    Route::delete('template-delete/{template}', 'TemplateController@delete');
+    Route::get('roles', 'RoleController@index')->name('role.index');
+    Route::get('role/{role}', 'RoleController@view')->name('role.view');
+    Route::get('roles/create', 'RoleController@create')->name('role.create');
+    Route::post('roles/create', 'RoleController@store')->name('role.store');
+    Route::get('role-edit/{role}', 'RoleController@edit')->name('role.edit');
+    Route::put('role-update/{role}', 'RoleController@update')->name('role.update');
+    Route::delete('role-delete/{role}', 'RoleController@delete')->name('role.delete');
+    Route::post('roles/search', 'RoleController@search')->name('role.search');
 
-    Route::get('manual', 'FieldValueController@index');
+    Route::get('routes', 'RouteController@index')->name('route.index');
+    Route::get('route/{id}', 'RouteController@view')->name('route.view');
+    Route::get('routes/create', 'RouteController@create')->name('route.create');
+    Route::post('routes/create', 'RouteController@store')->name('route.store');
+    Route::get('route-edit/{id}', 'RouteController@edit')->name('route.edit');
+    Route::put('route-update/{id}', 'RouteController@update')->name('route.update');
+    Route::delete('route-delete/{id}', 'RouteController@delete')->name('route.delete');
+
+
+    Route::get('templates', 'TemplateController@index')->name('template.index');
+    Route::get('templates/create', 'TemplateController@create')->name('template.create');
+    Route::post('templates/create', 'TemplateController@store')->name('template.store');
+    Route::get('template-edit/{template}', 'TemplateController@edit')->name('template.edit');
+    Route::put('template-update/{template}', 'TemplateController@update')->name('template.update');
+    Route::delete('template-delete/{template}', 'TemplateController@delete')->name('template.delete');
+
+    Route::get('manual', 'FieldValueController@index')->name('manual.index');;
     Route::get('manual/create', 'FieldValueController@create');
     Route::post('manual/create', 'FieldValueController@store');
     Route::get('manual-edit/{id}', 'FieldValueController@edit');

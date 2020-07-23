@@ -41,9 +41,9 @@
                                 @else 
                                 <td>-</td>
                                 @endif
-                                <td><a href="/user-edit/{{$user->id}}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
+                                <td><a href="{{ route('user-role.edit', ['user' => $user]) }}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
                                 <td>
-                                    <form action="/user-delete/{{$user->id}}" method="post">
+                                    <form action="{{ route('user-role.delete', ['user' => $user]) }}" method="post">
                                         {{csrf_field()}}
                                         {{method_field('DELETE')}}
                                         <button type="submit" class="btn btn-danger">УДАЛИТЬ</button>

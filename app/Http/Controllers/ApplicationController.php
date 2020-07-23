@@ -26,16 +26,14 @@ class ApplicationController extends Controller
     public function view(Application $application) {
         $process = Process::find($application->process_id);
         $user = Auth::user();
-        // $role_ids = Role::where('id', $user->role_id)->pluck('id');
-        // $role_id = $role_ids[0];
         $roleId = $user->role->id;
-        $canApprove = $roleId === $application->status_id;
+        $canApprove = $roleId === $application->status_id; //может ли специалист подвисывать услугу
         $toCitizen = false;
         $userRole = Role::find($roleId);
         $appRoutes = json_decode($application->application_routes);
 
         if ($appRoutes[sizeof($appRoutes)-1] === $userRole->name) {
-            $toCitizen = true;
+            $toCitizen = true; // если заявку подписывает последний специалист в обороте, заявка идет обратно к заявителю
         }
         return view('application.view')->with(compact('application', 'process','canApprove', 'toCitizen'));
     }
@@ -82,13 +80,12 @@ class ApplicationController extends Controller
         $application->status_id = $idOfNextR;
         $application->index = $index + 1;
         $application->save();
-        $status = Status::find($idOfNextR);
+        $status = Status::find($idOfNextR); // находим следующую роль в маршрутах и присваиваем заявке его статус
         return Redirect::route('applications.service')->with('status', $status->name);
     }
 
     public function toCitizen(Application $application, Request $request) {
         $statusCount = count(Status::all());
-        // dd($statusCount);
         $application->status_id = $statusCount;
         $application->save();
         $status = Status::find($statusCount);
