@@ -34,8 +34,8 @@
                                 <td><a href="{{ route('applications.view', ['application' => $app]) }}">{{$app->id}}</a></td>
                                 <td>{{$process->name ?? ''}}</td>  
                                 <td>{{$app->surname ?? '' }}</td> 
-                                <td>{{$app->status->name ?? ''}}</td>                             
-                              </tr> 
+                                <td>{{$app->status ?? ''}}</td>
+                              </tr>
                               @endforeach
                             </tbody>
 

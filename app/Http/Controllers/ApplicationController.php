@@ -9,7 +9,9 @@ use App\Role;
 use App\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use PhpOffice\PhpWord\TemplateProcessor;
 
 class ApplicationController extends Controller
 {
@@ -20,14 +22,31 @@ class ApplicationController extends Controller
 
     public function index(Process $process) {
         $applications = Application::where('process_id', $process->id)->get();
-        return view('application.index')->with(compact('applications', 'process'));
+
+        $statuses = [];
+        foreach($applications as $app) {
+            $status = $app->statuses()->get();
+            $statusLength = sizeof($status);
+            $statusName = $status[$statusLength-1]->name;
+            array_push($statuses, $statusName);
+
+        }
+        return view('application.index')->with(compact('applications', 'process','statuses'));
     }
 
     public function view(Application $application) {
         $process = Process::find($application->process_id);
         $user = Auth::user();
         $roleId = $user->role->id;
-        $canApprove = $roleId === $application->status_id; //может ли специалист подвисывать услугу
+        $statuses = $application->statuses()->get();
+        $records = DB::table('statuses')
+            ->join('application_status', 'statuses.id', '=', 'application_status.status_id')
+            ->select('statuses.name', 'application_status.updated_at')
+            ->where('application_status.application_id', $application->id)
+            ->get();
+        $statusLength = sizeof($statuses);
+        $status_id = $statuses[$statusLength-1]->id;
+        $canApprove = $roleId === $status_id; //может ли специалист подвисывать услугу
         $toCitizen = false;
         $userRole = Role::find($roleId);
         $appRoutes = json_decode($application->application_routes);
@@ -35,7 +54,7 @@ class ApplicationController extends Controller
         if ($appRoutes[sizeof($appRoutes)-1] === $userRole->name) {
             $toCitizen = true; // если заявку подписывает последний специалист в обороте, заявка идет обратно к заявителю
         }
-        return view('application.view')->with(compact('application', 'process','canApprove', 'toCitizen'));
+        return view('application.view')->with(compact('application', 'process','canApprove', 'toCitizen','records'));
     }
 
     public function create(Request $request, Process $process) {
@@ -49,7 +68,6 @@ class ApplicationController extends Controller
         $id = $request->input('process_id');
         $requestFields = array_slice($request->input(), 1);
         $field_keys = array_keys($requestFields);
-        $process = Process::find($id);
         $handbook = new Handbook;
         $columns = $handbook->getTableColumns();
         $columns = array_slice($columns, 1, -4);
@@ -63,33 +81,39 @@ class ApplicationController extends Controller
         }
         $user = Auth::user();
         $application->user_id = $user->id;
-        $application->process_id = $process->id;
-        $application->status_id = 1;
+        $application->process_id = $id;
+        $process = Process::find($id);
         $application->application_routes = $process->process_routes;
+        $status = Status::find(1);
+        $application->status =$status->name;
         $application->save();
-        
+        $application->statuses()->attach(1);
+
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
     }
 
-    public function approve(Application $application, Request $request) {
+    public function approve(Application $application) {
         $index = $application->index;
         $appRoutes = json_decode($application->application_routes); // array of roles in the process
-        $nextRole = $appRoutes[$index]; // find next role 
+        $nextRole = $appRoutes[$index]; // find next role
         $nextR = Role::where('name', $nextRole)->pluck('id'); //find $nextRole in Role table
-        $idOfNextR = $nextR[0]; // get first element of array
-        $application->status_id = $idOfNextR;
+        $idOfNextRole = $nextR[0]; // get first element of array
         $application->index = $index + 1;
-        $application->save();
-        $status = Status::find($idOfNextR); // находим следующую роль в маршрутах и присваиваем заявке его статус
+        $status = Status::find($idOfNextRole);
+        $application->status = $status->name;
+        $application->update();
+         // находим следующую роль в маршрутах и присваиваем заявке его статус
         $application->statuses()->attach($status);
         return Redirect::route('applications.service')->with('status', $status->name);
     }
 
-    public function toCitizen(Application $application, Request $request) {
+    public function toCitizen(Application $application) {
         $statusCount = count(Status::all());
-        $application->status_id = $statusCount;
-        $application->save();
+        $application->statuses()->attach($statusCount);
         $status = Status::find($statusCount);
+        $application->status = $status->name;
+        $application->update();
+
         return Redirect::route('applications.service')->with('status', $status->name);
     }   
 }

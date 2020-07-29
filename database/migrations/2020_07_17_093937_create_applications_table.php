@@ -27,6 +27,7 @@ class CreateApplicationsTable extends Migration
             $table->string('region')->nullable();
             $table->string('district')->nullable();
             $table->string('city')->nullable();
+            $table->string('status')->nullable();
             $table->integer('process_id')->unsigned()->nullable();
             $table->foreign('process_id')->references('id')->on('processes');
             $table->integer('user_id')->unsigned()->nullable();

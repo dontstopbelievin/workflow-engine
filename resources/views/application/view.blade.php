@@ -19,15 +19,41 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <ul class="list-group" id="list">
+
                             <li class="list-group-item">Название услуги: {{$process->name}}</li>
-                            <li class="list-group-item">Наименование заявителя: {{$application->name ?? ''}}</li>
+                            @isset($application->name)
+                            <li class="list-group-item">Наименование заявителя: {{$application->name}}</li>
+                            @endisset
+                            @isset($application->surname)
                             <li class="list-group-item">Фамилия заявителя: {{$application->surname ?? ''}}</li>
+                            @endisset
+                            @isset($application->email)
                             <li class="list-group-item">Электронный адрес заявителя: {{$application->email ?? ''}}</li>
+                            @endisset
+                            @isset($application->address)
                             <li class="list-group-item">Адрес: {{$application->address ?? ''}}</li>
+                            @endisset
                         </ul>
 
                     </div>
                 </div>
+                @isset($records)
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Логи</h3>
+                        </div>
+                        <div class="panel-body" id="items">
+                            <ul class="list-group">
+                                @foreach($records as $record)
+                                    <li class="list-group-item ourItem">{{$record->name}} | {{$record->updated_at}}
+                                    </li>
+
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+
+                    @endisset
                 @if($canApprove)
                     @if($toCitizen)
                     <form action="{{ route('applications.tocitizen', ['application' => $application]) }}" method="post">
@@ -51,4 +77,3 @@
 @section('scripts')
 @endsection
 
-                                

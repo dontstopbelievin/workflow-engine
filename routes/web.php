@@ -25,18 +25,29 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/list', function () {
+    return view('list.list');
+});
+
 
 Auth::routes();
 
 Route::get('services', 'ApplicationController@service')->name('applications.service');
 Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');
 Route::get('view/{application}', 'ApplicationController@view')->name('applications.view');
+
+
 Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
 Route::post('applications/store', 'ApplicationController@store')->name('applications.store');
 Route::post('applications/approve/{application}', 'ApplicationController@approve')->name('applications.approve');
 Route::post('applications/tocitizen/{application}', 'ApplicationController@tocitizen')->name('applications.tocitizen');
 
 Route::group(['middleware' => ['admin', 'auth']], function () {
+    Route::get('/list', 'ListController@index');
+    Route::post('/list', 'ListController@create');
+    Route::post('/list/delete', 'ListController@delete');
+    Route::post('/list/update', 'ListController@update');
+    Route::get('/list/search', 'ListController@search');
 
     Route::get('dashboard', 'Admin\DashboardController@index')->name('dashboard.index');
 
