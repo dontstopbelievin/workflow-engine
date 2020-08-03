@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'phone', 'email', 'password', 'usertype',
     ];
 
     /**
@@ -36,4 +36,21 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function role() {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function applications() {
+        return $this->hasMany(Application::class);
+    }
+
+    public function scopeActive($query) {
+        return $query->where('usertype', NULL );
+    }
+
+    public function isAdmin()
+    {
+        return $this->usertype === 'admin';
+    }
 }
