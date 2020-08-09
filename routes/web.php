@@ -49,6 +49,12 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::post('/list/update', 'ListController@update');
     Route::get('/list/search', 'ListController@search');
 
+    Route::get('/cities', 'CityManagementController@index')->name('city.index');
+    Route::post('/city', 'CityManagementController@create');
+    Route::post('/city/delete', 'CityManagementController@delete');
+    Route::post('/city/update', 'CityManagementController@update');
+    Route::get('/city/search', 'CityManagementController@search');
+
     Route::get('dashboard', 'Admin\DashboardController@index')->name('dashboard.index');
 
     Route::get('role-register', 'Admin\DashboardController@registered')->name('user-role.register');
@@ -65,6 +71,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::put('role-update/{role}', 'RoleController@update')->name('role.update');
     Route::delete('role-delete/{role}', 'RoleController@delete')->name('role.delete');
     Route::post('roles/search', 'RoleController@search')->name('role.search');
+
 
     Route::get('routes', 'RouteController@index')->name('route.index');
     Route::get('route/{id}', 'RouteController@view')->name('route.view');
@@ -83,16 +90,13 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::delete('template-delete/{template}', 'TemplateController@delete')->name('template.delete');
 
     Route::get('manual', 'FieldValueController@index')->name('manual.index');;
-    Route::get('manual/create', 'FieldValueController@create');
-    Route::post('manual/create', 'FieldValueController@store');
-    Route::get('manual-edit/{id}', 'FieldValueController@edit');
-    Route::put('manual-update/{id}', 'FieldValueController@update');
-    Route::delete('manual-delete/{id}', 'FieldValueController@delete');
+
 
     Route::get('processes', 'ProcessController@index')->name('processes.index');
     Route::get('processes/{process}', 'ProcessController@view')->name('processes.view');
     Route::get('process/create', 'ProcessController@create')->name('processes.create');
     Route::post('processes', 'ProcessController@store')->name('processes.store');
+    Route::post('add-sub-roles', 'ProcessController@addSubRoles')->name('processes.addSubRoles');
     Route::get('processes-edit/{process}', 'ProcessController@add')->name('processes.edit');
     Route::put('processes-update/{process}', 'ProcessController@update')->name('processes.update');
     Route::post('process-save-fields/{process}', 'ProcessController@savefields')->name('processes.saveFields');

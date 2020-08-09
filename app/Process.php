@@ -24,4 +24,7 @@ class Process extends Model
     public function routes() {
         return $this->hasMany(Route::class);
     }
+    public function roles() {
+        return $this->belongsToMany(Role::Class);
+    }
 }

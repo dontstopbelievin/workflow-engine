@@ -83,7 +83,20 @@ class ApplicationController extends Controller
         $application->user_id = $user->id;
         $application->process_id = $id;
         $process = Process::find($id);
-        $application->application_routes = $process->process_routes;
+        $routes = DB::table('roles')
+            ->join('process_role', 'roles.id','=', 'process_role.role_id')
+            ->select('name')
+            ->where('process_role.process_id', '=', $id)
+            ->get()->toArray();
+        $json  = json_encode($routes);
+        $array = json_decode($json, true);
+        $res = array();
+        foreach($array as  $arr) {
+            foreach($arr as $key => $value) {
+                array_push($res, $value);
+            }
+        }
+        $application->application_routes = json_encode($res);
         $status = Status::find(1);
         $application->status =$status->name;
         $application->save();
@@ -95,6 +108,7 @@ class ApplicationController extends Controller
     public function approve(Application $application) {
         $index = $application->index;
         $appRoutes = json_decode($application->application_routes); // array of roles in the process
+//        dd($appRoutes);
         $nextRole = $appRoutes[$index]; // find next role
         $nextR = Role::where('name', $nextRole)->pluck('id'); //find $nextRole in Role table
         $idOfNextRole = $nextR[0]; // get first element of array

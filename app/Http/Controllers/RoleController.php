@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Role;
+use App\CityManagement;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -21,27 +22,38 @@ class RoleController extends Controller
     }
  
     public function create() {
-        return view('role.create');
+        $cityManagements = CityManagement::all();
+        return view('role.create',compact('cityManagements'));
     }
 
     public function store(Request $request) {
-        dd($request->all());
-        $data = $request->validate([
+//        dd($request->input());
+        $request->validate([
             'name'=>'required',
+            'city_management_id' => 'required',
         ]);
-        Role::create($data);
+        $role = new Role;
+        $role->name = $request->input('name');
+        $role->city_management_id = $request->input('city_management_id');
+        $role->save();
         return Redirect::route('role.index')->with('status', 'Роль успешно создана');
     }
 
     public function edit(Role $role) {
-        return view('role.edit')->with(compact('role'));
+        $cityManagements = CityManagement::all();
+        return view('role.edit')->with(compact('role','cityManagements'));
     }
 
     public function update(Request $request, Role $role) 
     {
-      $role->name = $request->input('name');
-      $role->update();
-      return Redirect::route('role.index')->with('status','Роль успешно обновлена');
+        $request->validate([
+            'name'=>'required',
+            'city_management_id' => 'required',
+        ]);
+          $role->name = $request->input('name');
+        $role->city_management_id = $request->input('city_management_id');
+          $role->update();
+          return Redirect::route('role.index')->with('status','Роль успешно обновлена');
     }
 
     public function delete(Role $role)

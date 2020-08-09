@@ -14,11 +14,7 @@ class CreateFieldValuesTable extends Migration
     public function up()
     {
         Schema::create('field_values', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('process_id')->unsigned()->nullable();
-            $table->foreign('process_id')->references('id')->on('processes');
-            $table->string('name')->comment('Наименование поля');
-            $table->string('field_value')->nullable();
+            $table->id();
             $table->timestamps();
         });
     }

@@ -77,6 +77,7 @@ class ProcessController extends Controller
         foreach ($process->routes as $route) {
             array_push($array, $route->name);
         }
+//        $process->
         $roles = Role::all();
         return view('process.edit')->with(compact('process', 'accepted', 'rejected', 'columns', 'array', 'roles'));
     }
@@ -117,24 +118,38 @@ class ProcessController extends Controller
 
     public function addRole(Request $request, Process $process) {
         $roleIds = Role::where('name', $request->input('role'))->pluck('id');
+        $role = Role::where('name', $request->role)->first();
+//        dd($role);
         $route = new Route;
         $route->name = $request->input('role');
         $route->role_id = $roleIds[0];
         $route->process_id = $process->id;
         $route->save();
-        $process_routes = array();
-        if (empty($process->process_routes )) {
-            array_push($process_routes, $request->input('role'));
-            $process->process_routes = json_encode($process_routes);
-        } else {
-            $decoded_process_routes = json_decode($process->process_routes);
-            array_push($decoded_process_routes, $request->input('role'));
-            $process->process_routes = json_encode($decoded_process_routes);
-        }
+        $process->roles()->attach($role);
+//        $process_routes = array();
+//        if (empty($process->process_routes )) {
+//            array_push($process_routes, $request->input('role'));
+//            $process->process_routes = json_encode($process_routes);
+//        } else {
+//            $decoded_process_routes = json_decode($process->process_routes);
+//            array_push($decoded_process_routes, $request->input('role'));
+//            $process->process_routes = json_encode($decoded_process_routes);
+//        }
         $process->save();
-        return Redirect::route('processes.edit', [$process])->with('status', 'Роль добавлена к процессу');  
+        return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
         
-    } 
+    }
+
+
+    public function addSubRoles(Request $request) {
+        $process = Process::find($request->input('processId'));
+        $roleToStartSubRouteId = Role::where('name', $request->input('roleToAdd'))->pluck('id');
+        $subRoutes = $request->input('subRoles');
+        $process->role_id = $roleToStartSubRouteId[0];
+        $process->process_sub_routes = json_encode($subRoutes);
+        $process->update();
+        return 'done';
+    }
 
     public function delete(Process $process)
     {

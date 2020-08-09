@@ -20,6 +20,9 @@ class CreateProcessesTable extends Migration
             $table->dateTime('deadline_until')->nullable();
             $table->json('fields')->nullable();
             $table->json('process_routes')->nullable();
+            $table->integer('role_id')->unsigned()->nullable()->comment('с какой роли начинается подмаршрут');
+            $table->foreign('role_id')->references('id')->on('roles');
+            $table->json('process_sub_routes')->nullable();
             $table->integer('accepted_template_id')->unsigned()->nullable();
             $table->foreign('accepted_template_id')->references('id')->on('templates');
             $table->integer('rejected_template_id')->unsigned()->nullable();

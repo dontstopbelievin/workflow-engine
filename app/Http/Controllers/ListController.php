@@ -19,6 +19,7 @@ class ListController extends Controller
         $item->item = $request->text;
         $item->save();
         return 'Done';
+//        return view('role.edit')->with(compact('role'));
     }
 
     public function delete(Request $request) {

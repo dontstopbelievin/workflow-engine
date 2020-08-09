@@ -127,3 +127,195 @@
     </script>
 </body>
 </html>
+
+
+{{--@extends('layouts.app')--}}
+
+{{--@section('content')--}}
+
+    {{--<div class="p-6 bg-indigo-900 min-h-screen flex justify-center items-center">--}}
+        {{--<div class="w-full max-w-md">--}}
+            {{--<!-- onsubmit = "handleEcpSubmit()" -->--}}
+            {{--<!-- <h1 class="text-2xl text-center text-white">ГУ "Управление архитектуры, градостроительства и земельных отношений города Нур-Султан"</h1> -->--}}
+            {{--<form method = "POST" onsubmit = "handleEcpSubmit()" name="myForm" id="myForm" class="mt-8 bg-white rounded-lg shadow-xl overflow-hidden">--}}
+                {{--@csrf--}}
+                {{--<div class="px-10 pb-12 pt-6">--}}
+                    {{--<div>--}}
+                        {{--<ul class="flex justify-center">--}}
+                            {{--<li class="font-semibold text-center block border-b-4 border-indigo-900 p-4 rounded-t cursor-pointer">Авторизация с ЭЦП</li>--}}
+                            {{--<li class="text-gray-600 text-center block border-b p-4 transition duration-300 hover:text-black hover:bg-gray-300 rounded-t cursor-pointer">Авторизация с Email</li>--}}
+                        {{--</ul>--}}
+                    {{--</div>--}}
+                    {{--<div class="h-10 mt-10 flex items-baseline">--}}
+                        {{--<div class="w-2/3 pr-2">--}}
+                            {{--<input id="path" name="path" placeholder="Файл ЭЦП" class="form-input" value="">--}}
+                            {{--<div class="form-error">--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                        {{--<!-- <input class="btn btn-primary h-auto w-1/3 btn-indigo px-0 transition duration-300" type="file" name="ecpFile" id="ecpFile"></input> -->--}}
+                        {{--<button class="btn btn-primary h-auto w-1/3 btn-indigo px-0 transition duration-300" type="button" onclick="handleSend()">Выбрать ЭЦП</button>--}}
+                    {{--</div>--}}
+                    {{--<div class="pt-4 w-full">--}}
+                        {{--<label class="form-label" for="password">Пароль: <span class="text-red-600">*</span></label>--}}
+                        {{--<input id="password" name="password" placeholder="Пароль" type="password" class="form-input" required>--}}
+                        {{--<div class="form-error">--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+                {{--<div class="px-10 py-4 bg-gray-100 border-t border-gray-200 flex items-center justify-end">--}}
+                    {{--<button class="btn btn-primary btn-indigo transition duration-300" id="AddButton" type="submit">Войти</button>--}}
+                    {{--<!-- <input type="submit" value="submit"> -->--}}
+                {{--</div>--}}
+            {{--</form>--}}
+            {{--<!-- <button type="button" class="btn btn-primary" id="AddButton">Add Item</button> -->--}}
+            {{--<p class="result" style="color:green"></p>--}}
+        {{--</div>--}}
+    {{--</div>--}}
+
+
+
+    {{--<script>--}}
+
+
+        {{--var file = "";--}}
+        {{--var ready = false;--}}
+        {{--var ecpData = {--}}
+            {{--path: "",--}}
+            {{--password: "",--}}
+        {{--}--}}
+        {{--var errMsg = {--}}
+            {{--errHeader: "",--}}
+            {{--errBody: "",--}}
+        {{--}--}}
+
+
+
+        {{--var websocket = new WebSocket("wss://127.0.0.1:13579/");--}}
+        {{--websocket.onopen = function(e) {--}}
+            {{--console.log("[open] Connection established");--}}
+            {{--console.log(websocket);--}}
+            {{--ready = true;--}}
+        {{--};--}}
+        {{--websocket.onclose = (e) => {--}}
+            {{--if (e.wasClean) {--}}
+                {{--console.log("connection closed");--}}
+            {{--} else {--}}
+                {{--console.log(--}}
+                    {{--"connection error: [code]=" + e.code + ", [reason]=" + e.reason--}}
+                {{--);--}}
+            {{--}--}}
+        {{--};--}}
+        {{--function  handleSend() {--}}
+            {{--if (!ready) {--}}
+                {{--errMsg({--}}
+                    {{--errHeader: "Ошибка при подключении к прослойке",--}}
+                    {{--errBody: "Убедитесь что программа NCALayer запущена"--}}
+                {{--});--}}
+            {{--} else {--}}
+                {{--const data = {--}}
+                    {{--method: "browseKeyStore",--}}
+                    {{--args: ["PKCS12", "P12", ""]--}}
+                {{--};--}}
+                {{--websocket.send(JSON.stringify(data));--}}
+            {{--}--}}
+        {{--};--}}
+
+
+        {{--websocket.onmessage = e => {--}}
+            {{--const data = JSON.parse(e.data);--}}
+
+            {{--if (typeof data.result === "string") {--}}
+                {{--const fileArr = data.result.split("\\");--}}
+                {{--file = fileArr[fileArr.length - 1];--}}
+                {{--document.getElementById('path').value = file;--}}
+                {{--ecpData = { ...ecpData, path: data.result };--}}
+                {{--console.log(ecpData);--}}
+                {{--var pass = document.getElementById("password").value;--}}
+                {{--console.log(typeof(pass))--}}
+            {{--}--}}
+        {{--};--}}
+
+
+        {{--var pass = document.getElementById("password").value;--}}
+        {{--// console.log(typeof(pass));--}}
+        {{--ecpData = { ...ecpData, password: pass };--}}
+
+        {{--function handleEcpSubmit(e) {--}}
+            {{--// alert(ecpData["path"]);--}}
+            {{--// alert(ecpData["password"]);--}}
+            {{--e.preventDefault();--}}
+
+            {{--axios--}}
+                {{--.post("/loginwithecp/bar", ecpData)--}}
+                {{--.then(response => {--}}
+                    {{--const newEmail = response.data.email;--}}
+                    {{--const newPassword = response.data.password;--}}
+                    {{--// setValues({ email: newEmail, password: newPassword });--}}
+                    {{--// setFetching(true);--}}
+                {{--})--}}
+                {{--.catch(err => {--}}
+                    {{--if (err.response) {--}}
+                        {{--if (err.response.status === 401) {--}}
+                            {{--errMsg({--}}
+                                {{--errHeader: "Ошибка авторизации",--}}
+                                {{--errBody:--}}
+                                    {{--"Такого пользователя нет в системе. Обратитесь к администратору"--}}
+                            {{--});--}}
+                        {{--} else if (err.response.status === 500) {--}}
+                            {{--errMsg({--}}
+                                {{--errHeader: "Ошибка авторизации",--}}
+                                {{--errBody:--}}
+                                    {{--"Неправильный пароль для ЭЦП или неверный формат P12. Пожалуйста, введите еще раз"--}}
+                            {{--});--}}
+                        {{--}--}}
+                    {{--}--}}
+                {{--});--}}
+        {{--};--}}
+
+
+        {{--//   function sendJSON(){ --}}
+        {{--//             // alert('hello world')--}}
+        {{--//                let result = document.querySelector('.result'); --}}
+        {{--//                let name = document.querySelector('#name'); --}}
+        {{--//                let email = document.querySelector('#email'); --}}
+
+        {{--//                // Creating a XHR object --}}
+        {{--//                let xhr = new XMLHttpRequest(); --}}
+        {{--//                let url = "/loginwithecp"; --}}
+
+        {{--//                // open a connection --}}
+        {{--//                xhr.open("POST", url, true); --}}
+
+        {{--//                // Set the request header i.e. which type of content you are sending --}}
+        {{--//                xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')); --}}
+
+        {{--//                // Create a state change callback --}}
+        {{--//                xhr.onreadystatechange = function () { --}}
+        {{--//                    if (xhr.readyState === 4 && xhr.status === 200) { --}}
+
+        {{--//                        // Print received data from server --}}
+        {{--//                        result.innerHTML = this.responseText; --}}
+        {{--//                     // console.log('nice');--}}
+
+        {{--//                    } --}}
+        {{--//                }; --}}
+
+        {{--//                // Converting JSON data to string --}}
+        {{--//                var data = JSON.stringify({ "path": ecpData.path, "password": ecpData.password }); --}}
+
+        {{--//                // Sending data with the request --}}
+        {{--//                xhr.send(data); --}}
+        {{--//            } --}}
+
+
+
+        {{--$('#AddButton').click(function(event) {--}}
+            {{--event.preventDefault();--}}
+            {{--var pass = document.getElementById("password").value;--}}
+
+            {{--$.post('/loginwithecp/bar', {'path':ecpData.path, 'password':pass,'_token':$('input[name=_token]').val()}, function(data){--}}
+                {{--console.log(data);--}}
+            {{--});--}}
+        {{--});--}}
+    {{--</script>--}}
+{{--@endsection--}}

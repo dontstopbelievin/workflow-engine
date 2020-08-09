@@ -86,6 +86,12 @@
               <p>Роли({{$rolesCount}})</p>
             </a>
           </li>
+          <li class="{{'cityManagements' == request()->path() ? 'active' : ''}}">
+              <a href="{{ route('city.index') }}">
+                  <i class="now-ui-icons users_circle-08"></i>
+                  <p>Городские Управления({{$rolesCount}})</p>
+              </a>
+          </li>
           <li class="{{'templates' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('template.index') }}">
               <i class="now-ui-icons education_agenda-bookmark"></i>

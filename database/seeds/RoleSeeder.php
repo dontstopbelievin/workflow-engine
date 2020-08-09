@@ -16,51 +16,67 @@ class RoleSeeder extends Seeder
         DB::table('roles')->insert([
             [
                 'name' => 'Заявитель',
+//                'city_management_id' => 1,
             ],
             [
                 'name' => 'Специалист Апз', //2 управление
+//                'city_management_id' => 1,
             ],
             [
                 'name' => 'Начальник Отдела', //3 управление
+//                'city_management_id' => 1,
             ],
             [
                 'name' => 'Зам Нач Упр', //4 управление
+//                'city_management_id' => 1,
             ],
             [
                 'name' => 'Рук Упр', //5 управление
+//                'city_management_id' => 1,
             ],
             [
                 'name' => 'Специалист Эскиза', //6 управление
+//                'city_management_id' => 1,
             ],
             [
                 'name' => 'Специалист Гор Арх Эскиза', //7 Гор Арх
+//                'city_management_id' => 1,
             ],
             [
                 'name' => 'Директор Гор Арх', //8 Гор Арх
+//                'city_management_id' => 1,
             ],
             [
                 'name' => 'Специалист Зем Проекта', //9 управление
+//                'city_management_id' => 1,
             ],
             [
                 'name' => 'Начальник Отдела Зем Проекта', //10 управление
+//                'city_management_id' => 1,
             ],
             [
                 'name' => 'Специалист Гор Арх Делимости/Неделимости', //11 Гор Арх
+//                'city_management_id' => 1,
             ],
             [
                 'name' => 'Начальник Отдела Гор Арх Делимости/Неделимости', //12 Гор Арх
+//                'city_management_id' => 1,
             ],
             [
                 'name' => 'Зам Дир Гор Арх', //13 Гор Арх
+//                'city_management_id' => 1,
             ],
             [
                 'name' => 'Рук Апо Гор Арх', //14 Гор Арх
+//                'city_management_id' => 1,
             ],
             [
                 'name' => 'Специалист Отдела Апо Гор Арх', //15 Гор Арх
+//                'city_management_id' => 1,
             ],
             [
                 'name' => 'Зам Рук Апо Гор Арх', //16 Гор Арх
+//                'city_management_id' => 1,
             ],
             
 

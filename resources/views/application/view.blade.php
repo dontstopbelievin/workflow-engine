@@ -40,7 +40,7 @@
                 @isset($records)
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Логи</h3>
+                            <h3 class="panel-title">Ход Согласования</h3>
                         </div>
                         <div class="panel-body" id="items">
                             <ul class="list-group">

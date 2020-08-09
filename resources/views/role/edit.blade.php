@@ -22,6 +22,11 @@
                                     <label>Наиманование роли</label>
                                     <input type="text" name="name" value="{{ $role->name}}" class="form-control">
                                 </div>
+                                <select name="city_management_id" class="form-control">
+                                    @foreach($cityManagements as $item)
+                                        <option value="{{$item->id}}">{{$item->name}}</option>
+                                    @endforeach
+                                </select>
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-success">Обновить</button>
                                     <a href="{{ route('role.index') }}" class="btn btn-danger">Отмена</a>
