@@ -44,11 +44,27 @@
                                 </div>
                                 <div class="panel-body" id="items">
                                     <ul class="list-group">
-                                        @foreach($process->routes as $route)
-                                            <li class="list-group-item ourItem">{{$route->name}}
-                                            </li>
+                                        @if(isset($sAllRoles))
+                                            @foreach($sAllRoles as $key=>$role)
+                                                <li class="list-group-item ourItem">{{$key}}
+                                                    <ul>                           
+                                                        @if (is_array($role))
+                                                            @foreach($role as $skey => $sval)
+                                                            <li>  
+                                                                {{$sval}}
+                                                            </li>
+                                                            @endforeach
+                                                        @endif
+                                                    </ul>
+                                                </li>
+                                            @endforeach
+                                        @else
+                                            @foreach($process->routes as $route)
+                                                <li class="list-group-item ourItem">{{$route->name}}
+                                                </li>
 
-                                        @endforeach
+                                            @endforeach
+                                        @endif
                                     </ul>
                                 </div>
                             </div>

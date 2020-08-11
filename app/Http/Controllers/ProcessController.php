@@ -22,8 +22,12 @@ class ProcessController extends Controller
     }
 
     public function view(Process $process) {
-        
-        return view('process.view')->with(compact('process'));
+        $parentId = $this->getParentRoleId($process->id);
+        if ($parentId === 0) {
+            return view('process.view')->with(compact('process'));
+        } 
+        $sAllRoles = $this->getAllRoles($process, $parentId);
+        return view('process.view')->with(compact('process','sAllRoles'));
     }
 
     public function create() {
@@ -78,33 +82,13 @@ class ProcessController extends Controller
         $columns = $handbook->getTableColumns();
         $columns = array_slice($columns, 1, -4);
         $roles = Role::all();
-        $subRoles = $this->getSubRoutes($process);
-        $parentRoleId = DB::table('process_role')
-        ->select('parent_role_id')
-        ->where('process_id', $process->id)
-        ->Where('parent_role_id', '<>' ,'null')
-        ->limit(1)
-        ->get()->toArray();
-        $json  = json_encode($parentRoleId);
-        $arrayId = json_decode($json, true);
-        $parentId = intval($arrayId[0]['parent_role_id']);
+        // $subRoles = $this->getSubRoutes($process);
+        $parentId = $this->getParentRoleId($process);
+        if ($parentId === 0) {
+            return view('process.edit')->with(compact('process', 'accepted', 'rejected', 'columns', 'roles'));
+        } 
         
-        $sAllRoles = array();
-
-        foreach($process->roles as $key => $value) {
-            $sAllRoles[$value->name] = $value->id;
-            // dd($sAllRoles);
-            $sTmp = $this->getSubRoutes($process);
-            if ($value->id == $parentId) {
-                foreach ($sAllRoles as $sKey => $sVal) {
-                    $sAllRoles[$sKey] = $sTmp;
-                } 
-            }
-        }
-        
-        // dd($sAllRoles);
-        $subRoles = Role::with('children')->get();
-
+        $sAllRoles = $this->getAllRoles($process, $parentId);
         return view('process.edit')->with(compact('process', 'accepted', 'rejected', 'columns', 'roles','sAllRoles'));
     }
 
@@ -180,11 +164,11 @@ class ProcessController extends Controller
         return Redirect::route('processes.index')->with('status', 'Процесс успешно удален');  
     }
 
-    public function getSubRoutes($process) {
+    public function getSubRoutes($id) {
         $routes = DB::table('roles')
         ->join('process_role', 'roles.id','=','process_role.role_id')
         ->select('name')
-        ->where('process_role.process_id',$process->id)
+        ->where('process_role.process_id',$id)
         ->where('process_role.parent_role_id', '<>','null')
         ->get()->toArray();
 
@@ -197,5 +181,35 @@ class ProcessController extends Controller
             }
         }
         return $res;
+    }
+    public function getParentRoleId($id) {
+        $parentRoleId = DB::table('process_role')
+        ->select('parent_role_id')
+        ->where('process_id', $id)
+        ->Where('parent_role_id', '<>' ,'null')
+        ->limit(1)
+        ->get()->toArray();
+        $json  = json_encode($parentRoleId);
+        $arrayId = json_decode($json, true);
+        if (empty($arrayId)) {
+            return 0;
+        }
+        return intval($arrayId[0]['parent_role_id']);
+    }
+
+
+    public function getAllRoles($process, $parentId) {
+        $sAllRoles = array();
+        foreach($process->roles as $key => $value) {
+            $sAllRoles[$value->name] = $value->id;
+            // dd($sAllRoles);
+            $sTmp = $this->getSubRoutes($process->id);
+            if ($value->id == $parentId) {
+                foreach ($sAllRoles as $sKey => $sVal) {
+                    $sAllRoles[$sKey] = $sTmp;
+                } 
+            }
+        }
+        return $sAllRoles;
     }
 }

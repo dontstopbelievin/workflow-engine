@@ -52,8 +52,8 @@
                             </ul>
                         </div>
                     </div>
-
-                    @endisset
+                    
+                @endisset
                 @if($canApprove)
                     @if($toCitizen)
                     <form action="{{ route('applications.tocitizen', ['application' => $application]) }}" method="post">
@@ -62,7 +62,22 @@
                         <button class="btn btn-basic" type="submit">Отправить заявителю</button>
                     </form>
                     @else 
-                    <form action="{{ route('applications.approve', ['application' => $application]) }}" method="post">
+                        @if($sendToCityArch)
+                            <form action="{{ route('applications.approve', ['application' => $application]) }}" method="post">
+                            @csrf
+                            <input type="hidden" name="process_id" value = {{$application->id}}>
+                            <button class="btn btn-basic" type="submit">Отправить в ГорАрхитектуру</button>
+                            </form>
+                        @elseif($sendToUpravlenie)
+                        <form action="{{ route('applications.approve', ['application' => $application]) }}" method="post">
+                            @csrf
+                            <input type="hidden" name="process_id" value = {{$application->id}}>
+                            <button class="btn btn-basic" type="submit">Отправить в Управление</button>
+                            </form>
+
+                        @endif
+
+                        <form action="{{ route('applications.approve', ['application' => $application]) }}" method="post">
                         @csrf
                         <input type="hidden" name="process_id" value = {{$application->id}}>
                         <button class="btn btn-basic" type="submit">Отправить на согласование</button>

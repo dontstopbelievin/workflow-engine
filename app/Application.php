@@ -16,5 +16,4 @@ class Application extends Model
         return $this->belongsToMany(Status::Class)->withTimestamps();
     }
 
-
 }

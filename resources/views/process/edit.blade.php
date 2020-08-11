@@ -145,33 +145,36 @@
                                     </div>
                                     <div class="panel-body" id="items">
                                         <ul class="list-group">
+                                        @if(isset($sAllRoles))
+                                          
+                                            @foreach($sAllRoles as $key=>$role)
+                                                <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal2">{{$key}}
+                                                    <input type="hidden" id="roleName" value = {{$key}}>
+                                                    <input type="hidden" id="processId" value = {{$process->id}}>
+                                                    <ul>
+                                                                
+                                                        @if (is_array($role))
+                                                            @foreach($role as $skey => $sval)
+                                                            <li>  
+                                                                {{$sval}}
+                                                            </li>
+                                                            @endforeach
+                                                        @endif
+                                                    </ul>
+                                                </li>
+                                            @endforeach
+                                        @else 
                                             @foreach($process->routes as $route)
                                                 <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal2">{{$route->name}}
                                                     <input type="hidden" id="roleName" value = {{$route->name}}>
                                                     <input type="hidden" id="processId" value = {{$process->id}}>
-
-                                                </li>
-
-                                            @endforeach
-
-
                                                     <ul>
-                                                        @foreach($sAllRoles as $key=>$role)
-                                                            <li>
-                                                            {{$key}}
-                                                                <ul>
-                                                                
-                                                                    @if (is_array($role))
-                                                                    @foreach($role as $skey => $sval)
-                                                                    <li>  
-                                                                        {{$sval}}
-                                                                    </li>
-                                                                    @endforeach
-                                                                    @endif
-                                                                </ul>
-                                                            </li>
-                                                        @endforeach
+
+                                                        <li></li>
                                                     </ul>
+                                                </li>
+                                            @endforeach
+                                        @endif
                                         </ul>
                                     </div>
                                 </div>
@@ -215,6 +218,7 @@
             });
 
             $.post('/add-sub-roles', {'roleToAdd':roleToAdd,'subRoles':subRoles,'processId':processId,  '_token':$('input[name=_token]').val()}, function(data){
+                // var modal =  $('#myModal2');
                 console.log(data);
                 modal.style.display = "none";
                 $('#items').load(location.href + ' #items');

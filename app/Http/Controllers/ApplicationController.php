@@ -7,6 +7,7 @@ use App\Handbook;
 use App\Application;
 use App\Role;
 use App\Status;
+use App\CityManagement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -37,13 +38,10 @@ class ApplicationController extends Controller
     public function view(Application $application) {
         $process = Process::find($application->process_id);
         $user = Auth::user();
-        $roleId = $user->role->id;
+        $roleId = $user->role->id; //роль действующего юзера
         $statuses = $application->statuses()->get();
-        $records = DB::table('statuses')
-            ->join('application_status', 'statuses.id', '=', 'application_status.status_id')
-            ->select('statuses.name', 'application_status.updated_at')
-            ->where('application_status.application_id', $application->id)
-            ->get();
+
+        $records = $this->getRecords($application->id);
         $statusLength = sizeof($statuses);
         $status_id = $statuses[$statusLength-1]->id;
         $canApprove = $roleId === $status_id; //может ли специалист подвисывать услугу
@@ -54,7 +52,24 @@ class ApplicationController extends Controller
         if ($appRoutes[sizeof($appRoutes)-1] === $userRole->name) {
             $toCitizen = true; // если заявку подписывает последний специалист в обороте, заявка идет обратно к заявителю
         }
-        return view('application.view')->with(compact('application', 'process','canApprove', 'toCitizen','records'));
+
+        $sendToCityArch = false;
+        $appProcess = Process::find($application->process_id);
+        $parentRoleId = intval($appProcess->roles()->where('parent_role_id', '<>', Null)->first()->pivot->parent_role_id);
+        $sendToCityArch = false;
+        $sendToUpravlenie = false;
+        $thisRole = $user->role;
+        $name_upr = CityManagement::find($thisRole->city_management_id)->name;
+        if ($roleId === $parentRoleId) {
+            if ($name_upr === 'Управление') {
+                $sendToCityArch = true;
+            } else {
+                $sendToUpravlenie = true;
+            }
+          
+        }
+        // dd($sendToCityArch, $sendToUpravlenie);
+        return view('application.view')->with(compact('application', 'process','canApprove', 'toCitizen','records','sendToCityArch','sendToUpravlenie'));
     }
 
     public function create(Request $request, Process $process) {
@@ -131,5 +146,13 @@ class ApplicationController extends Controller
             }
         }
         return json_encode($res);
+    }
+
+    public function getRecords($id) {
+        return DB::table('statuses')
+        ->join('application_status', 'statuses.id', '=', 'application_status.status_id')
+        ->select('statuses.name', 'application_status.updated_at')
+        ->where('application_status.application_id', $id)
+        ->get();
     }
 }
