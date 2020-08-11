@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
-use App\FieldValue;
 use App\Template;
 use App\Process;
 use App\Handbook;
@@ -89,7 +88,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::put('template-update/{template}', 'TemplateController@update')->name('template.update');
     Route::delete('template-delete/{template}', 'TemplateController@delete')->name('template.delete');
 
-    Route::get('manual', 'FieldValueController@index')->name('manual.index');;
+    Route::get('manual', 'HandbookController@index')->name('manual.index');;
 
 
     Route::get('processes', 'ProcessController@index')->name('processes.index');
@@ -107,7 +106,6 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     View::composer(['*'], function($view) {
         $usersCount = count(User::active()->get());
         $rolesCount = count(Role::all());
-        $fieldsCount = count(FieldValue::all());
         $templatesCount = count(Template::all());
         $processesCount = count(Process::all());
         $handbook = new Handbook;

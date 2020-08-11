@@ -24,6 +24,11 @@ class Role extends Model
     }
 
     public function processes() {
-        return $this->belongsToMany(Application::class);
+        return $this->belongsToMany(Application::class)->withPivot('parent_role_id');;
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Role::class,'parent_id');   
     }
 }

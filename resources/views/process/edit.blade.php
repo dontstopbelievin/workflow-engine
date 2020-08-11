@@ -138,28 +138,45 @@
                                 <button type="submit" class="btn btn-success">Выбрать</button>
                                 </form>
                             @endisset
-                            @isset($array)
+                            @isset($process->routes)
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                        <h3 class="panel-title">Todo List <a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
+                                        <h3 class="panel-title">Список маршрутов <a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
                                     </div>
                                     <div class="panel-body" id="items">
                                         <ul class="list-group">
-                                            @foreach($array as $route_name)
-                                                <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal2">{{$route_name}}
-                                                    <input type="hidden" id="roleName" value = {{$route_name}}>
+                                            @foreach($process->routes as $route)
+                                                <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal2">{{$route->name}}
+                                                    <input type="hidden" id="roleName" value = {{$route->name}}>
                                                     <input type="hidden" id="processId" value = {{$process->id}}>
-                                                    <ul>
 
-                                                        <li></li>
-                                                    </ul>
                                                 </li>
 
                                             @endforeach
+
+
+                                                    <ul>
+                                                        @foreach($sAllRoles as $key=>$role)
+                                                            <li>
+                                                            {{$key}}
+                                                                <ul>
+                                                                
+                                                                    @if (is_array($role))
+                                                                    @foreach($role as $skey => $sval)
+                                                                    <li>  
+                                                                        {{$sval}}
+                                                                    </li>
+                                                                    @endforeach
+                                                                    @endif
+                                                                </ul>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
                                         </ul>
                                     </div>
                                 </div>
                             @endisset
+                            
                         </div>
                     </div>
                 </div>

@@ -33,7 +33,6 @@ class CreateApplicationsTable extends Migration
             $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->integer('index')->default(0);
-            $table->json('application_routes')->nullable();
             $table->timestamps();
         });
     }

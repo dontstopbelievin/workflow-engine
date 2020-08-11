@@ -49,7 +49,7 @@ class ApplicationController extends Controller
         $canApprove = $roleId === $status_id; //может ли специалист подвисывать услугу
         $toCitizen = false;
         $userRole = Role::find($roleId);
-        $appRoutes = json_decode($application->application_routes);
+        $appRoutes = json_decode($this->getAppRoutes($process->id));
 
         if ($appRoutes[sizeof($appRoutes)-1] === $userRole->name) {
             $toCitizen = true; // если заявку подписывает последний специалист в обороте, заявка идет обратно к заявителю
@@ -83,20 +83,6 @@ class ApplicationController extends Controller
         $application->user_id = $user->id;
         $application->process_id = $id;
         $process = Process::find($id);
-        $routes = DB::table('roles')
-            ->join('process_role', 'roles.id','=', 'process_role.role_id')
-            ->select('name')
-            ->where('process_role.process_id', '=', $id)
-            ->get()->toArray();
-        $json  = json_encode($routes);
-        $array = json_decode($json, true);
-        $res = array();
-        foreach($array as  $arr) {
-            foreach($arr as $key => $value) {
-                array_push($res, $value);
-            }
-        }
-        $application->application_routes = json_encode($res);
         $status = Status::find(1);
         $application->status =$status->name;
         $application->save();
@@ -107,8 +93,7 @@ class ApplicationController extends Controller
 
     public function approve(Application $application) {
         $index = $application->index;
-        $appRoutes = json_decode($application->application_routes); // array of roles in the process
-//        dd($appRoutes);
+        $appRoutes = json_decode($this->getAppRoutes($application->process_id));
         $nextRole = $appRoutes[$index]; // find next role
         $nextR = Role::where('name', $nextRole)->pluck('id'); //find $nextRole in Role table
         $idOfNextRole = $nextR[0]; // get first element of array
@@ -130,4 +115,21 @@ class ApplicationController extends Controller
 
         return Redirect::route('applications.service')->with('status', $status->name);
     }   
+
+    public function getAppRoutes($id) {
+        $routes = DB::table('roles')
+            ->join('process_role', 'roles.id','=', 'process_role.role_id')
+            ->select('name')
+            ->where('process_role.process_id', '=', $id)
+            ->get()->toArray();
+        $json  = json_encode($routes);
+        $array = json_decode($json, true);
+        $res = array();
+        foreach($array as  $arr) {
+            foreach($arr as $key => $value) {
+                array_push($res, $value);
+            }
+        }
+        return json_encode($res);
+    }
 }
