@@ -7,14 +7,14 @@ use App\CityManagement;
 
 class CityManagementController extends Controller
 {
-    public function index()
-    {
+    public function index() {
+
         $cityManagements = CityManagement::all();
         return view('city.index', compact('cityManagements'));
     }
 
-    public function create(Request $request)
-    {
+    public function create(Request $request) {
+        
         $cityManagement = new CityManagement;
         $cityManagement->name = $request->text;
         $cityManagement->save();

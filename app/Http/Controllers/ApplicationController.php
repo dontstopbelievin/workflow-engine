@@ -17,25 +17,26 @@ use PhpOffice\PhpWord\TemplateProcessor;
 class ApplicationController extends Controller
 {
     public function service() {
+
         $processes = Process::all();
-        return view('application.dashboard')->with(compact('processes'));
+        return view('application.dashboard', compact('processes'));
     }
 
     public function index(Process $process) {
-        $applications = Application::where('process_id', $process->id)->get();
 
+        $applications = Application::where('process_id', $process->id)->get();
         $statuses = [];
         foreach($applications as $app) {
             $status = $app->statuses()->get();
             $statusLength = sizeof($status);
             $statusName = $status[$statusLength-1]->name;
             array_push($statuses, $statusName);
-
         }
-        return view('application.index')->with(compact('applications', 'process','statuses'));
+        return view('application.index', compact('applications', 'process','statuses'));
     }
 
     public function view(Application $application) {
+
         $process = Process::find($application->process_id);
         $user = Auth::user();
         $roleId = $user->role->id; //роль действующего юзера
@@ -66,21 +67,21 @@ class ApplicationController extends Controller
             } else {
                 $sendToUpravlenie = true;
             }
-          
         }
-        // dd($sendToCityArch, $sendToUpravlenie);
-        return view('application.view')->with(compact('application', 'process','canApprove', 'toCitizen','records','sendToCityArch','sendToUpravlenie'));
+        return view('application.view', compact('application', 'process','canApprove', 'toCitizen','records','sendToCityArch','sendToUpravlenie'));
     }
 
-    public function create(Request $request, Process $process) {
+    public function create(Process $process) {
+
         $fields = $process->handbook;
         $field_keys = array_keys(array_filter($fields->toArray()));
         $field_keys = array_slice($field_keys, 1, count($field_keys)-5);
-        return view('application.create')->with(compact('process', 'field_keys'));
+        return view('application.create', compact('process', 'field_keys'));
     }
 
     public function store(Process $process, Request $request) {
-        $id = $request->input('process_id');
+
+        $id = $request->process_id;
         $requestFields = array_slice($request->input(), 1);
         $field_keys = array_keys($requestFields);
         $handbook = new Handbook;
@@ -107,6 +108,7 @@ class ApplicationController extends Controller
     }
 
     public function approve(Application $application) {
+
         $index = $application->index;
         $appRoutes = json_decode($this->getAppRoutes($application->process_id));
         $nextRole = $appRoutes[$index]; // find next role
@@ -122,6 +124,7 @@ class ApplicationController extends Controller
     }
 
     public function toCitizen(Application $application) {
+
         $statusCount = count(Status::all());
         $application->statuses()->attach($statusCount);
         $status = Status::find($statusCount);
@@ -131,7 +134,8 @@ class ApplicationController extends Controller
         return Redirect::route('applications.service')->with('status', $status->name);
     }   
 
-    public function getAppRoutes($id) {
+    private function getAppRoutes($id) {
+
         $routes = DB::table('roles')
             ->join('process_role', 'roles.id','=', 'process_role.role_id')
             ->select('name')
@@ -148,7 +152,8 @@ class ApplicationController extends Controller
         return json_encode($res);
     }
 
-    public function getRecords($id) {
+    private function getRecords($id) {
+
         return DB::table('statuses')
         ->join('application_status', 'statuses.id', '=', 'application_status.status_id')
         ->select('statuses.name', 'application_status.updated_at')

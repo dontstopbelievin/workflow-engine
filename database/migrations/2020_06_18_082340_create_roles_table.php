@@ -16,7 +16,6 @@ class CreateRolesTable extends Migration
         Schema::create('roles', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->integer('parent_id')->nullable();
             $table->foreignId('city_management_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });

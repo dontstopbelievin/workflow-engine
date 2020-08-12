@@ -65,7 +65,7 @@
           <li class="{{'process' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('processes.index') }}">
               <i class="now-ui-icons media-2_sound-wave"></i>
-              <p>Процессы({{$processesCount}})</p>
+              <p>Процессы | {{$processesCount}}</p>
             </a>
           </li>
           <li class="{{'routes' == request()->path() ? 'active' : ''}}">
@@ -77,39 +77,39 @@
           <li class="{{'manual' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('manual.index') }}">
               <i class="now-ui-icons travel_info"></i>
-              <p>Справочник({{$handbookCount}})</p>
+              <p>Справочник | {{$handbookCount}} </p>
             </a>
           </li>
           <li class="{{'roles' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('role.index') }}">
               <i class="now-ui-icons users_circle-08"></i>
-              <p>Роли({{$rolesCount}})</p>
+              <p>Роли | {{$rolesCount}}</p>
             </a>
           </li>
           <li class="{{'cityManagements' == request()->path() ? 'active' : ''}}">
-              <a href="{{ route('city.index') }}">
-                  <i class="now-ui-icons users_circle-08"></i>
-                  <p>Городские Управления({{$rolesCount}})</p>
-              </a>
+            <a href="{{ route('city.index') }}">
+                <i class="now-ui-icons business_bank"></i>
+                <p>Организации | {{$cityManagementCount}}</p>
+            </a>
           </li>
           <li class="{{'templates' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('template.index') }}">
               <i class="now-ui-icons education_agenda-bookmark"></i>
-              <p>Шаблоны({{$templatesCount}})</p>
+              <p>Шаблоны | {{$templatesCount}}</p>
             </a>
           </li>
           <li class="{{'role-register' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('user-role.register') }}">
               <i class="now-ui-icons users_single-02"></i>
-              <p>Пользователи({{$usersCount}})</p>
+              <p>Пользователи | {{$usersCount}}</p>
             </a>
           </li>
             @endif
         @endif
           <li class="{{'role-register' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('applications.service') }}">
-              <i class="now-ui-icons users_single-02"></i>
-              <p>Создать заявку</p>
+              <i class="now-ui-icons design_bullet-list-67"></i>
+              <p>Заявки | {{$applicationsCount}}</p>
             </a>
           </li>
 
