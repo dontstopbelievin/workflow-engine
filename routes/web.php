@@ -95,7 +95,6 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
 
     Route::get('manual', 'HandbookController@index')->name('manual.index');;
 
-//    processes.addOrganizationToRoute
     Route::get('processes', 'ProcessController@index')->name('processes.index');
     Route::get('processes/{process}', 'ProcessController@view')->name('processes.view');
     Route::get('process/create', 'ProcessController@create')->name('processes.create');

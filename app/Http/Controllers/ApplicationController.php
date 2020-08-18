@@ -8,6 +8,7 @@ use App\Application;
 use App\Role;
 use App\Status;
 use App\CityManagement;
+use App\Traits\dbQueries;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,7 @@ use PhpOffice\PhpWord\TemplateProcessor;
 
 class ApplicationController extends Controller
 {
+    use dbQueries;
     public function service() {
 
         $processes = Process::all();
@@ -187,67 +189,4 @@ class ApplicationController extends Controller
         return Redirect::route('applications.service')->with('status', $status->name);
     }   
 
-    private function getAppRoutes($id) {
-
-        $routes = DB::table('roles')
-            ->join('process_role', 'roles.id','=', 'process_role.role_id')
-            ->select('name')
-            ->where('process_role.process_id', '=', $id)
-            ->where('parent_role_id', null)
-            ->get()->toArray();
-        $json  = json_encode($routes);
-        $array = json_decode($json, true);
-        $res = array();
-        foreach($array as  $arr) {
-            foreach($arr as $key => $value) {
-                array_push($res, $value);
-            }
-        }
-        return json_encode($res);
-    }
-
-    private function getRecords($id) {
-
-        return DB::table('statuses')
-        ->join('application_status', 'statuses.id', '=', 'application_status.status_id')
-        ->select('statuses.name', 'application_status.updated_at')
-        ->where('application_status.application_id', $id)
-        
-        ->get();
-    }
-    private function getSubRoutes($id) {
-
-        $routes = DB::table('roles')
-        ->join('process_role', 'roles.id','=','process_role.role_id')
-        ->select('name')
-        ->where('process_role.process_id',$id)
-        ->where('process_role.parent_role_id', '<>','null')
-        ->get()->toArray();
-
-        $json  = json_encode($routes);
-        $array = json_decode($json, true);
-        $res = array();
-        foreach($array as  $arr) {
-            foreach($arr as $key => $value) {
-                array_push($res, $value);
-            }
-        }
-        return $res;
-    }
-
-    private function getParentRoleId($id) {
-
-        $parentRoleId = DB::table('process_role')
-        ->select('parent_role_id')
-        ->where('process_id', $id)
-        ->where('parent_role_id', '<>' ,Null)
-        ->limit(1)
-        ->get()->toArray();
-        $json  = json_encode($parentRoleId);
-        $arrayId = json_decode($json, true);
-        if (empty($arrayId)) {
-            return 0;
-        }
-        return intval($arrayId[0]['parent_role_id']);
-    }
 }

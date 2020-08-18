@@ -8,6 +8,7 @@ use App\Handbook;
 use App\Role;
 use App\Route;
 use App\CityManagement;
+use App\Traits\dbQueries;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Redirect;
 
 class ProcessController extends Controller
 {
+    use dbQueries;
     public function index() {
 
         $processes = Process::all();
@@ -194,75 +196,5 @@ class ProcessController extends Controller
         $process->handbook()->delete();
         $process->delete();
         return Redirect::route('processes.index')->with('status', 'Процесс успешно удален');  
-    }
-
-    private function getSubRoutes($id) {
-
-        $routes = DB::table('roles')
-        ->join('process_role', 'roles.id','=','process_role.role_id')
-        ->select('name')
-        ->where('process_role.process_id',$id)
-        ->where('process_role.parent_role_id', '<>','null')
-        ->get()->toArray();
-
-        $json  = json_encode($routes);
-        $array = json_decode($json, true);
-        $res = array();
-        foreach($array as  $arr) {
-            foreach($arr as $key => $value) {
-                array_push($res, $value);
-            }
-        }
-        return $res;
-    }
-
-    private function getRolesWithoutParent($id) {
-
-        $res = DB::table('roles')
-        ->join('process_role', 'roles.id','=','process_role.role_id')
-        ->select('name')
-        ->where('process_role.process_id',$id)
-        ->where('process_role.parent_role_id',Null)
-        ->get();
-        return $res;
-    }
-
-    private function getParentRoleId($id) {
-
-        $parentRoleId = DB::table('process_role')
-        ->select('parent_role_id')
-        ->where('process_id', $id)
-        ->where('parent_role_id', '<>' ,Null)
-        ->limit(1)
-        ->get()->toArray();
-        $json  = json_encode($parentRoleId);
-        $arrayId = json_decode($json, true);
-        if (empty($arrayId)) {
-            return 0;
-        }
-        return intval($arrayId[0]['parent_role_id']);
-    }
-
-
-    private function getAllRoles($process, $parentId, $iterateRoles) {
-
-        $sAllRoles = array();
-        $sTmp = $this->getSubRoutes($process->id);
-        $counter = 0;
-        foreach($iterateRoles as $key => $value) {
-            $counter++;
-            $sAllRoles[$value->name] = $value->id;   
-            if ($value->id === $parentId) {
-                $sAllRoles[$value->name] = $sTmp;
-            }
-        }
-        return $sAllRoles;
-    }
-
-    private function getIterateRoles($process) {
-
-        $rolesWithoutParent = $this->getRolesWithoutParent($process->id);
-        $countRolesWithoutParent = count($rolesWithoutParent);
-        return $process->roles->take($countRolesWithoutParent);
     }
 }
