@@ -19,11 +19,12 @@ class CreateProcessesTable extends Migration
             $table->integer('deadline')->comment('Количество дней на заявку');
             $table->dateTime('deadline_until')->nullable();
             $table->json('fields')->nullable();
-            $table->json('process_routes')->nullable();
             $table->integer('accepted_template_id')->unsigned()->nullable();
             $table->foreign('accepted_template_id')->references('id')->on('templates');
             $table->integer('rejected_template_id')->unsigned()->nullable();
             $table->foreign('rejected_template_id')->references('id')->on('templates');
+            $table->integer('main_organization_id')->unsigned()->nullable();
+            $table->integer('support_organization_id')->unsigned()->nullable();
             $table->timestamps();
         });
     }

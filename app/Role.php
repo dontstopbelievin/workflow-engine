@@ -18,4 +18,12 @@ class Role extends Model
     public function ScopeSearch($query,$q) {
         return $query->where('name','LIKE','%'.$q.'%');
     }
+
+    public function cityManagement() {
+        return $this->belongsTo(CityManagement::class);
+    }
+
+    public function processes() {
+        return $this->belongsToMany(Application::class)->withPivot('parent_role_id');;
+    }
 }

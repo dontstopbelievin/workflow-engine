@@ -4,10 +4,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
-use App\FieldValue;
 use App\Template;
 use App\Process;
 use App\Handbook;
+use App\Application;
+use App\CityManagement;
 use Carbon\Carbon;
 
 /*
@@ -40,7 +41,10 @@ Route::get('view/{application}', 'ApplicationController@view')->name('applicatio
 Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
 Route::post('applications/store', 'ApplicationController@store')->name('applications.store');
 Route::post('applications/approve/{application}', 'ApplicationController@approve')->name('applications.approve');
-Route::post('applications/tocitizen/{application}', 'ApplicationController@tocitizen')->name('applications.tocitizen');
+Route::post('applications/sendToSubRoute/{application}', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
+Route::post('applications/backToMainOrg/{application}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
+
+Route::post('applications/toCitizen/{application}', 'ApplicationController@toCitizen')->name('applications.toCitizen');
 
 Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('/list', 'ListController@index');
@@ -48,6 +52,12 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::post('/list/delete', 'ListController@delete');
     Route::post('/list/update', 'ListController@update');
     Route::get('/list/search', 'ListController@search');
+
+    Route::get('/cities', 'CityManagementController@index')->name('city.index');
+    Route::post('/city', 'CityManagementController@create');
+    Route::post('/city/delete', 'CityManagementController@delete');
+    Route::post('/city/update', 'CityManagementController@update');
+    Route::get('/city/search', 'CityManagementController@search');
 
     Route::get('dashboard', 'Admin\DashboardController@index')->name('dashboard.index');
 
@@ -66,6 +76,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::delete('role-delete/{role}', 'RoleController@delete')->name('role.delete');
     Route::post('roles/search', 'RoleController@search')->name('role.search');
 
+
     Route::get('routes', 'RouteController@index')->name('route.index');
     Route::get('route/{id}', 'RouteController@view')->name('route.view');
     Route::get('routes/create', 'RouteController@create')->name('route.create');
@@ -82,18 +93,15 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::put('template-update/{template}', 'TemplateController@update')->name('template.update');
     Route::delete('template-delete/{template}', 'TemplateController@delete')->name('template.delete');
 
-    Route::get('manual', 'FieldValueController@index')->name('manual.index');;
-    Route::get('manual/create', 'FieldValueController@create');
-    Route::post('manual/create', 'FieldValueController@store');
-    Route::get('manual-edit/{id}', 'FieldValueController@edit');
-    Route::put('manual-update/{id}', 'FieldValueController@update');
-    Route::delete('manual-delete/{id}', 'FieldValueController@delete');
+    Route::get('manual', 'HandbookController@index')->name('manual.index');;
 
     Route::get('processes', 'ProcessController@index')->name('processes.index');
     Route::get('processes/{process}', 'ProcessController@view')->name('processes.view');
     Route::get('process/create', 'ProcessController@create')->name('processes.create');
     Route::post('processes', 'ProcessController@store')->name('processes.store');
-    Route::get('processes-edit/{process}', 'ProcessController@add')->name('processes.edit');
+    Route::post('add-sub-roles', 'ProcessController@addSubRoles')->name('processes.addSubRoles');
+    Route::post('add-organization/{process}', 'ProcessController@addOrganization')->name('processes.addOrganization');
+    Route::get('processes-edit/{process}', 'ProcessController@edit')->name('processes.edit');
     Route::put('processes-update/{process}', 'ProcessController@update')->name('processes.update');
     Route::post('process-save-fields/{process}', 'ProcessController@savefields')->name('processes.saveFields');
     Route::post('process-add-role/{process}', 'ProcessController@addRole')->name('processes.addRole');
@@ -103,12 +111,13 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     View::composer(['*'], function($view) {
         $usersCount = count(User::active()->get());
         $rolesCount = count(Role::all());
-        $fieldsCount = count(FieldValue::all());
         $templatesCount = count(Template::all());
         $processesCount = count(Process::all());
+        $cityManagementCount = count(CityManagement::all());
+        $applicationsCount = count(CityManagement::all());
         $handbook = new Handbook;
         $handbookCount = count($handbook->getTableColumns());
-        $view->with(compact('usersCount', 'rolesCount','fieldsCount', 'templatesCount','processesCount','handbookCount'));
+        $view->with(compact('usersCount', 'rolesCount','fieldsCount', 'templatesCount','processesCount','handbookCount','cityManagementCount','applicationsCount'));
     });
 
 });

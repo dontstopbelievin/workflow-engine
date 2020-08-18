@@ -7,38 +7,52 @@ use App\Template;
 use App\Handbook;
 use App\Role;
 use App\Route;
+use App\CityManagement;
+use App\Traits\dbQueries;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Redirect;
 
 class ProcessController extends Controller
 {
+    use dbQueries;
+
     public function index() {
+
         $processes = Process::all();
-        return view('process.index')->with(compact('processes'));
+        return view('process.index', compact('processes'));
     }
 
     public function view(Process $process) {
-        return view('process.view')->with(compact('process'));
+
+        $parentId = $this->getParentRoleId($process->id);
+        if ($parentId === 0) {
+            return view('process.view', compact('process'));
+        } 
+        $iterateRoles = $this->getIterateRoles($process);
+        $sAllRoles = $this->getAllRoles($process, $parentId, $iterateRoles);
+        return view('process.view', compact('process','sAllRoles'));
     }
 
     public function create() {
+
         $handbook = new Handbook;
         $columns = $handbook->getTableColumns();
         $columns = array_slice($columns, 1, -5);
         $accepted = Template::accepted()->get();
         $rejected = Template::rejected()->get();
-        return view('process.create')->with(compact('accepted', 'rejected','columns'));
+        return view('process.create', compact('accepted', 'rejected','columns'));
     }
 
     public function store(Request $request) {
+
         $numberOfDays = intval($request->get('deadline'));
         $deadline = Carbon::now()->addDays($numberOfDays);
-        // dd($accepted_template_id = Template::where('name', $request->input('accepted_template'))->first()->only('id'));
-        $acceptedTemplateIds = Template::where('name', $request->input('accepted_template'))->pluck('id');
-        $rejectedTemplateIds = Template::where('name', $request->input('rejected_template'))->pluck('id');
-        
+        $acceptedTemplate = Template::where('name', $request->accepted_template)->first();
+        $rejectedTemplate = Template::where('name', $request->rejected_template)->first();
+
         $request->validate([
             'name' => 'required',
             'deadline' => 'required',
@@ -49,8 +63,8 @@ class ProcessController extends Controller
             'name' => $request->get('name'),
             'deadline' => $numberOfDays,
             'deadline_until' => $deadline,
-            'accepted_template_id'=> $acceptedTemplateIds[0],
-            'rejected_template_id'=> $rejectedTemplateIds[0],
+            'accepted_template_id'=> $acceptedTemplate->id,
+            'rejected_template_id'=> $rejectedTemplate->id,
         ]);
         $process->save();
         $id = $process->id;
@@ -64,41 +78,66 @@ class ProcessController extends Controller
             array_push($array, $route->name);
         }
         $roles = Role::all();
-        return view('process.edit')->with(compact('process', 'accepted', 'rejected', 'columns', 'array', 'roles'));
+        $organizations = CityManagement::all();
+        $nameMainOrg;
+        $mainOrg = CityManagement::find($process->main_organization_id);
+        if (empty($mainOrg)) {
+            return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'array', 'roles', 'organizations', 'nameMainOrg'));
+        }
+        $nameMainOrg = $mainOrg->name;
+        return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'array', 'roles', 'organizations', 'nameMainOrg'));
     }
 
-    public function add(Process $process) {
+    public function edit(Process $process) {
+
         $accepted = Template::accepted()->get();
         $rejected = Template::rejected()->get();
         $handbook = new Handbook;
         $columns = $handbook->getTableColumns();
         $columns = array_slice($columns, 1, -4);
-        $array = [];
-        foreach ($process->routes as $route) {
-            array_push($array, $route->name);
-        }
         $roles = Role::all();
-        return view('process.edit')->with(compact('process', 'accepted', 'rejected', 'columns', 'array', 'roles'));
+        $parentId = $this->getParentRoleId($process->id);
+        $organizations = CityManagement::all();
+        $mainOrganization;
+        $nameMainOrg;
+
+        $mainOrg = CityManagement::find($process->main_organization_id);
+        if (empty($mainOrg)) {
+            return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'array', 'roles', 'organizations', 'nameMainOrg'));
+        }
+        $nameMainOrg = $mainOrg->name;
+        if (empty($organizations)) {
+            echo 'Добавьте организации';
+            return;
+        }
+        if ($parentId === 0) {
+            return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'roles','organizations','nameMainOrg'));
+        }
+
+        $iterateRoles = $this->getIterateRoles($process);
+        $sAllRoles = $this->getAllRoles($process, $parentId,$iterateRoles);
+        return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'roles','sAllRoles', 'organizations', 'nameMainOrg'));
     }
 
-    public function update(Request $request, Process $process) 
-    {   
+    public function update(Request $request, Process $process) {   
+
         $numberOfDays = intval($request->get('deadline'));
         $deadline = Carbon::now()->addDays($numberOfDays);
-        $acceptedTemplateIds = Template::where('name', $request->input('accepted_template'))->pluck('id');
-        $rejectedTemplateIds = Template::where('name', $request->input('rejected_template'))->pluck('id');
-        $process->name = $request->input('name');
-        $process->deadline = $request->input('deadline');
-        $process->accepted_template_id = $acceptedTemplateIds[0];
-        $process->rejected_template_id = $rejectedTemplateIds[0];
+        $acceptedTemplate = Template::where('name', $request->accepted_template)->first();
+        $rejectedTemplate = Template::where('name', $request->rejected_template)->first();
+        $process->name = $request->name;
+        $process->deadline = $request->deadline;
+        $process->accepted_template_id = $acceptedTemplate->id;
+        $process->rejected_template_id = $rejectedTemplate->id;
         $process->update();
         return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был обновлен');
     }
 
     public function saveFields(Request $request, Process $process) {
+
         if (!$process->handbook()->exists()) {
             $handbook = new Handbook;
-            $fields = $request->input('fields');
+            $fields = $request->fields;
             foreach ($fields as $field) {
                 if(Schema::hasColumn('handbooks', '$field')) ; //check whether handbooks table has columns in array
                 {
@@ -109,35 +148,52 @@ class ProcessController extends Controller
             $handbook->active = 1;
             $handbook->save();
         }
-        $arrayJson = json_encode($request->input('fields'));
+        $arrayJson = json_encode($request->fields);
         $process->fields = $arrayJson;
         $process->save();
         return Redirect::route('processes.edit', [$process])->with('status', 'Справочники успешно сохранены');
     }
 
     public function addRole(Request $request, Process $process) {
-        $roleIds = Role::where('name', $request->input('role'))->pluck('id');
+
+        $role = Role::where('name', $request->role)->first();
         $route = new Route;
-        $route->name = $request->input('role');
-        $route->role_id = $roleIds[0];
+        $route->name = $request->role;
+        $route->role_id = $role->id;
         $route->process_id = $process->id;
         $route->save();
-        $process_routes = array();
-        if (empty($process->process_routes )) {
-            array_push($process_routes, $request->input('role'));
-            $process->process_routes = json_encode($process_routes);
-        } else {
-            $decoded_process_routes = json_decode($process->process_routes);
-            array_push($decoded_process_routes, $request->input('role'));
-            $process->process_routes = json_encode($decoded_process_routes);
-        }
+        $process->roles()->attach($role);
         $process->save();
-        return Redirect::route('processes.edit', [$process])->with('status', 'Роль добавлена к процессу');  
-        
-    } 
+        return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу'); 
+    }
 
-    public function delete(Process $process)
-    {
+    public function addOrganization(Request $request, Process $process) {
+
+        $organization = CityManagement::where('name', $request->mainOrganization)->first();
+        $process->main_organization_id = $organization->id;
+        $process->update();
+        return Redirect::route('processes.edit', [$process])->with('status', 'Осносвной Маршрут Выбран успешно');
+    }
+
+    public function addSubRoles(Request $request) {
+
+        $parentRole = Role::where('name', $request->roleToAdd)->first();
+        $process = Process::find($request->processId);
+        $subRoutes = $request->subRoles;
+        $supportOrganization = CityManagement::where('name', $request->subOrg)->first();
+        $process->support_organization_id = $supportOrganization->id;
+        foreach($subRoutes as $route) {
+            $mRole = Role::where('name', $route)->get();
+            $process->roles()->attach($mRole, [
+                'parent_role_id' => $parentRole->id,
+            ]);
+        }
+        $process->update();
+        return 'done';
+    }
+
+    public function delete(Process $process) {
+
         $process->routes()->delete();
         $process->handbook()->delete();
         $process->delete();

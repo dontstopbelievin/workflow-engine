@@ -9,16 +9,19 @@ use Illuminate\Support\Facades\Redirect;
 class TemplateController extends Controller
 {
     public function index() {
+
         $acceptedTemplates = Template::accepted()->get(); // make camelcase
         $rejectedTemplates = Template::rejected()->get();
-        return view('template.index')->with(compact('acceptedTemplates', 'rejectedTemplates'));
+        return view('template.index', compact('acceptedTemplates', 'rejectedTemplates'));
     }
 
     public function create() {
+
         return view('template.create');
     }
 
     public function store(Request $request) {
+
         $templateState = $request->template_state === "accepted";
         $docPath = request()->file_input->store('templates', 'public');
         $request->validate([
@@ -28,7 +31,7 @@ class TemplateController extends Controller
         ]);
 
         $template = new Template([
-            'name' => $request->get('name'),
+            'name' => $request->name,
             'doc_path' => $docPath,
             'accept_template' => $templateState,
         ]);
@@ -37,19 +40,20 @@ class TemplateController extends Controller
     }
 
     public function edit(Template $template) {
-        return view('template.edit')->with(compact('template'));
+
+        return view('template.edit', compact('template'));
     }
 
-    public function update(Request $request, Template $template) 
-    {
-        $template->name = $request->input('name');
-        $template->doc_path = $request->input('file_input');
+    public function update(Request $request, Template $template) {
+
+        $template->name = $request->name;
+        $template->doc_path = $request->file_input;
         $template->update();
         return Redirect::route('template.index')->with('status','Шаблон успешно обновлен');
     }
 
-    public function delete(Template $template) 
-    {
+    public function delete(Template $template) {
+        
         $template->delete();
         return Redirect::route('template.index')->with('status','Шаблон успешно удален');
     }

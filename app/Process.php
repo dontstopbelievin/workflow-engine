@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Process extends Model
 {
     protected $guarded = [];
-    public function fieldValues() {
-        return $this->hasMany(FieldValue::class);
-    }
+
+
     public function accepted_template() {
         return $this->belongsTo(Template::class, 'accepted_template_id');
     }
@@ -23,5 +22,8 @@ class Process extends Model
 
     public function routes() {
         return $this->hasMany(Route::class);
+    }
+    public function roles() {
+        return $this->belongsToMany(Role::Class)->withPivot('parent_role_id');
     }
 }

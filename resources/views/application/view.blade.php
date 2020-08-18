@@ -40,7 +40,7 @@
                 @isset($records)
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Логи</h3>
+                            <h3 class="panel-title">Ход Согласования</h3>
                         </div>
                         <div class="panel-body" id="items">
                             <ul class="list-group">
@@ -52,20 +52,34 @@
                             </ul>
                         </div>
                     </div>
-
-                    @endisset
+                    
+                @endisset
                 @if($canApprove)
                     @if($toCitizen)
-                    <form action="{{ route('applications.tocitizen', ['application' => $application]) }}" method="post">
+                    <form action="{{ route('applications.toCitizen', ['application' => $application]) }}" method="post">
                         @csrf
                         <input type="hidden" name="process_id" value = {{$application->id}}>
                         <button class="btn btn-basic" type="submit">Отправить заявителю</button>
                     </form>
+                    @elseif($backToMainOrg)
+                    <form action="{{ route('applications.backToMainOrg', ['application' => $application]) }}" method="post">
+                        @csrf
+                        <input type="hidden" name="process_id" value = {{$application->id}}>
+                        <button class="btn btn-basic" type="submit">Отправить обратно в организацию</button>
+                    </form>
                     @else 
-                    <form action="{{ route('applications.approve', ['application' => $application]) }}" method="post">
+                        @if(isset($sendToSubRoute["name"]))
+                        <form action="{{ route('applications.sendToSubRoute', ['application' => $application]) }}" method="post">
+                        @csrf
+                        <input type="hidden" name="process_id" value = {{$application->id}}>
+                        <button class="btn btn-basic" type="submit">Отправить в {{$sendToSubRoute["name"]}}</button>
+                        </form>
+                        @endif
+                        <form action="{{ route('applications.approve', ['application' => $application]) }}" method="post">
                         @csrf
                         <input type="hidden" name="process_id" value = {{$application->id}}>
                         <button class="btn btn-basic" type="submit">Отправить на согласование</button>
+                        </form>
                     </form>
                     @endif
                 @endif

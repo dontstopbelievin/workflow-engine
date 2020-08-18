@@ -47,7 +47,7 @@
                 <div class="container">
                     @if(isset($details))
                         <p> Результаты поиска на <b> {{ $query }} </b> :</p>
-                    <table class="table table-striped">
+                    <table class="table table-striped" id="items">
                         <thead>
                             <tr>
                                 <th>№</th>
@@ -83,6 +83,7 @@
                             <thead>
                                 <th>№</th>
                                 <th>Имя</th>
+                                <th>Управление</th>
                                 <th>Дата создания</th>
                                 <th><button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Изменить"><i class="fa fa-edit"></i></button></th>
                                 <th> <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Удалить"><i class="fa fa-trash"></i></button></th>
@@ -92,6 +93,7 @@
                                 <tr>
                                     <td><a href="{{ route('role.view', ['role' => $role]) }}">{{$role->id}}</a></td>
                                     <td>{{$role->name}}</td>
+                                    <td>{{$role->cityManagement->name ?? ''}}</td>
                                     <td>{{$time->toDateString() }}</td>
                                     <td><a href="{{ route('role.edit', ['role' => $role]) }}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
                                     <td>
@@ -148,14 +150,14 @@
             });
 
             $('#AddButton').click(function(event) {
-                var text = $('#addItem').val();
-                console.log(text);
-                if (text == '') {
+                var name = $('#addItem').val();
+                console.log(name);
+                if (name == '') {
                     alert('Please type anything');
                 }
-                $.post('roles/create', {'text':text, '_token':$('input[name=_token]').val()}, function(data){
+                $.post('roles/create', {'name':name, '_token':$('input[name=_token]').val()}, function(data){
                     console.log(data);
-                    // $('#items').load(location.href + ' #items');
+                    $('#items').load(location.href + ' #items');
                 });
             });
 
