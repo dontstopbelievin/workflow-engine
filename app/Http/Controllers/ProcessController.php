@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Redirect;
 class ProcessController extends Controller
 {
     use dbQueries;
+
     public function index() {
 
         $processes = Process::all();
@@ -25,6 +26,7 @@ class ProcessController extends Controller
     }
 
     public function view(Process $process) {
+
         $parentId = $this->getParentRoleId($process->id);
         if ($parentId === 0) {
             return view('process.view', compact('process'));
@@ -87,6 +89,7 @@ class ProcessController extends Controller
     }
 
     public function edit(Process $process) {
+
         $accepted = Template::accepted()->get();
         $rejected = Template::rejected()->get();
         $handbook = new Handbook;
@@ -110,8 +113,6 @@ class ProcessController extends Controller
         if ($parentId === 0) {
             return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'roles','organizations','nameMainOrg'));
         }
-
-
 
         $iterateRoles = $this->getIterateRoles($process);
         $sAllRoles = $this->getAllRoles($process, $parentId,$iterateRoles);
@@ -151,10 +152,10 @@ class ProcessController extends Controller
         $process->fields = $arrayJson;
         $process->save();
         return Redirect::route('processes.edit', [$process])->with('status', 'Справочники успешно сохранены');
-
     }
 
     public function addRole(Request $request, Process $process) {
+
         $role = Role::where('name', $request->role)->first();
         $route = new Route;
         $route->name = $request->role;
@@ -163,11 +164,11 @@ class ProcessController extends Controller
         $route->save();
         $process->roles()->attach($role);
         $process->save();
-        return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
-        
+        return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу'); 
     }
 
     public function addOrganization(Request $request, Process $process) {
+
         $organization = CityManagement::where('name', $request->mainOrganization)->first();
         $process->main_organization_id = $organization->id;
         $process->update();
@@ -175,6 +176,7 @@ class ProcessController extends Controller
     }
 
     public function addSubRoles(Request $request) {
+
         $parentRole = Role::where('name', $request->roleToAdd)->first();
         $process = Process::find($request->processId);
         $subRoutes = $request->subRoles;

@@ -18,6 +18,12 @@ use PhpOffice\PhpWord\TemplateProcessor;
 class ApplicationController extends Controller
 {
     use dbQueries;
+
+    public function __construct() {
+
+    }
+
+
     public function service() {
 
         $processes = Process::all();
@@ -43,12 +49,11 @@ class ApplicationController extends Controller
         $user = Auth::user();
         $thisRole = $user->role;
         $subRoutes = $this->getSubRoutes($process->id);
-        // dd(empty($subRoutes));
         if (!$user->role) {
             echo 'Дайте роль юзеру';
             return;
         }
-        $roleId = $user->role->id; //роль действующего юзера
+        $roleId = $thisRole->id; //роль действующего юзера
         $statuses = $application->statuses()->get();
         $records = $this->getRecords($application->id);
         $statusLength = sizeof($statuses);
@@ -150,9 +155,9 @@ class ApplicationController extends Controller
     }
 
     public function sendToSubRoute(Application $application) {
+
         $process = Process::find($application->process_id);
         $subRoutes = $this->getSubRoutes($process->id);
-        // dd($subRoutes); 
         $index = $application->index_sub_route;
         $nextRole = $subRoutes[$index];
         $nextR = Role::where('name', $nextRole)->first();
@@ -166,6 +171,7 @@ class ApplicationController extends Controller
         
     }
     public function backToMainOrg(Application $application) {
+
         $process = Process::find($application->process_id);
         $parentId = $this->getParentRoleId($process->id);
         $parentRole = Role::find($parentId);
@@ -185,7 +191,6 @@ class ApplicationController extends Controller
         $status = Status::find($statusCount);
         $application->status = $status->name;
         $application->update();
-
         return Redirect::route('applications.service')->with('status', $status->name);
     }   
 
