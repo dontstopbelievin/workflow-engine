@@ -39,36 +39,60 @@ class ApplicationController extends Controller
 
         $process = Process::find($application->process_id);
         $user = Auth::user();
+        $thisRole = $user->role;
+        $subRoutes = $this->getSubRoutes($process->id);
+        // dd(empty($subRoutes));
+        if (!$user->role) {
+            echo 'Дайте роль юзеру';
+            return;
+        }
         $roleId = $user->role->id; //роль действующего юзера
         $statuses = $application->statuses()->get();
-
         $records = $this->getRecords($application->id);
         $statusLength = sizeof($statuses);
         $status_id = $statuses[$statusLength-1]->id;
         $canApprove = $roleId === $status_id; //может ли специалист подвисывать услугу
         $toCitizen = false;
+        $backToMainOrg = false;
         $userRole = Role::find($roleId);
         $appRoutes = json_decode($this->getAppRoutes($process->id));
-
+        $appProcess = Process::find($application->process_id);
         if ($appRoutes[sizeof($appRoutes)-1] === $userRole->name) {
             $toCitizen = true; // если заявку подписывает последний специалист в обороте, заявка идет обратно к заявителю
         }
-
-        $sendToCityArch = false;
-        $appProcess = Process::find($application->process_id);
-        $parentRoleId = intval($appProcess->roles()->where('parent_role_id', '<>', Null)->first()->pivot->parent_role_id);
-        $sendToCityArch = false;
-        $sendToUpravlenie = false;
-        $thisRole = $user->role;
-        $name_upr = CityManagement::find($thisRole->city_management_id)->name;
-        if ($roleId === $parentRoleId) {
-            if ($name_upr === 'Управление') {
-                $sendToCityArch = true;
-            } else {
-                $sendToUpravlenie = true;
+        if (!empty($subRoutes)) {
+            if($subRoutes[sizeof($subRoutes) - 1] === $userRole->name) {
+                $backToMainOrg = true;
             }
         }
-        return view('application.view', compact('application', 'process','canApprove', 'toCitizen','records','sendToCityArch','sendToUpravlenie'));
+        if (Null !==($appProcess->roles()->where('parent_role_id', '<>', Null)->first())) {
+            $parentRoleId = intval($appProcess->roles()->where('parent_role_id', '<>', Null)->first()->pivot->parent_role_id);
+            $subOrg = CityManagement::find($process->support_organization_id)->first();
+        
+            $sendToSubRoute = [];
+            $sendToSubRoute["isset"] = false;
+            if (($application->index_sub_route > 0) && ($application->indexSubRoute<sizeof($subRoutes))) {
+                if ($thisRole->name === $subRoutes[$application->index_sub_route - 1]) {
+                    $sendToSubRoute["isset"] = true;
+                    if (isset($subOrg->name)) {
+                        $sendToSubRoute["name"] = $subOrg->name;
+                    }
+                }
+            }
+            if ($parentRoleId === $thisRole->id)  {
+                $sendToSubRoute["isset"] = true;
+                if (isset($subOrg->name)) {
+                    $sendToSubRoute["name"] = $subOrg->name;
+                }
+            }
+        } 
+
+        if (!$thisRole->city_management_id) {
+            echo 'Укажите к какой организации относить роль';
+            return;
+        }
+        $nameUpr = CityManagement::find($thisRole->city_management_id)->name;
+        return view('application.view', compact('application', 'process','canApprove', 'toCitizen','records','sendToSubRoute', 'backToMainOrg'));
     }
 
     public function create(Process $process) {
@@ -112,8 +136,8 @@ class ApplicationController extends Controller
         $index = $application->index;
         $appRoutes = json_decode($this->getAppRoutes($application->process_id));
         $nextRole = $appRoutes[$index]; // find next role
-        $nextR = Role::where('name', $nextRole)->pluck('id'); //find $nextRole in Role table
-        $idOfNextRole = $nextR[0]; // get first element of array
+        $nextR = Role::where('name', $nextRole)->first(); //find $nextRole in Role table
+        $idOfNextRole = $nextR->id; // get id of next role
         $application->index = $index + 1;
         $status = Status::find($idOfNextRole);
         $application->status = $status->name;
@@ -122,6 +146,35 @@ class ApplicationController extends Controller
         $application->statuses()->attach($status);
         return Redirect::route('applications.service')->with('status', $status->name);
     }
+
+    public function sendToSubRoute(Application $application) {
+        $process = Process::find($application->process_id);
+        $subRoutes = $this->getSubRoutes($process->id);
+        // dd($subRoutes); 
+        $index = $application->index_sub_route;
+        $nextRole = $subRoutes[$index];
+        $nextR = Role::where('name', $nextRole)->first();
+        $idOfNextRole = $nextR->id;
+        $application->index_sub_route = $index + 1;
+        $status = Status::find($idOfNextRole);
+        $application->status = $status->name;
+        $application->update();
+        $application->statuses()->attach($status);
+        return Redirect::route('applications.service')->with('status', $status->name);
+        
+    }
+    public function backToMainOrg(Application $application) {
+        $process = Process::find($application->process_id);
+        $parentId = $this->getParentRoleId($process->id);
+        $parentRole = Role::find($parentId);
+        $status = Status::find($parentId);
+        $application->status = $status->name;
+        $application->update();
+        $application->statuses()->attach($status);
+        return Redirect::route('applications.service')->with('status', $status->name);
+        
+    }
+
 
     public function toCitizen(Application $application) {
 
@@ -140,6 +193,7 @@ class ApplicationController extends Controller
             ->join('process_role', 'roles.id','=', 'process_role.role_id')
             ->select('name')
             ->where('process_role.process_id', '=', $id)
+            ->where('parent_role_id', null)
             ->get()->toArray();
         $json  = json_encode($routes);
         $array = json_decode($json, true);
@@ -158,6 +212,42 @@ class ApplicationController extends Controller
         ->join('application_status', 'statuses.id', '=', 'application_status.status_id')
         ->select('statuses.name', 'application_status.updated_at')
         ->where('application_status.application_id', $id)
+        
         ->get();
+    }
+    private function getSubRoutes($id) {
+
+        $routes = DB::table('roles')
+        ->join('process_role', 'roles.id','=','process_role.role_id')
+        ->select('name')
+        ->where('process_role.process_id',$id)
+        ->where('process_role.parent_role_id', '<>','null')
+        ->get()->toArray();
+
+        $json  = json_encode($routes);
+        $array = json_decode($json, true);
+        $res = array();
+        foreach($array as  $arr) {
+            foreach($arr as $key => $value) {
+                array_push($res, $value);
+            }
+        }
+        return $res;
+    }
+
+    private function getParentRoleId($id) {
+
+        $parentRoleId = DB::table('process_role')
+        ->select('parent_role_id')
+        ->where('process_id', $id)
+        ->where('parent_role_id', '<>' ,Null)
+        ->limit(1)
+        ->get()->toArray();
+        $json  = json_encode($parentRoleId);
+        $arrayId = json_decode($json, true);
+        if (empty($arrayId)) {
+            return 0;
+        }
+        return intval($arrayId[0]['parent_role_id']);
     }
 }

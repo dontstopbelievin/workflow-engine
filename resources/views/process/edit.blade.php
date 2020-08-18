@@ -96,14 +96,26 @@
                                             </div>
                                             {{--<form method = "POST">--}}
                                                 @csrf
+
                                                 <div class="modal-body">
-                                                    @isset($columns)
-                                                        @foreach ($roles as $role)
-                                                            <div class="checkbox">
-                                                                <label><input class="get_value" type="checkbox" name="subRoles[]" value="{{$role->name}}">{{$role->name}}</label>
-                                                            </div>
-                                                        @endforeach
-                                                    @endisset
+                                                    <div class="form-group">
+                                                        <label>Выбрать Орагнизацию дополнительного маршрута</label>
+                                                        <select name="supportOrganization" id="subOrg" class="subOrg">
+                                                            @foreach($organizations as $organization)
+                                                                <option>{{$organization->name}} </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        @isset($columns)
+                                                            @foreach ($roles as $role)
+                                                                <div class="checkbox">
+                                                                    <label><input class="get_value" type="checkbox" name="subRoles[]" value="{{$role->name}}">{{$role->name}}</label>
+                                                                </div>
+                                                            @endforeach
+                                                        @endisset
+                                                    </div>
+
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button  type="submit" id="AddButton" class="btn btn-success">Добавить Подмаршрут</button>
@@ -138,15 +150,30 @@
                                 <button type="submit" class="btn btn-success">Выбрать</button>
                                 </form>
                             @endisset
+                            @isset($organizations)
+                                <form action="{{ route('processes.addOrganization', ['process' => $process]) }}" method="POST">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label>Выбрать Орагнизацию основного маршрута</label>
+                                        <select name="mainOrganization" class="form-control">
+                                            @foreach($organizations as $organization)
+                                                <option>{{$organization->name}} </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Выбрать</button>
+                                </form>
+                            @endisset
                             @isset($process->routes)
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                        <h3 class="panel-title">Список маршрутов <a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
+                                        <h3 class="panel-title">Список маршрутов | {{ $nameMainOrg ?? ''}} <a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
                                     </div>
+
                                     <div class="panel-body" id="items">
                                         <ul class="list-group">
                                         @if(isset($sAllRoles))
-                                          
+
                                             @foreach($sAllRoles as $key=>$role)
                                                 <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal2">{{$key}}
                                                     <input type="hidden" id="roleName" value = {{$key}}>
@@ -209,18 +236,25 @@
             var roleToAdd = $('#modHeader').val();
             var subRoles = [];
             var processId = $('#processId').val();
-            var modal =  $('#myModal2');
+            // var modal =  $('#myModal2');
+            var subOrg;
+            // $('#subOrg').change(function() {
+            //     subOrg = $(this).val();
+            //     // concole.log(subOrg);
+            // })
+            var subOrg = $('#subOrg option:selected').val();
+            // alert(subOrg);
             $('.get_value').each(function(){
                 if($(this).is(":checked"))
                 {
                     subRoles.push($(this).val());
                 }
             });
-
-            $.post('/add-sub-roles', {'roleToAdd':roleToAdd,'subRoles':subRoles,'processId':processId,  '_token':$('input[name=_token]').val()}, function(data){
-                // var modal =  $('#myModal2');
-                console.log(data);
-                modal.style.display = "none";
+            console.log(roleToAdd)
+            $.post('/add-sub-roles', {'roleToAdd':roleToAdd,'subRoles':subRoles,'processId':processId, 'subOrg':subOrg,  '_token':$('input[name=_token]').val()}, function(data){
+                var modal =  $('#myModal2');
+                // console.log(data);
+                modal.style.display = 'none';
                 $('#items').load(location.href + ' #items');
             });
         });

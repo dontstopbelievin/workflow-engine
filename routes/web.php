@@ -41,7 +41,10 @@ Route::get('view/{application}', 'ApplicationController@view')->name('applicatio
 Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
 Route::post('applications/store', 'ApplicationController@store')->name('applications.store');
 Route::post('applications/approve/{application}', 'ApplicationController@approve')->name('applications.approve');
-Route::post('applications/tocitizen/{application}', 'ApplicationController@tocitizen')->name('applications.tocitizen');
+Route::post('applications/sendToSubRoute/{application}', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
+Route::post('applications/backToMainOrg/{application}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
+
+Route::post('applications/toCitizen/{application}', 'ApplicationController@toCitizen')->name('applications.toCitizen');
 
 Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('/list', 'ListController@index');
@@ -92,12 +95,13 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
 
     Route::get('manual', 'HandbookController@index')->name('manual.index');;
 
-
+//    processes.addOrganizationToRoute
     Route::get('processes', 'ProcessController@index')->name('processes.index');
     Route::get('processes/{process}', 'ProcessController@view')->name('processes.view');
     Route::get('process/create', 'ProcessController@create')->name('processes.create');
     Route::post('processes', 'ProcessController@store')->name('processes.store');
     Route::post('add-sub-roles', 'ProcessController@addSubRoles')->name('processes.addSubRoles');
+    Route::post('add-organization/{process}', 'ProcessController@addOrganization')->name('processes.addOrganization');
     Route::get('processes-edit/{process}', 'ProcessController@edit')->name('processes.edit');
     Route::put('processes-update/{process}', 'ProcessController@update')->name('processes.update');
     Route::post('process-save-fields/{process}', 'ProcessController@savefields')->name('processes.saveFields');

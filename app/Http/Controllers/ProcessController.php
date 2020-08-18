@@ -7,6 +7,7 @@ use App\Template;
 use App\Handbook;
 use App\Role;
 use App\Route;
+use App\CityManagement;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -45,9 +46,9 @@ class ProcessController extends Controller
 
         $numberOfDays = intval($request->get('deadline'));
         $deadline = Carbon::now()->addDays($numberOfDays);
-        $acceptedTemplateIds = Template::where('name', $request->accepted_template)->pluck('id');
-        $rejectedTemplateIds = Template::where('name', $request->rejected_template)->pluck('id');
-        
+        $acceptedTemplate = Template::where('name', $request->accepted_template)->first();
+        $rejectedTemplate = Template::where('name', $request->rejected_template)->first();
+
         $request->validate([
             'name' => 'required',
             'deadline' => 'required',
@@ -58,8 +59,8 @@ class ProcessController extends Controller
             'name' => $request->get('name'),
             'deadline' => $numberOfDays,
             'deadline_until' => $deadline,
-            'accepted_template_id'=> $acceptedTemplateIds[0],
-            'rejected_template_id'=> $rejectedTemplateIds[0],
+            'accepted_template_id'=> $acceptedTemplate->id,
+            'rejected_template_id'=> $rejectedTemplate->id,
         ]);
         $process->save();
         $id = $process->id;
@@ -73,7 +74,14 @@ class ProcessController extends Controller
             array_push($array, $route->name);
         }
         $roles = Role::all();
-        return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'array', 'roles'));
+        $organizations = CityManagement::all();
+        $nameMainOrg;
+        $mainOrg = CityManagement::find($process->main_organization_id);
+        if (empty($mainOrg)) {
+            return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'array', 'roles', 'organizations', 'nameMainOrg'));
+        }
+        $nameMainOrg = $mainOrg->name;
+        return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'array', 'roles', 'organizations', 'nameMainOrg'));
     }
 
     public function edit(Process $process) {
@@ -84,25 +92,40 @@ class ProcessController extends Controller
         $columns = array_slice($columns, 1, -4);
         $roles = Role::all();
         $parentId = $this->getParentRoleId($process->id);
+        $organizations = CityManagement::all();
+        $mainOrganization;
+        $nameMainOrg;
+
+        $mainOrg = CityManagement::find($process->main_organization_id);
+        if (empty($mainOrg)) {
+            return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'array', 'roles', 'organizations', 'nameMainOrg'));
+        }
+        $nameMainOrg = $mainOrg->name;
+        if (empty($organizations)) {
+            echo 'Добавьте организации';
+            return;
+        }
         if ($parentId === 0) {
-            return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'roles'));
-        } 
+            return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'roles','organizations','nameMainOrg'));
+        }
+
+
 
         $iterateRoles = $this->getIterateRoles($process);
         $sAllRoles = $this->getAllRoles($process, $parentId,$iterateRoles);
-        return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'roles','sAllRoles'));
+        return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'roles','sAllRoles', 'organizations', 'nameMainOrg'));
     }
 
     public function update(Request $request, Process $process) {   
 
         $numberOfDays = intval($request->get('deadline'));
         $deadline = Carbon::now()->addDays($numberOfDays);
-        $acceptedTemplateIds = Template::where('name', $request->accepted_template)->pluck('id');
-        $rejectedTemplateIds = Template::where('name', $request->rejected_template)->pluck('id');
+        $acceptedTemplate = Template::where('name', $request->accepted_template)->first();
+        $rejectedTemplate = Template::where('name', $request->rejected_template)->first();
         $process->name = $request->name;
         $process->deadline = $request->deadline;
-        $process->accepted_template_id = $acceptedTemplateIds[0];
-        $process->rejected_template_id = $rejectedTemplateIds[0];
+        $process->accepted_template_id = $acceptedTemplate->id;
+        $process->rejected_template_id = $rejectedTemplate->id;
         $process->update();
         return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был обновлен');
     }
@@ -130,12 +153,10 @@ class ProcessController extends Controller
     }
 
     public function addRole(Request $request, Process $process) {
-
-        $roleIds = Role::where('name', $request->role)->pluck('id');
         $role = Role::where('name', $request->role)->first();
         $route = new Route;
         $route->name = $request->role;
-        $route->role_id = $roleIds[0];
+        $route->role_id = $role->id;
         $route->process_id = $process->id;
         $route->save();
         $process->roles()->attach($role);
@@ -144,17 +165,26 @@ class ProcessController extends Controller
         
     }
 
-    public function addSubRoles(Request $request) {
+    public function addOrganization(Request $request, Process $process) {
+        $organization = CityManagement::where('name', $request->mainOrganization)->first();
+        $process->main_organization_id = $organization->id;
+        $process->update();
+        return Redirect::route('processes.edit', [$process])->with('status', 'Осносвной Маршрут Выбран успешно');
+    }
 
-        $parentRoleId = Role::where('name', $request->roleToAdd)->pluck('id');
+    public function addSubRoles(Request $request) {
+        $parentRole = Role::where('name', $request->roleToAdd)->first();
         $process = Process::find($request->processId);
         $subRoutes = $request->subRoles;
+        $supportOrganization = CityManagement::where('name', $request->subOrg)->first();
+        $process->support_organization_id = $supportOrganization->id;
         foreach($subRoutes as $route) {
             $mRole = Role::where('name', $route)->get();
             $process->roles()->attach($mRole, [
-                'parent_role_id' => $parentRoleId[0],
+                'parent_role_id' => $parentRole->id,
             ]);
         }
+        $process->update();
         return 'done';
     }
 
