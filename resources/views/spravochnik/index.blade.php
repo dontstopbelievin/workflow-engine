@@ -9,10 +9,31 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-lg-offset-3 col-lg-6">
+            <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">Справочник <a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
+                    </div>
+
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <th>Наименование поля</th>
+                                <th>Тип вводимого</th>
+                                <th>Тип сохраняемого</th>
+                            </thead>
+                            <tbody>
+                                @foreach($dictionaries as $item)
+                              <tr>
+                                <td><h4>{{$item["name"]}}</h4></td>
+                                <td><h4>{{$item["inputName"]}}</h4></td>
+                                <td><h4>{{$item["insertName"]}}</h4></td>
+                              </tr>   
+                              @endforeach                             
+                            </tbody>
+                        </tablе>
                     </div>
 
                 </div>

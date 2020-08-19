@@ -25,8 +25,7 @@ trait dbQueries
         ->where('parent_role_id', '<>' ,Null)
         ->limit(1)
         ->get()->toArray();
-        $json  = json_encode($parentRoleId);
-        $arrayId = json_decode($json, true);
+        $arrayId = json_decode(json_encode($parentRoleId), true);
         if (empty($arrayId)) {
             return 0;
         }
@@ -64,8 +63,7 @@ trait dbQueries
             ->where('process_role.process_id', '=', $id)
             ->where('parent_role_id', null)
             ->get()->toArray();
-        $json  = json_encode($routes);
-        $array = json_decode($json, true);
+        $array = json_decode(json_encode($routes), true);
         $res = array();
         foreach($array as  $arr) {
             foreach($arr as $key => $value) {
@@ -92,9 +90,7 @@ trait dbQueries
         ->where('process_role.process_id',$id)
         ->where('process_role.parent_role_id', '<>','null')
         ->get()->toArray();
-
-        $json  = json_encode($routes);
-        $array = json_decode($json, true);
+        $array = json_decode(json_encode($routes), true);
         $res = array();
         foreach($array as  $arr) {
             foreach($arr as $key => $value) {
