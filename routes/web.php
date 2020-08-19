@@ -47,6 +47,14 @@ Route::post('applications/backToMainOrg/{application}', 'ApplicationController@b
 Route::post('applications/toCitizen/{application}', 'ApplicationController@toCitizen')->name('applications.toCitizen');
 
 Route::group(['middleware' => ['admin', 'auth']], function () {
+    Route::get('/spravochnik', 'SpravochnikController@index')->name('spravochnik');
+    Route::post('/spravochnik/create', 'SpravochnikController@create')->name('spravochnik.create');
+    // Route::get('/spravochnik', 'SpravochnikController@index');
+    // Route::get('/spravochnik', 'SpravochnikController@index');
+    // Route::get('/spravochnik', 'SpravochnikController@index');
+    // Route::get('/spravochnik', 'SpravochnikController@index');
+
+
     Route::get('/list', 'ListController@index');
     Route::post('/list', 'ListController@create');
     Route::post('/list/delete', 'ListController@delete');

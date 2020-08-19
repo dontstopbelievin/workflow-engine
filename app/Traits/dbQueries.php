@@ -4,7 +4,6 @@ namespace App\Traits;
 
 use Illuminate\Support\Facades\DB;
 
-
 trait dbQueries
 {
     public function getRolesWithoutParent($id) {
