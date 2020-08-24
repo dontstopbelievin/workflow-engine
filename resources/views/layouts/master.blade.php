@@ -105,7 +105,7 @@
             </a>
           </li>
           <li class="{{'role-register' == request()->path() ? 'active' : ''}}">
-            <a href="{{ route('spravochnik') }}">
+            <a href="{{ route('dictionary') }}">
               <i class="now-ui-icons users_single-02"></i>
               <p>Новый Справочник | {{$usersCount}}</p>
             </a>

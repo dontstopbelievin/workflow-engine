@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSpravochniksTable extends Migration
+class CreateDictionarySelectOptionTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateSpravochniksTable extends Migration
      */
     public function up()
     {
-        Schema::create('spravochniks', function (Blueprint $table) {
+        Schema::create('dictionary_select_option', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->foreignId('input_type_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('insert_type_id')->nullable()->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('dictionary_id');
+            $table->unsignedBigInteger('select_option_id');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateSpravochniksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('spravochniks');
+        Schema::dropIfExists('dictionary_select_option');
     }
 }

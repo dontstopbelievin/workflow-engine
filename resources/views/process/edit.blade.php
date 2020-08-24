@@ -236,14 +236,8 @@
             var roleToAdd = $('#modHeader').val();
             var subRoles = [];
             var processId = $('#processId').val();
-            // var modal =  $('#myModal2');
             var subOrg;
-            // $('#subOrg').change(function() {
-            //     subOrg = $(this).val();
-            //     // concole.log(subOrg);
-            // })
             var subOrg = $('#subOrg option:selected').val();
-            // alert(subOrg);
             $('.get_value').each(function(){
                 if($(this).is(":checked"))
                 {

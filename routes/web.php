@@ -47,12 +47,10 @@ Route::post('applications/backToMainOrg/{application}', 'ApplicationController@b
 Route::post('applications/toCitizen/{application}', 'ApplicationController@toCitizen')->name('applications.toCitizen');
 
 Route::group(['middleware' => ['admin', 'auth']], function () {
-    Route::get('/spravochnik', 'SpravochnikController@index')->name('spravochnik');
-    Route::post('/spravochnik/create', 'SpravochnikController@create')->name('spravochnik.create');
-    // Route::get('/spravochnik', 'SpravochnikController@index');
-    // Route::get('/spravochnik', 'SpravochnikController@index');
-    // Route::get('/spravochnik', 'SpravochnikController@index');
-    // Route::get('/spravochnik', 'SpravochnikController@index');
+    Route::get('/dictionary', 'DictionaryController@index')->name('dictionary');
+    Route::post('/dictionary/create', 'DictionaryController@create')->name('dictionary.create');
+    Route::get('/dictionary/createFields', 'DictionaryController@createFields')->name('dictionary.createFields');
+    Route::post('/dictionary/saveToTable', 'DictionaryController@saveToTable')->name('dictionary.saveToTable');
 
 
     Route::get('/list', 'ListController@index');
@@ -84,7 +82,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::delete('role-delete/{role}', 'RoleController@delete')->name('role.delete');
     Route::post('roles/search', 'RoleController@search')->name('role.search');
 
-
+    
     Route::get('routes', 'RouteController@index')->name('route.index');
     Route::get('route/{id}', 'RouteController@view')->name('route.view');
     Route::get('routes/create', 'RouteController@create')->name('route.create');

@@ -2,32 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Spravochnik;
+use App\Dictionary;
 use App\InputType;
 use App\InsertType;
-// use App\Process;
+use App\SelectOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class SpravochnikController extends Controller
+class DictionaryController extends Controller
 {
 
     public function index() {
 
         $inputTypes = InputType::all();
         $insertTypes = InsertType::all();
+        $options = SelectOption::all();
         $dictionaries = $this->getAllDictionaries();
-        // dd($dictionaries);
-        return view('spravochnik.index',compact('inputTypes','insertTypes','dictionaries'));
+        return view('dictionary.index',compact('inputTypes','insertTypes','dictionaries','options'));
     }
     
     public function create(Request $request) {
 
+        // dd($request->input());
         $fieldName = $request->fieldName;
         $inputItem = $request->inputItem;
         $insertItem = $request->insertItem;
         $processId = $request->processId;
+        $selectOptions = $request->selectedOptions;
 
         $validatedData = $request->validate([
             'fieldName' => 'required',
@@ -35,8 +37,8 @@ class SpravochnikController extends Controller
             'insertItem' => 'required',
             'processId' => 'required',
         ]);
-        $spravochniks = Spravochnik::all();
-        foreach($spravochniks as $spr) {
+        $dictionaries = Dictionary::all();
+        foreach($dictionaries as $spr) {
             if ($spr->name === $fieldName) {
                 return 'Такое поле в базе уже есть';
             }
@@ -44,12 +46,23 @@ class SpravochnikController extends Controller
         $input = InputType::where('name', $inputItem)->first();
         $insert = InsertType::where('name', $insertItem)->first();
 
-        $spravochnik = new Spravochnik ([
+        $dictionaries = new Dictionary ([
             'name' => $fieldName,
             'input_type_id' => $input->id,
             'insert_type_id' => $insert->id,
         ]);
-        $spravochnik->save();
+        $dictionaries->save();
+
+        $dic = Dictionary::where('name', $fieldName)->first();
+        $dicId = $dic->id; // айди поля, которое только что сохранили
+        
+        if ($request->has('selectedOptions')) {
+          foreach($request->selectedOptions as $key=>$value) {
+            $optn = SelectOption::where('name', $value)->first();
+            $dic->selectOptions()->attach($optn);
+        }
+        }
+        
         $processName = 'апз';
         $tableName = $this->translateSybmols($processName);
         $columns = Schema::getColumnListing($tableName);
@@ -73,17 +86,38 @@ class SpravochnikController extends Controller
 
     }
 
+    public function createFields() {
+        $dictionaries = $this->getAllDictionaries();
+        $dictionariesWithOptions = [];
+        foreach($dictionaries as $dictionary) {
 
-    public function createTable() {
+            if($dictionary["inputName"] === 'select') {
+                $options = $this->getOptionsOfThisSelect($dictionary["name"]);
+                $dictionary["inputName"] = $options;
+            }
+            array_push($dictionariesWithOptions, $dictionary);
+        }
 
-        $dbQueryString = "CREATE TABLE Spravochnik (
-        id INT PRIMARY KEY, 
-        lastName varchar(255),
-        firstName varchar(255),
-        address varchar(255),
-        city varchar(255))";
-        DB::statement($dbQueryString);
+//        dd($dictionariesWithOptions);
+        return view('dictionary.create',compact('dictionariesWithOptions'));
     }
+
+    public function saveToTable(Request $request) {
+//        dd('here');
+        dd($request->input());
+    }
+
+    public function getOptionsOfThisSelect($name) {
+
+        $dics = Dictionary::where('name', $name)->first()->selectOptions()->get();
+        $selectedOptions = [];
+        foreach ($dics as $dic) {
+            array_push($selectedOptions, $dic->name);
+        }
+        return $selectedOptions;
+    }
+
+
 
     private function translateSybmols($text) {
 
@@ -93,34 +127,30 @@ class SpravochnikController extends Controller
     }
 
     private function getAllDictionaries() {
-        $query = DB::table('spravochniks')
-        ->join('input_types', 'spravochniks.input_type_id', '=', 'input_types.id')
-        ->join('insert_types', 'spravochniks.insert_type_id', '=', 'insert_types.id')
-        ->select('spravochniks.name', 'input_types.name as inputName', 'insert_types.name as insertName')
+        $query = DB::table('dictionaries')
+        ->join('input_types', 'dictionaries.input_type_id', '=', 'input_types.id')
+        ->join('insert_types', 'dictionaries.insert_type_id', '=', 'insert_types.id')
+        ->select('dictionaries.name', 'input_types.name as inputName', 'insert_types.name as insertName')
         ->get()->toArray();
-        // dd($query);
         $res = json_decode(json_encode($query), true);
         return $res;
     }
 
-    public function calc() {
-        $today = date("2020/12/20");
-        // $today = date("Y/m/d");
-        // dd(gettype($today));
-        $todayDay = date('d', strtotime($today));
-        $todayYear = date('Y', strtotime($today));
-        $todayMonth = date('m', strtotime($today));
-        $quarterToday = $this->getQuarterFromDate($today);
+    public function add() {
+        $today = date("2020/3/21");
 
+        $todayDay = intval(date('d', strtotime($today)));
+        $todayYear = intval(date('Y', strtotime($today)));
+        $todayMonth = intval(date('m', strtotime($today)));
+        $quarterToday = $this->getQuarterFromDate($today);
+//        dd(gettype($todayDay), $todayYear, $todayMonth);
+        $validDays = [21,22,23,24,25,26,27,28,29,30,31];
         $year = 2020; //за какой год делает оплату
 
-        $quarter = 1; //за какой квартал делает оплату
-
+        $quarter = 2; //за какой квартал делает оплату
+        $specialStatus = false;
         if (intval($year)  >=  $todayYear) {
-            if ($quarterToday >= intval($quarter)) {
-            //   if ($todayDay<=10 && in_array($todayMonth, array('01', '04', '07', '10'))) {
-            //     dd('Оплачено');
-            //   } 
+            if ($quarterToday >= intval($quarter)) { // если сегодняшний квартал больше или равен кварталу, за который оплачивает
               $diff = 0;
               if ($quarter === 1) {
                 $diff = abs(strtotime($today) - strtotime('2020/01/01'));
@@ -135,14 +165,21 @@ class SpravochnikController extends Controller
                 $diff = abs(strtotime($today) - strtotime('2020/10/01'));
                 $diff = $diff / 60/60/24;
               }
-              dd('Оплата с просрочкой на ' .$diff .' дней');
-            } else if ($quarterToday < intval($quarter)) {
-              return dd('Оплачено');
+              dd('Оплата с просрочкой ' .$diff .' дней', $specialStatus);
             } else {
-              return dd('Просрочено');
+                if ($quarter === 1 && $todayMonth === 12 && in_array($todayDay , $validDays)) {
+                    $specialStatus = true;
+                } else if ($quarter === 2 && $todayMonth === 3 && in_array($todayDay, $validDays)){
+                    $specialStatus = true;
+                } else if ($quarter === 3 && $todayMonth === 6 &&  in_array($todayDay,$validDays)){
+                    $specialStatus = true;
+                } else if ($quarter === 4 && $todayMonth === 9 && in_array($todayDay,$validDays)){
+                    $specialStatus = true;
+                }
+              return dd('Оплачено', $specialStatus);
             }
           } else {
-            return dd('Не оплачено');
+            return dd('Не оплачено', $specialStatus);
           }
     }
     private function getQuarterFromDate($date) {

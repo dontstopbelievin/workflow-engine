@@ -17,7 +17,7 @@
 
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
+                    <div class="table-responsive" id="items">
                         <table class="table">
                             <thead>
                                 <th>Наименование поля</th>
@@ -42,8 +42,9 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
+                                <h3 class="modal-title" id="title">Добавить новое поле</h3>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="title">Добавить новое поле</h4>
+                                
                             </div>
                             <div class="modal-body">
                                 <input type="hidden" id="id">
@@ -59,6 +60,15 @@
                                     @endforeach
                                     </select>
                                 @endisset
+                                <div id="hidden_div" style="display: none;">
+                                @isset($options)
+                                    @foreach ($options as $option)
+                                        <div class="checkbox">
+                                            <label><input class="get_value" type="checkbox" value="{{$option->name}}">{{$option->name}}</label>
+                                        </div>
+                                    @endforeach   
+                                @endisset
+                                </div>
                                 @isset($insertTypes)
                                 <label for="inputType">Выберите Тип Сохранения</label>
                                     <select class="form-control" name="insertType" id="insertType">
@@ -112,16 +122,32 @@
                     $('#saveChanges').hide('400');
                     $('#AddButton').show('400');
             });
+            $(document).on('change', '#inputType', function(event) {
+                var input = $(this).val();
+                if (input === 'select') {
+                    document.getElementById('hidden_div').style.display = "block";
+                } else {
+                    document.getElementById('hidden_div').style.display = "none";
+                }
+            });
 
             $('#AddButton').click(function(event) {
                 var text = $('#addItem').val();
                 var inputItem = $('#inputType').val();
                 var insertItem = $('#insertType').val();
                 var processId = $('#processId').val();
+                var selectedOptions = [];
 
+                $('.get_value').each(function(){
+                if($(this).is(":checked"))
+                {
+                    selectedOptions.push($(this).val());
+                }
+                });
 
                 if (text == '') {
                     alert('Введите название поля');
+                    alert(selectedOptions);
                 }  
                 if (inputItem === null) {
                     alert('Выберите тип вводимого');
@@ -129,7 +155,7 @@
                 if (insertItem === null) {
                     alert('Выберите тип сохранения');
                 }
-                $.post('spravochnik/create', {'fieldName':text,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, '_token':$('input[name=_token]').val()}, function(data){
+                $.post('dictionary/create', {'fieldName':text,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, '_token':$('input[name=_token]').val()}, function(data){
                     console.log(data);
                     $('#items').load(location.href + ' #items');
                 });
