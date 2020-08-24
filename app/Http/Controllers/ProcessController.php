@@ -79,7 +79,6 @@ class ProcessController extends Controller
         }
         $roles = Role::all();
         $organizations = CityManagement::all();
-        $nameMainOrg;
         $mainOrg = CityManagement::find($process->main_organization_id);
         if (empty($mainOrg)) {
             return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'array', 'roles', 'organizations', 'nameMainOrg'));
@@ -92,18 +91,17 @@ class ProcessController extends Controller
 
         $accepted = Template::accepted()->get();
         $rejected = Template::rejected()->get();
-        $handbook = new Handbook;
-        $columns = $handbook->getTableColumns();
-        $columns = array_slice($columns, 1, -4);
+        $columns = $this->getAllDictionaries();;
         $roles = Role::all();
+        $tableName = $this->translateSybmols($process->name);
+        $tableName = str_replace(' ', '_', $tableName);
+        $tableColumns = Schema::getColumnListing($tableName);
+//        dd($tableColumns);
         $parentId = $this->getParentRoleId($process->id);
         $organizations = CityManagement::all();
-        $mainOrganization;
-        $nameMainOrg;
-
         $mainOrg = CityManagement::find($process->main_organization_id);
         if (empty($mainOrg)) {
-            return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'array', 'roles', 'organizations', 'nameMainOrg'));
+            return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'array', 'roles', 'organizations', 'nameMainOrg'));
         }
         $nameMainOrg = $mainOrg->name;
         if (empty($organizations)) {
@@ -111,12 +109,12 @@ class ProcessController extends Controller
             return;
         }
         if ($parentId === 0) {
-            return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'roles','organizations','nameMainOrg'));
+            return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','organizations','nameMainOrg'));
         }
 
         $iterateRoles = $this->getIterateRoles($process);
         $sAllRoles = $this->getAllRoles($process, $parentId,$iterateRoles);
-        return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'roles','sAllRoles', 'organizations', 'nameMainOrg'));
+        return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','sAllRoles', 'organizations', 'nameMainOrg'));
     }
 
     public function update(Request $request, Process $process) {   
@@ -133,25 +131,60 @@ class ProcessController extends Controller
         return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был обновлен');
     }
 
-    public function saveFields(Request $request, Process $process) {
-
-        if (!$process->handbook()->exists()) {
-            $handbook = new Handbook;
-            $fields = $request->fields;
-            foreach ($fields as $field) {
-                if(Schema::hasColumn('handbooks', '$field')) ; //check whether handbooks table has columns in array
-                {
-                    $handbook->$field = 'exist';
-                }
-            }
-            $handbook->process_id = $process->id;
-            $handbook->active = 1;
-            $handbook->save();
+    public function createProcessTable(Request $request, Process $process) {
+        $processName = $process->name;
+        $fields = $request->fields;
+        $tableName = $this->translateSybmols($processName);
+        $tableName = str_replace(' ', '_', $tableName);
+        if (!Schema::hasTable($tableName)) {
+            $dbQueryString = "CREATE TABLE $tableName (id INT PRIMARY KEY AUTO_INCREMENT)";
+            DB::statement($dbQueryString);
         }
-        $arrayJson = json_encode($request->fields);
-        $process->fields = $arrayJson;
-        $process->save();
+        foreach($fields as $fieldName) {
+            if($this->isRussian($fieldName)) {
+                $fieldName = $this->translateSybmols($fieldName);
+                $fieldName = str_replace(' ', '_', $fieldName);
+            } ;
+            if (Schema::hasColumn($tableName, $fieldName)) {
+                continue;
+            } else {
+                $dbQueryString = "ALTER TABLE $tableName ADD COLUMN $fieldName varchar(255)";
+                DB::statement($dbQueryString);
+            }
+        }
+        if (!Schema::hasColumn($tableName, 'process_id')) {
+            $dbQueryString = "ALTER TABLE $tableName ADD  process_id INT";
+            DB::statement($dbQueryString);
+            DB::table($tableName)->insert(
+                [ 'process_id' => $process->id]
+            );
+        }
+
+
+
+//        dd('done im here');
+
+
+//        if (!$process->handbook()->exists()) {
+//            $handbook = new Handbook;
+//            $fields = $request->fields;
+//            foreach ($fields as $field) {
+//                if(Schema::hasColumn('handbooks', '$field')) ; //check whether handbooks table has columns in array
+//                {
+//                    $handbook->$field = 'exist';
+//                }
+//            }
+//            $handbook->process_id = $process->id;
+//            $handbook->active = 1;
+//            $handbook->save();
+//        }
+//        $arrayJson = json_encode($request->fields);
+//        $process->fields = $arrayJson;
+//        $process->save();
         return Redirect::route('processes.edit', [$process])->with('status', 'Справочники успешно сохранены');
+    }
+    public function isRussian($text) {
+        return preg_match('/[А-Яа-яЁё]/u', $text);
     }
 
     public function addRole(Request $request, Process $process) {

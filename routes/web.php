@@ -109,7 +109,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::post('add-organization/{process}', 'ProcessController@addOrganization')->name('processes.addOrganization');
     Route::get('processes-edit/{process}', 'ProcessController@edit')->name('processes.edit');
     Route::put('processes-update/{process}', 'ProcessController@update')->name('processes.update');
-    Route::post('process-save-fields/{process}', 'ProcessController@savefields')->name('processes.saveFields');
+    Route::post('create-process-table/{process}', 'ProcessController@createProcessTable')->name('processes.createProcessTable');
     Route::post('process-add-role/{process}', 'ProcessController@addRole')->name('processes.addRole');
     Route::delete('process-delete/{process}', 'ProcessController@delete')->name('processes.delete');
 
