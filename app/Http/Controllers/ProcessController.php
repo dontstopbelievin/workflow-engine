@@ -37,13 +37,9 @@ class ProcessController extends Controller
     }
 
     public function create() {
-
-        $handbook = new Handbook;
-        $columns = $handbook->getTableColumns();
-        $columns = array_slice($columns, 1, -5);
         $accepted = Template::accepted()->get();
         $rejected = Template::rejected()->get();
-        return view('process.create', compact('accepted', 'rejected','columns'));
+        return view('process.create', compact('accepted', 'rejected'));
     }
 
     public function store(Request $request) {
@@ -93,25 +89,26 @@ class ProcessController extends Controller
         $rejected = Template::rejected()->get();
         $columns = $this->getAllDictionaries();;
         $roles = Role::all();
-        $tableName = $this->translateSybmols($process->name);
-        $tableName = str_replace(' ', '_', $tableName);
-        $tableColumns = Schema::getColumnListing($tableName);
-//        dd($tableColumns);
+        $tableName = $this->getTableName($process->name);
+        $tableColumns = $this->getColumns($tableName);
         $parentId = $this->getParentRoleId($process->id);
         $organizations = CityManagement::all();
         $mainOrg = CityManagement::find($process->main_organization_id);
         if (empty($mainOrg)) {
-            return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'array', 'roles', 'organizations', 'nameMainOrg'));
+//            dd('1');
+            return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns','columns', 'array', 'roles', 'organizations', 'nameMainOrg'));
         }
         $nameMainOrg = $mainOrg->name;
         if (empty($organizations)) {
+//            dd('2');
             echo 'Добавьте организации';
             return;
         }
         if ($parentId === 0) {
-            return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','organizations','nameMainOrg'));
+//            dd('3');
+            return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','columns','organizations','nameMainOrg'));
         }
-
+//        dd('4');
         $iterateRoles = $this->getIterateRoles($process);
         $sAllRoles = $this->getAllRoles($process, $parentId,$iterateRoles);
         return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','sAllRoles', 'organizations', 'nameMainOrg'));
@@ -132,6 +129,7 @@ class ProcessController extends Controller
     }
 
     public function createProcessTable(Request $request, Process $process) {
+
         $processName = $process->name;
         $fields = $request->fields;
         $tableName = $this->translateSybmols($processName);
@@ -143,8 +141,8 @@ class ProcessController extends Controller
         foreach($fields as $fieldName) {
             if($this->isRussian($fieldName)) {
                 $fieldName = $this->translateSybmols($fieldName);
-                $fieldName = str_replace(' ', '_', $fieldName);
             } ;
+            $fieldName = str_replace(' ', '_', $fieldName);
             if (Schema::hasColumn($tableName, $fieldName)) {
                 continue;
             } else {
@@ -156,35 +154,33 @@ class ProcessController extends Controller
             $dbQueryString = "ALTER TABLE $tableName ADD  process_id INT";
             DB::statement($dbQueryString);
             DB::table($tableName)->insert(
-                [ 'process_id' => $process->id]
+                [ 'process_id' => $process->id ]
             );
         }
 
+        if (!Schema::hasColumn($tableName, 'status_id')) {
+            $dbQueryString = "ALTER TABLE $tableName ADD  status_id INT";
+            DB::statement($dbQueryString);
+
+        }
+        if (!Schema::hasColumn($tableName, 'user_id')) {
+            $dbQueryString = "ALTER TABLE $tableName ADD  user_id INT";
+            DB::statement($dbQueryString);
+
+        }
+        if (!Schema::hasColumn($tableName, 'index_sub_route')) {
+            $dbQueryString = "ALTER TABLE $tableName ADD  index_sub_route INT";
+            DB::statement($dbQueryString);
+
+        }
+        if (!Schema::hasColumn($tableName, 'index')) {
+            $dbQueryString = "ALTER TABLE $tableName ADD COLUMN index INT";
+            DB::statement($dbQueryString);
+
+        }
 
 
-//        dd('done im here');
-
-
-//        if (!$process->handbook()->exists()) {
-//            $handbook = new Handbook;
-//            $fields = $request->fields;
-//            foreach ($fields as $field) {
-//                if(Schema::hasColumn('handbooks', '$field')) ; //check whether handbooks table has columns in array
-//                {
-//                    $handbook->$field = 'exist';
-//                }
-//            }
-//            $handbook->process_id = $process->id;
-//            $handbook->active = 1;
-//            $handbook->save();
-//        }
-//        $arrayJson = json_encode($request->fields);
-//        $process->fields = $arrayJson;
-//        $process->save();
         return Redirect::route('processes.edit', [$process])->with('status', 'Справочники успешно сохранены');
-    }
-    public function isRussian($text) {
-        return preg_match('/[А-Яа-яЁё]/u', $text);
     }
 
     public function addRole(Request $request, Process $process) {

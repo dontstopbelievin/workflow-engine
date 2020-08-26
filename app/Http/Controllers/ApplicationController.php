@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use PhpOffice\PhpWord\TemplateProcessor;
+use Illuminate\Support\Facades\DB;
 
 class ApplicationController extends Controller
 {
@@ -31,15 +32,18 @@ class ApplicationController extends Controller
 
     public function index(Process $process) {
 
-        $applications = Application::where('process_id', $process->id)->get();
+        $tableName = $this->getTableName($process->name);
+
+        $applications = DB::table($tableName)->get()->toArray();
+        $arrayApps = json_decode(json_encode($applications), true);
         $statuses = [];
-        foreach($applications as $app) {
-            $status = $app->statuses()->get();
-            $statusLength = sizeof($status);
-            $statusName = $status[$statusLength-1]->name;
-            array_push($statuses, $statusName);
-        }
-        return view('application.index', compact('applications', 'process','statuses'));
+//        foreach($applications as $app) {
+//            $status = $app->statuses()->get();
+//            $statusLength = sizeof($status);
+//            $statusName = $status[$statusLength-1]->name;
+//            array_push($statuses, $statusName);
+//        }
+        return view('application.index', compact('arrayApps', 'process','statuses'));
     }
 
     public function view(Application $application) {
@@ -103,16 +107,57 @@ class ApplicationController extends Controller
 
     public function create(Process $process) {
 
-        $fields = $process->handbook;
-        $field_keys = array_keys(array_filter($fields->toArray()));
-        $field_keys = array_slice($field_keys, 1, count($field_keys)-5);
-        return view('application.create', compact('process', 'field_keys'));
+        $tableName = $this->getTableName($process->name);
+        $tableColumns = $this->getColumns($tableName);
+        $originalTableColumns = $this->getOriginalColumns($tableColumns);
+        $dictionaries = $this->getAllDictionaries();
+        $res = [];
+
+        foreach($dictionaries as $item) {
+            foreach($originalTableColumns as $column) {
+                if($item["name"] === $column) {
+                    array_push($res, $item);
+                }
+            }
+        }
+        $dictionariesWithOptions = $this->addOptionsToDictionary($res);
+
+        $arrayToFront = [];
+        foreach($dictionariesWithOptions as $item) {
+            $replaced = str_replace(' ', '_', $item["name"]);
+            $item["name"] = $replaced;
+            array_push($arrayToFront, $item);
+        }
+        return view('application.create', compact('process', 'arrayToFront'));
     }
 
-    public function store(Process $process, Request $request) {
+    public function store(Request $request) {
 
-        $id = $request->process_id;
+        $input = $request->input();
+
+        $arrayToInsert = array_slice($input, 1, sizeof($input)-1);
+        $process = Process::find($request->process_id);
+        $routes = $this->getRolesWithoutParent($process->id);
+        $arrRoutes = json_decode(json_encode($routes), true);
+        $startRole = $arrRoutes[0]["name"]; //с какой роли начинается маршрут. Находится для того, чтобы присвоить статус маршруту
+        $role = Role::where('name', $startRole)->first();
+        $status = Status::find($role->id);
+//        $status_id = $status->id;
+        $arrayToInsert["status_id"] = $status->id;
+        $tableName = $this->getTableName($process->name);
+        $user = Auth::user();
+        $arrayToInsert["user_id"] = $user->id;
+        $arrayToInsert["index"] = 0;
+//        dd($arrayToInsert);
+        DB::table($tableName)->insert( $arrayToInsert);
+
+        return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
+
+
+
+
         $requestFields = array_slice($request->input(), 1);
+        dd($requestFields);
         $field_keys = array_keys($requestFields);
         $handbook = new Handbook;
         $columns = $handbook->getTableColumns();
@@ -191,6 +236,17 @@ class ApplicationController extends Controller
         $application->status = $status->name;
         $application->update();
         return Redirect::route('applications.service')->with('status', $status->name);
-    }   
+    }
+
+    public function getAllDictionaries() {
+        $query = DB::table('dictionaries')
+            ->join('input_types', 'dictionaries.input_type_id', '=', 'input_types.id')
+            ->join('insert_types', 'dictionaries.insert_type_id', '=', 'insert_types.id')
+            ->select('dictionaries.name', 'input_types.name as inputName', 'insert_types.name as insertName')
+            ->get()->toArray();
+        $res = json_decode(json_encode($query), true);
+        return $res;
+    }
+
 
 }

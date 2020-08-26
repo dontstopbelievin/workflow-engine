@@ -31,7 +31,10 @@
                                     @elseif($item["inputName"] === 'select')
                                         <label for="{{$item["name"]}}">{{$item["name"]}}</label>
                                         <input type="file" name={{$item["name"]}} id = {{$item["name"]}} class="form-control">
-                                        @else
+                                    @elseif($item["inputName"] === 'image')
+                                        <label for="{{$item["name"]}}">{{$item["name"]}}</label>
+                                        <input type="file" name={{$item["name"]}} id = {{$item["name"]}} class="form-control">
+                                    @else
                                         <label for="{{$item["name"]}}">{{$item["name"]}}</label>
                                         <select name="{{$item["name"]}}" id="{{$item["name"]}}" class="form-control">
                                             <option selected disabled>Выберите Ниже</option>

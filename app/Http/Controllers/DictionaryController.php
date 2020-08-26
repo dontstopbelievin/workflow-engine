@@ -26,7 +26,6 @@ class DictionaryController extends Controller
     
     public function create(Request $request) {
 
-//         dd($request->input('fields'));
         $fieldName = $request->fieldName;
         $inputItem = $request->inputItem;
         $insertItem = $request->insertItem;
@@ -79,7 +78,6 @@ class DictionaryController extends Controller
                     }
                 }
             }
-
         } else {
             $dbQueryString = "CREATE TABLE $tableName (
                 id INT PRIMARY KEY AUTO_INCREMENT,
@@ -93,24 +91,17 @@ class DictionaryController extends Controller
 
     public function createFields() {
         $dictionaries = $this->getAllDictionaries();
-        $dictionariesWithOptions = [];
-        foreach($dictionaries as $dictionary) {
-
-            if($dictionary["inputName"] === 'select') {
-                $options = $this->getOptionsOfThisSelect($dictionary["name"]);
-                $dictionary["inputName"] = $options;
-            }
-            array_push($dictionariesWithOptions, $dictionary);
-        }
-
-//        dd($dictionariesWithOptions);
+        $dictionariesWithOptions = $this->addOptionsToDictionary($dictionaries);
+        dd($dictionaries, $dictionariesWithOptions);
         return view('dictionary.create',compact('dictionariesWithOptions'));
     }
 
     public function saveToTable(Request $request) {
-//        dd('here');
+
         dd($request->input());
     }
+
+
 
 
 //    public function add() {

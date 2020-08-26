@@ -23,20 +23,18 @@
                             <thead class="text-primary">
                                 
                                 <th>#</th>
-                                <th>Наименование услуги</th>
                                 <th>Имя заявителя</th>
                                 <th>Статус заявки</th>
                                 
                             </thead>
                             <tbody>
-                            @foreach($applications as $app)
-                              <tr>
-                                <td><a href="{{ route('applications.view', ['application' => $app]) }}">{{$app->id}}</a></td>
-                                <td>{{$process->name ?? ''}}</td>  
-                                <td>{{$app->surname ?? '' }}</td> 
-                                <td>{{$app->status ?? ''}}</td>
-                              </tr>
-                              @endforeach
+                            @foreach($arrayApps as $app)
+                                  <tr>
+                                    <td><a href="{{ route('applications.view', ['application' => $app["id"]]) }}">{{$app["id"]}}</a></td>
+                                    <td>{{$app["name"] ?? '' }}</td>
+                                    <td>{{$app["name"] ?? ''}}</td>
+                                  </tr>
+                            @endforeach
                             </tbody>
 
                         </tablе>

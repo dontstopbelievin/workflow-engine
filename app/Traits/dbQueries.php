@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use App\Dictionary;
 
 trait dbQueries
@@ -117,6 +118,19 @@ trait dbQueries
         $lat=array('a','b','v','g','d','e','e','gh','z','i','y','k','l','m','n','o','p','r','s','t','u','f','h','c','ch','sh','sch','y','y','y','e','yu','ya','a','b','v','g','d','e','e','gh','z','i','y','k','l','m','n','o','p','r','s','t','u','f','h','c','ch','sh','sch','y','y','y','e','yu','ya',' ');
         return str_replace($rus, $lat, $text);
     }
+    public function translateSybmolsBack($text) {
+
+        $rus=array('А','Б','В','Г','Д','Е','Ё','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ъ','Ы','Ь','Э','Ю','Я','а','б','в','г','д','е','ё','ж','з','и','й','к','л','м','н','о','п','р','с','т','у','ф','х','ц','ч','ш','щ','ъ','ы','ь','э','ю','я',' ');
+        $lat=array('a','b','v','g','d','e','e','gh','z','i','y','k','l','m','n','o','p','r','s','t','u','f','h','c','ch','sh','sch','y','y','y','e','yu','ya','a','b','v','g','d','e','e','gh','z','i','y','k','l','m','n','o','p','r','s','t','u','f','h','c','ch','sh','sch','y','y','y','e','yu','ya',' ');
+        return str_replace($lat, $rus,  $text);
+    }
+
+    public function isRussian($text) {
+        return preg_match('/[А-Яа-яЁё]/u', $text);
+    }
+    public function isEnglish($text) {
+        return preg_match('/[A-Za-z]/u', $text);
+    }
 
     public function getAllDictionaries() {
         $query = DB::table('dictionaries')
@@ -126,5 +140,44 @@ trait dbQueries
             ->get()->toArray();
         $res = json_decode(json_encode($query), true);
         return $res;
+    }
+    public function getColumns($tableName) {
+        $tableColumns = Schema::getColumnListing($tableName);
+        return $this->filterArray($tableColumns);
+    }
+
+    public function getTableName($table) {
+        $tableName = $this->translateSybmols($table);
+        return str_replace(' ', '_', $tableName);
+    }
+
+    public function getOriginalColumns($tableColumns) {
+        $array = [];
+        foreach ($tableColumns as $column) {
+            array_push($array, str_replace('_', ' ', $column));
+        }
+        return $array;
+    }
+    public function filterArray($array) {
+        $result = [];
+        foreach($array as $item) {
+            if (($item != "id") && ($item != "process_id")) {
+                array_push($result, $item);
+            }
+        }
+        return $result;
+
+    }
+    public function addOptionsToDictionary($dictionaries) {
+        $array = [];
+        foreach($dictionaries as $dictionary) {
+
+            if($dictionary["inputName"] === 'select') {
+                $options = $this->getOptionsOfThisSelect($dictionary["name"]);
+                $dictionary["inputName"] = $options;
+            }
+            array_push($array, $dictionary);
+        }
+        return $array;
     }
 }
