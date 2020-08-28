@@ -35,8 +35,8 @@ class TemplateController extends Controller
             'doc_path' => $docPath,
             'accept_template' => $templateState,
         ]);
-        $template->save(); 
-        return Redirect::route('template.index')->with('status','Шаблон успешно создан');;
+        $template->save();
+        return 'Шаблон успешно создан';
     }
 
     public function edit(Template $template) {
@@ -44,17 +44,21 @@ class TemplateController extends Controller
         return view('template.edit', compact('template'));
     }
 
-    public function update(Request $request, Template $template) {
+    public function update($id, Request $request) {
+        $isTouch = isset($request->file_input);
+        if($isTouch){
+          $docPath = request()->file_input->store('templates', 'public');
+          $template = Template::where('id', $id)->update(['name' => $request->name, 'doc_path' => $docPath]);
+        }else{
+          $template = Template::where('id', $id)->update(['name' => $request->name]);
+        }
 
-        $template->name = $request->name;
-        $template->doc_path = $request->file_input;
-        $template->update();
-        return Redirect::route('template.index')->with('status','Шаблон успешно обновлен');
+        return 'Шаблон успешно обновлен';
     }
 
-    public function delete(Template $template) {
-        
-        $template->delete();
-        return Redirect::route('template.index')->with('status','Шаблон успешно удален');
+    public function delete($id) {
+        $template = Template::where('id', $id)->delete();
+        //$template->delete();
+        return 'Шаблон успешно удален';
     }
 }

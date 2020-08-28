@@ -39,6 +39,11 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" integrity="sha512-aOG0c6nPNzGk+5zjwyJaoRUgCdOrfSDhmMID2u4+OIslr0GjpLKo7Xm0Ao3xmpM4T8AmIouRkqwj1nrdVsLKEQ==" crossorigin="anonymous" />
+    <style>
+      body{
+         padding: 0 !important;
+      }
+    </style>
 </head>
 
 <body class="">
@@ -113,14 +118,14 @@
             </a>
           </li>
 
-         
+
         </ul>
       </div>
     </div>
     <div class="main-panel" id="main-panel">
       <!-- Navbar -->
       <nav class="navbar navbar-expand-lg navbar-transparent  bg-primary  navbar-absolute">
-        <div class="container-fluid">          
+        <div class="container-fluid">
           <div class="collapse navbar-collapse justify-content-end" id="navigation">
             <form>
               {{--<div class="input-group no-border">--}}
@@ -162,7 +167,7 @@
       <div class="content">
 
       @yield('content')
-        
+
       </div>
 
     </div>

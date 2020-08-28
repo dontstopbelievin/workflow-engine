@@ -90,8 +90,8 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('templates/create', 'TemplateController@create')->name('template.create');
     Route::post('templates/create', 'TemplateController@store')->name('template.store');
     Route::get('template-edit/{template}', 'TemplateController@edit')->name('template.edit');
-    Route::put('template-update/{template}', 'TemplateController@update')->name('template.update');
-    Route::delete('template-delete/{template}', 'TemplateController@delete')->name('template.delete');
+    Route::post('template-update/{id}', 'TemplateController@update')->name('template.update');
+    Route::post('template-delete/{id}', 'TemplateController@delete')->name('template.delete');
 
     Route::get('manual', 'HandbookController@index')->name('manual.index');;
 
@@ -107,7 +107,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::post('process-add-role/{process}', 'ProcessController@addRole')->name('processes.addRole');
     Route::delete('process-delete/{process}', 'ProcessController@delete')->name('processes.delete');
 
-    
+
     View::composer(['*'], function($view) {
         $usersCount = count(User::active()->get());
         $rolesCount = count(Role::all());
@@ -117,7 +117,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         $applicationsCount = count(CityManagement::all());
         $handbook = new Handbook;
         $handbookCount = count($handbook->getTableColumns());
-        $view->with(compact('usersCount', 'rolesCount','fieldsCount', 'templatesCount','processesCount','handbookCount','cityManagementCount','applicationsCount'));
+        $view->with(compact('usersCount', 'rolesCount', 'templatesCount','processesCount','handbookCount','cityManagementCount','applicationsCount'));
     });
 
 });
