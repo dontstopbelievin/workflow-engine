@@ -74,6 +74,12 @@ trait dbQueries
         }
         return json_encode($res);
     }
+    public function getTableWithStatuses($table) {
+        return DB::table($table)
+            ->join('statuses', $table.'.status_id','=', 'statuses.id')
+            ->select($table.'.*', 'statuses.name as status')
+            ->get()->toArray();
+    }
 
     public function getRecords($id) {
 

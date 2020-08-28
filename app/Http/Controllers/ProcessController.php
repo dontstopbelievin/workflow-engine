@@ -94,21 +94,18 @@ class ProcessController extends Controller
         $parentId = $this->getParentRoleId($process->id);
         $organizations = CityManagement::all();
         $mainOrg = CityManagement::find($process->main_organization_id);
+        $nameMainOrg='';
         if (empty($mainOrg)) {
-//            dd('1');
             return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns','columns', 'array', 'roles', 'organizations', 'nameMainOrg'));
         }
         $nameMainOrg = $mainOrg->name;
         if (empty($organizations)) {
-//            dd('2');
             echo 'Добавьте организации';
             return;
         }
         if ($parentId === 0) {
-//            dd('3');
             return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','columns','organizations','nameMainOrg'));
         }
-//        dd('4');
         $iterateRoles = $this->getIterateRoles($process);
         $sAllRoles = $this->getAllRoles($process, $parentId,$iterateRoles);
         return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','sAllRoles', 'organizations', 'nameMainOrg'));
@@ -173,8 +170,8 @@ class ProcessController extends Controller
             DB::statement($dbQueryString);
 
         }
-        if (!Schema::hasColumn($tableName, 'index')) {
-            $dbQueryString = "ALTER TABLE $tableName ADD COLUMN index INT";
+        if (!Schema::hasColumn($tableName, 'index_main')) {
+            $dbQueryString = "ALTER TABLE $tableName ADD index_main INT";
             DB::statement($dbQueryString);
 
         }

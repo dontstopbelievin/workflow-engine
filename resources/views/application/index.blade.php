@@ -21,18 +21,16 @@
                     <div class="table-responsive">
                         <table class="table">
                             <thead class="text-primary">
-                                
                                 <th>#</th>
                                 <th>Имя заявителя</th>
                                 <th>Статус заявки</th>
-                                
                             </thead>
                             <tbody>
                             @foreach($arrayApps as $app)
                                   <tr>
-                                    <td><a href="{{ route('applications.view', ['application' => $app["id"]]) }}">{{$app["id"]}}</a></td>
+                                    <td><a href="{{ route('applications.view', ['process_id' => $process["id"] , 'application_id' => $app["id"]]) }}">{{$app["id"]}}</a></td>
                                     <td>{{$app["name"] ?? '' }}</td>
-                                    <td>{{$app["name"] ?? ''}}</td>
+                                    <td>{{$app["status"] ?? ''}}</td>
                                   </tr>
                             @endforeach
                             </tbody>

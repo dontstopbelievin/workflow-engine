@@ -35,16 +35,16 @@ Auth::routes();
 
 Route::get('services', 'ApplicationController@service')->name('applications.service');
 Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');
-Route::get('view/{application}', 'ApplicationController@view')->name('applications.view');
+Route::get('application-view/{process_id}/{application_id}', 'ApplicationController@view')->name('applications.view');
 
 
 Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
 Route::post('applications/store', 'ApplicationController@store')->name('applications.store');
-Route::post('applications/approve/{application}', 'ApplicationController@approve')->name('applications.approve');
-Route::post('applications/sendToSubRoute/{application}', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
-Route::post('applications/backToMainOrg/{application}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
+Route::post('applications/approve/{application_id}', 'ApplicationController@approve')->name('applications.approve');
+Route::post('applications/sendToSubRoute/{application_id}', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
+Route::post('applications/backToMainOrg/{application_id}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
 
-Route::post('applications/toCitizen/{application}', 'ApplicationController@toCitizen')->name('applications.toCitizen');
+Route::post('applications/toCitizen/{application_id}', 'ApplicationController@toCitizen')->name('applications.toCitizen');
 
 Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('/dictionary', 'DictionaryController@index')->name('dictionary');
