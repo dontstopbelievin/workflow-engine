@@ -65,6 +65,49 @@
                     </div>
 
                 @endisset
+
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Форма Мотивированного отказа</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <input type="text" id="rejectReason" name="reject_reason" placeholder="Введите причину отказа">
+                                    <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
+                                    <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
+                                    <button id="rejectButton">Отправить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="myModal2" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Форма отправки на доработку</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <input type="text" id="revisionReason" name="revision_reason" placeholder="Введите причину отправки на доработку">
+                                    <select name="roleToRevise" id="roleToRevise">
+                                        <option selected disabled>Выберите Ниже</option>
+                                        @foreach($allRoles as $role)
+                                            <option value="{{$role}}">{{$role}}</option>
+                                        @endforeach
+                                    </select>
+                                    <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
+                                    <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
+                                    <button id="revisionButton">Отправить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 @if($canApprove)
                     @if($toCitizen)
                         <form action="{{ route('applications.toCitizen', ['application_id' => $application->id]) }}" method="post">
@@ -90,16 +133,71 @@
                         <form action="{{ route('applications.approve', ['application_id' => $application->id]) }}" method="post">
                             @csrf
                             <input type="hidden" name="process_id" value = {{$process->id}}>
+
                             <button class="btn btn-basic" type="submit">Отправить на согласование</button>
                         </form>
+                            <button type="button" class="btn btn-basic" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
+
+
+                            <button type="button" class="btn btn-basic" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
+
+
                     @endif
                     @endif
             </div>
+
         </div>
     </div>
 </div>
 
 {{csrf_field()}}
+
+
+<script
+    src="https://code.jquery.com/jquery-3.5.1.min.js"
+    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+
+
+        $(document).on('click', '.ourItem', function(event) {
+            var text = $(this).text();
+            text = $.trim(text);
+            $('#modHeader').val(text);
+            console.log(text);
+        });
+
+        $('#rejectButton').click(function(event) {
+            var rejectReason = $('#rejectReason').val();
+            var processId = $('#processId').val();
+            var applicationId = $('#applicationId').val();
+            console.log(rejectReason, processId, applicationId)
+            $.post('/applications/reject', {'rejectReason':rejectReason,'processId':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
+                var modal =  $('#myModal');
+                // console.log(data);
+                modal.style.display = 'none';
+                $('#items').load(location.href + ' #items');
+            });
+        });
+        $('#revisionButton').click(function(event) {
+            var revisionReason = $('#revisionReason').val();
+            var roleToRevise = $( "#roleToRevise option:selected" ).text();
+            var processId = $('#processId').val();
+            var applicationId = $('#applicationId').val();
+            console.log(rejectReason, processId, applicationId)
+            $.post('/applications/revision', {'revisionReason':revisionReason,'processId':processId,'applicationId':applicationId,'roleToRevise':roleToRevise, '_token':$('input[name=_token]').val()}, function(data){
+                var modal =  $('#myModal');
+                // console.log(data);
+                modal.style.display = 'none';
+                $('#items').load(location.href + ' #items');
+            });
+        });
+
+    });
+</script>
 
 </body>
 </html>

@@ -138,15 +138,15 @@ trait dbQueries
         return preg_match('/[A-Za-z]/u', $text);
     }
 
-    public function getAllDictionaries() {
-        $query = DB::table('dictionaries')
-            ->join('input_types', 'dictionaries.input_type_id', '=', 'input_types.id')
-            ->join('insert_types', 'dictionaries.insert_type_id', '=', 'insert_types.id')
-            ->select('dictionaries.name', 'input_types.name as inputName', 'insert_types.name as insertName')
-            ->get()->toArray();
-        $res = json_decode(json_encode($query), true);
-        return $res;
-    }
+//    public function getAllDictionaries() {
+//        $query = DB::table('dictionaries')
+//            ->join('input_types', 'dictionaries.input_type_id', '=', 'input_types.id')
+//            ->join('insert_types', 'dictionaries.insert_type_id', '=', 'insert_types.id')
+//            ->select('dictionaries.name', 'input_types.name as inputName', 'insert_types.name as insertName')
+//            ->get()->toArray();
+//        $res = json_decode(json_encode($query), true);
+//        return $res;
+//    }
     public function getColumns($tableName) {
         $tableColumns = Schema::getColumnListing($tableName);
         return $this->filterArray($tableColumns);
@@ -185,5 +185,30 @@ trait dbQueries
             array_push($array, $dictionary);
         }
         return $array;
+    }
+    public function getAllDictionaries() {
+
+        $query = DB::table('dictionaries')
+            ->join('input_types', 'dictionaries.input_type_id', '=', 'input_types.id')
+            ->join('insert_types', 'dictionaries.insert_type_id', '=', 'insert_types.id')
+            ->select('dictionaries.name', 'input_types.name as inputName', 'insert_types.name as insertName')
+            ->get()->toArray();
+        return json_decode(json_encode($query), true);
+    }
+
+    public function mergeRoles($mainRoles, $subRoles) {
+        $mainRolesNames = [];
+        foreach($mainRoles as $role) {
+            array_push($mainRolesNames, $role->name);
+        }
+        return array_merge($mainRolesNames, $subRoles);
+    }
+
+    public function getMainRoleArray($mainRoles) {
+        $mainRoleArr = [];
+        foreach ($mainRoles as $role) {
+            array_push($mainRoleArr, $role->name);
+        }
+        return $mainRoleArr;
     }
 }

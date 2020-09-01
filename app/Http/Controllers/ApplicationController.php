@@ -36,6 +36,15 @@ class ApplicationController extends Controller
 
         $applications = $this->getTableWithStatuses($tableName);
         $arrayApps = json_decode(json_encode($applications), true);
+        foreach($arrayApps as &$app) {
+            if ($app["to_revision"] === 1) {
+                $app["status"] = $app["status"] . " на доработку";
+
+            } else {
+                $app["status"] = $app["status"] . " на согласование";
+            }
+        }
+//        dd($arrayApps);
         $statuses = [];
         return view('application.index', compact('arrayApps', 'process','statuses'));
     }
@@ -45,7 +54,6 @@ class ApplicationController extends Controller
         $process = Process::find($processId);
         $tableName = $this->getTableName($process->name);
         $application = DB::table($tableName)->where('id', $applicationId)->first();
-//        dd($application);
         $statusId = $application->status_id;
         $user = Auth::user();
         $thisRole = $user->role;
@@ -100,8 +108,11 @@ class ApplicationController extends Controller
             return;
         }
         $nameUpr = CityManagement::find($thisRole->city_management_id)->name;
+        $mainRoles = $this->getIterateRoles($process);
+        $subRoles = $this->getSubRoutes($process->id);
+        $allRoles = $this->mergeRoles($mainRoles, $subRoles);
 
-        return view('application.view', compact('application', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg'));
+        return view('application.view', compact('application', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles'));
     }
 
     public function create(Process $process) {
@@ -110,6 +121,7 @@ class ApplicationController extends Controller
         $tableColumns = $this->getColumns($tableName);
         $originalTableColumns = $this->getOriginalColumns($tableColumns);
         $dictionaries = $this->getAllDictionaries();
+//        dd($dictionaries, $originalTableColumns);
         $res = [];
 
         foreach($dictionaries as $item) {
@@ -127,6 +139,7 @@ class ApplicationController extends Controller
             $item["name"] = $replaced;
             array_push($arrayToFront, $item);
         }
+//        dd($arrayToFront);
         return view('application.create', compact('process', 'arrayToFront'));
     }
 
@@ -165,9 +178,16 @@ class ApplicationController extends Controller
         $idOfNextRole = $nextR->id; // get id of next role
         $index = $index + 1;
         $status = Status::find($idOfNextRole);
-        $affected = DB::table($tableName)
-            ->where('id', $id)
-            ->update(['status_id' => $status->id, 'index_main' => $index]);
+        if ($application->to_revision === 0) {
+            DB::table($tableName)
+                ->where('id', $id)
+                ->update(['status_id' => $status->id, 'index_main' => $index]);
+        } else {
+            DB::table($tableName)
+                ->where('id', $id)
+                ->update(['status_id' => $status->id, 'index_main' => $index,'to_revision' => 0 ]);
+        }
+
 //        $application->statuses()->attach($status);
         return Redirect::route('applications.service')->with('status', $status->name);
     }
@@ -184,9 +204,15 @@ class ApplicationController extends Controller
         $idOfNextRole = $nextR->id;
         $index = $index + 1;
         $status = Status::find($idOfNextRole);
-        DB::table($tableName)
-            ->where('id', $id)
-            ->update(['status_id' => $status->id, 'index_sub_route' => $index]);
+        if ($application->to_revision === 0) {
+            DB::table($tableName)
+                ->where('id', $id)
+                ->update(['status_id' => $status->id, 'index_sub_route' => $index]);
+        } else {
+            DB::table($tableName)
+                ->where('id', $id)
+                ->update(['status_id' => $status->id, 'index_sub_route' => $index, 'to_revision' => 0]);
+        }
         return Redirect::route('applications.service')->with('status', $status->name);
         
     }
@@ -202,7 +228,6 @@ class ApplicationController extends Controller
             ->where('id', $id)
             ->update(['status_id' => $status->id, 'index_sub_route' => Null]);
         return Redirect::route('applications.service')->with('status', $status->name);
-        
     }
 
     public function toCitizen($id, Request $request) {
@@ -210,7 +235,6 @@ class ApplicationController extends Controller
         $process = Process::find($request->process_id);
         $tableName = $this->getTableName($process->name);
         $statusCount = count(Status::all());
-//        $application->statuses()->attach($statusCount);
         $status = Status::find($statusCount);
         $affected = DB::table($tableName)
             ->where('id', $id)
@@ -218,15 +242,76 @@ class ApplicationController extends Controller
         return Redirect::route('applications.service')->with('status', $status->name);
     }
 
-    public function getAllDictionaries() {
+    public function reject(Request $request) {
 
-        $query = DB::table('dictionaries')
-            ->join('input_types', 'dictionaries.input_type_id', '=', 'input_types.id')
-            ->join('insert_types', 'dictionaries.insert_type_id', '=', 'insert_types.id')
-            ->select('dictionaries.name', 'input_types.name as inputName', 'insert_types.name as insertName')
-            ->get()->toArray();
-        return json_decode(json_encode($query), true);
+        $process = Process::find($request->processId);
+        $tableName = $this->getTableName($process->name);
+        $application = DB::table($tableName)->where('id', $request->applicationId)->first();
+        $statusCount = count(Status::all());
+        $status = Status::find($statusCount-1); //$statuscount-1 - индекс статуса отправлено заявителю с отказом
+        if ($application->to_revision === 0) {
+            DB::table($tableName)
+                ->where('id', $request->applicationId)
+                ->update(['status_id' => $status->id, 'reject_reason' => $request->rejectReason]);
+        } else {
+            DB::table($tableName)
+                ->where('id', $request->applicationId)
+                ->update(['status_id' => $status->id, 'reject_reason' => $request->rejectReason, 'to_revision' => 0]);
+        }
+
     }
+
+    public function revision(Request $request) {
+
+
+        $roleToRevise = $request->roleToRevise; //Роль, которому форма отправляется на доработку
+        $mainCounter = 0;
+        $subCounter = 0;
+        $index = 0;
+        $indexSubRoute = 0;
+        $process = Process::find($request->processId);
+        $tableName = $this->getTableName($process->name);
+
+        $mainRoles = $this->getIterateRoles($process); // get collection
+        $mainRoleArr = $this->getMainRoleArray($mainRoles); // get array of names from collection
+        $subRoles = $this->getSubRoutes($process->id);
+
+        foreach($mainRoleArr as $role) {
+            $mainCounter++;
+            if ($role === $roleToRevise) {
+                $index = $mainCounter;
+                break;
+            }
+        }
+
+        if ($index === 0) {
+            foreach($subRoles as $role) {
+                $subCounter++;
+                if ($role === $roleToRevise) {
+                    $indexSubRoute = $subCounter;
+                    break;
+                }
+            }
+        }
+
+        $nextR = Role::where('name', $roleToRevise)->first();
+        $idOfNextRole = $nextR->id;
+        $status = Status::find($idOfNextRole);
+//        dd($status);
+//        $statusCount = count(Status::all());
+//        $status = Status::find($statusCount-1); //$statuscount-1 - индекс статуса отправлено заявителю с отказом
+        if ($index === 0) {
+            DB::table($tableName)
+                ->where('id', $request->applicationId)
+                ->update(['status_id' => $status->id, 'revision_reason' => $request->revisionReason,'to_revision' => 1,'index_sub_route' => $indexSubRoute] );
+        } else {
+            DB::table($tableName)
+                ->where('id', $request->applicationId)
+                ->update(['status_id' => $status->id, 'revision_reason' => $request->revisionReason,'to_revision' => 1, 'index_main' => $index] );
+        }
+
+    }
+
 
 
 }

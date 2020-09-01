@@ -74,12 +74,6 @@
               <p>Маршруты</p>
             </a>
           </li>
-          <li class="{{'manual' == request()->path() ? 'active' : ''}}">
-            <a href="{{ route('manual.index') }}">
-              <i class="now-ui-icons travel_info"></i>
-              <p>Справочник | {{$handbookCount}} </p>
-            </a>
-          </li>
           <li class="{{'roles' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('role.index') }}">
               <i class="now-ui-icons users_circle-08"></i>

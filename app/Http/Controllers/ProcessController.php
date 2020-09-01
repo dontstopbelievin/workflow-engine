@@ -87,10 +87,11 @@ class ProcessController extends Controller
 
         $accepted = Template::accepted()->get();
         $rejected = Template::rejected()->get();
-        $columns = $this->getAllDictionaries();;
+        $columns = $this->getAllDictionaries();
         $roles = Role::all();
         $tableName = $this->getTableName($process->name);
         $tableColumns = $this->getColumns($tableName);
+        $tableColumns = array_slice($tableColumns, 0, -5);
         $parentId = $this->getParentRoleId($process->id);
         $organizations = CityManagement::all();
         $mainOrg = CityManagement::find($process->main_organization_id);
@@ -158,22 +159,30 @@ class ProcessController extends Controller
         if (!Schema::hasColumn($tableName, 'status_id')) {
             $dbQueryString = "ALTER TABLE $tableName ADD  status_id INT";
             DB::statement($dbQueryString);
-
+        }
+        if (!Schema::hasColumn($tableName, 'to_revision')) {
+            $dbQueryString = "ALTER TABLE $tableName ADD  to_revision BIT";
+            DB::statement($dbQueryString);
         }
         if (!Schema::hasColumn($tableName, 'user_id')) {
             $dbQueryString = "ALTER TABLE $tableName ADD  user_id INT";
             DB::statement($dbQueryString);
-
         }
         if (!Schema::hasColumn($tableName, 'index_sub_route')) {
             $dbQueryString = "ALTER TABLE $tableName ADD  index_sub_route INT";
             DB::statement($dbQueryString);
-
         }
         if (!Schema::hasColumn($tableName, 'index_main')) {
             $dbQueryString = "ALTER TABLE $tableName ADD index_main INT";
             DB::statement($dbQueryString);
-
+        }
+        if (!Schema::hasColumn($tableName, 'reject_reason')) {
+            $dbQueryString = "ALTER TABLE $tableName ADD reject_reason varchar(255)";
+            DB::statement($dbQueryString);
+        }
+        if (!Schema::hasColumn($tableName, 'revision_reason')) {
+            $dbQueryString = "ALTER TABLE $tableName ADD revision_reason varchar(255)";
+            DB::statement($dbQueryString);
         }
 
 
@@ -219,9 +228,9 @@ class ProcessController extends Controller
     }
 
     public function delete(Process $process) {
-
+        $tableName = $this->getTableName($process->name);
+        Schema::dropIfExists($tableName);
         $process->routes()->delete();
-        $process->handbook()->delete();
         $process->delete();
         return Redirect::route('processes.index')->with('status', 'Процесс успешно удален');  
     }

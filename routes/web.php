@@ -41,6 +41,8 @@ Route::get('application-view/{process_id}/{application_id}', 'ApplicationControl
 Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
 Route::post('applications/store', 'ApplicationController@store')->name('applications.store');
 Route::post('applications/approve/{application_id}', 'ApplicationController@approve')->name('applications.approve');
+Route::post('applications/reject', 'ApplicationController@reject')->name('applications.reject');
+Route::post('applications/revision', 'ApplicationController@revision')->name('applications.revision');
 Route::post('applications/sendToSubRoute/{application_id}', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
 Route::post('applications/backToMainOrg/{application_id}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
 
