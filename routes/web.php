@@ -6,9 +6,9 @@ use App\User;
 use App\Role;
 use App\Template;
 use App\Process;
-use App\Handbook;
 use App\Application;
 use App\CityManagement;
+use App\Dictionary;
 use Carbon\Carbon;
 
 /*
@@ -106,7 +106,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('processes', 'ProcessController@index')->name('processes.index');
     Route::get('processes/{process}', 'ProcessController@view')->name('processes.view');
     Route::get('process/create', 'ProcessController@create')->name('processes.create');
-    Route::post('processes', 'ProcessController@store')->name('processes.store');
+    Route::post('processes/store', 'ProcessController@store')->name('processes.store');
     Route::post('add-sub-roles', 'ProcessController@addSubRoles')->name('processes.addSubRoles');
     Route::post('add-organization/{process}', 'ProcessController@addOrganization')->name('processes.addOrganization');
     Route::get('processes-edit/{process}', 'ProcessController@edit')->name('processes.edit');
@@ -121,11 +121,9 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         $rolesCount = count(Role::all());
         $templatesCount = count(Template::all());
         $processesCount = count(Process::all());
+        $dictionariesCount = count(Dictionary::all());
         $cityManagementCount = count(CityManagement::all());
-        $applicationsCount = count(CityManagement::all());
-        $handbook = new Handbook;
-        $handbookCount = count($handbook->getTableColumns());
-        $view->with(compact('usersCount', 'rolesCount','fieldsCount', 'templatesCount','processesCount','handbookCount','cityManagementCount','applicationsCount'));
+        $view->with(compact('usersCount', 'rolesCount','fieldsCount', 'dictionariesCount','templatesCount','processesCount','cityManagementCount'));
     });
 
 });

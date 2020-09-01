@@ -101,7 +101,7 @@
           <li class="{{'role-register' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('dictionary') }}">
               <i class="now-ui-icons users_single-02"></i>
-              <p>Новый Справочник | {{$usersCount}}</p>
+              <p>Новый Справочник | {{$dictionariesCount}}</p>
             </a>
           </li>
             @endif
@@ -109,7 +109,7 @@
           <li class="{{'role-register' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('applications.service') }}">
               <i class="now-ui-icons design_bullet-list-67"></i>
-              <p>Заявки | {{$applicationsCount}}</p>
+              <p>Заявки </p>
             </a>
           </li>
 

@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Process;
-use App\Handbook;
-use App\Application;
 use App\Role;
 use App\Status;
 use App\CityManagement;
@@ -22,7 +20,6 @@ class ApplicationController extends Controller
     public function __construct() {
 
     }
-
 
     public function service() {
 
@@ -44,7 +41,6 @@ class ApplicationController extends Controller
                 $app["status"] = $app["status"] . " на согласование";
             }
         }
-//        dd($arrayApps);
         $statuses = [];
         return view('application.index', compact('arrayApps', 'process','statuses'));
     }
@@ -121,7 +117,6 @@ class ApplicationController extends Controller
         $tableColumns = $this->getColumns($tableName);
         $originalTableColumns = $this->getOriginalColumns($tableColumns);
         $dictionaries = $this->getAllDictionaries();
-//        dd($dictionaries, $originalTableColumns);
         $res = [];
 
         foreach($dictionaries as $item) {
@@ -139,7 +134,6 @@ class ApplicationController extends Controller
             $item["name"] = $replaced;
             array_push($arrayToFront, $item);
         }
-//        dd($arrayToFront);
         return view('application.create', compact('process', 'arrayToFront'));
     }
 
@@ -161,7 +155,6 @@ class ApplicationController extends Controller
         $arrayToInsert["index_main"] = 1;
         $arrayToInsert["index_sub_route"] = 0;
         DB::table($tableName)->insert( $arrayToInsert);
-
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
     }
 
@@ -258,11 +251,9 @@ class ApplicationController extends Controller
                 ->where('id', $request->applicationId)
                 ->update(['status_id' => $status->id, 'reject_reason' => $request->rejectReason, 'to_revision' => 0]);
         }
-
     }
 
     public function revision(Request $request) {
-
 
         $roleToRevise = $request->roleToRevise; //Роль, которому форма отправляется на доработку
         $mainCounter = 0;
@@ -297,9 +288,7 @@ class ApplicationController extends Controller
         $nextR = Role::where('name', $roleToRevise)->first();
         $idOfNextRole = $nextR->id;
         $status = Status::find($idOfNextRole);
-//        dd($status);
-//        $statusCount = count(Status::all());
-//        $status = Status::find($statusCount-1); //$statuscount-1 - индекс статуса отправлено заявителю с отказом
+
         if ($index === 0) {
             DB::table($tableName)
                 ->where('id', $request->applicationId)

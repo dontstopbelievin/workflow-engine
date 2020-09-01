@@ -39,9 +39,7 @@
                                                 <option>{{$val}}</option>
                                             @endforeach
                                         </select>
-
                                     @endif
-
                                 @endforeach
                                 <input type="hidden" name="process_id" value = {{$process->id}}>
                                 <button type="Submit" class="btn btn-secondary">Создать</button>

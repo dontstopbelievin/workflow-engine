@@ -3,14 +3,21 @@
   <component name="ChangeListManager">
     <list default="true" id="ade0dd1d-d276-4255-a875-9797a6031e7d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Handbook.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ApplicationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ApplicationController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/DictionaryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/DictionaryController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/HandbookController.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ProcessController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ProcessController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Process.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Process.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Traits/dbQueries.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Traits/dbQueries.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeds/DatabaseSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeds/DatabaseSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeds/StatusSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeds/StatusSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/application/view.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/application/view.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_06_23_110654_create_handbooks_table.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/seeds/HandbookSeeder.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/application/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/application/create.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/application/dashboard.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/application/dashboard.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/layouts/master.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/master.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/process/edit.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/process/edit.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/manual/index.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/process/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/process/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/process/view.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/process/view.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/vendor/asm89/stack-cors/" />
@@ -155,7 +162,7 @@
         <entry file="file://$PROJECT_DIR$/app/Traits/dbQueries.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="528">
-              <caret line="212" column="5" selection-start-line="212" selection-start-column="5" selection-end-line="212" selection-end-column="5" />
+              <caret line="203" column="5" selection-start-line="203" selection-start-column="5" selection-end-line="203" selection-end-column="5" />
               <folding>
                 <element signature="e#30#64#0#PHP" expanded="true" />
               </folding>
@@ -166,8 +173,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProcessController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="259">
-              <caret line="183" column="72" selection-start-line="183" selection-start-column="72" selection-end-line="183" selection-end-column="72" />
+            <state relative-caret-position="38">
+              <caret line="171" column="72" selection-start-line="171" selection-start-column="72" selection-end-line="171" selection-end-column="72" />
               <folding>
                 <element signature="e#40#56#0#PHP" expanded="true" />
               </folding>
@@ -178,11 +185,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ApplicationController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="248" column="81" selection-start-line="248" selection-start-column="81" selection-end-line="248" selection-end-column="81" />
-              <folding>
-                <element signature="e#40#56#0#PHP" expanded="true" />
-              </folding>
+            <state relative-caret-position="68">
+              <caret line="4" column="16" selection-start-line="4" selection-start-column="16" selection-end-line="4" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -477,13 +481,6 @@
               <item name="workflow-engine" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
               <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="manual" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="workflow-engine" type="b2602c69:ProjectViewProjectNode" />
-              <item name="workflow-engine" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
               <item name="process" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -539,12 +536,12 @@
       <workItem from="1597987676979" duration="5317000" />
       <workItem from="1597998936476" duration="6901000" />
       <workItem from="1598184219625" duration="38090000" />
-      <workItem from="1598932454095" duration="13760000" />
+      <workItem from="1598932454095" duration="14976000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="188140000" />
+    <option name="totallyTimeSpent" value="189356000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -856,7 +853,7 @@
     <entry file="file://$PROJECT_DIR$/app/Traits/dbQueries.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="528">
-          <caret line="212" column="5" selection-start-line="212" selection-start-column="5" selection-end-line="212" selection-end-column="5" />
+          <caret line="203" column="5" selection-start-line="203" selection-start-column="5" selection-end-line="203" selection-end-column="5" />
           <folding>
             <element signature="e#30#64#0#PHP" expanded="true" />
           </folding>
@@ -865,8 +862,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ProcessController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="259">
-          <caret line="183" column="72" selection-start-line="183" selection-start-column="72" selection-end-line="183" selection-end-column="72" />
+        <state relative-caret-position="38">
+          <caret line="171" column="72" selection-start-line="171" selection-start-column="72" selection-end-line="171" selection-end-column="72" />
           <folding>
             <element signature="e#40#56#0#PHP" expanded="true" />
           </folding>
@@ -889,11 +886,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ApplicationController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="248" column="81" selection-start-line="248" selection-start-column="81" selection-end-line="248" selection-end-column="81" />
-          <folding>
-            <element signature="e#40#56#0#PHP" expanded="true" />
-          </folding>
+        <state relative-caret-position="68">
+          <caret line="4" column="16" selection-start-line="4" selection-start-column="16" selection-end-line="4" selection-end-column="16" />
         </state>
       </provider>
     </entry>

@@ -30,10 +30,8 @@
                                 </div>
                                 <div class="panel-body" id="items">
                                     <ul class="list-group">
-                                        @foreach(json_decode($process->fields) as $field)
-                                            <li class="list-group-item ourItem">{{$field}}
-                                            </li>
-
+                                        @foreach($tableColumns as $column)
+                                            <li class="list-group-item ourItem">{{$column}}</li>
                                         @endforeach
                                     </ul>
                                 </div>
@@ -50,9 +48,9 @@
                                                     <ul>                           
                                                         @if (is_array($role))
                                                             @foreach($role as $skey => $sval)
-                                                            <li>  
-                                                                {{$sval}}
-                                                            </li>
+                                                                <li>  
+                                                                    {{$sval}}
+                                                                </li>
                                                             @endforeach
                                                         @endif
                                                     </ul>
@@ -60,9 +58,7 @@
                                             @endforeach
                                         @else
                                             @foreach($process->routes as $route)
-                                                <li class="list-group-item ourItem">{{$route->name}}
-                                                </li>
-
+                                                <li class="list-group-item ourItem">{{$route->name}}</li>
                                             @endforeach
                                         @endif
                                     </ul>

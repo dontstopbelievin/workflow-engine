@@ -138,15 +138,6 @@ trait dbQueries
         return preg_match('/[A-Za-z]/u', $text);
     }
 
-//    public function getAllDictionaries() {
-//        $query = DB::table('dictionaries')
-//            ->join('input_types', 'dictionaries.input_type_id', '=', 'input_types.id')
-//            ->join('insert_types', 'dictionaries.insert_type_id', '=', 'insert_types.id')
-//            ->select('dictionaries.name', 'input_types.name as inputName', 'insert_types.name as insertName')
-//            ->get()->toArray();
-//        $res = json_decode(json_encode($query), true);
-//        return $res;
-//    }
     public function getColumns($tableName) {
         $tableColumns = Schema::getColumnListing($tableName);
         return $this->filterArray($tableColumns);

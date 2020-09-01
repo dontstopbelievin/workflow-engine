@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Process;
 use App\Template;
-use App\Handbook;
 use App\Role;
 use App\Route;
 use App\CityManagement;
@@ -28,15 +27,19 @@ class ProcessController extends Controller
     public function view(Process $process) {
 
         $parentId = $this->getParentRoleId($process->id);
+        $tableName = $this->getTableName($process->name);
+        $tableColumns = $this->getColumns($tableName);
+        $tableColumns = array_slice($tableColumns, 0, -7);
         if ($parentId === 0) {
-            return view('process.view', compact('process'));
+            return view('process.view', compact('process','tableColumns'));
         } 
         $iterateRoles = $this->getIterateRoles($process);
         $sAllRoles = $this->getAllRoles($process, $parentId, $iterateRoles);
-        return view('process.view', compact('process','sAllRoles'));
+        return view('process.view', compact('process','sAllRoles','tableColumns'));
     }
 
     public function create() {
+
         $accepted = Template::accepted()->get();
         $rejected = Template::rejected()->get();
         return view('process.create', compact('accepted', 'rejected'));
@@ -63,25 +66,10 @@ class ProcessController extends Controller
             'rejected_template_id'=> $rejectedTemplate->id,
         ]);
         $process->save();
-        $id = $process->id;
-        $handbook = new Handbook;
-        $columns = $handbook->getTableColumns();
-        $columns = array_slice($columns, 1, -4);
-        $accepted = Template::accepted()->get();
-        $rejected = Template::rejected()->get();
-        $array = [];
-        foreach ($process->routes as $route) {
-            array_push($array, $route->name);
-        }
-        $roles = Role::all();
-        $organizations = CityManagement::all();
-        $mainOrg = CityManagement::find($process->main_organization_id);
-        if (empty($mainOrg)) {
-            return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'array', 'roles', 'organizations', 'nameMainOrg'));
-        }
-        $nameMainOrg = $mainOrg->name;
-        return view('process.edit', compact('process', 'accepted', 'rejected', 'columns', 'array', 'roles', 'organizations', 'nameMainOrg'));
+        return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был создан');
+     
     }
+
 
     public function edit(Process $process) {
 
@@ -91,7 +79,7 @@ class ProcessController extends Controller
         $roles = Role::all();
         $tableName = $this->getTableName($process->name);
         $tableColumns = $this->getColumns($tableName);
-        $tableColumns = array_slice($tableColumns, 0, -5);
+        $tableColumns = array_slice($tableColumns, 0, -7);
         $parentId = $this->getParentRoleId($process->id);
         $organizations = CityManagement::all();
         $mainOrg = CityManagement::find($process->main_organization_id);
@@ -184,8 +172,6 @@ class ProcessController extends Controller
             $dbQueryString = "ALTER TABLE $tableName ADD revision_reason varchar(255)";
             DB::statement($dbQueryString);
         }
-
-
         return Redirect::route('processes.edit', [$process])->with('status', 'Справочники успешно сохранены');
     }
 
