@@ -20,10 +20,8 @@
                     <div class="table-responsive">
                         <table class="table">
                             <thead class="text-primary">
-                                
                                 <th>#</th>
                                 <th>Наименование услуги</th>
-                                
                             </thead>
                             <tbody>
                             @foreach($processes as $process)
@@ -33,9 +31,7 @@
                               </tr> 
                               @endforeach
                             </tbody>
-
                         </tablе>
-
                     </div>
 
                 </div>

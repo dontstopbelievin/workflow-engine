@@ -19,12 +19,10 @@ class ListController extends Controller
         $item->item = $request->text;
         $item->save();
         return 'Done';
-//        return view('role.edit')->with(compact('role'));
     }
 
     public function delete(Request $request) {
         Item::where('id', $request->id)->delete();
-//        return $request->all();
     }
 
     public function update(Request $request) {

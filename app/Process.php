@@ -16,10 +16,6 @@ class Process extends Model
         return $this->belongsTo(Template::class, 'rejected_template_id');
     }
 
-    public function handbook() {
-        return $this->hasOne(Handbook::class);
-    }
-
     public function routes() {
         return $this->hasMany(Route::class);
     }

@@ -74,12 +74,6 @@
               <p>Маршруты</p>
             </a>
           </li>
-          <li class="{{'manual' == request()->path() ? 'active' : ''}}">
-            <a href="{{ route('manual.index') }}">
-              <i class="now-ui-icons travel_info"></i>
-              <p>Справочник | {{$handbookCount}} </p>
-            </a>
-          </li>
           <li class="{{'roles' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('role.index') }}">
               <i class="now-ui-icons users_circle-08"></i>
@@ -104,12 +98,18 @@
               <p>Пользователи | {{$usersCount}}</p>
             </a>
           </li>
+          <li class="{{'role-register' == request()->path() ? 'active' : ''}}">
+            <a href="{{ route('dictionary') }}">
+              <i class="now-ui-icons users_single-02"></i>
+              <p>Новый Справочник | {{$dictionariesCount}}</p>
+            </a>
+          </li>
             @endif
         @endif
           <li class="{{'role-register' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('applications.service') }}">
               <i class="now-ui-icons design_bullet-list-67"></i>
-              <p>Заявки | {{$applicationsCount}}</p>
+              <p>Заявки </p>
             </a>
           </li>
 

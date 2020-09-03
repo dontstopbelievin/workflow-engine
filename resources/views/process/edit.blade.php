@@ -68,16 +68,18 @@
                                             <div class="modal-header">
                                                 <h4 class="modal-title">Список Полей</h4>
                                             </div>
-                                            <form action="{{ route('processes.saveFields', ['process' => $process]) }}" method="POST">
+                                            <form action="{{ route('processes.createProcessTable', ['process' => $process]) }}" method="POST">
                                             @csrf
                                                 <div class="modal-body">
                                                     @isset($columns)
                                                         @foreach ($columns as $column)
                                                             <div class="checkbox">
-                                                                <label><input type="checkbox" name="fields[]" value="{{$column}}">{{$column}}</label>
+                                                                <label><input type="checkbox" name="fields[]" value="{{$column["name"]}}">{{$column["name"]}}</label>
+
                                                             </div>
-                                                        @endforeach   
+                                                        @endforeach
                                                     @endisset
+
                                                 </div>
                                                 <div class="modal-footer">
                                                 <button type="submit" class="btn btn-success">Выбрать</button>
@@ -128,10 +130,10 @@
                             </div>  
                             @endempty
                             <h5>Поля процесса:</h5>
-                            @isset($process->fields)
-                                @foreach(json_decode($process->fields) as $choosenField)  
+                            @isset($tableColumns)
+                                @foreach($tableColumns as $column)
                                 <ul>
-                                    <li>{{$choosenField}}</li>
+                                    <li>{{$column}}</li>
                                 </ul>                                                    
                                 @endforeach
                             @endisset
@@ -236,14 +238,8 @@
             var roleToAdd = $('#modHeader').val();
             var subRoles = [];
             var processId = $('#processId').val();
-            // var modal =  $('#myModal2');
             var subOrg;
-            // $('#subOrg').change(function() {
-            //     subOrg = $(this).val();
-            //     // concole.log(subOrg);
-            // })
             var subOrg = $('#subOrg option:selected').val();
-            // alert(subOrg);
             $('.get_value').each(function(){
                 if($(this).is(":checked"))
                 {

@@ -3,17 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Process;
-use App\Handbook;
-use App\Application;
 use App\Role;
 use App\Status;
 use App\CityManagement;
+use App\Comment;
+use App\CreatedTable;
 use App\Traits\dbQueries;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use PhpOffice\PhpWord\TemplateProcessor;
+use Illuminate\Support\Facades\DB;
 
 class ApplicationController extends Controller
 {
@@ -23,7 +23,6 @@ class ApplicationController extends Controller
 
     }
 
-
     public function service() {
 
         $processes = Process::all();
@@ -32,20 +31,29 @@ class ApplicationController extends Controller
 
     public function index(Process $process) {
 
-        $applications = Application::where('process_id', $process->id)->get();
-        $statuses = [];
-        foreach($applications as $app) {
-            $status = $app->statuses()->get();
-            $statusLength = sizeof($status);
-            $statusName = $status[$statusLength-1]->name;
-            array_push($statuses, $statusName);
+        $tableName = $this->getTableName($process->name);
+
+        $applications = $this->getTableWithStatuses($tableName);
+        $arrayApps = json_decode(json_encode($applications), true);
+        foreach($arrayApps as &$app) {
+            if ($app["to_revision"] === 1) {
+                $app["status"] = $app["status"] . " на доработку";
+
+            } else {
+                $app["status"] = $app["status"] . " на согласование";
+            }
         }
-        return view('application.index', compact('applications', 'process','statuses'));
+        $statuses = [];
+        return view('application.index', compact('arrayApps', 'process','statuses'));
     }
 
-    public function view(Application $application) {
+    public function view($processId, $applicationId) {
 
-        $process = Process::find($application->process_id);
+        $process = Process::find($processId);
+        $tableName = $this->getTableName($process->name);
+        $table = CreatedTable::where('name', $tableName)->first();
+        $application = DB::table($tableName)->where('id', $applicationId)->first();
+        $statusId = $application->status_id;
         $user = Auth::user();
         $thisRole = $user->role;
         $subRoutes = $this->getSubRoutes($process->id);
@@ -53,17 +61,19 @@ class ApplicationController extends Controller
             echo 'Дайте роль юзеру';
             return;
         }
+
+        $comments = $this->getComments($application->id, $table->id);
         $roleId = $thisRole->id; //роль действующего юзера
-        $statuses = $application->statuses()->get();
-        $records = $this->getRecords($application->id);
-        $statusLength = sizeof($statuses);
-        $status_id = $statuses[$statusLength-1]->id;
-        $canApprove = $roleId === $status_id; //может ли специалист подвисывать услугу
+//        $statuses = $application->statuses()->get();
+//        $records = $this->getRecords($application->id);
+//        $statusLength = sizeof($statuses);
+//        $status_id = $statuses[$statusLength-1]->id;
+
+        $canApprove = $roleId === $statusId; //может ли специалист подвисывать услугу
         $toCitizen = false;
         $backToMainOrg = false;
         $userRole = Role::find($roleId);
         $appRoutes = json_decode($this->getAppRoutes($process->id));
-        $appProcess = Process::find($application->process_id);
         if ($appRoutes[sizeof($appRoutes)-1] === $userRole->name) {
             $toCitizen = true; // если заявку подписывает последний специалист в обороте, заявка идет обратно к заявителю
         }
@@ -72,13 +82,13 @@ class ApplicationController extends Controller
                 $backToMainOrg = true;
             }
         }
-        if (Null !==($appProcess->roles()->where('parent_role_id', '<>', Null)->first())) {
-            $parentRoleId = intval($appProcess->roles()->where('parent_role_id', '<>', Null)->first()->pivot->parent_role_id);
+        if (Null !==($process->roles()->where('parent_role_id', '<>', Null)->first())) {
+            $parentRoleId = intval($process->roles()->where('parent_role_id', '<>', Null)->first()->pivot->parent_role_id); // добыть родительскую айдишку родительской роли для подролей
             $subOrg = CityManagement::find($process->support_organization_id)->first();
         
             $sendToSubRoute = [];
             $sendToSubRoute["isset"] = false;
-            if (($application->index_sub_route > 0) && ($application->indexSubRoute<sizeof($subRoutes))) {
+            if (($application->index_sub_route > 0) && ($application->index_sub_route < sizeof($subRoutes))) {
                 if ($thisRole->name === $subRoutes[$application->index_sub_route - 1]) {
                     $sendToSubRoute["isset"] = true;
                     if (isset($subOrg->name)) {
@@ -99,99 +109,219 @@ class ApplicationController extends Controller
             return;
         }
         $nameUpr = CityManagement::find($thisRole->city_management_id)->name;
-        return view('application.view', compact('application', 'process','canApprove', 'toCitizen','records','sendToSubRoute', 'backToMainOrg'));
+        $mainRoles = $this->getIterateRoles($process);
+        $subRoles = $this->getSubRoutes($process->id);
+        $allRoles = $this->mergeRoles($mainRoles, $subRoles);
+
+        return view('application.view', compact('application', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments'));
     }
 
     public function create(Process $process) {
 
-        $fields = $process->handbook;
-        $field_keys = array_keys(array_filter($fields->toArray()));
-        $field_keys = array_slice($field_keys, 1, count($field_keys)-5);
-        return view('application.create', compact('process', 'field_keys'));
-    }
+        $tableName = $this->getTableName($process->name);
+        $tableColumns = $this->getColumns($tableName);
+        $originalTableColumns = $this->getOriginalColumns($tableColumns);
+        $dictionaries = $this->getAllDictionaries();
+        $res = [];
 
-    public function store(Process $process, Request $request) {
-
-        $id = $request->process_id;
-        $requestFields = array_slice($request->input(), 1);
-        $field_keys = array_keys($requestFields);
-        $handbook = new Handbook;
-        $columns = $handbook->getTableColumns();
-        $columns = array_slice($columns, 1, -4);
-        $application = new Application;
-        for ($i = 0; $i < count($columns); $i++) {
-            for ($j = 0; $j < count($field_keys);  $j++) {
-                if($columns[$i] === $field_keys[$j]) {
-                    $application->{$columns[$i]} = $requestFields[$field_keys[$j]];                    
+        foreach($dictionaries as $item) {
+            foreach($originalTableColumns as $column) {
+                if($item["name"] === $column) {
+                    array_push($res, $item);
                 }
             }
         }
-        $user = Auth::user();
-        $application->user_id = $user->id;
-        $application->process_id = $id;
-        $process = Process::find($id);
-        $status = Status::find(1);
-        $application->status =$status->name;
-        $application->save();
-        $application->statuses()->attach(1);
+        $dictionariesWithOptions = $this->addOptionsToDictionary($res);
 
+        $arrayToFront = [];
+        foreach($dictionariesWithOptions as $item) {
+            $replaced = str_replace(' ', '_', $item["name"]);
+            $item["name"] = $replaced;
+            array_push($arrayToFront, $item);
+        }
+        return view('application.create', compact('process', 'arrayToFront'));
+    }
+
+    public function store(Request $request) {
+
+        $input = $request->input();
+
+        $arrayToInsert = array_slice($input, 1, sizeof($input)-1);
+        $process = Process::find($request->process_id);
+        $routes = $this->getRolesWithoutParent($process->id);
+        $arrRoutes = json_decode(json_encode($routes), true);
+        $startRole = $arrRoutes[0]["name"]; //с какой роли начинается маршрут. Находится для того, чтобы присвоить статус маршруту
+        $role = Role::where('name', $startRole)->first();
+        $status = Status::find($role->id);
+        $arrayToInsert["status_id"] = $status->id;
+        $tableName = $this->getTableName($process->name);
+        $user = Auth::user();
+        $arrayToInsert["user_id"] = $user->id;
+        $arrayToInsert["index_main"] = 1;
+        $arrayToInsert["index_sub_route"] = 0;
+        DB::table($tableName)->insert( $arrayToInsert);
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
     }
 
-    public function approve(Application $application) {
+    public function approve(Request $request) {
 
-        $index = $application->index;
+        $id = $request->applicationId;
+
+        $process = Process::find($request->process_id);
+        $tableName = $this->getTableName($process->name);
+        $application = DB::table($tableName)->where('id', $id)->first();
+        $table = CreatedTable::where('name', $tableName)->first();
+
+
+        $user = Auth::user();
+
+        if ($request->comments !== Null) {
+            $comment = new Comment();
+            $comment->name = $request->comments;
+            $comment->application_id = $id;
+            $comment->table_id = $table->id;
+            $comment->role_id = $user->role->id;
+            $comment->save();
+
+        }
+
+        $index = $application->index_main;
         $appRoutes = json_decode($this->getAppRoutes($application->process_id));
         $nextRole = $appRoutes[$index]; // find next role
         $nextR = Role::where('name', $nextRole)->first(); //find $nextRole in Role table
         $idOfNextRole = $nextR->id; // get id of next role
-        $application->index = $index + 1;
+        $index = $index + 1;
         $status = Status::find($idOfNextRole);
-        $application->status = $status->name;
-        $application->update();
-         // находим следующую роль в маршрутах и присваиваем заявке его статус
-        $application->statuses()->attach($status);
+        if ($application->to_revision === 0) {
+            DB::table($tableName)
+                ->where('id', $id)
+                ->update(['status_id' => $status->id, 'index_main' => $index]);
+        } else {
+            DB::table($tableName)
+                ->where('id', $id)
+                ->update(['status_id' => $status->id, 'index_main' => $index,'to_revision' => 0 ]);
+        }
+
+//        $application->statuses()->attach($status);
         return Redirect::route('applications.service')->with('status', $status->name);
     }
 
-    public function sendToSubRoute(Application $application) {
+    public function sendToSubRoute($id, Request $request) {
 
-        $process = Process::find($application->process_id);
+        $process = Process::find($request->process_id);
+        $tableName = $this->getTableName($process->name);
+        $application = DB::table($tableName)->where('id', $id)->first();
         $subRoutes = $this->getSubRoutes($process->id);
         $index = $application->index_sub_route;
         $nextRole = $subRoutes[$index];
         $nextR = Role::where('name', $nextRole)->first();
         $idOfNextRole = $nextR->id;
-        $application->index_sub_route = $index + 1;
+        $index = $index + 1;
         $status = Status::find($idOfNextRole);
-        $application->status = $status->name;
-        $application->update();
-        $application->statuses()->attach($status);
+        if ($application->to_revision === 0) {
+            DB::table($tableName)
+                ->where('id', $id)
+                ->update(['status_id' => $status->id, 'index_sub_route' => $index]);
+        } else {
+            DB::table($tableName)
+                ->where('id', $id)
+                ->update(['status_id' => $status->id, 'index_sub_route' => $index, 'to_revision' => 0]);
+        }
         return Redirect::route('applications.service')->with('status', $status->name);
         
     }
-    public function backToMainOrg(Application $application) {
+    public function backToMainOrg($id, Request $request) {
 
-        $process = Process::find($application->process_id);
+        $process = Process::find($request->process_id);
+        $tableName = $this->getTableName($process->name);
+        $application = DB::table($tableName)->where('id', $id)->first();
         $parentId = $this->getParentRoleId($process->id);
         $parentRole = Role::find($parentId);
         $status = Status::find($parentId);
-        $application->status = $status->name;
-        $application->update();
-        $application->statuses()->attach($status);
+        DB::table($tableName)
+            ->where('id', $id)
+            ->update(['status_id' => $status->id, 'index_sub_route' => Null]);
         return Redirect::route('applications.service')->with('status', $status->name);
-        
+    }
+
+    public function toCitizen($id, Request $request) {
+
+        $process = Process::find($request->process_id);
+        $tableName = $this->getTableName($process->name);
+        $statusCount = count(Status::all());
+        $status = Status::find($statusCount);
+        $affected = DB::table($tableName)
+            ->where('id', $id)
+            ->update(['status_id' => $status->id, 'index_main' => Null]);
+        return Redirect::route('applications.service')->with('status', $status->name);
+    }
+
+    public function reject(Request $request) {
+
+        $process = Process::find($request->processId);
+        $tableName = $this->getTableName($process->name);
+        $application = DB::table($tableName)->where('id', $request->applicationId)->first();
+        $statusCount = count(Status::all());
+        $status = Status::find($statusCount-1); //$statuscount-1 - индекс статуса отправлено заявителю с отказом
+        if ($application->to_revision === 0) {
+            DB::table($tableName)
+                ->where('id', $request->applicationId)
+                ->update(['status_id' => $status->id, 'reject_reason' => $request->rejectReason]);
+        } else {
+            DB::table($tableName)
+                ->where('id', $request->applicationId)
+                ->update(['status_id' => $status->id, 'reject_reason' => $request->rejectReason, 'to_revision' => 0]);
+        }
+    }
+
+    public function revision(Request $request) {
+
+        $roleToRevise = $request->roleToRevise; //Роль, которому форма отправляется на доработку
+        $mainCounter = 0;
+        $subCounter = 0;
+        $index = 0;
+        $indexSubRoute = 0;
+        $process = Process::find($request->processId);
+        $tableName = $this->getTableName($process->name);
+
+        $mainRoles = $this->getIterateRoles($process); // get collection
+        $mainRoleArr = $this->getMainRoleArray($mainRoles); // get array of names from collection
+        $subRoles = $this->getSubRoutes($process->id);
+
+        foreach($mainRoleArr as $role) {
+            $mainCounter++;
+            if ($role === $roleToRevise) {
+                $index = $mainCounter;
+                break;
+            }
+        }
+
+        if ($index === 0) {
+            foreach($subRoles as $role) {
+                $subCounter++;
+                if ($role === $roleToRevise) {
+                    $indexSubRoute = $subCounter;
+                    break;
+                }
+            }
+        }
+
+        $nextR = Role::where('name', $roleToRevise)->first();
+        $idOfNextRole = $nextR->id;
+        $status = Status::find($idOfNextRole);
+
+        if ($index === 0) {
+            DB::table($tableName)
+                ->where('id', $request->applicationId)
+                ->update(['status_id' => $status->id, 'revision_reason' => $request->revisionReason,'to_revision' => 1,'index_sub_route' => $indexSubRoute] );
+        } else {
+            DB::table($tableName)
+                ->where('id', $request->applicationId)
+                ->update(['status_id' => $status->id, 'revision_reason' => $request->revisionReason,'to_revision' => 1, 'index_main' => $index] );
+        }
+
     }
 
 
-    public function toCitizen(Application $application) {
-
-        $statusCount = count(Status::all());
-        $application->statuses()->attach($statusCount);
-        $status = Status::find($statusCount);
-        $application->status = $status->name;
-        $application->update();
-        return Redirect::route('applications.service')->with('status', $status->name);
-    }   
 
 }
