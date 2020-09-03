@@ -54,8 +54,8 @@
       </div>
       <div class="sidebar-wrapper" id="sidebar-wrapper">
         <ul class="nav">
-        @if(Auth::check())
-            @if (Auth::user()->isAdmin())
+        @if(auth()->check())
+            @if (auth()->user()->isAdmin())
             <li class="{{'dashboard' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('dashboard.index') }}">
               <i class="now-ui-icons tech_tv"></i>
