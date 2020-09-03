@@ -66,6 +66,24 @@
 
                 @endisset
 
+                @isset($comments)
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Комментарии к форме</h3>
+                        </div>
+                        <div class="panel-body" id="items">
+                            <ul class="list-group">
+                                @foreach($comments as $record)
+                                    <li class="list-group-item ourItem">{{$record["role"]}} | {{$record["comment"]}}
+                                    </li>
+
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+
+                @endisset
+
                 <div class="modal fade" id="myModal" role="dialog">
                     <div class="modal-dialog">
                         <!-- Modal content-->
@@ -79,6 +97,24 @@
                                     <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
                                     <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
                                     <button id="rejectButton">Отправить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="myModal3" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Добавление комментариев</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <input type="text" id="comments" name="comments" placeholder="Введите комментарии">
+                                    <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
+                                    <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
+                                    <button id="commentButton">Отправить</button>
                                 </div>
                             </div>
                         </div>
@@ -130,22 +166,20 @@
                             </form>
                         @endif
 
-                        <form action="{{ route('applications.approve', ['application_id' => $application->id]) }}" method="post">
-                            @csrf
-                            <input type="hidden" name="process_id" value = {{$process->id}}>
+                        {{--<form action="{{ route('applications.approve', ['application_id' => $application->id]) }}" method="post">--}}
+                            {{--@csrf--}}
+                            {{--<input type="hidden" name="process_id" value = {{$process->id}}>--}}
 
-                            <button class="btn btn-basic" type="submit">Отправить на согласование</button>
-                        </form>
+                            {{--<button class="btn btn-basic" type="submit">Отправить на согласование</button>--}}
+                        {{--</form>--}}
                             <button type="button" class="btn btn-basic" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
-
-
                             <button type="button" class="btn btn-basic" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
+                            <button type="button" class="btn btn-basic" data-toggle="modal" data-target="#myModal3">Согласовать</button>
 
 
                     @endif
                     @endif
             </div>
-
         </div>
     </div>
 </div>
@@ -161,8 +195,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function() {
-
-
         $(document).on('click', '.ourItem', function(event) {
             var text = $(this).text();
             text = $.trim(text);
@@ -189,7 +221,19 @@
             var applicationId = $('#applicationId').val();
             console.log(rejectReason, processId, applicationId)
             $.post('/applications/revision', {'revisionReason':revisionReason,'processId':processId,'applicationId':applicationId,'roleToRevise':roleToRevise, '_token':$('input[name=_token]').val()}, function(data){
-                var modal =  $('#myModal');
+                var modal =  $('#myModal2');
+                // console.log(data);
+                modal.style.display = 'none';
+                $('#items').load(location.href + ' #items');
+            });
+        });
+        $('#commentButton').click(function(event) {
+            var comments = $('#comments').val();
+            var processId = $('#processId').val();
+            var applicationId = $('#applicationId').val();
+            console.log(comments, processId, applicationId)
+            $.post('/applications/approve', {'comments':comments,'process_id':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
+                var modal =  $('#myModal3');
                 // console.log(data);
                 modal.style.display = 'none';
                 $('#items').load(location.href + ' #items');

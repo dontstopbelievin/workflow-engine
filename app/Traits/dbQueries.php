@@ -187,6 +187,16 @@ trait dbQueries
         return json_decode(json_encode($query), true);
     }
 
+    public function getComments($applicationId, $tableId) {
+        $query = DB::table('comments')
+            ->join('roles', 'comments.role_id', '=', 'roles.id')
+            ->select('roles.name as role', 'comments.name as comment')
+            ->where('application_id', $applicationId)
+            ->where('table_id', $tableId)
+            ->get()->toArray();
+        return json_decode(json_encode($query), true);
+    }
+
     public function mergeRoles($mainRoles, $subRoles) {
         $mainRolesNames = [];
         foreach($mainRoles as $role) {

@@ -6,6 +6,8 @@ use App\Process;
 use App\Role;
 use App\Status;
 use App\CityManagement;
+use App\Comment;
+use App\CreatedTable;
 use App\Traits\dbQueries;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,6 +51,7 @@ class ApplicationController extends Controller
 
         $process = Process::find($processId);
         $tableName = $this->getTableName($process->name);
+        $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $applicationId)->first();
         $statusId = $application->status_id;
         $user = Auth::user();
@@ -58,6 +61,8 @@ class ApplicationController extends Controller
             echo 'Дайте роль юзеру';
             return;
         }
+
+        $comments = $this->getComments($application->id, $table->id);
         $roleId = $thisRole->id; //роль действующего юзера
 //        $statuses = $application->statuses()->get();
 //        $records = $this->getRecords($application->id);
@@ -78,7 +83,7 @@ class ApplicationController extends Controller
             }
         }
         if (Null !==($process->roles()->where('parent_role_id', '<>', Null)->first())) {
-            $parentRoleId = intval($process->roles()->where('parent_role_id', '<>', Null)->first()->pivot->parent_role_id);
+            $parentRoleId = intval($process->roles()->where('parent_role_id', '<>', Null)->first()->pivot->parent_role_id); // добыть родительскую айдишку родительской роли для подролей
             $subOrg = CityManagement::find($process->support_organization_id)->first();
         
             $sendToSubRoute = [];
@@ -108,7 +113,7 @@ class ApplicationController extends Controller
         $subRoles = $this->getSubRoutes($process->id);
         $allRoles = $this->mergeRoles($mainRoles, $subRoles);
 
-        return view('application.view', compact('application', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles'));
+        return view('application.view', compact('application', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments'));
     }
 
     public function create(Process $process) {
@@ -158,11 +163,27 @@ class ApplicationController extends Controller
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
     }
 
-    public function approve($id, Request $request) {
+    public function approve(Request $request) {
+
+        $id = $request->applicationId;
 
         $process = Process::find($request->process_id);
         $tableName = $this->getTableName($process->name);
         $application = DB::table($tableName)->where('id', $id)->first();
+        $table = CreatedTable::where('name', $tableName)->first();
+
+
+        $user = Auth::user();
+
+        if ($request->comments !== Null) {
+            $comment = new Comment();
+            $comment->name = $request->comments;
+            $comment->application_id = $id;
+            $comment->table_id = $table->id;
+            $comment->role_id = $user->role->id;
+            $comment->save();
+
+        }
 
         $index = $application->index_main;
         $appRoutes = json_decode($this->getAppRoutes($application->process_id));

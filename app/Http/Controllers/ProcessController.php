@@ -7,6 +7,7 @@ use App\Template;
 use App\Role;
 use App\Route;
 use App\CityManagement;
+use App\CreatedTable;
 use App\Traits\dbQueries;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -120,6 +121,9 @@ class ProcessController extends Controller
         $fields = $request->fields;
         $tableName = $this->translateSybmols($processName);
         $tableName = str_replace(' ', '_', $tableName);
+        $table = new CreatedTable();
+        $table->name = $tableName;
+        $table->save();
         if (!Schema::hasTable($tableName)) {
             $dbQueryString = "CREATE TABLE $tableName (id INT PRIMARY KEY AUTO_INCREMENT)";
             DB::statement($dbQueryString);
