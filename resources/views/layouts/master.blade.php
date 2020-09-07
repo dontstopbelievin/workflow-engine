@@ -68,12 +68,6 @@
               <p>Процессы | {{$processesCount}}</p>
             </a>
           </li>
-          <li class="{{'routes' == request()->path() ? 'active' : ''}}">
-            <a href="{{ route('route.index') }}">
-              <i class="now-ui-icons location_compass-05"></i>
-              <p>Маршруты</p>
-            </a>
-          </li>
           <li class="{{'roles' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('role.index') }}">
               <i class="now-ui-icons users_circle-08"></i>
@@ -101,7 +95,7 @@
           <li class="{{'role-register' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('dictionary') }}">
               <i class="now-ui-icons users_single-02"></i>
-              <p>Новый Справочник | {{$dictionariesCount}}</p>
+              <p>Справочник | {{$dictionariesCount}}</p>
             </a>
           </li>
             @endif

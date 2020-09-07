@@ -65,6 +65,19 @@
                     </div>
 
                 @endisset
+                @isset($application->revision_reason)
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Причина возврата на доработку</h3>
+                        </div>
+                        <div class="panel-body" id="items">
+                            <ul class="list-group">
+                                <p>{{$application->revision_reason}}</p>
+                            </ul>
+                        </div>
+                    </div>
+
+                @endisset
 
                 @isset($comments)
                     <div class="panel panel-default">
@@ -166,16 +179,9 @@
                             </form>
                         @endif
 
-                        {{--<form action="{{ route('applications.approve', ['application_id' => $application->id]) }}" method="post">--}}
-                            {{--@csrf--}}
-                            {{--<input type="hidden" name="process_id" value = {{$process->id}}>--}}
-
-                            {{--<button class="btn btn-basic" type="submit">Отправить на согласование</button>--}}
-                        {{--</form>--}}
                             <button type="button" class="btn btn-basic" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
                             <button type="button" class="btn btn-basic" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
                             <button type="button" class="btn btn-basic" data-toggle="modal" data-target="#myModal3">Согласовать</button>
-
 
                     @endif
                     @endif

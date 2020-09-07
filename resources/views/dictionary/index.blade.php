@@ -27,7 +27,7 @@
                             <tbody>
                                 @foreach($dictionaries as $item)
                               <tr>
-                                <td><h4>{{$item["name"]}}</h4></td>
+                                <td><h4>{{$item["labelName"]}}</h4></td>
                                 <td><h4>{{$item["inputName"]}}</h4></td>
                                 <td><h4>{{$item["insertName"]}}</h4></td>
                               </tr>   
@@ -49,6 +49,7 @@
                             <div class="modal-body">
                                 <input type="hidden" id="id">
                                 <p><input type="text" placeholder="Введите название поля" id="addItem" class="form-control"></p>
+                                <p><input type="text" placeholder="Введите ярлык поля(label name)" id="addLabelName" class="form-control"></p>
                                 <input type="hidden" id="processId" value="1">
                                 @isset($inputTypes)
                                     <label for="inputType">Выберите Тип Вводимого</label>
@@ -132,6 +133,7 @@
             });
 
             $('#AddButton').click(function(event) {
+                var labelName = $('#addLabelName').val();
                 var text = $('#addItem').val();
                 var inputItem = $('#inputType').val();
                 var insertItem = $('#insertType').val();
@@ -155,7 +157,7 @@
                 if (insertItem === null) {
                     alert('Выберите тип сохранения');
                 }
-                $.post('dictionary/create', {'fieldName':text,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, '_token':$('input[name=_token]').val()}, function(data){
+                $.post('dictionary/create', {'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, '_token':$('input[name=_token]').val()}, function(data){
                     console.log(data);
                     $('#items').load(location.href + ' #items');
                 });
