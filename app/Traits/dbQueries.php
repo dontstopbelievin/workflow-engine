@@ -81,15 +81,6 @@ trait dbQueries
             ->get()->toArray();
     }
 
-    public function getRecords($id) {
-
-        return DB::table('statuses')
-        ->join('application_status', 'statuses.id', '=', 'application_status.status_id')
-        ->select('statuses.name', 'application_status.updated_at')
-        ->where('application_status.application_id', $id)
-        
-        ->get();
-    }
     public function getSubRoutes($id) {
 
         $routes = DB::table('roles')
@@ -211,5 +202,17 @@ trait dbQueries
             array_push($mainRoleArr, $role->name);
         }
         return $mainRoleArr;
+    }
+
+    public function getRecords($applicationId, $tableId) {
+        $query = DB::table('logs')
+            ->join('roles', 'logs.role_id', '=', 'roles.id')
+            ->join('statuses', 'logs.status_id', '=', 'statuses.id')
+            ->select( 'statuses.name as name', 'logs.created_at as created_at', 'roles.name as role')
+            ->where('application_id', $applicationId)
+            ->where('table_id', $tableId)
+            ->get()->toArray();
+
+        return json_decode(json_encode($query), true);
     }
 }

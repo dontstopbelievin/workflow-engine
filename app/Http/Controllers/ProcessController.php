@@ -68,7 +68,6 @@ class ProcessController extends Controller
         ]);
         $process->save();
         return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был создан');
-     
     }
 
 

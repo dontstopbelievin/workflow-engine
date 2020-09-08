@@ -28,43 +28,70 @@
                     @endif
                 </div>
                 <div class="card-body">
+                    <ul class="list-group" id="list">
+
+                        <li class="list-group-item">Название услуги: {{$process->name}}</li>
+                        @isset($application->name)
+                            <li class="list-group-item">Наименование заявителя: {{$application->name}}</li>
+                        @endisset
+                        @isset($application->surname)
+                            <li class="list-group-item">Фамилия заявителя: {{$application->surname ?? ''}}</li>
+                        @endisset
+                        @isset($application->email)
+                            <li class="list-group-item">Электронный адрес заявителя: {{$application->email ?? ''}}</li>
+                        @endisset
+                        @isset($application->address)
+                            <li class="list-group-item">Адрес: {{$application->address ?? ''}}</li>
+                        @endisset
+                    </ul>
                     <div class="table-responsive">
-                        <ul class="list-group" id="list">
+                        <table class="table" name="accepted_table">
+                            <h4 class="card-title">Комментарии</h4>
+                            <thead>
+                            <tr>
+                                <th>Роль</th>
+                                <th>Комментарий</th>
+                                <th>Время</th>
+                               </tr>
+                            </thead>
+                            <tbody>
+                            @isset($comments)
+                                @foreach ($comments as $comment)
+                                    <tr>
+                                        <td>{{$comment["role"]}}</td>
+                                        <td>{{$comment["comment"]}}</td>
+                                        <td>-</td>
 
-                            <li class="list-group-item">Название услуги: {{$process->name}}</li>
-                            @isset($application->name)
-                                <li class="list-group-item">Наименование заявителя: {{$application->name}}</li>
-                            @endisset
-                            @isset($application->surname)
-                                <li class="list-group-item">Фамилия заявителя: {{$application->surname ?? ''}}</li>
-                            @endisset
-                            @isset($application->email)
-                                <li class="list-group-item">Электронный адрес заявителя: {{$application->email ?? ''}}</li>
-                            @endisset
-                            @isset($application->address)
-                                <li class="list-group-item">Адрес: {{$application->address ?? ''}}</li>
-                            @endisset
-                        </ul>
-
-                    </div>
-                </div>
-                @isset($records)
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Ход Согласования</h3>
-                        </div>
-                        <div class="panel-body" id="items">
-                            <ul class="list-group">
-                                @foreach($records as $record)
-                                    <li class="list-group-item ourItem">{{$record->name}} | {{$record->updated_at}}
-                                    </li>
-
+                                    </tr>
                                 @endforeach
-                            </ul>
-                        </div>
+                            @endisset
+
+                            </tbody>
+                            </tablе>
+                            <table class="table" name="reject_table">
+                                <h4 class="card-title">Ход согласования</h4>
+                                <thead>
+                                <tr>
+                                    <th>Статус</th>
+                                    <th>Участник</th>
+                                    <th>Время</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @isset($records)
+                                    @foreach($records as $record)
+                                        <tr>
+                                            <td>{{$record["name"]}}</td>
+                                            <td>{{$record["role"]}}</td>
+                                            <td>{{$record["created_at"]}}</td>
+                                            </tr>
+                                    @endforeach
+                                @endisset
+                                </tbody>
+                            </table>
+
                     </div>
 
-                @endisset
                 @isset($application->revision_reason)
                     <div class="panel panel-default">
                         <div class="panel-heading">
@@ -78,23 +105,13 @@
                     </div>
 
                 @endisset
-
-                @isset($comments)
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Комментарии к форме</h3>
-                        </div>
-                        <div class="panel-body" id="items">
+                @isset($application->reject_reason)
+                        <h4>Причина отказа</h4>
+                        <div id="items">
                             <ul class="list-group">
-                                @foreach($comments as $record)
-                                    <li class="list-group-item ourItem">{{$record["role"]}} | {{$record["comment"]}}
-                                    </li>
-
-                                @endforeach
+                                <p>{{$application->reject_reason}}</p>
                             </ul>
                         </div>
-                    </div>
-
                 @endisset
 
                 <div class="modal fade" id="myModal" role="dialog">
@@ -178,11 +195,9 @@
                                 <button class="btn btn-basic" type="submit">Отправить в {{$sendToSubRoute["name"]}}</button>
                             </form>
                         @endif
-
                             <button type="button" class="btn btn-basic" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
                             <button type="button" class="btn btn-basic" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
                             <button type="button" class="btn btn-basic" data-toggle="modal" data-target="#myModal3">Согласовать</button>
-
                     @endif
                     @endif
             </div>
