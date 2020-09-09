@@ -7,7 +7,7 @@
 
 
 @section('content')
-    <div class="container">
+
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
@@ -91,9 +91,13 @@
                 </div><!-- /.modal -->
             </div>
         </div>
-    </div>
+
+
 
     {{csrf_field()}}
+
+
+    {{--<div><a href="{{route('selectoptions.create')}}">Оздать опции</a></div>--}}
     <script
         src="https://code.jquery.com/jquery-3.5.1.min.js"
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
@@ -117,7 +121,7 @@
             });
 
             $(document).on('click', '#addNew', function(event) {
-                    $('#title').text('Add New Item');
+                    $('#title').text('Добавить справочник');
                     $('#addItem').val("");
                     $('#delete').hide('400');
                     $('#saveChanges').hide('400');

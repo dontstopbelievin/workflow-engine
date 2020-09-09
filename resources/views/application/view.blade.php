@@ -60,7 +60,7 @@
                                     <tr>
                                         <td>{{$comment["role"]}}</td>
                                         <td>{{$comment["comment"]}}</td>
-                                        <td>-</td>
+                                        <td>{{$comment["created_at"]}}</td>
 
                                     </tr>
                                 @endforeach
@@ -204,7 +204,10 @@
         </div>
     </div>
 </div>
+    
+    
 
+    
 {{csrf_field()}}
 
 

@@ -136,7 +136,10 @@ trait dbQueries
 
     public function getTableName($table) {
         $tableName = $this->translateSybmols($table);
-        return str_replace(' ', '_', $tableName);
+        if (strlen($tableName) > 64) {
+            $tableName = $this->truncateTableName($tableName); // если количество символов больше 64, то необходимо укоротить длину названия до 64
+        }
+        return $this->checkForWrongCharacters($tableName);
     }
 
     public function getOriginalColumns($tableColumns) {
@@ -181,7 +184,7 @@ trait dbQueries
     public function getComments($applicationId, $tableId) {
         $query = DB::table('comments')
             ->join('roles', 'comments.role_id', '=', 'roles.id')
-            ->select('roles.name as role', 'comments.name as comment')
+            ->select('roles.name as role', 'comments.name as comment', 'comments.created_at as created_at')
             ->where('application_id', $applicationId)
             ->where('table_id', $tableId)
             ->get()->toArray();
@@ -215,4 +218,31 @@ trait dbQueries
 
         return json_decode(json_encode($query), true);
     }
+
+    public function truncateTableName($name) {
+        $arrOfLetters = str_split($name, 1);
+        $resArr = [];
+        for ($i = 0; $i <=62; $i++) {
+            array_push($resArr, $arrOfLetters[$i]);
+        }
+//        array_unshift($resArr, '_', '_');
+        return implode('', $resArr);
+
+    }
+
+    public function checkForWrongCharacters($name) {
+        $arrayOfWrongCharacters = array('!', ' ', '-', '?');
+//        if (strpos($name, '-') !== false) {
+//            $name = str_replace('-', '_', $name);
+//        }
+//        if (strpos($name, ' ') !== false) {
+//            $name = str_replace(' ', '_', $name);
+//        }
+        return str_replace( $arrayOfWrongCharacters,'_',$name);
+    }
+
+//
+//    public function modifyTableName($name) {
+//
+//    }
 }

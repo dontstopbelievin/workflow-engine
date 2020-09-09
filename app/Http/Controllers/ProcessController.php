@@ -119,7 +119,12 @@ class ProcessController extends Controller
         $processName = $process->name;
         $fields = $request->fields;
         $tableName = $this->translateSybmols($processName);
-        $tableName = str_replace(' ', '_', $tableName);
+        $tableName = $this->checkForWrongCharacters($tableName);
+        if (strlen($tableName) > 62) {
+            $tableName = $this->truncateTableName($tableName); // если количество символов больше 64, то необходимо укоротить длину названия до 64
+        }
+//        $tableName = $this->modifyTableName($tableName);
+
         $table = new CreatedTable();
         $table->name = $tableName;
         $table->save();
@@ -131,7 +136,7 @@ class ProcessController extends Controller
             if($this->isRussian($fieldName)) {
                 $fieldName = $this->translateSybmols($fieldName);
             } ;
-            $fieldName = str_replace(' ', '_', $fieldName);
+            $fieldName = $this->checkForWrongCharacters($fieldName);
             if (Schema::hasColumn($tableName, $fieldName)) {
                 continue;
             } else {
