@@ -182,6 +182,17 @@ trait dbQueries
         return json_decode(json_encode($query), true);
     }
 
+    public function getAllTemplateFields($id) {
+
+        $query = DB::table('template_fields')
+            ->join('input_types', 'template_fields.input_type_id', '=', 'input_types.id')
+            ->join('insert_types', 'template_fields.insert_type_id', '=', 'insert_types.id')
+            ->select('template_fields.name','template_fields.label_name as labelName', 'input_types.name as inputName', 'insert_types.name as insertName', 'template_fields.template_id as templateId')
+            ->where('template_fields.template_id', $id)
+            ->get()->toArray();
+        return json_decode(json_encode($query), true);
+    }
+
     public function getComments($applicationId, $tableId) {
         $query = DB::table('comments')
             ->join('roles', 'comments.role_id', '=', 'roles.id')
