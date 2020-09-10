@@ -8,22 +8,20 @@ use App\Status;
 use App\CityManagement;
 use App\Comment;
 use App\CreatedTable;
+use App\Template;
 use App\TemplateField;
 use App\Traits\dbQueries;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Schema;
 use PhpOffice\PhpWord\TemplateProcessor;
 use Illuminate\Support\Facades\DB;
 
 class ApplicationController extends Controller
 {
     use dbQueries;
-
-    public function __construct() {
-
-    }
 
     public function service() {
 
@@ -34,7 +32,6 @@ class ApplicationController extends Controller
     public function index(Process $process) {
 
         $tableName = $this->getTableName($process->name);
-
         $applications = $this->getTableWithStatuses($tableName);
         $arrayApps = json_decode(json_encode($applications), true);
         foreach($arrayApps as &$app) {
@@ -54,9 +51,7 @@ class ApplicationController extends Controller
 
         $process = Process::find($processId);
         $templateId = $process->accepted_template_id;
-        $templateFields = TemplateField::where('template_id', $templateId)->get();
-
-//        dd($templateFields);
+         $templateFields= TemplateField::where('template_id', $templateId)->get();
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $applicationId)->first();
@@ -116,7 +111,41 @@ class ApplicationController extends Controller
         $mainRoles = $this->getIterateRoles($process);
         $subRoles = $this->getSubRoutes($process->id);
         $allRoles = $this->mergeRoles($mainRoles, $subRoles);
-        return view('application.view', compact('application','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records'));
+
+
+        $templateId = $process->accepted_template_id;
+        $template = Template::where('id', $templateId)->first();
+        $templateName = $template->name;
+
+        $templateTable = $this->translateSybmols($templateName);
+        $templateTable = $this->checkForWrongCharacters($templateTable);
+        $templateTable = $this->modifyTemplateTable($templateTable);
+        if (strlen($templateTable) > 57) {
+            $templateTable = $this->truncateTableName($templateTable); // если количество символов больше 64, то необходимо укоротить длину названия до 64
+        }
+        $templateTableFields = DB::table($templateTable)
+            ->where('process_id', $process->id)
+            ->where('application_id', $application->id)
+            ->where('template_id', $templateId)
+            ->get()->toArray();
+
+        $templateTableFields = json_decode(json_encode($templateTableFields), true);
+        $templateTableFields = $this->filterTemplateTableFields($templateTableFields);
+        return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records'));
+    }
+
+    private function filterTemplateTableFields($array) {
+//        dd($array);
+        $res = [];
+        foreach($array as $item) {
+            foreach($item as $key=>$value) {
+                if ($key !== "id" && $key != "template_id" && $key != "process_id" && $key != "application_id") {
+                   $res[$key] = $value;
+                }
+            }
+
+        }
+        return $res;
     }
 
     public function create(Process $process) {
@@ -175,13 +204,64 @@ class ApplicationController extends Controller
 
     public function approve(Request $request) {
 
-        $id = $request->applicationId;
-
         $process = Process::find($request->process_id);
         $tableName = $this->getTableName($process->name);
+        $id = $request->applicationId;
         $application = DB::table($tableName)->where('id', $id)->first();
         $table = CreatedTable::where('name', $tableName)->first();
+        $fieldValues = $request->fieldValues;
+        $templateId = $process->accepted_template_id;
+        $template = Template::where('id', $templateId)->first();
+        $templateName = $template->name;
 
+        $templateTable = $this->translateSybmols($templateName);
+        $templateTable = $this->checkForWrongCharacters($templateTable);
+        $templateTable = $this->modifyTemplateTable($templateTable);
+        if (strlen($templateTable) > 57) {
+            $templateTable = $this->truncateTableName($templateTable); // если количество символов больше 64, то необходимо укоротить длину названия до 64
+        }
+        if (!Schema::hasTable($templateTable)) {
+            $dbQueryString = "CREATE TABLE $templateTable (id INT PRIMARY KEY AUTO_INCREMENT)";
+            DB::statement($dbQueryString);
+        }
+//        dd($fieldValues);
+        foreach($fieldValues as $key=>$value) {
+            if ($value !== Null) {
+                if (Schema::hasColumn($templateTable, $key)) {
+                    continue;
+                } else {
+                    $dbQueryString = "ALTER TABLE $templateTable ADD COLUMN $key varchar(255)";
+                    DB::statement($dbQueryString);
+                }
+            }
+        }
+
+
+        if (!Schema::hasColumn($templateTable, 'template_id')) {
+            $dbQueryString = "ALTER TABLE $templateTable ADD  template_id INT";
+            DB::statement($dbQueryString);
+        }
+        if (!Schema::hasColumn($templateTable, 'process_id')) {
+            $dbQueryString = "ALTER TABLE $templateTable ADD  process_id INT";
+            DB::statement($dbQueryString);
+        }
+        if (!Schema::hasColumn($templateTable, 'application_id')) {
+            $dbQueryString = "ALTER TABLE $templateTable ADD  application_id INT";
+            DB::statement($dbQueryString);
+        }
+        $checkRow = DB::table($templateTable)
+            ->where('process_id', $process->id)
+            ->where('application_id', $application->id)
+            ->where('template_id', $templateId)
+            ->first();
+        $fieldValues["template_id"] = $templateId;
+        $fieldValues["process_id"] = $process->id;
+        $fieldValues["application_id"] = $application->id;
+        if ($checkRow) {
+            DB::table($templateTable)->update( $fieldValues);
+        } else {
+            DB::table($templateTable)->insert( $fieldValues);
+        }
 
         $user = Auth::user();
         $role = $user->role;
@@ -373,6 +453,17 @@ class ApplicationController extends Controller
         $idOfNextRole = $nextR->id;
         $status = Status::find($idOfNextRole);
 
+        $user = Auth::user();
+        $role = $user->role;
+        $table = CreatedTable::where('name', $tableName)->first();
+        $application = DB::table($tableName)->where('id', $request->applicationId)->first();
+        $logsArray = [];
+        $logsArray["status_id"] = $status->id;
+        $logsArray["role_id"] = $role->id;
+        $logsArray["table_id"] = $table->id;
+        $logsArray["application_id"] = $application->id;
+        $logsArray["created_at"] = Carbon::now();
+        DB::table('logs')->insert( $logsArray);
         if ($index === 0) {
             DB::table($tableName)
                 ->where('id', $request->applicationId)

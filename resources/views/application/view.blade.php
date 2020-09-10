@@ -14,13 +14,13 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" integrity="sha512-aOG0c6nPNzGk+5zjwyJaoRUgCdOrfSDhmMID2u4+OIslr0GjpLKo7Xm0Ao3xmpM4T8AmIouRkqwj1nrdVsLKEQ==" crossorigin="anonymous" />
 </head>
-<body>
+<body style="background-color: #ebecf1;">
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Просмотр заявки</h4>
+                    <h4 class="card-title text-center" style="margin-bottom: 20px; margin-top: 20px;">Просмотр заявки</h4>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -44,17 +44,21 @@
                             <li class="list-group-item">Адрес: {{$application->address ?? ''}}</li>
                         @endisset
                     </ul>
+                    @isset($templateTableFields)
+                        @foreach($templateTableFields as $key=>$value)
+                            <div class="form-group row">
+                                <label for="{{$value}}" class="col-md-4 col-form-label text-md-right">{{$key}}</label>
+                                <div class="col-md-6">
+                                    <p>{{$value}}</p>
+                                </div>
+                            </div>
+                            @endforeach
+                        @endisset
 
-                        @isset($templateFields)
-                            @foreach($templateFields as $item)
-                            <label for="{{$item->name}}">{{$item->label_name}}</label>
-                            <input type="text" name="{{$item->name}}">
-
-                                @endforeach
-                            @endisset
-                    <div class="table-responsive">
+                    <hr>
+                    <div style="margin-top:50px;">
                         <table class="table" name="accepted_table">
-                            <h4 class="card-title">Комментарии</h4>
+                            <h4 class="text-center">Комментарии</h4>
                             <thead>
                             <tr>
                                 <th>Роль</th>
@@ -69,7 +73,6 @@
                                         <td>{{$comment["role"]}}</td>
                                         <td>{{$comment["comment"]}}</td>
                                         <td>{{$comment["created_at"]}}</td>
-
                                     </tr>
                                 @endforeach
                             @endisset
@@ -77,7 +80,7 @@
                             </tbody>
                             </tablе>
                             <table class="table" name="reject_table">
-                                <h4 class="card-title">Ход согласования</h4>
+                                <h4 class="text-center" style="margin-top:50px;">Ход согласования</h4>
                                 <thead>
                                 <tr>
                                     <th>Статус</th>
@@ -92,18 +95,19 @@
                                             <td>{{$record["name"]}}</td>
                                             <td>{{$record["role"]}}</td>
                                             <td>{{$record["created_at"]}}</td>
-                                            </tr>
+                                        </tr>
                                     @endforeach
                                 @endisset
                                 </tbody>
                             </table>
 
                     </div>
+                    <hr>
 
                 @isset($application->revision_reason)
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Причина возврата на доработку</h3>
+                            <h3 class="panel-title text-center">Причина возврата на доработку</h3>
                         </div>
                         <div class="panel-body" id="items">
                             <ul class="list-group">
@@ -114,11 +118,15 @@
 
                 @endisset
                 @isset($application->reject_reason)
-                        <h4>Причина отказа</h4>
-                        <div id="items">
-                            <ul class="list-group">
-                                <p>{{$application->reject_reason}}</p>
-                            </ul>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title text-center">Причина отказа</h3>
+                            </div>
+                            <div class="panel-body" id="items">
+                                <ul class="list-group">
+                                    <p>{{$application->reject_reason}}</p>
+                                </ul>
+                            </div>
                         </div>
                 @endisset
 
@@ -127,14 +135,20 @@
                         <!-- Modal content-->
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title">Форма Мотивированного отказа</h4>
+                                <h4 class="modal-title text-center">Форма Мотивированного отказа</h4>
                             </div>
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <input type="text" id="rejectReason" name="reject_reason" placeholder="Введите причину отказа">
+                                    {{--<input type="text" id="rejectReason" name="reject_reason" placeholder="Введите причину отказа">--}}
+                                    <div class="form-group row">
+                                        <label for="reject_reason" class="col-md-4 col-form-label text-md-right">{{ __("Введите причину отказа") }}</label>
+                                        <div class="col-md-6">
+                                            <input type="text" id="rejectReason" class="form-control" name="reject_reason"  autocomplete="reject_reason" autofocus>
+                                        </div>
+                                    </div>
                                     <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
                                     <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
-                                    <button id="rejectButton">Отправить</button>
+                                    <button class="btn btn-info" style="float:center" id="rejectButton">Отправить</button>
                                 </div>
                             </div>
                         </div>
@@ -145,14 +159,20 @@
                         <!-- Modal content-->
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title">Добавление комментариев</h4>
+                                <h4 class="modal-title  text-center">Добавление комментариев</h4>
                             </div>
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <input type="text" id="comments" name="comments" placeholder="Введите комментарии">
+                                    {{--<input type="text" id="comments" name="comments" placeholder="Введите комментарии">--}}
+                                    <div class="form-group row">
+                                        <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Введите комментарии") }}</label>
+                                        <div class="col-md-6">
+                                            <input type="text" id="comments" class="form-control" name="comments"  autocomplete="comments" autofocus>
+                                        </div>
+                                    </div>
                                     <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
                                     <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
-                                    <button id="commentButton">Отправить</button>
+                                    <button class="btn btn-info" id="commentButton">Отправить</button>
                                 </div>
                             </div>
                         </div>
@@ -163,31 +183,58 @@
                         <!-- Modal content-->
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h4 class="modal-title">Форма отправки на доработку</h4>
+                                <h4 class="modal-title  text-center">Форма отправки на доработку</h4>
                             </div>
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <input type="text" id="revisionReason" name="revision_reason" placeholder="Введите причину отправки на доработку">
-                                    <select name="roleToRevise" id="roleToRevise">
-                                        <option selected disabled>Выберите Ниже</option>
-                                        @foreach($allRoles as $role)
-                                            <option value="{{$role}}">{{$role}}</option>
-                                        @endforeach
-                                    </select>
+                                    {{--<input type="text" id="revisionReason" name="revision_reason" placeholder="Введите причину отправки на доработку">--}}
+                                    <div class="form-group row">
+                                        <label for="revisionReason" class="col-md-4 col-form-label text-md-right">{{ __("Введите причину отправки на доработку") }}</label>
+                                        <div class="col-md-6">
+                                            <input type="text" id="revisionReason" class="form-control" name="revisionReason"  autocomplete="revisionReason" autofocus>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="roleToRevise" class="col-md-4 col-form-label text-md-right">{{ __('Выберите Специалиста') }}</label>
+                                        <select name="roleToRevise" id="roleToRevise" class="form-control">
+                                            <option selected disabled>Выберите Ниже</option>
+                                            @foreach($allRoles as $role)
+                                                <option value="{{$role}}">{{$role}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
                                     <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
-                                    <button id="revisionButton">Отправить</button>
+                                    <button class="btn btn-info" id="revisionButton">Отправить</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 @if($canApprove)
+                        @isset($templateFields)
+                            <h4 class="card-title text-center" style="margin-top:50px;">Поля Шаблона</h4>
+                            <form id = "templateFieldsId" method="POST">
+                                @foreach($templateFields as $item)
+
+                                    <div class="form-group row">
+                                        <label for="{{$item->name}}" class="col-md-4 col-form-label text-md-right">{{ __($item->label_name) }}</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
+                                        </div>
+                                    </div>
+                                @endforeach
+
+                            </form>
+                        @endisset
                     @if($toCitizen)
                         <form action="{{ route('applications.toCitizen', ['application_id' => $application->id]) }}" method="post">
                             @csrf
                             <input type="hidden" name="process_id" value = {{$process->id}}>
-                            <button class="btn btn-basic" type="submit">Отправить заявителю</button>
+                            <div style="text-align: center">
+                                <button class="btn btn-danger" style="margin-bottom: 30px;" type="submit">Отправить заявителю</button>
+                            </div>
+
                         </form>
                     @elseif($backToMainOrg)
                         <form action="{{ route('applications.backToMainOrg', ['application_id' => $application->id]) }}" method="post">
@@ -203,9 +250,12 @@
                                 <button class="btn btn-basic" type="submit">Отправить в {{$sendToSubRoute["name"]}}</button>
                             </form>
                         @endif
-                            <button type="button" class="btn btn-basic" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
-                            <button type="button" class="btn btn-basic" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
-                            <button type="button" class="btn btn-basic" data-toggle="modal" data-target="#myModal3">Согласовать</button>
+                            <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
+                                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
+                            </div>
+
                     @endif
                     @endif
             </div>
@@ -261,12 +311,17 @@
         });
         $('#commentButton').click(function(event) {
             var comments = $('#comments').val();
+            var inputs = $('#templateFieldsId :input');
+            var values = {};
+            inputs.each(function() {
+                values[this.name] = $(this).val();
+            });
+            // console.log(values);
             var processId = $('#processId').val();
             var applicationId = $('#applicationId').val();
             console.log(comments, processId, applicationId)
-            $.post('/applications/approve', {'comments':comments,'process_id':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
+            $.post('/applications/approve', {'comments':comments,'fieldValues':values,'process_id':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
                 var modal =  $('#myModal3');
-                // console.log(data);
                 modal.style.display = 'none';
                 $('#items').load(location.href + ' #items');
             });
