@@ -14,7 +14,7 @@ class CreateCreatedTablesTable extends Migration
     public function up()
     {
         Schema::create('created_tables', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('name');
             $table->timestamps();
         });

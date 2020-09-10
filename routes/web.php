@@ -101,7 +101,15 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::put('template-update/{template}', 'TemplateController@update')->name('template.update');
     Route::delete('template-delete/{template}', 'TemplateController@delete')->name('template.delete');
 
-    Route::get('manual', 'HandbookController@index')->name('manual.index');;
+    Route::get('template-field-create/{id}', 'TemplateFieldsController@create')->name('templatefield.create');
+    Route::post('template-field-create', 'TemplateFieldsController@store')->name('templatefield.store');
+
+//    Route::get('manual', 'HandbookController@index')->name('manual.index');
+
+    Route::get('select-options/create', 'SelectOptionController@create')->name('selectoptions.create');
+    Route::post('/select-options/store', 'SelectOptionController@store')->name('selectoptions.store');
+    Route::post('/select-options/delete', 'SelectOptionController@delete')->name('selectoptions.delete');
+    Route::post('/select-options/update', 'SelectOptionController@update')->name('selectoptions.update');
 
     Route::get('processes', 'ProcessController@index')->name('processes.index');
     Route::get('processes/{process}', 'ProcessController@view')->name('processes.view');
@@ -123,7 +131,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         $processesCount = count(Process::all());
         $dictionariesCount = count(Dictionary::all());
         $cityManagementCount = count(CityManagement::all());
-        $view->with(compact('usersCount', 'rolesCount','fieldsCount', 'dictionariesCount','templatesCount','processesCount','cityManagementCount'));
+        $view->with(compact('usersCount', 'rolesCount', 'dictionariesCount','templatesCount','processesCount','cityManagementCount'));
     });
 
 });
