@@ -48,13 +48,16 @@ class ApplicationController extends Controller
 
     public function view($processId, $applicationId) {
 
-
         $process = Process::find($processId);
         $templateId = $process->accepted_template_id;
          $templateFields= TemplateField::where('template_id', $templateId)->get();
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $applicationId)->first();
+        $applicationArray = json_decode(json_encode($application), true);
+        $notInArray = ["id", "process_id", "status_id", "to_revision", "user_id","index_sub_route", "index_main", "reject_reason", "revision_reason" ];
+        $applicationArray = $this->filterApplicationArray($applicationArray, $notInArray); // not used yet, but surely will
+
         $statusId = $application->status_id;
         $user = Auth::user();
         $thisRole = $user->role;
@@ -123,33 +126,48 @@ class ApplicationController extends Controller
         if (strlen($templateTable) > 57) {
             $templateTable = $this->truncateTableName($templateTable); // если количество символов больше 64, то необходимо укоротить длину названия до 64
         }
-        $templateTableFields = DB::table($templateTable)
-            ->where('process_id', $process->id)
-            ->where('application_id', $application->id)
-            ->where('template_id', $templateId)
-            ->get()->toArray();
+        $templateTableFields = [];
+        if (Schema::hasTable($templateTable)) {
+            if (Schema::hasColumn($templateTable, 'template_id') && (Schema::hasColumn($templateTable, 'process_id')) && Schema::hasColumn($templateTable, 'application_id')) {
+                $templateTableFields = DB::table($templateTable)
+                    ->where('process_id', $process->id)
+                    ->where('application_id', $application->id)
+                    ->where('template_id', $templateId)
+                    ->get()->toArray();
+                $templateTableFields = json_decode(json_encode($templateTableFields), true);
+                $exceptionArray = ["id", "template_id", "process_id", "application_id"];
+                $templateTableFields = $this->filterTemplateFieldsTable($templateTableFields, $exceptionArray);
+            }
 
-        $templateTableFields = json_decode(json_encode($templateTableFields), true);
-        $templateTableFields = $this->filterTemplateTableFields($templateTableFields);
+
+        }
         return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records'));
     }
 
-    private function filterTemplateTableFields($array) {
-//        dd($array);
+    private function filterTemplateFieldsTable($array, $exceptionArray) {
         $res = [];
         foreach($array as $item) {
             foreach($item as $key=>$value) {
-                if ($key !== "id" && $key != "template_id" && $key != "process_id" && $key != "application_id") {
-                   $res[$key] = $value;
+                if (!in_array($key, $exceptionArray)) {
+                    $res[$key] = $value;
                 }
             }
+        }
+        return $res;
+    }
 
+    public function filterApplicationArray($array, $notInArray)
+    {
+        $res = [];
+        foreach($array as $key=>$value) {
+            if (!in_array($key, $notInArray)) {
+                $res[$key] = $value;
+            }
         }
         return $res;
     }
 
     public function create(Process $process) {
-
         $tableName = $this->getTableName($process->name);
         $tableColumns = $this->getColumns($tableName);
         $originalTableColumns = $this->getOriginalColumns($tableColumns);
@@ -226,14 +244,14 @@ class ApplicationController extends Controller
         }
 //        dd($fieldValues);
         foreach($fieldValues as $key=>$value) {
-            if ($value !== Null) {
+//            if ($value !== Null) {
                 if (Schema::hasColumn($templateTable, $key)) {
                     continue;
                 } else {
                     $dbQueryString = "ALTER TABLE $templateTable ADD COLUMN $key varchar(255)";
                     DB::statement($dbQueryString);
                 }
-            }
+//            }
         }
 
 

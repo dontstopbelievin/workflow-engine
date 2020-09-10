@@ -76,7 +76,7 @@ class ProcessController extends Controller
         $accepted = Template::accepted()->get();
         $rejected = Template::rejected()->get();
         $columns = $this->getAllDictionaries();
-        $roles = Role::all();
+        $roles = Role::where('name' ,'<>', 'Заявитель')->get();
         $tableName = $this->getTableName($process->name);
         $tableColumns = $this->getColumns($tableName);
         $tableColumns = array_slice($tableColumns, 0, -7);

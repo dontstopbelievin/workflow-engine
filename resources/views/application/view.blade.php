@@ -20,7 +20,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title text-center" style="margin-bottom: 20px; margin-top: 20px;">Просмотр заявки</h4>
+                    <h2 class="card-title text-center" style="margin-bottom: 20px; margin-top: 20px;">Просмотр заявки</h2>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -28,8 +28,8 @@
                     @endif
                 </div>
                 <div class="card-body">
+                    <h4 class="text-center">Информация о заявителе</h4>
                     <ul class="list-group" id="list">
-
                         <li class="list-group-item">Название услуги: {{$process->name}}</li>
                         @isset($application->name)
                             <li class="list-group-item">Наименование заявителя: {{$application->name}}</li>
@@ -43,21 +43,26 @@
                         @isset($application->address)
                             <li class="list-group-item">Адрес: {{$application->address ?? ''}}</li>
                         @endisset
+                        @isset($application->cadastral_number)
+                            <li class="list-group-item">Кадастровый номер: {{$application->cadastral_number ?? ''}}</li>
+                        @endisset
                     </ul>
+
+                    <h4 class="text-center">Поля заполненные специалистами</h4>
+
                     @isset($templateTableFields)
+                        <ul class="list-group" id="list">
                         @foreach($templateTableFields as $key=>$value)
-                            <div class="form-group row">
-                                <label for="{{$value}}" class="col-md-4 col-form-label text-md-right">{{$key}}</label>
-                                <div class="col-md-6">
-                                    <p>{{$value}}</p>
-                                </div>
-                            </div>
+
+                                <li class="list-group-item">{{$key}}: {{$value}}</li>
+
                             @endforeach
+                        </ul>
                         @endisset
 
                     <hr>
                     <div style="margin-top:50px;">
-                        <table class="table" name="accepted_table">
+                        <table class="table" style="background: white;" name="accepted_table">
                             <h4 class="text-center">Комментарии</h4>
                             <thead>
                             <tr>
@@ -79,7 +84,7 @@
 
                             </tbody>
                             </tablе>
-                            <table class="table" name="reject_table">
+                            <table class="table" style="background: white;" name="reject_table">
                                 <h4 class="text-center" style="margin-top:50px;">Ход согласования</h4>
                                 <thead>
                                 <tr>
@@ -240,14 +245,14 @@
                         <form action="{{ route('applications.backToMainOrg', ['application_id' => $application->id]) }}" method="post">
                             @csrf
                             <input type="hidden" name="process_id" value = {{$process->id}}>
-                            <button class="btn btn-basic" type="submit">Отправить обратно в организацию</button>
+                            <button class="btn btn-warning" style="margin-bottom: 70px;" type="submit">Отправить обратно в организацию</button>
                         </form>
                     @else
                         @if(isset($sendToSubRoute["name"]))
                             <form action="{{ route('applications.sendToSubRoute', ['application_id' => $application->id]) }}" method="post">
                                 @csrf
                                 <input type="hidden" name="process_id" value = {{$process->id}}>
-                                <button class="btn btn-basic" type="submit">Отправить в {{$sendToSubRoute["name"]}}</button>
+                                <button class="btn btn-warning" type="submit">Отправить в {{$sendToSubRoute["name"]}}</button>
                             </form>
                         @endif
                             <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
