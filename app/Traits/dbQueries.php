@@ -244,17 +244,14 @@ trait dbQueries
 
     public function checkForWrongCharacters($name) {
         $arrayOfWrongCharacters = array('!', ' ', '-', '?');
-//        if (strpos($name, '-') !== false) {
-//            $name = str_replace('-', '_', $name);
-//        }
-//        if (strpos($name, ' ') !== false) {
-//            $name = str_replace(' ', '_', $name);
-//        }
         return str_replace( $arrayOfWrongCharacters,'_',$name);
     }
 
 
     public function modifyTableName($name) {
         return 'wf_'.$name;
+    }
+    public function modifyTemplateTable($name) {
+        return 'wf_tt_'.$name;
     }
 }
