@@ -44,6 +44,14 @@
                             <li class="list-group-item">Адрес: {{$application->address ?? ''}}</li>
                         @endisset
                     </ul>
+
+                        @isset($templateFields)
+                            @foreach($templateFields as $item)
+                            <label for="{{$item->name}}">{{$item->label_name}}</label>
+                            <input type="text" name="{{$item->name}}">
+
+                                @endforeach
+                            @endisset
                     <div class="table-responsive">
                         <table class="table" name="accepted_table">
                             <h4 class="card-title">Комментарии</h4>

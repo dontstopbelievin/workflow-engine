@@ -8,6 +8,7 @@ use App\Status;
 use App\CityManagement;
 use App\Comment;
 use App\CreatedTable;
+use App\TemplateField;
 use App\Traits\dbQueries;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -50,7 +51,12 @@ class ApplicationController extends Controller
 
     public function view($processId, $applicationId) {
 
+
         $process = Process::find($processId);
+        $templateId = $process->accepted_template_id;
+        $templateFields = TemplateField::where('template_id', $templateId)->get();
+
+//        dd($templateFields);
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $applicationId)->first();
@@ -110,7 +116,7 @@ class ApplicationController extends Controller
         $mainRoles = $this->getIterateRoles($process);
         $subRoles = $this->getSubRoutes($process->id);
         $allRoles = $this->mergeRoles($mainRoles, $subRoles);
-        return view('application.view', compact('application', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records'));
+        return view('application.view', compact('application','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records'));
     }
 
     public function create(Process $process) {
