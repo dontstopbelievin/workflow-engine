@@ -120,11 +120,10 @@ class ProcessController extends Controller
         $fields = $request->fields;
         $tableName = $this->translateSybmols($processName);
         $tableName = $this->checkForWrongCharacters($tableName);
-        if (strlen($tableName) > 62) {
+        if (strlen($tableName) > 60) {
             $tableName = $this->truncateTableName($tableName); // если количество символов больше 64, то необходимо укоротить длину названия до 64
         }
-//        $tableName = $this->modifyTableName($tableName);
-
+        $tableName = $this->modifyTableName($tableName);
         $table = new CreatedTable();
         $table->name = $tableName;
         $table->save();

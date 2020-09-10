@@ -80,13 +80,12 @@ class ApplicationController extends Controller
                 $backToMainOrg = true;
             }
         }
+        $sendToSubRoute = [];
+        $sendToSubRoute["isset"] = false;
         if (Null !==($process->roles()->where('parent_role_id', '<>', Null)->first())) {
             $parentRoleId = intval($process->roles()->where('parent_role_id', '<>', Null)->first()->pivot->parent_role_id); // добыть родительскую айдишку родительской роли для подролей
             $subOrg = CityManagement::find($process->support_organization_id);
 
-        
-            $sendToSubRoute = [];
-            $sendToSubRoute["isset"] = false;
             if (($application->index_sub_route > 0) && ($application->index_sub_route < sizeof($subRoutes))) {
                 if ($thisRole->name === $subRoutes[$application->index_sub_route - 1]) {
                     $sendToSubRoute["isset"] = true;

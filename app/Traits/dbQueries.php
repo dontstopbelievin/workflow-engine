@@ -136,9 +136,10 @@ trait dbQueries
 
     public function getTableName($table) {
         $tableName = $this->translateSybmols($table);
-        if (strlen($tableName) > 64) {
+        if (strlen($tableName) > 60) {
             $tableName = $this->truncateTableName($tableName); // если количество символов больше 64, то необходимо укоротить длину названия до 64
         }
+        $tableName = $this->modifyTableName($tableName);
         return $this->checkForWrongCharacters($tableName);
     }
 
@@ -222,11 +223,11 @@ trait dbQueries
     public function truncateTableName($name) {
         $arrOfLetters = str_split($name, 1);
         $resArr = [];
-        for ($i = 0; $i <=62; $i++) {
+        for ($i = 0; $i <=60; $i++) {
             array_push($resArr, $arrOfLetters[$i]);
         }
-//        array_unshift($resArr, '_', '_');
         return implode('', $resArr);
+
 
     }
 
@@ -241,8 +242,8 @@ trait dbQueries
         return str_replace( $arrayOfWrongCharacters,'_',$name);
     }
 
-//
-//    public function modifyTableName($name) {
-//
-//    }
+
+    public function modifyTableName($name) {
+        return 'wf_'.$name;
+    }
 }
