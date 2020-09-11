@@ -30,8 +30,15 @@ Route::get('/list', function () {
     return view('list.list');
 });
 
+Route::get('/loginwithecp', function () {
+    return view('auth.loginwithecp');
+});
 
 Auth::routes();
+
+
+Route::post('loginwithecp/bar')->name('loginwithecp.store')->uses('EdsSignController@loginByCert')->middleware('guest');
+
 
 Route::get('services', 'ApplicationController@service')->name('applications.service');
 Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');

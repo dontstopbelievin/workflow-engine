@@ -75,6 +75,9 @@
                         @if (Route::has('register'))
                             <a href="{{ route('register') }}">Регистрация</a>
                         @endif
+
+                        <a href="{{ '/loginwithecp' }}">Login with ecp</a>
+
                     @endauth
                 </div>
             @endif
