@@ -41,6 +41,7 @@ class ApplicationController extends Controller
             } else {
                 $app["status"] = $app["status"] . " на согласование";
             }
+
         }
         $statuses = [];
         return view('application.index', compact('arrayApps', 'process','statuses'));
@@ -141,6 +142,7 @@ class ApplicationController extends Controller
 
 
         }
+//        dd($templateTableFields);
         return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records'));
     }
 
@@ -242,7 +244,6 @@ class ApplicationController extends Controller
             $dbQueryString = "CREATE TABLE $templateTable (id INT PRIMARY KEY AUTO_INCREMENT)";
             DB::statement($dbQueryString);
         }
-//        dd($fieldValues);
         foreach($fieldValues as $key=>$value) {
 //            if ($value !== Null) {
                 if (Schema::hasColumn($templateTable, $key)) {
@@ -272,13 +273,20 @@ class ApplicationController extends Controller
             ->where('application_id', $application->id)
             ->where('template_id', $templateId)
             ->first();
-        $fieldValues["template_id"] = $templateId;
-        $fieldValues["process_id"] = $process->id;
-        $fieldValues["application_id"] = $application->id;
+        $resultantArrayToInsertOrUpdate = [];
+        foreach($fieldValues as $key=>$value) {
+            if ($value !== Null) {
+                $resultantArrayToInsertOrUpdate[$key] = $value;
+            }
+        }
+        $resultantArrayToInsertOrUpdate["template_id"] = $templateId;
+        $resultantArrayToInsertOrUpdate["process_id"] = $process->id;
+        $resultantArrayToInsertOrUpdate["application_id"] = $application->id;
+
         if ($checkRow) {
-            DB::table($templateTable)->update( $fieldValues);
+            DB::table($templateTable)->update( $resultantArrayToInsertOrUpdate);
         } else {
-            DB::table($templateTable)->insert( $fieldValues);
+            DB::table($templateTable)->insert( $resultantArrayToInsertOrUpdate);
         }
 
         $user = Auth::user();
