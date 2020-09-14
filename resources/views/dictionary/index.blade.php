@@ -7,7 +7,7 @@
 
 
 @section('content')
-
+    <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
@@ -27,7 +27,7 @@
                             <tbody>
                                 @foreach($dictionaries as $item)
                               <tr>
-                                <td><h4>{{$item["labelName"]}}</h4></td>
+                                <td><h4>{{$item["name"]}}</h4></td>
                                 <td><h4>{{$item["inputName"]}}</h4></td>
                                 <td><h4>{{$item["insertName"]}}</h4></td>
                               </tr>   
@@ -49,7 +49,6 @@
                             <div class="modal-body">
                                 <input type="hidden" id="id">
                                 <p><input type="text" placeholder="Введите название поля" id="addItem" class="form-control"></p>
-                                <p><input type="text" placeholder="Введите ярлык поля(label name)" id="addLabelName" class="form-control"></p>
                                 <input type="hidden" id="processId" value="1">
                                 @isset($inputTypes)
                                     <label for="inputType">Выберите Тип Вводимого</label>
@@ -91,13 +90,9 @@
                 </div><!-- /.modal -->
             </div>
         </div>
-
-
+    </div>
 
     {{csrf_field()}}
-
-
-    {{--<div><a href="{{route('selectoptions.create')}}">Оздать опции</a></div>--}}
     <script
         src="https://code.jquery.com/jquery-3.5.1.min.js"
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
@@ -121,7 +116,7 @@
             });
 
             $(document).on('click', '#addNew', function(event) {
-                    $('#title').text('Добавить справочник');
+                    $('#title').text('Add New Item');
                     $('#addItem').val("");
                     $('#delete').hide('400');
                     $('#saveChanges').hide('400');
@@ -137,7 +132,6 @@
             });
 
             $('#AddButton').click(function(event) {
-                var labelName = $('#addLabelName').val();
                 var text = $('#addItem').val();
                 var inputItem = $('#inputType').val();
                 var insertItem = $('#insertType').val();
@@ -161,7 +155,7 @@
                 if (insertItem === null) {
                     alert('Выберите тип сохранения');
                 }
-                $.post('dictionary/create', {'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, '_token':$('input[name=_token]').val()}, function(data){
+                $.post('dictionary/create', {'fieldName':text,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, '_token':$('input[name=_token]').val()}, function(data){
                     console.log(data);
                     $('#items').load(location.href + ' #items');
                 });

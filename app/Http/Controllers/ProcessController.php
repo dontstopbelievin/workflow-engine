@@ -68,6 +68,7 @@ class ProcessController extends Controller
         ]);
         $process->save();
         return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был создан');
+     
     }
 
 
@@ -76,7 +77,7 @@ class ProcessController extends Controller
         $accepted = Template::accepted()->get();
         $rejected = Template::rejected()->get();
         $columns = $this->getAllDictionaries();
-        $roles = Role::where('name' ,'<>', 'Заявитель')->get();
+        $roles = Role::all();
         $tableName = $this->getTableName($process->name);
         $tableColumns = $this->getColumns($tableName);
         $tableColumns = array_slice($tableColumns, 0, -7);
@@ -119,11 +120,7 @@ class ProcessController extends Controller
         $processName = $process->name;
         $fields = $request->fields;
         $tableName = $this->translateSybmols($processName);
-        $tableName = $this->checkForWrongCharacters($tableName);
-        if (strlen($tableName) > 60) {
-            $tableName = $this->truncateTableName($tableName); // если количество символов больше 64, то необходимо укоротить длину названия до 64
-        }
-        $tableName = $this->modifyTableName($tableName);
+        $tableName = str_replace(' ', '_', $tableName);
         $table = new CreatedTable();
         $table->name = $tableName;
         $table->save();
@@ -135,7 +132,7 @@ class ProcessController extends Controller
             if($this->isRussian($fieldName)) {
                 $fieldName = $this->translateSybmols($fieldName);
             } ;
-            $fieldName = $this->checkForWrongCharacters($fieldName);
+            $fieldName = str_replace(' ', '_', $fieldName);
             if (Schema::hasColumn($tableName, $fieldName)) {
                 continue;
             } else {

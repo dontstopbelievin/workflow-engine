@@ -16,7 +16,6 @@ class CreateDictionariesTable extends Migration
         Schema::create('dictionaries', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('label_name');
             $table->foreignId('input_type_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('insert_type_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();

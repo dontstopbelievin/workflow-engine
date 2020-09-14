@@ -30,7 +30,11 @@
                                   <tr>
                                     <td><a href="{{ route('applications.view', ['process_id' => $process["id"] , 'application_id' => $app["id"]]) }}">{{$app["id"]}}</a></td>
                                     <td>{{$app["name"] ?? '' }}</td>
-                                    <td>{{$app["status"] ?? ''}}</td>
+                                     @if ($app["status"] === "Отправлено Заявителю на согласование")
+                                        <td>Отправлено Заявителю</td>
+                                      @else
+                                          <td>{{$app["status"] ?? ''}}</td>
+                                      @endif
                                   </tr>
                             @endforeach
                             </tbody>

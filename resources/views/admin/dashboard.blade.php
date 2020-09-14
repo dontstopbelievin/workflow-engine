@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Dashboard
+    Приборная панель
 @endsection
 
 @section('content')
