@@ -3,13 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Template;
-use App\TemplateField;
-use App\InputType;
-use App\InsertType;
-use App\SelectOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use App\Traits\dbQueries;
 
 class TemplateController extends Controller
 {
@@ -19,8 +14,9 @@ class TemplateController extends Controller
         $rejectedTemplates = Template::rejected()->get();
         return view('template.index', compact('acceptedTemplates', 'rejectedTemplates'));
     }
-    use dbQueries;
+
     public function create() {
+
         return view('template.create');
     }
 
@@ -39,8 +35,8 @@ class TemplateController extends Controller
             'doc_path' => $docPath,
             'accept_template' => $templateState,
         ]);
-        $template->save();
-        return Redirect::route('templatefield.create', [$template])->with('status','Шаблон успешно создан');;
+        $template->save(); 
+        return Redirect::route('template.index')->with('status','Шаблон успешно создан');;
     }
 
     public function edit(Template $template) {

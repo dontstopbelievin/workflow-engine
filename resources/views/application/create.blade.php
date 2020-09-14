@@ -23,7 +23,7 @@
                             <form action="{{ route('applications.store') }}" method="POST">
                                 @csrf
                                 @foreach($arrayToFront as $item)
-                                    <label>{{$item["labelName"]}}</label>
+                                    <label>{{$item["name"]}}</label>
                                     @if($item["inputName"] === 'file')
                                         <input type="file" name={{$item["name"]}} multiple><br><br>
                                     @elseif($item["inputName"] === 'text')

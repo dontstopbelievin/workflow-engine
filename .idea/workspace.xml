@@ -125,7 +125,7 @@
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
-        <counts>
+        <counts
           <entry key="Blade" value="4215" />
           <entry key="PHP" value="12207" />
         </counts>
@@ -157,7 +157,7 @@
             <state relative-caret-position="-1973">
               <caret line="87" column="107" selection-start-line="87" selection-start-column="107" selection-end-line="87" selection-end-column="107" />
               <folding>
-                <element signature="e#40#56#0#PHP" expanded="true" />
+                <element signature="e#45#81#0#PHP" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -716,13 +716,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/User.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="53" column="30" selection-start-line="53" selection-start-column="22" selection-end-line="53" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/views/process/edit.blade.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="177">
@@ -942,6 +935,7 @@
         </state>
       </provider>
     </entry>
+
     <entry file="file://$PROJECT_DIR$/resources/views/application/view.blade.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2660">
