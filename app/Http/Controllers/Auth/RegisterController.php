@@ -51,7 +51,7 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-//            'phone' => ['required', 'string', 'max:10', 'min:10'],
+            'phone' => ['required', 'string', 'max:10', 'min:10'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -64,14 +64,24 @@ class RegisterController extends Controller
      * @return \App\User
      */
     protected function create(array $data)
-    {   
+    {
         $usertype = NULL;
         if ($data['name'] === 'Admin') {
             $usertype = 'admin';
         }
+        $iin = Null;
+        $bin = Null;
+        if ($data['iin'] !== Null) {
+            $iin = $data['iin'];
+        }
+        if ($data['bin'] !== Null) {
+            $bin = $data['bin'];
+        }
         return User::create([
             'name' => $data['name'],
-//            'phone' => $data['phone'],
+            'phone' => $data['phone'],
+            'iin' => $iin,
+            'bin' => $bin,
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'usertype' => $usertype,

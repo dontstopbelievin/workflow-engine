@@ -21,6 +21,21 @@
                             <input type="text" id="name" name="name" placeholder="Кайсаров Кайсар Кайсарулы"
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
                         </div>
+                        <div class="flex flex-col pt-4">
+                            <label for="name" class="text-lg">Телефон</label>
+                            <input type="text" id="phone" name="phone" placeholder="87777777777"
+                                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="flex flex-col pt-4">
+                            <label for="iin" class="text-lg">ИИН</label>
+                            <input type="text" id="iin" name="iin" placeholder="950206886596"
+                                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="flex flex-col pt-4">
+                            <label for="bin" class="text-lg">БИН</label>
+                            <input type="text" id="bin" name="bin" placeholder="950206886596"
+                                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
 
                         <div class="flex flex-col pt-4">
                             <label for="email" class="text-lg">Ваш email</label>

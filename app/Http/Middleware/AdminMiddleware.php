@@ -21,7 +21,7 @@ class AdminMiddleware
        }
        else 
        {
-           return redirect('/home')->with('status','you are not allowed to Admin Dashboard');
+           return redirect('/home')->with('status','Добро пожаловать в электронные услуги');
        }
     }
 }
