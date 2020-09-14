@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\CityManagement;
 
 class RoleSeeder extends Seeder
 {
@@ -17,10 +16,11 @@ class RoleSeeder extends Seeder
         DB::table('roles')->insert([
             [
                 'name' => 'Заявитель',
+//                'city_management_id' => 1,
             ],
             [
                 'name' => 'Специалист Апз', //2 управление
-//                'city_management_id' => CityManagement::all()->random()->id,
+//                'city_management_id' => 1,
             ],
             [
                 'name' => 'Начальник Отдела', //3 управление

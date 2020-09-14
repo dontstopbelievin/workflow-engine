@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b3c7adca6b03b19d4544a1325eb4659",
+    "content-hash": "477dc98066b499e5da9c413dd9db9bd9",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1127,39 +1127,6 @@
                 "storage"
             ],
             "time": "2020-05-18T15:13:39+00:00"
-        },
-        {
-            "name": "malikzh/php-ncanode",
-            "version": "v1.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/malikzh/php-ncanode.git",
-                "reference": "7e1c0bcb14ad1fa4336effb20ac4e87e7a9a041a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/malikzh/php-ncanode/zipball/7e1c0bcb14ad1fa4336effb20ac4e87e7a9a041a",
-                "reference": "7e1c0bcb14ad1fa4336effb20ac4e87e7a9a041a",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Malikzh\\PhpNCANode\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Malik Zharykov",
-                    "email": "cmalikz.h@gmail.com"
-                }
-            ],
-            "description": "The NCANode PHP client",
-            "time": "2018-10-24T07:54:54+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -6313,6 +6280,5 @@
     "platform": {
         "php": "^7.2.5"
     },
-    "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "platform-dev": []
 }

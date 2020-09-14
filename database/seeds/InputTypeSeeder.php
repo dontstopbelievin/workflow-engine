@@ -16,7 +16,16 @@ class InputTypeSeeder extends Seeder
                 'name' => 'text' //1
             ],
             [
+                'name' => 'checkbox' //1
+            ],
+            [
+                'name' => 'image' //1
+            ],
+            [
                 'name' => 'file' //1
+            ],
+            [
+                'name' => 'url' //1
             ],
             [
                 'name' => 'select' //1

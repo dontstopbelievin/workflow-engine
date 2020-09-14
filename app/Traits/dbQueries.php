@@ -81,6 +81,15 @@ trait dbQueries
             ->get()->toArray();
     }
 
+    public function getRecords($id) {
+
+        return DB::table('statuses')
+        ->join('application_status', 'statuses.id', '=', 'application_status.status_id')
+        ->select('statuses.name', 'application_status.updated_at')
+        ->where('application_status.application_id', $id)
+        
+        ->get();
+    }
     public function getSubRoutes($id) {
 
         $routes = DB::table('roles')
@@ -136,11 +145,7 @@ trait dbQueries
 
     public function getTableName($table) {
         $tableName = $this->translateSybmols($table);
-        if (strlen($tableName) > 60) {
-            $tableName = $this->truncateTableName($tableName); // если количество символов больше 64, то необходимо укоротить длину названия до 64
-        }
-        $tableName = $this->modifyTableName($tableName);
-        return $this->checkForWrongCharacters($tableName);
+        return str_replace(' ', '_', $tableName);
     }
 
     public function getOriginalColumns($tableColumns) {
@@ -177,18 +182,7 @@ trait dbQueries
         $query = DB::table('dictionaries')
             ->join('input_types', 'dictionaries.input_type_id', '=', 'input_types.id')
             ->join('insert_types', 'dictionaries.insert_type_id', '=', 'insert_types.id')
-            ->select('dictionaries.name','dictionaries.label_name as labelName', 'input_types.name as inputName', 'insert_types.name as insertName')
-            ->get()->toArray();
-        return json_decode(json_encode($query), true);
-    }
-
-    public function getAllTemplateFields($id) {
-
-        $query = DB::table('template_fields')
-            ->join('input_types', 'template_fields.input_type_id', '=', 'input_types.id')
-            ->join('insert_types', 'template_fields.insert_type_id', '=', 'insert_types.id')
-            ->select('template_fields.name','template_fields.label_name as labelName', 'input_types.name as inputName', 'insert_types.name as insertName', 'template_fields.template_id as templateId')
-            ->where('template_fields.template_id', $id)
+            ->select('dictionaries.name', 'input_types.name as inputName', 'insert_types.name as insertName')
             ->get()->toArray();
         return json_decode(json_encode($query), true);
     }
@@ -196,7 +190,7 @@ trait dbQueries
     public function getComments($applicationId, $tableId) {
         $query = DB::table('comments')
             ->join('roles', 'comments.role_id', '=', 'roles.id')
-            ->select('roles.name as role', 'comments.name as comment', 'comments.created_at as created_at')
+            ->select('roles.name as role', 'comments.name as comment')
             ->where('application_id', $applicationId)
             ->where('table_id', $tableId)
             ->get()->toArray();
@@ -217,41 +211,5 @@ trait dbQueries
             array_push($mainRoleArr, $role->name);
         }
         return $mainRoleArr;
-    }
-
-    public function getRecords($applicationId, $tableId) {
-        $query = DB::table('logs')
-            ->join('roles', 'logs.role_id', '=', 'roles.id')
-            ->join('statuses', 'logs.status_id', '=', 'statuses.id')
-            ->select( 'statuses.name as name', 'logs.created_at as created_at', 'roles.name as role')
-            ->where('application_id', $applicationId)
-            ->where('table_id', $tableId)
-            ->get()->toArray();
-
-        return json_decode(json_encode($query), true);
-    }
-
-    public function truncateTableName($name) {
-        $arrOfLetters = str_split($name, 1);
-        $resArr = [];
-        for ($i = 0; $i <=60; $i++) {
-            array_push($resArr, $arrOfLetters[$i]);
-        }
-        return implode('', $resArr);
-
-
-    }
-
-    public function checkForWrongCharacters($name) {
-        $arrayOfWrongCharacters = array('!', ' ', '-', '?');
-        return str_replace( $arrayOfWrongCharacters,'_',$name);
-    }
-
-
-    public function modifyTableName($name) {
-        return 'wf_'.$name;
-    }
-    public function modifyTemplateTable($name) {
-        return 'wf_tt_'.$name;
     }
 }
