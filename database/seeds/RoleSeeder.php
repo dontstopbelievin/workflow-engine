@@ -79,7 +79,7 @@ class RoleSeeder extends Seeder
 //                'city_management_id' => 1,
             ],
             [
-                'name' => 'Специалист Эскиза', //17 Гор Арх
+                'name' => 'Исполнитель Эскиза', //17 Гор Арх
 //                'city_management_id' => 1,
             ],
             [
