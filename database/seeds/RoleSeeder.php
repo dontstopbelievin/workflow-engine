@@ -78,6 +78,18 @@ class RoleSeeder extends Seeder
                 'name' => 'Зам Рук Апо Гор Арх', //16 Гор Арх
 //                'city_management_id' => 1,
             ],
+            [
+                'name' => 'Специалист Эскиза', //17 Гор Арх
+//                'city_management_id' => 1,
+            ],
+            [
+                'name' => 'Зам директора управления архитектуры', //18 Гор Арх
+//                'city_management_id' => 1,
+            ],
+            [
+                'name' => 'Директор Управления Архитектуры', //19 Гор Арх
+//                'city_management_id' => 1,
+            ],
             
 
         ]);

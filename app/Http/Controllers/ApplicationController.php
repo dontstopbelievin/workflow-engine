@@ -272,13 +272,19 @@ class ApplicationController extends Controller
             ->where('application_id', $application->id)
             ->where('template_id', $templateId)
             ->first();
-        $fieldValues["template_id"] = $templateId;
-        $fieldValues["process_id"] = $process->id;
-        $fieldValues["application_id"] = $application->id;
+            $newArrToInsert = [];
+            foreach($fieldValues as $key=>$value) {
+                if ($value !== Null) {
+                    $newArrToInsert[$key] = $value;
+                }
+            }
+        $newArrToInsert["template_id"] = $templateId;
+        $newArrToInsert["process_id"] = $process->id;
+        $newArrToInsert["application_id"] = $application->id;
         if ($checkRow) {
-            DB::table($templateTable)->update( $fieldValues);
+            DB::table($templateTable)->update( $newArrToInsert);
         } else {
-            DB::table($templateTable)->insert( $fieldValues);
+            DB::table($templateTable)->insert( $newArrToInsert);
         }
 
         $user = Auth::user();
