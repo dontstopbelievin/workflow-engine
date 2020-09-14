@@ -30,6 +30,7 @@
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-success">Обновить</button>
                                     <a href="/templates" class="btn btn-danger">Отмена</a>
+                                    <a href="{{ route('templatefield.create', ['id' => $template]) }}" class="btn btn-outline-success">Добавление поле шаблонов</a>
                                 </div>
                             </form>
                         </div>

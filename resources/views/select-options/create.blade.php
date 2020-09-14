@@ -1,52 +1,63 @@
-@extends('layouts.master')
-
-@section('title')
-   Роли
-@endsection
-
-@section('content')
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ajax Project </title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" integrity="sha512-aOG0c6nPNzGk+5zjwyJaoRUgCdOrfSDhmMID2u4+OIslr0GjpLKo7Xm0Ao3xmpM4T8AmIouRkqwj1nrdVsLKEQ==" crossorigin="anonymous" />
+</head>
+<body>
+<div class="container">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-lg-offset-3 col-lg-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Городские Управлнеия <a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
+                    <h3 class="panel-title">Todo List <a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
                 </div>
                 <div class="panel-body" id="items">
                     <ul class="list-group">
-                        @foreach($cityManagements as $cityManagement)
-                            <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal">{{$cityManagement->name}}
-                                <input type="hidden" id="itemId" value = {{$cityManagement->id}}>
+                        @foreach($selectOptions as $item)
+                            <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal">{{$item->name}}
+                                <input type="hidden" id="itemId" value = {{$item->id}}>
                             </li>
 
                         @endforeach
                     </ul>
                 </div>
             </div>
-
+            <div class="col-lg-6">
+                <input type="text" class="form-control" name="item" id="searchItem" placeholder="Search">
+            </div>
 
             <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="title">Добавить организацию</h4>
+                            <h4 class="modal-title" id="title">Add New Item</h4>
                         </div>
                         <div class="modal-body">
 
                             <input type="hidden" id="id">
-                            <p><input type="text" placeholder="Введите название" id="addItem" class="form-control"></p>
+                            <p><input type="text" placeholder="Write item here" id="addItem" class="form-control"></p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-warning" id="delete" style="display:none" data-dismiss="modal">Удалить</button>
-                            <button type="button" class="btn btn-primary" id="saveChanges" data-dismiss="modal" style="display:none" >Сохранить изменения</button>
-                            <button type="button" class="btn btn-primary" id="AddButton" data-dismiss="modal">Добавить</button>
+                            <button type="button" class="btn btn-warning" id="delete" style="display:none" data-dismiss="modal">Delete</button>
+                            <button type="button" class="btn btn-primary" id="saveChanges" data-dismiss="modal" style="display:none" >Save changes</button>
+                            <button type="button" class="btn btn-primary" id="AddButton" data-dismiss="modal">Add Item</button>
                         </div>
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
             </div><!-- /.modal -->
         </div>
     </div>
-
+</div>
 
 {{csrf_field()}}
 <script
@@ -61,7 +72,7 @@
         $(document).on('click', '.ourItem', function(event) {
             var text = $(this).text();
             var id  = $(this).find('#itemId').val();
-            $('#title').text('Изменить организацию');
+            $('#title').text('Edit Item');
             text = $.trim(text);
             $('#addItem').val(text);
             $('#delete').show('400');
@@ -72,7 +83,7 @@
         });
 
         $(document).on('click', '#addNew', function(event) {
-            $('#title').text('Добавить организацию');
+            $('#title').text('Add New Item');
             $('#addItem').val("");
             $('#delete').hide('400');
             $('#saveChanges').hide('400');
@@ -83,9 +94,9 @@
             var text = $('#addItem').val();
 
             if (text == '') {
-                alert('Введите название');
+                alert('Please type anything');
             }
-            $.post('city', {'text':text, '_token':$('input[name=_token]').val()}, function(data){
+            $.post('/select-options/store', {'text':text, '_token':$('input[name=_token]').val()}, function(data){
                 console.log(data);
                 $('#items').load(location.href + ' #items');
             });
@@ -93,7 +104,7 @@
 
         $('#delete').click(function(event) {
             var id = $('#id').val();
-            $.post('city/delete', {'id':id, '_token':$('input[name=_token]').val()}, function(data){
+            $.post('/select-options/delete', {'id':id, '_token':$('input[name=_token]').val()}, function(data){
                 console.log(data);
                 $('#items').load(location.href + ' #items');
             });
@@ -101,7 +112,7 @@
         $('#saveChanges').click(function(event) {
             var id = $('#id').val();
             var value = $('#addItem').val();
-            $.post('city/update ', {'id':id, 'value':value,'_token':$('input[name=_token]').val()}, function(data){
+            $.post('/select-options/update ', {'id':id, 'value':value,'_token':$('input[name=_token]').val()}, function(data){
                 console.log(data);
                 $('#items').load(location.href + ' #items');
             });
@@ -114,7 +125,7 @@
         } );
     });
 </script>
-@endsection
-
+</body>
+</html>
 
 
