@@ -8,20 +8,20 @@ use App\Status;
 use App\CityManagement;
 use App\Comment;
 use App\CreatedTable;
+use App\Template;
+use App\TemplateField;
 use App\Traits\dbQueries;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Schema;
 use PhpOffice\PhpWord\TemplateProcessor;
 use Illuminate\Support\Facades\DB;
 
 class ApplicationController extends Controller
 {
     use dbQueries;
-
-    public function __construct() {
-
-    }
 
     public function service() {
 
@@ -32,7 +32,6 @@ class ApplicationController extends Controller
     public function index(Process $process) {
 
         $tableName = $this->getTableName($process->name);
-
         $applications = $this->getTableWithStatuses($tableName);
         $arrayApps = json_decode(json_encode($applications), true);
         foreach($arrayApps as &$app) {
@@ -42,7 +41,6 @@ class ApplicationController extends Controller
             } else {
                 $app["status"] = $app["status"] . " на согласование";
             }
-
         }
         $statuses = [];
         return view('application.index', compact('arrayApps', 'process','statuses'));
@@ -51,9 +49,15 @@ class ApplicationController extends Controller
     public function view($processId, $applicationId) {
 
         $process = Process::find($processId);
+        $templateId = $process->accepted_template_id;
+         $templateFields= TemplateField::where('template_id', $templateId)->get();
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $applicationId)->first();
+        $applicationArray = json_decode(json_encode($application), true);
+        $notInArray = ["id", "process_id", "status_id", "to_revision", "user_id","index_sub_route", "index_main", "reject_reason", "revision_reason" ];
+        $applicationArray = $this->filterApplicationArray($applicationArray, $notInArray); // not used yet, but surely will
+
         $statusId = $application->status_id;
         $user = Auth::user();
         $thisRole = $user->role;
@@ -65,10 +69,7 @@ class ApplicationController extends Controller
 
         $comments = $this->getComments($application->id, $table->id);
         $roleId = $thisRole->id; //роль действующего юзера
-//        $statuses = $application->statuses()->get();
-//        $records = $this->getRecords($application->id);
-//        $statusLength = sizeof($statuses);
-//        $status_id = $statuses[$statusLength-1]->id;
+        $records = $this->getRecords($application->id, $table->id);
 
         $canApprove = $roleId === $statusId; //может ли специалист подвисывать услугу
         $toCitizen = false;
@@ -83,12 +84,12 @@ class ApplicationController extends Controller
                 $backToMainOrg = true;
             }
         }
+        $sendToSubRoute = [];
+        $sendToSubRoute["isset"] = false;
         if (Null !==($process->roles()->where('parent_role_id', '<>', Null)->first())) {
             $parentRoleId = intval($process->roles()->where('parent_role_id', '<>', Null)->first()->pivot->parent_role_id); // добыть родительскую айдишку родительской роли для подролей
-            $subOrg = CityManagement::find($process->support_organization_id)->first();
-        
-            $sendToSubRoute = [];
-            $sendToSubRoute["isset"] = false;
+            $subOrg = CityManagement::find($process->support_organization_id);
+
             if (($application->index_sub_route > 0) && ($application->index_sub_route < sizeof($subRoutes))) {
                 if ($thisRole->name === $subRoutes[$application->index_sub_route - 1]) {
                     $sendToSubRoute["isset"] = true;
@@ -113,6 +114,7 @@ class ApplicationController extends Controller
         $mainRoles = $this->getIterateRoles($process);
         $subRoles = $this->getSubRoutes($process->id);
         $allRoles = $this->mergeRoles($mainRoles, $subRoles);
+
 
         $templateId = $process->accepted_template_id;
         $template = Template::where('id', $templateId)->first();
@@ -139,7 +141,6 @@ class ApplicationController extends Controller
 
 
         }
-//        dd($templateTableFields);
         return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records'));
     }
 
@@ -167,7 +168,6 @@ class ApplicationController extends Controller
     }
 
     public function create(Process $process) {
-
         $tableName = $this->getTableName($process->name);
         $tableColumns = $this->getColumns($tableName);
         $originalTableColumns = $this->getOriginalColumns($tableColumns);
@@ -193,7 +193,6 @@ class ApplicationController extends Controller
     }
 
     public function store(Request $request) {
-
         $input = $request->input();
 
         $arrayToInsert = array_slice($input, 1, sizeof($input)-1);
@@ -205,23 +204,29 @@ class ApplicationController extends Controller
         $status = Status::find($role->id);
         $arrayToInsert["status_id"] = $status->id;
         $tableName = $this->getTableName($process->name);
+        $table = CreatedTable::where('name', $tableName)->first();
         $user = Auth::user();
         $arrayToInsert["user_id"] = $user->id;
         $arrayToInsert["index_main"] = 1;
         $arrayToInsert["index_sub_route"] = 0;
-        DB::table($tableName)->insert( $arrayToInsert);
+        $application_id = DB::table($tableName)->insertGetId( $arrayToInsert);
+        $logsArray = [];
+        $logsArray["status_id"] = $status->id;
+        $logsArray["role_id"] = $role->id;
+        $logsArray["table_id"] = $table->id;
+        $logsArray["application_id"] = $application_id;
+        $logsArray["created_at"] = Carbon::now();
+        DB::table('logs')->insert( $logsArray);
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
     }
 
     public function approve(Request $request) {
 
-        $id = $request->applicationId;
-
         $process = Process::find($request->process_id);
         $tableName = $this->getTableName($process->name);
+        $id = $request->applicationId;
         $application = DB::table($tableName)->where('id', $id)->first();
         $table = CreatedTable::where('name', $tableName)->first();
-
         $fieldValues = $request->fieldValues;
         $templateId = $process->accepted_template_id;
         $template = Template::where('id', $templateId)->first();
@@ -237,6 +242,7 @@ class ApplicationController extends Controller
             $dbQueryString = "CREATE TABLE $templateTable (id INT PRIMARY KEY AUTO_INCREMENT)";
             DB::statement($dbQueryString);
         }
+//        dd($fieldValues);
         foreach($fieldValues as $key=>$value) {
 //            if ($value !== Null) {
                 if (Schema::hasColumn($templateTable, $key)) {
@@ -282,6 +288,7 @@ class ApplicationController extends Controller
         }
 
         $user = Auth::user();
+        $role = $user->role;
 
         if ($request->comments !== Null) {
             $comment = new Comment();
@@ -290,7 +297,6 @@ class ApplicationController extends Controller
             $comment->table_id = $table->id;
             $comment->role_id = $user->role->id;
             $comment->save();
-
         }
 
         $index = $application->index_main;
@@ -300,6 +306,13 @@ class ApplicationController extends Controller
         $idOfNextRole = $nextR->id; // get id of next role
         $index = $index + 1;
         $status = Status::find($idOfNextRole);
+        $logsArray = [];
+        $logsArray["status_id"] = $status->id;
+        $logsArray["role_id"] = $role->id;
+        $logsArray["table_id"] = $table->id;
+        $logsArray["application_id"] = $application->id;
+        $logsArray["created_at"] = Carbon::now();
+        DB::table('logs')->insert( $logsArray);
         if ($application->to_revision === 0) {
             DB::table($tableName)
                 ->where('id', $id)
@@ -310,7 +323,6 @@ class ApplicationController extends Controller
                 ->update(['status_id' => $status->id, 'index_main' => $index,'to_revision' => 0 ]);
         }
 
-//        $application->statuses()->attach($status);
         return Redirect::route('applications.service')->with('status', $status->name);
     }
 
@@ -319,6 +331,7 @@ class ApplicationController extends Controller
         $process = Process::find($request->process_id);
         $tableName = $this->getTableName($process->name);
         $application = DB::table($tableName)->where('id', $id)->first();
+        $table = CreatedTable::where('name', $tableName)->first();
         $subRoutes = $this->getSubRoutes($process->id);
         $index = $application->index_sub_route;
         $nextRole = $subRoutes[$index];
@@ -326,6 +339,17 @@ class ApplicationController extends Controller
         $idOfNextRole = $nextR->id;
         $index = $index + 1;
         $status = Status::find($idOfNextRole);
+        $user = Auth::user();
+        $role = $user->role;
+
+        $logsArray = [];
+        $logsArray["status_id"] = $status->id;
+        $logsArray["role_id"] = $role->id;
+        $logsArray["table_id"] = $table->id;
+        $logsArray["application_id"] = $application->id;
+        $logsArray["created_at"] = Carbon::now();
+        DB::table('logs')->insert( $logsArray);
+
         if ($application->to_revision === 0) {
             DB::table($tableName)
                 ->where('id', $id)
@@ -342,10 +366,24 @@ class ApplicationController extends Controller
 
         $process = Process::find($request->process_id);
         $tableName = $this->getTableName($process->name);
+        $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $id)->first();
         $parentId = $this->getParentRoleId($process->id);
         $parentRole = Role::find($parentId);
         $status = Status::find($parentId);
+
+        $user = Auth::user();
+        $role = $user->role;
+
+        $logsArray = [];
+        $logsArray["status_id"] = $status->id;
+        $logsArray["role_id"] = $role->id;
+        $logsArray["table_id"] = $table->id;
+        $logsArray["application_id"] = $application->id;
+        $logsArray["created_at"] = Carbon::now();
+        DB::table('logs')->insert( $logsArray);
+
+
         DB::table($tableName)
             ->where('id', $id)
             ->update(['status_id' => $status->id, 'index_sub_route' => Null]);
@@ -358,6 +396,17 @@ class ApplicationController extends Controller
         $tableName = $this->getTableName($process->name);
         $statusCount = count(Status::all());
         $status = Status::find($statusCount);
+        $table = CreatedTable::where('name', $tableName)->first();
+        $application = DB::table($tableName)->where('id', $id)->first();
+        $user = Auth::user();
+        $role = $user->role;
+        $logsArray = [];
+        $logsArray["status_id"] = $status->id;
+        $logsArray["role_id"] = $role->id;
+        $logsArray["table_id"] = $table->id;
+        $logsArray["application_id"] = $application->id;
+        $logsArray["created_at"] = Carbon::now();
+        DB::table('logs')->insert( $logsArray);
         $affected = DB::table($tableName)
             ->where('id', $id)
             ->update(['status_id' => $status->id, 'index_main' => Null]);
@@ -369,8 +418,18 @@ class ApplicationController extends Controller
         $process = Process::find($request->processId);
         $tableName = $this->getTableName($process->name);
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
+        $table = CreatedTable::where('name', $tableName)->first();
         $statusCount = count(Status::all());
         $status = Status::find($statusCount-1); //$statuscount-1 - индекс статуса отправлено заявителю с отказом
+        $user = Auth::user();
+        $role = $user->role;
+        $logsArray = [];
+        $logsArray["status_id"] = $status->id;
+        $logsArray["role_id"] = $role->id;
+        $logsArray["table_id"] = $table->id;
+        $logsArray["application_id"] = $application->id;
+        $logsArray["created_at"] = Carbon::now();
+        DB::table('logs')->insert( $logsArray);
         if ($application->to_revision === 0) {
             DB::table($tableName)
                 ->where('id', $request->applicationId)
@@ -418,6 +477,17 @@ class ApplicationController extends Controller
         $idOfNextRole = $nextR->id;
         $status = Status::find($idOfNextRole);
 
+        $user = Auth::user();
+        $role = $user->role;
+        $table = CreatedTable::where('name', $tableName)->first();
+        $application = DB::table($tableName)->where('id', $request->applicationId)->first();
+        $logsArray = [];
+        $logsArray["status_id"] = $status->id;
+        $logsArray["role_id"] = $role->id;
+        $logsArray["table_id"] = $table->id;
+        $logsArray["application_id"] = $application->id;
+        $logsArray["created_at"] = Carbon::now();
+        DB::table('logs')->insert( $logsArray);
         if ($index === 0) {
             DB::table($tableName)
                 ->where('id', $request->applicationId)
@@ -429,7 +499,5 @@ class ApplicationController extends Controller
         }
 
     }
-
-
 
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDictionariesTable extends Migration
+class CreateTemplateFieldsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,15 @@ class CreateDictionariesTable extends Migration
      */
     public function up()
     {
-        Schema::create('dictionaries', function (Blueprint $table) {
-            $table->id();
+        Schema::create('template_fields', function (Blueprint $table) {
+            $table->increments('id');
             $table->string('name');
             $table->string('label_name');
             $table->foreignId('input_type_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('insert_type_id')->nullable()->constrained()->onDelete('cascade');
+//            $table->foreignId('template_id')->nullable()->constrained()->onDelete('cascade');
+            $table->integer('template_id')->unsigned()->nullable();
+            $table->foreign('template_id')->references('id')->on('templates');
             $table->timestamps();
         });
     }
@@ -30,6 +33,6 @@ class CreateDictionariesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dictionaries');
+        Schema::dropIfExists('template_fields');
     }
 }

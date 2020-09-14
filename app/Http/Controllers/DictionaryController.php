@@ -26,7 +26,10 @@ class DictionaryController extends Controller
     
     public function create(Request $request) {
 
+//        dd($request->input());
+
         $fieldName = $request->fieldName;
+        $labelName = $request->labelName;
         $inputItem = $request->inputItem;
         $insertItem = $request->insertItem;
         $processId = $request->processId;
@@ -34,6 +37,7 @@ class DictionaryController extends Controller
 
         $validatedData = $request->validate([
             'fieldName' => 'required',
+            'labelName' => 'required',
             'inputItem' => 'required',
             'insertItem' => 'required',
             'processId' => 'required',
@@ -49,6 +53,7 @@ class DictionaryController extends Controller
 
         $dictionaries = new Dictionary ([
             'name' => $fieldName,
+            'label_name' => $labelName,
             'input_type_id' => $input->id,
             'insert_type_id' => $insert->id,
         ]);
@@ -58,33 +63,33 @@ class DictionaryController extends Controller
         $dicId = $dic->id; // айди поля, которое только что сохранили
         
         if ($request->has('selectedOptions')) {
-          foreach($request->selectedOptions as $key=>$value) {
+          foreach($selectOptions as $key=>$value) {
             $optn = SelectOption::where('name', $value)->first();
             $dic->selectOptions()->attach($optn);
         }
         }
         
-        $processName = 'апз';
-        $tableName = $this->translateSybmols($processName);
-        if (Schema::hasTable($tableName)) {
-            $columns = Schema::getColumnListing($tableName);
-            if ($columns) {
-                foreach($columns as $column) {
-                    if ($column === $fieldName) {
-                        return 'такое поле уже существует в таблице';
-                    } else {
-                        $dbQueryString = "ALTER TABLE $tableName ADD $fieldName varchar(255)";
-                    }
-                }
-            }
-        } else {
-            $dbQueryString = "CREATE TABLE $tableName (
-                id INT PRIMARY KEY AUTO_INCREMENT,
-                $fieldName varchar(255)
-            )";
-        }
-        $res = DB::statement($dbQueryString);
-        dd($res);
+//        $processName = 'апз';
+//        $tableName = $this->translateSybmols($processName);
+//        if (Schema::hasTable($tableName)) {
+//            $columns = Schema::getColumnListing($tableName);
+//            if ($columns) {
+//                foreach($columns as $column) {
+//                    if ($column === $fieldName) {
+//                        return 'такое поле уже существует в таблице';
+//                    } else {
+//                        $dbQueryString = "ALTER TABLE $tableName ADD $fieldName varchar(255)";
+//                    }
+//                }
+//            }
+//        } else {
+//            $dbQueryString = "CREATE TABLE $tableName (
+//                id INT PRIMARY KEY AUTO_INCREMENT,
+//                $fieldName varchar(255)
+//            )";
+//        }
+//        $res = DB::statement($dbQueryString);
+//        dd($res);
 
     }
 
