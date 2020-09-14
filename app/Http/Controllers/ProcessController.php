@@ -86,7 +86,7 @@ class ProcessController extends Controller
         $mainOrg = CityManagement::find($process->main_organization_id);
         $nameMainOrg='';
         if (empty($mainOrg)) {
-            return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns','columns', 'array', 'roles', 'organizations', 'nameMainOrg'));
+            return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles', 'organizations', 'nameMainOrg'));
         }
         $nameMainOrg = $mainOrg->name;
         if (empty($organizations)) {
