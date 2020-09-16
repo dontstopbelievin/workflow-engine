@@ -27,12 +27,13 @@ class TemplateController extends Controller
     public function store(Request $request) {
 
         $templateState = $request->template_state === "accepted";
-        $docPath = request()->file_input->store('templates', 'public');
+
         $request->validate([
             'name' => 'required',
             'template_state' => 'required',
             'file_input' => ['required', 'file'] // max size of 5 mb
         ]);
+        $docPath = request()->file_input->store('templates', 'public');
 
         $template = new Template([
             'name' => $request->name,
@@ -40,7 +41,7 @@ class TemplateController extends Controller
             'accept_template' => $templateState,
         ]);
         $template->save();
-        return Redirect::route('templatefield.create', [$template])->with('status','Шаблон успешно создан');;
+        return Redirect::route('templatefield.create', [$template])->with('status','Шаблон успешно создан');
     }
 
     public function edit(Template $template) {
