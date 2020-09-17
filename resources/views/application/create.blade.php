@@ -19,17 +19,30 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form action="{{ route('applications.store') }}" method="POST"> 
+
+                            <form action="{{ route('applications.store') }}" method="POST">
                                 @csrf
-                                @foreach ($field_keys as $field_key)
-                                <div class="form-group">
-                                    <label for="name">Please, enter {{$field_key}}</label>
-                                    <input type="text" class="form-control" name="{{$field_key}}">
-                                    
-                                </div>
-                                <input type="hidden" name="process_id" value = {{$process->id}}>
+                                @foreach($arrayToFront as $item)
+                                    <label>{{$item["labelName"]}}</label>
+                                    @if($item["inputName"] === 'file')
+                                        <input type="file" name={{$item["name"]}} multiple><br><br>
+                                    @elseif($item["inputName"] === 'text')
+                                        <input type="text" name={{$item["name"]}} id={{$item["name"]}} class="form-control">
+                                    @elseif($item["inputName"] === 'url')
+                                        <input type="text" name={{$item["name"]}} id={{$item["name"]}} class="form-control" >
+                                    @elseif($item["inputName"] === 'image')
+                                        <input type="file" name={{$item["name"]}} id={{$item["name"]}} class="form-control">
+                                    @else
+                                        <select name="{{$item["name"]}}" id="{{$item["name"]}}" class="form-control">
+                                            <option selected disabled>Выберите Ниже</option>
+                                            @foreach($item["inputName"] as $key=>$val)
+                                                <option>{{$val}}</option>
+                                            @endforeach
+                                        </select>
+                                    @endif
                                 @endforeach
-                                <button type="submit" class="btn btn-basic">Сохранить</button>
+                                <input type="hidden" name="process_id" value = {{$process->id}}>
+                                <button type="Submit" class="btn btn-secondary">Создать</button>
                             </form>
                         </div>
                     </div>

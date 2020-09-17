@@ -16,7 +16,9 @@
         "laravel/passport": "^9.3",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
-        "phpoffice/phpword": "v0.17.*"
+        "malikzh/php-ncanode": "^1.0",
+        "phpoffice/phpword": "v0.17.*",
+        "twilio/sdk": "^6.10"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

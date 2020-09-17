@@ -68,16 +68,18 @@
                                             <div class="modal-header">
                                                 <h4 class="modal-title">Список Полей</h4>
                                             </div>
-                                            <form action="{{ route('processes.saveFields', ['process' => $process]) }}" method="POST">
+                                            <form action="{{ route('processes.createProcessTable', ['process' => $process]) }}" method="POST">
                                             @csrf
                                                 <div class="modal-body">
                                                     @isset($columns)
                                                         @foreach ($columns as $column)
                                                             <div class="checkbox">
-                                                                <label><input type="checkbox" name="fields[]" value="{{$column}}">{{$column}}</label>
+                                                                <label><input type="checkbox" name="fields[]" value="{{$column["name"]}}">{{$column["labelName"]}}</label>
+
                                                             </div>
-                                                        @endforeach   
+                                                        @endforeach
                                                     @endisset
+
                                                 </div>
                                                 <div class="modal-footer">
                                                 <button type="submit" class="btn btn-success">Выбрать</button>
@@ -94,7 +96,6 @@
                                             <div class="modal-header">
                                                 <h4 class="modal-title">Добавить Подмаршрут к <input type="text" id="modHeader"></h4>
                                             </div>
-                                            {{--<form method = "POST">--}}
                                                 @csrf
 
                                                 <div class="modal-body">
@@ -121,21 +122,35 @@
                                                     <button  type="submit" id="AddButton" class="btn btn-success">Добавить Подмаршрут</button>
                                                     <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                                                 </div>
-                                            {{--</form>--}}
                                         </div>
                                     </div>
                                 </div>
                             </div>  
                             @endempty
                             <h5>Поля процесса:</h5>
-                            @isset($process->fields)
-                                @foreach(json_decode($process->fields) as $choosenField)  
+                            @isset($tableColumns)
+                                @foreach($tableColumns as $column)
                                 <ul>
-                                    <li>{{$choosenField}}</li>
+                                    <li>{{$column}}</li>
                                 </ul>                                                    
                                 @endforeach
                             @endisset
+
                             <h2>Создание маршрутов</h2>
+                            @isset($organizations)
+                                <form action="{{ route('processes.addOrganization', ['process' => $process]) }}" method="POST">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label for="mainOrganization">Выбрать Орагнизацию основного маршрута</label>
+                                        <select name="mainOrganization" class="form-control" id="mainOrganization">
+                                            @foreach($organizations as $organization)
+                                                <option>{{$organization->name}} </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Выбрать</button>
+                                </form>
+                            @endisset
                             @isset($roles)
                                 <form action="{{ route('processes.addRole', ['process' => $process]) }}" method="POST">
                                 @csrf
@@ -150,20 +165,7 @@
                                 <button type="submit" class="btn btn-success">Выбрать</button>
                                 </form>
                             @endisset
-                            @isset($organizations)
-                                <form action="{{ route('processes.addOrganization', ['process' => $process]) }}" method="POST">
-                                    @csrf
-                                    <div class="form-group">
-                                        <label>Выбрать Орагнизацию основного маршрута</label>
-                                        <select name="mainOrganization" class="form-control">
-                                            @foreach($organizations as $organization)
-                                                <option>{{$organization->name}} </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <button type="submit" class="btn btn-success">Выбрать</button>
-                                </form>
-                            @endisset
+
                             @isset($process->routes)
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
@@ -222,8 +224,8 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous"></script>
 <script>
-    $(document).ready(function() {
 
+    $(document).ready(function() {
 
         $(document).on('click', '.ourItem', function(event) {
             var text = $(this).text();
@@ -231,19 +233,28 @@
             $('#modHeader').val(text);
             console.log(text);
         });
+        $(document).on('change', '#mainOrganization', function(event) {
+            var hidden = [];
+            hidden = $('#hidden').val();
+            console.log(hidden);
+
+            for (let i =0; i < hidden.length; i ++)
+            console.log(json_decode(hidden[i]));
+            var organization = $(this).val();
+            alert(organization);
+            if (input === 'select') {
+                document.getElementById('hidden_div').style.display = "block";
+            } else {
+                document.getElementById('hidden_div').style.display = "none";
+            }
+        });
 
         $('#AddButton').click(function(event) {
             var roleToAdd = $('#modHeader').val();
             var subRoles = [];
             var processId = $('#processId').val();
-            // var modal =  $('#myModal2');
             var subOrg;
-            // $('#subOrg').change(function() {
-            //     subOrg = $(this).val();
-            //     // concole.log(subOrg);
-            // })
             var subOrg = $('#subOrg option:selected').val();
-            // alert(subOrg);
             $('.get_value').each(function(){
                 if($(this).is(":checked"))
                 {

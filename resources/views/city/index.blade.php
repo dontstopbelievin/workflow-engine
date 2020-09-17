@@ -22,26 +22,24 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <input type="text" class="form-control" name="item" id="searchItem" placeholder="Search">
-            </div>
+
 
             <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="title">Add New Item</h4>
+                            <h4 class="modal-title" id="title">Добавить организацию</h4>
                         </div>
                         <div class="modal-body">
 
                             <input type="hidden" id="id">
-                            <p><input type="text" placeholder="Write item here" id="addItem" class="form-control"></p>
+                            <p><input type="text" placeholder="Введите название" id="addItem" class="form-control"></p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-warning" id="delete" style="display:none" data-dismiss="modal">Delete</button>
-                            <button type="button" class="btn btn-primary" id="saveChanges" data-dismiss="modal" style="display:none" >Save changes</button>
-                            <button type="button" class="btn btn-primary" id="AddButton" data-dismiss="modal">Add Item</button>
+                            <button type="button" class="btn btn-warning" id="delete" style="display:none" data-dismiss="modal">Удалить</button>
+                            <button type="button" class="btn btn-primary" id="saveChanges" data-dismiss="modal" style="display:none" >Сохранить изменения</button>
+                            <button type="button" class="btn btn-primary" id="AddButton" data-dismiss="modal">Добавить</button>
                         </div>
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
@@ -63,7 +61,7 @@
         $(document).on('click', '.ourItem', function(event) {
             var text = $(this).text();
             var id  = $(this).find('#itemId').val();
-            $('#title').text('Edit Item');
+            $('#title').text('Изменить организацию');
             text = $.trim(text);
             $('#addItem').val(text);
             $('#delete').show('400');
@@ -74,7 +72,7 @@
         });
 
         $(document).on('click', '#addNew', function(event) {
-            $('#title').text('Add New Item');
+            $('#title').text('Добавить организацию');
             $('#addItem').val("");
             $('#delete').hide('400');
             $('#saveChanges').hide('400');
@@ -85,7 +83,7 @@
             var text = $('#addItem').val();
 
             if (text == '') {
-                alert('Please type anything');
+                alert('Введите название');
             }
             $.post('city', {'text':text, '_token':$('input[name=_token]').val()}, function(data){
                 console.log(data);
