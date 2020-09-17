@@ -241,6 +241,17 @@ trait dbQueries
 
 
     }
+    public function filterApplicationArray($array, $notInArray)
+    {
+        $res = [];
+        foreach($array as $key=>$value) {
+            if (!in_array($key, $notInArray)) {
+                $res[$key] = $value;
+            }
+        }
+        return $res;
+    }
+
 
     public function checkForWrongCharacters($name) {
         $arrayOfWrongCharacters = array('!', ' ', '-', '?');

@@ -50,7 +50,7 @@ Route::post('applications/store', 'ApplicationController@store')->name('applicat
 Route::post('applications/approve', 'ApplicationController@approve')->name('applications.approve');
 Route::post('applications/reject', 'ApplicationController@reject')->name('applications.reject');
 Route::post('applications/revision', 'ApplicationController@revision')->name('applications.revision');
-Route::post('applications/sendToSubRoute/{application_id}', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
+Route::post('applications/sendToSubRoute', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
 Route::post('applications/backToMainOrg/{application_id}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
 
 Route::post('applications/toCitizen/{application_id}', 'ApplicationController@toCitizen')->name('applications.toCitizen');

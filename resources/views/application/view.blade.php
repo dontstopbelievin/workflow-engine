@@ -144,7 +144,6 @@
                             </div>
                             <div class="modal-body">
                                 <div class="form-group">
-                                    {{--<input type="text" id="rejectReason" name="reject_reason" placeholder="Введите причину отказа">--}}
                                     <div class="form-group row">
                                         <label for="reject_reason" class="col-md-4 col-form-label text-md-right">{{ __("Введите причину отказа") }}</label>
                                         <div class="col-md-6">
@@ -216,6 +215,30 @@
                         </div>
                     </div>
                 </div>
+
+                    <div class="modal fade" id="sendToSubRouteId" role="dialog">
+                        <div class="modal-dialog">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title  text-center">Форма отправки в другую организацию</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <div class="form-group row">
+                                            <label for="revisionReason" class="col-md-4 col-form-label text-md-right">{{ __("Введите комментарий (не обязательно)") }}</label>
+                                            <div class="col-md-6">
+                                                <input type="text" id="subOrgComments" class="form-control" name="sendToAnotherOrganization"  autocomplete="revisionReason" autofocus>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
+                                        <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
+                                        <button class="btn btn-info" id="sendToSubOrgButton">Отправить</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 @if($canApprove)
                         @isset($templateFields)
                             <h4 class="card-title text-center" style="margin-top:50px;">Поля Шаблона</h4>
@@ -252,7 +275,7 @@
                             <form action="{{ route('applications.sendToSubRoute', ['application_id' => $application->id]) }}" method="post">
                                 @csrf
                                 <input type="hidden" name="process_id" value = {{$process->id}}>
-                                <button class="btn btn-warning" type="submit">Отправить в {{$sendToSubRoute["name"]}}</button>
+                                <button class="btn btn-warning" type="button" data-toggle="modal" data-target="#sendToSubRouteId">Отправить в {{$sendToSubRoute["name"]}}</button>
                             </form>
                         @endif
                             <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
@@ -296,7 +319,6 @@
             console.log(rejectReason, processId, applicationId)
             $.post('/applications/reject', {'rejectReason':rejectReason,'processId':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
                 var modal =  $('#myModal');
-                // console.log(data);
                 modal.style.display = 'none';
                 $('#items').load(location.href + ' #items');
             });
@@ -309,7 +331,6 @@
             console.log(rejectReason, processId, applicationId)
             $.post('/applications/revision', {'revisionReason':revisionReason,'processId':processId,'applicationId':applicationId,'roleToRevise':roleToRevise, '_token':$('input[name=_token]').val()}, function(data){
                 var modal =  $('#myModal2');
-                // console.log(data);
                 modal.style.display = 'none';
                 $('#items').load(location.href + ' #items');
             });
@@ -321,11 +342,26 @@
             inputs.each(function() {
                 values[this.name] = $(this).val();
             });
-            // console.log(values);
             var processId = $('#processId').val();
             var applicationId = $('#applicationId').val();
             console.log(comments, processId, applicationId)
             $.post('/applications/approve', {'comments':comments,'fieldValues':values,'process_id':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
+                var modal =  $('#myModal3');
+                modal.style.display = 'none';
+                $('#items').load(location.href + ' #items');
+            });
+        });
+        $('#sendToSubOrgButton').click(function(event) {
+            var comments = $('#subOrgComments').val();
+            var inputs = $('#templateFieldsId :input');
+            var values = {};
+            inputs.each(function() {
+                values[this.name] = $(this).val();
+            });
+            var processId = $('#processId').val();
+            var applicationId = $('#applicationId').val();
+            console.log(comments, processId, applicationId)
+            $.post('/applications/sendToSubRoute', {'comments':comments,'fieldValues':values,'processId':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
                 var modal =  $('#myModal3');
                 modal.style.display = 'none';
                 $('#items').load(location.href + ' #items');

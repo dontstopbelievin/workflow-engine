@@ -156,17 +156,6 @@ class ApplicationController extends Controller
         return $res;
     }
 
-    public function filterApplicationArray($array, $notInArray)
-    {
-        $res = [];
-        foreach($array as $key=>$value) {
-            if (!in_array($key, $notInArray)) {
-                $res[$key] = $value;
-            }
-        }
-        return $res;
-    }
-
     public function create(Process $process) {
         $tableName = $this->getTableName($process->name);
         $tableColumns = $this->getColumns($tableName);
@@ -209,52 +198,26 @@ class ApplicationController extends Controller
         $arrayToInsert["user_id"] = $user->id;
         $arrayToInsert["index_main"] = 1;
         $arrayToInsert["index_sub_route"] = 0;
-        $application_id = DB::table($tableName)->insertGetId( $arrayToInsert);
-        $logsArray = [];
-        $logsArray["status_id"] = $status->id;
-        $logsArray["role_id"] = $role->id;
-        $logsArray["table_id"] = $table->id;
-        $logsArray["application_id"] = $application_id;
-        $logsArray["created_at"] = Carbon::now();
+        $applicationId = DB::table($tableName)->insertGetId( $arrayToInsert);
+        $logsArray = $this->getLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
         DB::table('logs')->insert( $logsArray);
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
     }
 
-    public function approve(Request $request) {
+    public function insertTemplateFields($fieldValues, $templateTable,$processId, $applicationId, $templateId) {
 
-        $process = Process::find($request->process_id);
-        $tableName = $this->getTableName($process->name);
-        $id = $request->applicationId;
-        $application = DB::table($tableName)->where('id', $id)->first();
-        $table = CreatedTable::where('name', $tableName)->first();
-        $fieldValues = $request->fieldValues;
-        $templateId = $process->accepted_template_id;
-        $template = Template::where('id', $templateId)->first();
-        $templateName = $template->name;
-
-        $templateTable = $this->translateSybmols($templateName);
-        $templateTable = $this->checkForWrongCharacters($templateTable);
-        $templateTable = $this->modifyTemplateTable($templateTable);
-        if (strlen($templateTable) > 57) {
-            $templateTable = $this->truncateTableName($templateTable); // если количество символов больше 64, то необходимо укоротить длину названия до 64
-        }
         if (!Schema::hasTable($templateTable)) {
             $dbQueryString = "CREATE TABLE $templateTable (id INT PRIMARY KEY AUTO_INCREMENT)";
             DB::statement($dbQueryString);
         }
-//        dd($fieldValues);
         foreach($fieldValues as $key=>$value) {
-//            if ($value !== Null) {
-                if (Schema::hasColumn($templateTable, $key)) {
-                    continue;
-                } else {
-                    $dbQueryString = "ALTER TABLE $templateTable ADD COLUMN $key varchar(255)";
-                    DB::statement($dbQueryString);
-                }
-//            }
+            if (Schema::hasColumn($templateTable, $key)) {
+                continue;
+            } else {
+                $dbQueryString = "ALTER TABLE $templateTable ADD COLUMN $key varchar(255)";
+                DB::statement($dbQueryString);
+            }
         }
-
-
         if (!Schema::hasColumn($templateTable, 'template_id')) {
             $dbQueryString = "ALTER TABLE $templateTable ADD  template_id INT";
             DB::statement($dbQueryString);
@@ -268,24 +231,90 @@ class ApplicationController extends Controller
             DB::statement($dbQueryString);
         }
         $checkRow = DB::table($templateTable)
-            ->where('process_id', $process->id)
-            ->where('application_id', $application->id)
+            ->where('process_id', $processId)
+            ->where('application_id', $applicationId)
             ->where('template_id', $templateId)
             ->first();
-            $newArrToInsert = [];
-            foreach($fieldValues as $key=>$value) {
-                if ($value !== Null) {
-                    $newArrToInsert[$key] = $value;
-                }
+        $newArrToInsert = [];
+        foreach($fieldValues as $key=>$value) {
+            if ($value !== Null) {
+                $newArrToInsert[$key] = $value;
             }
+        }
         $newArrToInsert["template_id"] = $templateId;
-        $newArrToInsert["process_id"] = $process->id;
-        $newArrToInsert["application_id"] = $application->id;
+        $newArrToInsert["process_id"] = $processId;
+        $newArrToInsert["application_id"] = $applicationId;
         if ($checkRow) {
             DB::table($templateTable)->update( $newArrToInsert);
         } else {
             DB::table($templateTable)->insert( $newArrToInsert);
         }
+    }
+
+    public function approve(Request $request) {
+
+        $process = Process::find($request->process_id);
+        $tableName = $this->getTableName($process->name);
+        $application = DB::table($tableName)->where('id', $request->applicationId)->first();
+        $table = CreatedTable::where('name', $tableName)->first();
+        $fieldValues = $request->fieldValues;
+        $templateId = $process->accepted_template_id;
+        $template = Template::where('id', $templateId)->first();
+        $templateName = $template->name;
+
+        $templateTable = $this->translateSybmols($templateName);
+        $templateTable = $this->checkForWrongCharacters($templateTable);
+        $templateTable = $this->modifyTemplateTable($templateTable);
+        if (strlen($templateTable) > 57) {
+            $templateTable = $this->truncateTableName($templateTable); // если количество символов больше 64, то необходимо укоротить длину названия до 64
+        }
+
+        $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
+//        if (!Schema::hasTable($templateTable)) {
+//            $dbQueryString = "CREATE TABLE $templateTable (id INT PRIMARY KEY AUTO_INCREMENT)";
+//            DB::statement($dbQueryString);
+//        }
+//        foreach($fieldValues as $key=>$value) {
+//                if (Schema::hasColumn($templateTable, $key)) {
+//                    continue;
+//                } else {
+//                    $dbQueryString = "ALTER TABLE $templateTable ADD COLUMN $key varchar(255)";
+//                    DB::statement($dbQueryString);
+//                }
+//        }
+//
+//
+//        if (!Schema::hasColumn($templateTable, 'template_id')) {
+//            $dbQueryString = "ALTER TABLE $templateTable ADD  template_id INT";
+//            DB::statement($dbQueryString);
+//        }
+//        if (!Schema::hasColumn($templateTable, 'process_id')) {
+//            $dbQueryString = "ALTER TABLE $templateTable ADD  process_id INT";
+//            DB::statement($dbQueryString);
+//        }
+//        if (!Schema::hasColumn($templateTable, 'application_id')) {
+//            $dbQueryString = "ALTER TABLE $templateTable ADD  application_id INT";
+//            DB::statement($dbQueryString);
+//        }
+//        $checkRow = DB::table($templateTable)
+//            ->where('process_id', $process->id)
+//            ->where('application_id', $application->id)
+//            ->where('template_id', $templateId)
+//            ->first();
+//            $newArrToInsert = [];
+//            foreach($fieldValues as $key=>$value) {
+//                if ($value !== Null) {
+//                    $newArrToInsert[$key] = $value;
+//                }
+//            }
+//        $newArrToInsert["template_id"] = $templateId;
+//        $newArrToInsert["process_id"] = $process->id;
+//        $newArrToInsert["application_id"] = $application->id;
+//        if ($checkRow) {
+//            DB::table($templateTable)->update( $newArrToInsert);
+//        } else {
+//            DB::table($templateTable)->insert( $newArrToInsert);
+//        }
 
         $user = Auth::user();
         $role = $user->role;
@@ -293,7 +322,7 @@ class ApplicationController extends Controller
         if ($request->comments !== Null) {
             $comment = new Comment();
             $comment->name = $request->comments;
-            $comment->application_id = $id;
+            $comment->application_id = $request->applicationId;
             $comment->table_id = $table->id;
             $comment->role_id = $user->role->id;
             $comment->save();
@@ -306,31 +335,30 @@ class ApplicationController extends Controller
         $idOfNextRole = $nextR->id; // get id of next role
         $index = $index + 1;
         $status = Status::find($idOfNextRole);
-        $logsArray = [];
-        $logsArray["status_id"] = $status->id;
-        $logsArray["role_id"] = $role->id;
-        $logsArray["table_id"] = $table->id;
-        $logsArray["application_id"] = $application->id;
-        $logsArray["created_at"] = Carbon::now();
+        $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
         DB::table('logs')->insert( $logsArray);
+
+
         if ($application->to_revision === 0) {
             DB::table($tableName)
-                ->where('id', $id)
+                ->where('id', $request->applicationId)
                 ->update(['status_id' => $status->id, 'index_main' => $index]);
         } else {
             DB::table($tableName)
-                ->where('id', $id)
+                ->where('id', $request->applicationId)
                 ->update(['status_id' => $status->id, 'index_main' => $index,'to_revision' => 0 ]);
         }
 
         return Redirect::route('applications.service')->with('status', $status->name);
     }
 
-    public function sendToSubRoute($id, Request $request) {
+    public function sendToSubRoute(Request $request) {
 
-        $process = Process::find($request->process_id);
+//        dd($request->input());
+        $fieldValues = $request->fieldValues;
+        $process = Process::find($request->processId);
         $tableName = $this->getTableName($process->name);
-        $application = DB::table($tableName)->where('id', $id)->first();
+        $application = DB::table($tableName)->where('id', $request->applicationId)->first();
         $table = CreatedTable::where('name', $tableName)->first();
         $subRoutes = $this->getSubRoutes($process->id);
         $index = $application->index_sub_route;
@@ -342,26 +370,40 @@ class ApplicationController extends Controller
         $user = Auth::user();
         $role = $user->role;
 
-        $logsArray = [];
-        $logsArray["status_id"] = $status->id;
-        $logsArray["role_id"] = $role->id;
-        $logsArray["table_id"] = $table->id;
-        $logsArray["application_id"] = $application->id;
-        $logsArray["created_at"] = Carbon::now();
+        if ($request->comments !== Null) {
+            $comment = new Comment();
+            $comment->name = $request->comments;
+            $comment->application_id = $request->applicationId;
+            $comment->table_id = $table->id;
+            $comment->role_id = $user->role->id;
+            $comment->save();
+        }
+        $templateId = $process->accepted_template_id;
+        $template = Template::where('id', $templateId)->first();
+        $templateName = $template->name;
+        $templateTable = $this->translateSybmols($templateName);
+        $templateTable = $this->checkForWrongCharacters($templateTable);
+        $templateTable = $this->modifyTemplateTable($templateTable);
+        if (strlen($templateTable) > 57) {
+            $templateTable = $this->truncateTableName($templateTable); // если количество символов больше 64, то необходимо укоротить длину названия до 64
+        }
+        $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
+        $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
         DB::table('logs')->insert( $logsArray);
 
         if ($application->to_revision === 0) {
             DB::table($tableName)
-                ->where('id', $id)
+                ->where('id', $request->applicationId)
                 ->update(['status_id' => $status->id, 'index_sub_route' => $index]);
         } else {
             DB::table($tableName)
-                ->where('id', $id)
+                ->where('id', $request->applicationId)
                 ->update(['status_id' => $status->id, 'index_sub_route' => $index, 'to_revision' => 0]);
         }
         return Redirect::route('applications.service')->with('status', $status->name);
         
     }
+
     public function backToMainOrg($id, Request $request) {
 
         $process = Process::find($request->process_id);
@@ -375,12 +417,7 @@ class ApplicationController extends Controller
         $user = Auth::user();
         $role = $user->role;
 
-        $logsArray = [];
-        $logsArray["status_id"] = $status->id;
-        $logsArray["role_id"] = $role->id;
-        $logsArray["table_id"] = $table->id;
-        $logsArray["application_id"] = $application->id;
-        $logsArray["created_at"] = Carbon::now();
+        $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
         DB::table('logs')->insert( $logsArray);
 
 
@@ -400,12 +437,7 @@ class ApplicationController extends Controller
         $application = DB::table($tableName)->where('id', $id)->first();
         $user = Auth::user();
         $role = $user->role;
-        $logsArray = [];
-        $logsArray["status_id"] = $status->id;
-        $logsArray["role_id"] = $role->id;
-        $logsArray["table_id"] = $table->id;
-        $logsArray["application_id"] = $application->id;
-        $logsArray["created_at"] = Carbon::now();
+        $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
         DB::table('logs')->insert( $logsArray);
         $affected = DB::table($tableName)
             ->where('id', $id)
@@ -423,12 +455,7 @@ class ApplicationController extends Controller
         $status = Status::find($statusCount-1); //$statuscount-1 - индекс статуса отправлено заявителю с отказом
         $user = Auth::user();
         $role = $user->role;
-        $logsArray = [];
-        $logsArray["status_id"] = $status->id;
-        $logsArray["role_id"] = $role->id;
-        $logsArray["table_id"] = $table->id;
-        $logsArray["application_id"] = $application->id;
-        $logsArray["created_at"] = Carbon::now();
+        $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
         DB::table('logs')->insert( $logsArray);
         if ($application->to_revision === 0) {
             DB::table($tableName)
@@ -450,7 +477,6 @@ class ApplicationController extends Controller
         $indexSubRoute = 0;
         $process = Process::find($request->processId);
         $tableName = $this->getTableName($process->name);
-
         $mainRoles = $this->getIterateRoles($process); // get collection
         $mainRoleArr = $this->getMainRoleArray($mainRoles); // get array of names from collection
         $subRoles = $this->getSubRoutes($process->id);
@@ -476,17 +502,11 @@ class ApplicationController extends Controller
         $nextR = Role::where('name', $roleToRevise)->first();
         $idOfNextRole = $nextR->id;
         $status = Status::find($idOfNextRole);
-
         $user = Auth::user();
         $role = $user->role;
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
-        $logsArray = [];
-        $logsArray["status_id"] = $status->id;
-        $logsArray["role_id"] = $role->id;
-        $logsArray["table_id"] = $table->id;
-        $logsArray["application_id"] = $application->id;
-        $logsArray["created_at"] = Carbon::now();
+        $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
         DB::table('logs')->insert( $logsArray);
         if ($index === 0) {
             DB::table($tableName)
@@ -497,7 +517,16 @@ class ApplicationController extends Controller
                 ->where('id', $request->applicationId)
                 ->update(['status_id' => $status->id, 'revision_reason' => $request->revisionReason,'to_revision' => 1, 'index_main' => $index] );
         }
+    }
 
+    public function getLogs($statusId, $tableId, $applicationId, $roleId) {
+        $logsArray = [];
+        $logsArray["status_id"] = $statusId;
+        $logsArray["role_id"] = $roleId;
+        $logsArray["table_id"] = $tableId;
+        $logsArray["application_id"] = $applicationId;
+        $logsArray["created_at"] = Carbon::now();
+        return $logsArray;
     }
 
 }
