@@ -70,7 +70,6 @@ class ProcessController extends Controller
         return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был создан');
     }
 
-
     public function edit(Process $process) {
 
         $accepted = Template::accepted()->get();

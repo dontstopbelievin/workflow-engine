@@ -63,34 +63,11 @@ class DictionaryController extends Controller
         $dicId = $dic->id; // айди поля, которое только что сохранили
         
         if ($request->has('selectedOptions')) {
-          foreach($selectOptions as $key=>$value) {
+            foreach($selectOptions as $key=>$value) {
             $optn = SelectOption::where('name', $value)->first();
             $dic->selectOptions()->attach($optn);
+            }
         }
-        }
-        
-//        $processName = 'апз';
-//        $tableName = $this->translateSybmols($processName);
-//        if (Schema::hasTable($tableName)) {
-//            $columns = Schema::getColumnListing($tableName);
-//            if ($columns) {
-//                foreach($columns as $column) {
-//                    if ($column === $fieldName) {
-//                        return 'такое поле уже существует в таблице';
-//                    } else {
-//                        $dbQueryString = "ALTER TABLE $tableName ADD $fieldName varchar(255)";
-//                    }
-//                }
-//            }
-//        } else {
-//            $dbQueryString = "CREATE TABLE $tableName (
-//                id INT PRIMARY KEY AUTO_INCREMENT,
-//                $fieldName varchar(255)
-//            )";
-//        }
-//        $res = DB::statement($dbQueryString);
-//        dd($res);
-
     }
 
     public function createFields() {
