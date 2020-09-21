@@ -41,30 +41,22 @@ class ProcessController extends Controller
 
     public function create() {
 
-        $accepted = Template::accepted()->get();
-        $rejected = Template::rejected()->get();
-        return view('process.create', compact('accepted', 'rejected'));
+        return view('process.create');
     }
 
     public function store(Request $request) {
 
         $numberOfDays = intval($request->get('deadline'));
         $deadline = Carbon::now()->addDays($numberOfDays);
-        $acceptedTemplate = Template::where('name', $request->accepted_template)->first();
-        $rejectedTemplate = Template::where('name', $request->rejected_template)->first();
 
         $request->validate([
             'name' => 'required',
             'deadline' => 'required',
-            'accepted_template' => 'required',
-            'rejected_template' => 'required',
         ]);
         $process = new Process ([
             'name' => $request->get('name'),
             'deadline' => $numberOfDays,
             'deadline_until' => $deadline,
-            'accepted_template_id'=> $acceptedTemplate->id,
-            'rejected_template_id'=> $rejectedTemplate->id,
         ]);
         $process->save();
         return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был создан');
@@ -72,8 +64,13 @@ class ProcessController extends Controller
 
     public function edit(Process $process) {
 
-        $accepted = Template::accepted()->get();
-        $rejected = Template::rejected()->get();
+//        $accepted = Template::accepted()->get();
+//        $rejected = Template::rejected()->get();
+//        dd($accepted);
+//        $acceptedTemplateId = $process->accepted_template_id;
+        $accepted = Template::where('id', $process->accepted_template_id)->where('accept_template', 1)->first();
+        $rejected = Template::where('id', $process->rejected_template_id)->where('accept_template', 0)->first();
+//        dd($accepted, $rejected);
         $columns = $this->getAllDictionaries();
         $roles = Role::where('name' ,'<>', 'Заявитель')->get();
         $tableName = $this->getTableName($process->name);
@@ -223,6 +220,8 @@ class ProcessController extends Controller
         $tableName = $this->getTableName($process->name);
         Schema::dropIfExists($tableName);
         $process->routes()->delete();
+        $process->accepted_template()->delete();
+        $process->rejected_template()->delete();
         $process->delete();
         return Redirect::route('processes.index')->with('status', 'Процесс успешно удален');  
     }

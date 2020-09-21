@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Process;
 use App\Template;
 use App\TemplateField;
 use App\InputType;
@@ -14,20 +15,22 @@ class TemplateFieldsController extends Controller
 {
     use dbQueries;
 
-    public function create($id) {
+    public function create(Template $template) {
+
+        $id = $template->id;
+        $process = Process::where('accepted_template_id', $id)->orWhere('rejected_template_id', $id)->first();
+        $processId = $process->id;
         $inputTypes = InputType::all();
         $insertTypes = InsertType::all();
         $options = SelectOption::all();
-        $oTemplateFields = $this->getAllTemplateFields($id);
-        return view('templatefield.create', compact('id', 'oTemplateFields','inputTypes','insertTypes','options'));
+        $oTemplateFields = $this->getAllTemplateFields($template->id);
+        return view('templatefield.create', compact('id', 'oTemplateFields','inputTypes','insertTypes','options','processId'));
     }
 
     public function store(Request $request) {
-//        dd($request->input());
 
         $inputItem = InputType::where('name',$request->inputItem)->first();
         $insertItem = InsertType::where('name',$request->insertItem)->first();
-
 
         $templateField = new TemplateField;
         $templateField->name = $request->fieldName;

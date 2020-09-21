@@ -32,26 +32,6 @@
                                     <input type="text" name="deadline" value="{{ $process->deadline}}" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label>Изменить шаблон одобрения</label>
-                                    <select name="accepted_template" class="form-control">
-                                        
-                                        <option selected="$process->accepted_template->name">{{$process->accepted_template->name}}</option>
-                                        @foreach($accepted as $accepted_template)
-                                            <option>{{$accepted_template->name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Изменить шаблон отказа</label>
-                                    <select name="rejected_template" class="form-control">
-                                        <option selected="$process->rejected_template">{{$process->rejected_template->name}}</option>
-                                        @foreach($rejected as $rejected_template)
-                                            <option>{{$rejected_template->name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                
-                                <div class="form-group">
                                     <button type="submit" class="btn btn-success">Обновить</button>
                                     <a href="{{ route('processes.index') }}" class="btn btn-danger">Отмена</a>
                                 </div>
@@ -208,6 +188,41 @@
                                     </div>
                                 </div>
                             @endisset
+                            <h4>Создание Шаблонов</h4>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Шаблон одобрения</h5>
+                                        <form action="{{ route('template.store') }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="hidden" name="template_state" value="accepted">
+                                            <input type="hidden" name="processId" value="{{$process->id}}">
+                                            <div class="form-group">
+                                                <label for="fieldName">Название шаблона</label>
+                                                <input type="text" class="form-control" name="name" id="fieldName">
+                                            </div>
+                                            <button type="submit" class="btn btn-success">Создать</button>
+                                        </form>
+                                        @isset($accepted)
+                                                Шаблон одобрения: {{$accepted->name}}
+                                        @endisset
+                                        <h5>Шаблон отказа</h5>
+                                        <form action="{{ route('template.store') }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="hidden" name="template_state" value="rejected">
+                                            <input type="hidden" name="processId" value="{{$process->id}}">
+                                            <div class="form-group">
+                                                <label for="fieldName">Название шаблона</label>
+                                                <input type="text" class="form-control" name="name" id="fieldName">
+                                            </div>
+                                            <button type="submit" class="btn btn-success">Создать</button>
+                                        </form>
+                                        @isset($rejected)
+                                            Шаблон отказа: {{$rejected->name}}
+                                        @endisset
+                                    </div>
+                                </div>
+                            </div>
                             
                         </div>
                     </div>

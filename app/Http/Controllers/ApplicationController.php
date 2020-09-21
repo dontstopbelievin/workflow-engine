@@ -271,7 +271,7 @@ class ApplicationController extends Controller
 
         $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
         DB::table('logs')->insert( $logsArray);
-        
+
         DB::table($tableName)
             ->where('id', $id)
             ->update(['status_id' => $status->id, 'index_sub_route' => Null]);

@@ -108,7 +108,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::put('template-update/{template}', 'TemplateController@update')->name('template.update');
     Route::delete('template-delete/{template}', 'TemplateController@delete')->name('template.delete');
 
-    Route::get('template-field-create/{id}', 'TemplateFieldsController@create')->name('templatefield.create');
+    Route::get('template-field-create/{template}', 'TemplateFieldsController@create')->name('templatefield.create');
     Route::post('template-field-create', 'TemplateFieldsController@store')->name('templatefield.store');
 
     Route::get('auction', 'AuctionController@index')->name('auction.index');
