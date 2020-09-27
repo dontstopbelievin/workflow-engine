@@ -21,10 +21,13 @@
                         <table class="table">
                             @foreach($fields as $field)
                                 <thead class="text-primary">
-                                <th>ИД</th>
-                                <th>Имя</th>
-                                <th>Фамилия</th>
-                                <th>Кадастровый номер</th>
+                                <th>Номер лота</th>
+                                <th>Местоположение земельного участка</th>
+                                <th>Целевое назначение земельного участка</th>
+                                <th>Площадь земельного участка (га)</th>
+                                <th>Дата и время проведения аукциона</th>
+                                <th>Статус</th>
+                                <th>Дата публикации</th>
                                 <th><button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Изменить"><i class="fa fa-edit"></i></button></th>
                                 </thead>
                                 <tbody>
@@ -37,10 +40,9 @@
                                 </tr>
                                 </tbody>
                             @endforeach
-                            </tablе>
-
+                        </table>
                     </div>
-                    <a href="{{route('auction.create')}}" class="btn btn-primary">Создать Поля</a>
+                    <a href="{{route('auction.create')}}" class="btn btn-primary">Добавить аукцион</a>
                 </div>
             </div>
         </div>
