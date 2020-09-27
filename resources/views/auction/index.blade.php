@@ -20,14 +20,15 @@
                     <div class="table-responsive">
                         <table class="table">
                             @foreach($fields as $field)
-                                <thead>
-                                    <tr class="shadow p-3 mb-5 rounded text-secondary">
-                                        <th class="text-left border-0"><h6>ИД</h6></th>
-                                        <th class="text-left border-0"><h6>Имя</h6></th>
-                                        <th class="text-left border-0"><h6>Фамилия</h6></th>
-                                        <th class="text-left border-0"><h6>Кадастровый номер</h6></th>
-                                        <th class="text-left border-0"><h6>Действия</h6></th>
-                                    </tr>
+                                <thead class="text-primary">
+                                <th>Номер лота</th>
+                                <th>Местоположение земельного участка</th>
+                                <th>Целевое назначение земельного участка</th>
+                                <th>Площадь земельного участка (га)</th>
+                                <th>Дата и время проведения аукциона</th>
+                                <th>Статус</th>
+                                <th>Дата публикации</th>
+                                <th><button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Изменить"><i class="fa fa-edit"></i></button></th>
                                 </thead>
                                 <tbody>
                                     <tr class="shadow p-3 mb-5 rounded">
@@ -39,10 +40,9 @@
                                     </tr>
                                 </tbody>
                             @endforeach
-                            </tablе>
-
+                        </table>
                     </div>
-                    <a href="{{route('auction.create')}}" class="btn btn-info btn-lg my-5">Создать Поля</a>
+                    <a href="{{route('auction.create')}}" class="btn btn-primary">Добавить аукцион</a>
                 </div>
             </div>
         </div>
