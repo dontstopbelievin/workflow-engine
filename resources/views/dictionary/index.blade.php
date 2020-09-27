@@ -4,39 +4,39 @@
     Process Creation
 @endsection
 
-
-
 @section('content')
 
         <div class="row">
             <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Справочник <a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
+                <div class="card bg-white">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Справочник <a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
+                        </div>
                     </div>
-
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive" id="items">
-                        <table class="table">
-                            <thead>
-                                <th>Наименование поля</th>
-                                <th>Тип вводимого</th>
-                                <th>Тип сохраняемого</th>
-                            </thead>
-                            <tbody>
+                    <div class="card-body">
+                        <div class="table-responsive" id="items">
+                            <table class="table">
+                                <thead>
+                                    <tr class="shadow p-3 mb-5 rounded text-secondary">
+                                        <th><h6>Наименование поля</h6></th>
+                                        <th><h6>Тип вводимого</h6></th>
+                                        <th><h6>Тип сохраняемого</h6></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                 @foreach($dictionaries as $item)
-                              <tr>
-                                <td><h4>{{$item["labelName"]}}</h4></td>
-                                <td><h4>{{$item["inputName"]}}</h4></td>
-                                <td><h4>{{$item["insertName"]}}</h4></td>
-                              </tr>   
-                              @endforeach                             
-                            </tbody>
-                        </tablе>
-                    </div>
+                                    <tr class="shadow p-3 mb-5 rounded">
+                                        <td class="align-middle"><h4>{{$item["labelName"]}}</h4></td>
+                                        <td class="align-middle"><h4>{{$item["inputName"]}}</h4></td>
+                                        <td class="align-middle"><h4>{{$item["insertName"]}}</h4></td>
+                                    </tr>   
+                                @endforeach                             
+                                </tbody>
+                            </tablе>
+                        </div>
 
-                </div>
+                    </div>
                 
                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
                     <div class="modal-dialog" role="document">
@@ -44,7 +44,6 @@
                             <div class="modal-header">
                                 <h3 class="modal-title" id="title">Добавить новое поле</h3>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                
                             </div>
                             <div class="modal-body">
                                 <input type="hidden" id="id">

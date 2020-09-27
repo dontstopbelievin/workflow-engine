@@ -10,7 +10,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h2>Изменение Процесса: {{$process->name}}</h2>
+                <h2 class="card-title font-weight-bold text-center">Изменение Процесса: {{$process->name}}</h2>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -18,8 +18,8 @@
                     @endif
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
+                    <div class="row justify-content-center align-items-center">
+                        <div class="col-md-9">
                         <form action="{{ route('processes.update', ['process' => $process]) }}" method="POST">
                                 {{ csrf_field( )}}
                                 {{ method_field('PUT') }}
@@ -27,160 +27,155 @@
                                     <label>Наиманование Процесса</label>
                                     <input type="text" name="name" value="{{ $process->name}}" class="form-control">
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group-row">
                                     <label>Срок(количество дней)</label>
                                     <input type="text" name="deadline" value="{{ $process->deadline}}" class="form-control">
                                 </div>
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-success">Обновить</button>
-                                    <a href="{{ route('processes.index') }}" class="btn btn-danger">Отмена</a>
+                                <div class="form-group-row">
+                                    <button button type="submit" class="btn btn-info btn-lg">Обновить</button>
+                                    <a href="{{ route('processes.index') }}" class="btn btn-outline-danger btn-lg">Отмена</a>
                                 </div>
                             </form>
+                            <hr>
                             @empty($arrayJson)
-                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">Выбрать Поля</button>
-                            
-                            <div class="container"> 
+                            <button type="button" class="btn btn-light btn-lg my-3" data-toggle="modal" data-target="#myModal">Выбрать Поля</button>
                                 <!-- Modal -->
-                                <div class="modal fade" id="myModal" role="dialog">
-                                    <div class="modal-dialog">
-                                    <!-- Modal content-->
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h4 class="modal-title">Список Полей</h4>
+                            <div class="modal fade" id="myModal" role="dialog">
+                                <div class="modal-dialog">
+                                <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Список Полей</h4>
+                                        </div>
+                                        <form action="{{ route('processes.createProcessTable', ['process' => $process]) }}" method="POST">
+                                        @csrf
+                                            <div class="modal-body">
+                                                @isset($columns)
+                                                    @foreach ($columns as $column)
+                                                        <div class="checkbox">
+                                                            <label><input type="checkbox" name="fields[]" value="{{$column["name"]}}">{{$column["labelName"]}}</label>
+                                                        </div>
+                                                    @endforeach
+                                                @endisset
                                             </div>
-                                            <form action="{{ route('processes.createProcessTable', ['process' => $process]) }}" method="POST">
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-success">Выбрать</button>
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                                            </div>      
+                                        </form>
+                                    </div>                                          
+                                </div>
+                            </div>
+                            <div class="modal fade" id="myModal2" role="dialog">
+                                <div class="modal-dialog">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Добавить Подмаршрут к <input type="text" id="modHeader"></h4>
+                                        </div>
                                             @csrf
-                                                <div class="modal-body">
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label>Выберите Орагнизацию дополнительного маршрута</label>
+                                                    <select name="supportOrganization" id="subOrg" class="subOrg">
+                                                        @foreach($organizations as $organization)
+                                                            <option>{{$organization->name}} </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
                                                     @isset($columns)
-                                                        @foreach ($columns as $column)
+                                                        @foreach ($roles as $role)
                                                             <div class="checkbox">
-                                                                <label><input type="checkbox" name="fields[]" value="{{$column["name"]}}">{{$column["labelName"]}}</label>
-
+                                                                <label><input class="get_value" type="checkbox" name="subRoles[]" value="{{$role->name}}">{{$role->name}}</label>
                                                             </div>
                                                         @endforeach
                                                     @endisset
-
                                                 </div>
-                                                <div class="modal-footer">
-                                                <button type="submit" class="btn btn-success">Выбрать</button>
-                                                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                                                </div>      
-                                            </form>
-                                        </div>                                          
-                                    </div>
-                                </div>
-                                <div class="modal fade" id="myModal2" role="dialog">
-                                    <div class="modal-dialog">
-                                        <!-- Modal content-->
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h4 class="modal-title">Добавить Подмаршрут к <input type="text" id="modHeader"></h4>
+
                                             </div>
-                                                @csrf
-
-                                                <div class="modal-body">
-                                                    <div class="form-group">
-                                                        <label>Выбрать Орагнизацию дополнительного маршрута</label>
-                                                        <select name="supportOrganization" id="subOrg" class="subOrg">
-                                                            @foreach($organizations as $organization)
-                                                                <option>{{$organization->name}} </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        @isset($columns)
-                                                            @foreach ($roles as $role)
-                                                                <div class="checkbox">
-                                                                    <label><input class="get_value" type="checkbox" name="subRoles[]" value="{{$role->name}}">{{$role->name}}</label>
-                                                                </div>
-                                                            @endforeach
-                                                        @endisset
-                                                    </div>
-
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button  type="submit" id="AddButton" class="btn btn-success">Добавить Подмаршрут</button>
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                                                </div>
-                                        </div>
+                                            <div class="modal-footer">
+                                                <button  type="submit" id="AddButton" class="btn btn-success">Добавить Подмаршрут</button>
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                                            </div>
                                     </div>
                                 </div>
-                            </div>  
+                            </div>
+                             
                             @endempty
-                            <h5>Поля процесса:</h5>
                             @isset($tableColumns)
+                            <h4 class="font-weight-bold text-left">Поля процесса:</h4>
                                 @foreach($tableColumns as $column)
-                                <ul>
-                                    <li>{{$column}}</li>
+                                <ul class="list-group text-center">
+                                    <li class="list-group-item w-50 text-center">{{$column}}</li>
                                 </ul>                                                    
                                 @endforeach
                             @endisset
 
-                            <h2>Создание маршрутов</h2>
+                            <h3 class="font-weight-bold text-center">Создание маршрутов</h3>
                             @isset($organizations)
+                            <div class="my-4">
                                 <form action="{{ route('processes.addOrganization', ['process' => $process]) }}" method="POST">
                                     @csrf
-                                    <div class="form-group">
-                                        <label for="mainOrganization">Выбрать Орагнизацию основного маршрута</label>
+                                    <div class="form-group-row">
+                                        <label for="mainOrganization">Выберите Орагнизацию основного маршрута</label>
                                         <select name="mainOrganization" class="form-control" id="mainOrganization">
+                                            <option selected="true" disabled="disabled">Выберите Ниже</option>
                                             @foreach($organizations as $organization)
                                                 <option>{{$organization->name}} </option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    <button type="submit" class="btn btn-success">Выбрать</button>
+                                    <button type="submit" class="btn btn-info btn-lg my-2">Выбрать</button>
                                 </form>
+                            </div>
                             @endisset
                             @isset($roles)
-                                <form action="{{ route('processes.addRole', ['process' => $process]) }}" method="POST">
-                                @csrf
-                                <div class="form-group">
-                                    <label>Выбрать участников процесса</label>
-                                    <select name="role" class="form-control">
-                                        @foreach($roles as $role)
-                                            <option>{{$role->name}} </option>
-                                        @endforeach
-                                    </select>
+                                <div class="my-4">
+                                    <form action="{{ route('processes.addRole', ['process' => $process]) }}" method="POST">
+                                    @csrf
+                                        <div class="form-group-row">
+                                            <label>Выберите участников процесса</label>
+                                            <select name="role" class="form-control form-control-lg">
+                                                <option selected="true" disabled="disabled">Выберите Ниже</option>
+                                                @foreach($roles as $role)
+                                                    <option>{{$role->name}} </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-info btn-lg my-2">Выбрать</button>
+                                    </form>
                                 </div>
-                                <button type="submit" class="btn btn-success">Выбрать</button>
-                                </form>
                             @endisset
-
+                            <hr>
                             @isset($process->routes)
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h3 class="panel-title">Список маршрутов | {{ $nameMainOrg ?? ''}} <a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
+                                <div>
+                                    <div>
+                                        <h4 class="font-weight-bold">Маршрут Процесса | {{ $nameMainOrg ?? ''}} </h4>
                                     </div>
-
-                                    <div class="panel-body" id="items">
+                                    <div class="border border-info" id="items">
                                         <ul class="list-group">
                                         @if(isset($sAllRoles))
-
                                             @foreach($sAllRoles as $key=>$role)
-                                                <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal2">{{$key}}
+                                                <li class="list-group-item my-auto ourItem" data-toggle="modal" data-target="#myModal2">{{$key}}
                                                     <input type="hidden" id="roleName" value = {{$key}}>
                                                     <input type="hidden" id="processId" value = {{$process->id}}>
-                                                    <ul>
-                                                                
-                                                        @if (is_array($role))
-                                                            @foreach($role as $skey => $sval)
-                                                            <li>  
-                                                                {{$sval}}
-                                                            </li>
-                                                            @endforeach
-                                                        @endif
+                                                    <ul class="list-group">            
+                                                    @if (is_array($role))
+                                                        @foreach($role as $skey => $sval)
+                                                        <li class="list-group-item">  
+                                                            {{$sval}}
+                                                        </li>
+                                                        @endforeach
+                                                    @endif
                                                     </ul>
                                                 </li>
                                             @endforeach
                                         @else 
                                             @foreach($process->routes as $route)
-                                                <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal2">{{$route->name}}
+                                                <li class="ourItem" data-toggle="modal" data-target="#myModal2">{{$route->name}}
                                                     <input type="hidden" id="roleName" value = {{$route->name}}>
                                                     <input type="hidden" id="processId" value = {{$process->id}}>
-                                                    <ul>
-
-                                                        <li></li>
-                                                    </ul>
                                                 </li>
                                             @endforeach
                                         @endif
@@ -188,42 +183,47 @@
                                     </div>
                                 </div>
                             @endisset
-                            <h4>Создание Шаблонов</h4>
-                            <div class="card-body">
+
+                            <hr>
+                            <h3 class="font-weight-bold text-center">Создание Шаблонов</h3>
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <h5>Шаблон одобрения</h5>
+                                    <div class="col-xs-6">
+                                        <h5 class="font-weight-bold">Шаблон одобрения</h5>
+                                        @empty($accepted)
                                         <form action="{{ route('template.store') }}" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             <input type="hidden" name="template_state" value="accepted">
                                             <input type="hidden" name="processId" value="{{$process->id}}">
-                                            <div class="form-group">
+                                            <div class="form-group-row">
                                                 <label for="fieldName">Название шаблона</label>
                                                 <input type="text" class="form-control" name="name" id="fieldName">
                                             </div>
-                                            <button type="submit" class="btn btn-success">Создать</button>
+                                            <button type="submit" class="btn btn-info my-2">Создать</button>
                                         </form>
+                                        @endempty
                                         @isset($accepted)
-                                                Шаблон одобрения: {{$accepted->name}}
+                                            <p>{{$accepted->name}}</p>
                                         @endisset
+                                    </div>
+                                    <div class="col-xs-6">
                                         <h5>Шаблон отказа</h5>
+                                        @empty($rejected)
                                         <form action="{{ route('template.store') }}" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             <input type="hidden" name="template_state" value="rejected">
                                             <input type="hidden" name="processId" value="{{$process->id}}">
-                                            <div class="form-group">
+                                            <div class="form-group-row">
                                                 <label for="fieldName">Название шаблона</label>
                                                 <input type="text" class="form-control" name="name" id="fieldName">
                                             </div>
-                                            <button type="submit" class="btn btn-success">Создать</button>
+                                            <button type="submit" class="btn btn-info my-2">Создать</button>
                                         </form>
+                                        @endempty
                                         @isset($rejected)
-                                            Шаблон отказа: {{$rejected->name}}
+                                             <p>{{$rejected->name}}</p>
                                         @endisset
                                     </div>
                                 </div>
-                            </div>
-                            
                         </div>
                     </div>
                 </div>
@@ -287,6 +287,7 @@
 
     });
 </script>
+
 
 @endsection
 

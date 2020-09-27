@@ -9,7 +9,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Аукцион</h4>
+                    <h3 class="card-title font-weight-bold text-center">Аукцион</h3>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -20,27 +20,29 @@
                     <div class="table-responsive">
                         <table class="table">
                             @foreach($fields as $field)
-                                <thead class="text-primary">
-                                <th>ИД</th>
-                                <th>Имя</th>
-                                <th>Фамилия</th>
-                                <th>Кадастровый номер</th>
-                                <th><button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Изменить"><i class="fa fa-edit"></i></button></th>
+                                <thead>
+                                    <tr class="shadow p-3 mb-5 rounded text-secondary">
+                                        <th class="text-left border-0"><h6>ИД</h6></th>
+                                        <th class="text-left border-0"><h6>Имя</h6></th>
+                                        <th class="text-left border-0"><h6>Фамилия</h6></th>
+                                        <th class="text-left border-0"><h6>Кадастровый номер</h6></th>
+                                        <th class="text-left border-0"><h6>Действия</h6></th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>{{$field->id}}</td>
-                                    <td>{{$field->first_name}}</td>
-                                    <td>{{$field->surname}}</td>
-                                    <td>{{$field->cadastre}}</td>
-                                    <td><i class="fa fa-caret-square-o-right" style="font-size:36px"></i></td>
-                                </tr>
+                                    <tr class="shadow p-3 mb-5 rounded">
+                                        <td class="text-left align-middle"><h4>{{$field->id}}</h4></td>
+                                        <td class="text-left align-middle"><h4>{{$field->first_name}}</h4></td>
+                                        <td class="text-left align-middle"><h4>{{$field->surname}}</h4></td>
+                                        <td class="text-left align-middle"><h4>{{$field->cadastre}}</h4></td>
+                                        <td class="text-left align-middle"><i class="fa fa-caret-square-o-right" style="font-size:36px"></i></td>
+                                    </tr>
                                 </tbody>
                             @endforeach
                             </tablе>
 
                     </div>
-                    <a href="{{route('auction.create')}}" class="btn btn-primary">Создать Поля</a>
+                    <a href="{{route('auction.create')}}" class="btn btn-info btn-lg my-5">Создать Поля</a>
                 </div>
             </div>
         </div>

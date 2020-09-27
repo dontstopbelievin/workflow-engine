@@ -9,29 +9,39 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Все заявки по услуге {{$process->name}}</h4>
+                    <h3 class="card-title font-weight-bold text-center">Все заявки по услуге {{$process->name}}</h3>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
                         </div>
                     @endif
-                    <a href="{{ route('applications.create', ['process' => $process]) }}" class="btn btn-primary">Создать Заявку</a>
+                    <a href="{{ route('applications.create', ['process' => $process]) }}" class="btn btn-info btn-lg my-5">Создать Заявку</a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table">
-                            <thead class="text-primary">
-                                <th>#</th>
-                                <th>Имя заявителя</th>
-                                <th>Статус заявки</th>
+                            <thead>
+                                <tr class="shadow p-3 mb-5 rounded text-secondary">
+                                    <th class="text-left border-0"><h6>№</h6></th>
+                                    <th class="text-left border-0"><h6>Имя заявителя</h6></th>
+                                    <th class="text-left border-0"><h6>Статус заявки</h6></th>
+                                    <th class="text-center border-0"><h6>Действия</h6></th>
+                                </tr>
                             </thead>
                             <tbody>
                             @foreach($arrayApps as $app)
-                                  <tr>
-                                    <td><a href="{{ route('applications.view', ['process_id' => $process["id"] , 'application_id' => $app["id"]]) }}">{{$app["id"]}}</a></td>
-                                    <td>{{$app["name"] ?? '' }}</td>
-                                    <td>{{$app["status"] ?? ''}}</td>
-                                  </tr>
+                                <tr class="shadow p-3 mb-5 rounded">
+                                    <td class="text-left align-middle"><h4>{{$app["id"]}}</h4></td>
+                                    <td class="text-left align-middle"><h4>{{$app["name"] ?? '' }}</h4></td>
+                                    <td class="text-left align-middle"><h4>{{$app["status"] ?? ''}}</h4></td>
+                                    <td class="text-center align-middle">
+                                        <button class="rounded-circle bg-white" onclick="window.location='{{route('applications.view', ['process_id' => $process["id"] , 'application_id' => $app["id"]])}}'">
+                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                            </svg>
+                                        </button>
+                                    </td>  
+                                </tr>
                             @endforeach
                             </tbody>
 

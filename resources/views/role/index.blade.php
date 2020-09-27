@@ -7,10 +7,10 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            <div class="card">
+            <div class="card bg-white">
                 <div class="card-header">
-                    <h4 class="card-title">Список Ролей | Всего: {{$rolesCount}} <a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h4>
-                    <form action="{{ route('role.search') }}" method="POST" role="search">
+                    <h3 class="card-title font-weight-bold text-center">Список Ролей<a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
+                    <!-- <form action="{{ route('role.search') }}" method="POST" role="search">
                         {{ csrf_field() }}
                         <div class="input-group">
                             <input type="text" class="form-control" name="q"
@@ -18,12 +18,54 @@
                                 <button type="submit"><i class="fa fa-search"></i></button>
                             </span>
                         </div>
-                    </form>
+                    </form> -->
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
                         </div>
                     @endif
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="shadow p-3 mb-5 rounded text-secondary">
+                                    <th class="text-left border-0"><h6>№</h6></th>
+                                    <th class="w-25 text-left border-0"><h6>Имя</h6></th>
+                                    <th class="text-left border-0"><h6>Управление</h6></th>
+                                    <th colspan="2" class="text-center border-0"><h6>Действия</h6></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($roles as $role)
+                                <tr class="shadow p-3 mb-5 rounded">
+                                    <td class="text-left align-middle"><a href="{{ route('role.view', ['role' => $role]) }}"><h4>{{$role->id}}</h4></a></td>
+                                    <td class="w-25 text-left align-middle"><h4>{{$role->name}}</h4></td>
+                                    <td class="text-left align-middle"><h4>{{$role->cityManagement->name ?? ''}}</h4></td>
+                                    <td class="text-right align-middle">
+                                        <button class="rounded-circle bg-white" onclick="window.location='{{route('role.edit', ['role' => $role])}}'">
+                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-fill rounded cicrle" fill="blue" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                    <td class="text-left align-middle">
+                                        <form action="{{ route('role.delete', ['role' => $role]) }}" method="post">
+                                            {{csrf_field()}}
+                                            {{method_field('DELETE')}}
+                                            <button type="submit" class="rounded-circle bg-white"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash-fill border-light" fill="red" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach  
+                            </tbody>
+                        </tablе>
+                        <a href="{{ route('role.create') }}" class="btn btn-info btn-lg my-5">Создать Роль</a>
+                    </div>
+
                 </div>
                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
                     <div class="modal-dialog" role="document">
@@ -44,74 +86,6 @@
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
-                <div class="container">
-                    @if(isset($details))
-                        <p> Результаты поиска на <b> {{ $query }} </b> :</p>
-                    <table class="table table-striped" id="items">
-                        <thead>
-                            <tr>
-                                <th>№</th>
-                                <th>Имя</th>
-                                <th><button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Изменить"><i class="fa fa-edit"></i></button></th>
-                                <th> <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Удалить"><i class="fa fa-trash"></i></button></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($details as $detail)
-                            <tr>
-                                <td><a href="{{ route('role.view', ['detail' => $detail]) }}">{{$detail->id}}</a></td>
-                                <td>{{$detail->name}}</td>
-                                <td><a href="{{ route('role.edit', ['detail' => $detail]) }}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
-                                <td>
-                                    <form action="{{ route('role.delete', ['detail' => $detail]) }}" method="post">
-                                        {{csrf_field()}}
-                                        {{method_field('DELETE')}}
-                                        <button type="submit" class="btn btn-danger">УДАЛИТЬ</button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    @endif
-                </div>
-                {{csrf_field()}}
-                @if(empty($details))
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <th>№</th>
-                                <th>Имя</th>
-                                <th>Управление</th>
-                                <th>Дата создания</th>
-                                <th><button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Изменить"><i class="fa fa-edit"></i></button></th>
-                                <th> <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Удалить"><i class="fa fa-trash"></i></button></th>
-                            </thead>
-                            <tbody>
-                                @foreach($roles as $role)
-                                <tr>
-                                    <td><a href="{{ route('role.view', ['role' => $role]) }}">{{$role->id}}</a></td>
-                                    <td>{{$role->name}}</td>
-                                    <td>{{$role->cityManagement->name ?? ''}}</td>
-                                    <td>{{$time->toDateString() }}</td>
-                                    <td><a href="{{ route('role.edit', ['role' => $role]) }}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
-                                    <td>
-                                        <form action="{{ route('role.delete', ['role' => $role]) }}" method="post">
-                                            {{csrf_field()}}
-                                            {{method_field('DELETE')}}
-                                            <button type="submit" class="btn btn-danger">УДАЛИТЬ</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                @endforeach  
-                            </tbody>
-                        </tablе>
-                        <a href="{{ route('role.create') }}" class="btn btn-primary">Создать Роль</a>
-                    </div>
-
-                </div>
-                @endif
             </div>
         </div>
     </div>

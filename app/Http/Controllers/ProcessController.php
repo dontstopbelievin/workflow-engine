@@ -64,13 +64,8 @@ class ProcessController extends Controller
 
     public function edit(Process $process) {
 
-//        $accepted = Template::accepted()->get();
-//        $rejected = Template::rejected()->get();
-//        dd($accepted);
-//        $acceptedTemplateId = $process->accepted_template_id;
         $accepted = Template::where('id', $process->accepted_template_id)->where('accept_template', 1)->first();
         $rejected = Template::where('id', $process->rejected_template_id)->where('accept_template', 0)->first();
-//        dd($accepted, $rejected);
         $columns = $this->getAllDictionaries();
         $roles = Role::where('name' ,'<>', 'Заявитель')->get();
         $tableName = $this->getTableName($process->name);
@@ -217,11 +212,9 @@ class ProcessController extends Controller
     }
 
     public function delete(Process $process) {
+
         $tableName = $this->getTableName($process->name);
         Schema::dropIfExists($tableName);
-        $process->routes()->delete();
-        $process->accepted_template()->delete();
-        $process->rejected_template()->delete();
         $process->delete();
         return Redirect::route('processes.index')->with('status', 'Процесс успешно удален');  
     }
