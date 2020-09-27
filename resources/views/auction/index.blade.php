@@ -32,10 +32,13 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>{{$field->id}}</td>
-                                    <td>{{$field->first_name}}</td>
-                                    <td>{{$field->surname}}</td>
-                                    <td>{{$field->cadastre}}</td>
+                                    <td>{{$field->lot_number}}</td>
+                                    <td>{{$field->address_rus}}</td>
+                                    <td>{{$field->target}}</td>
+                                    <td>{{$field->area}}</td>
+                                    <td>{{$field->auction_date_time}}</td>
+                                    <td>{{$field->status_zu}}</td>
+                                    <td>{{$field->publish_date}}</td>
                                     <td><i class="fa fa-caret-square-o-right" style="font-size:36px"></i></td>
                                 </tr>
                                 </tbody>
