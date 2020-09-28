@@ -18,28 +18,19 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div>
                             <form action="{{ route('auction.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
-                                <div class="form-group">
-                                    <br>
-
-                                    <label for="LotID">Идентификатор лота (id)</label>
-                                    <input type="text" class="form-control" name="LotID" id="LotID" >
-
-                                    <label for="LotStatus">Статус лота</label>
-                                    <select name="LotStatus" class="form-control">
-                                        <option value="">Не выбран</option>
-                                        <option value="1">Предстоящий</option>
-                                        <option value="2">Несостоявшийся</option>
-                                        <option value="3">Состоявшийся</option>
-                                    </select>
+                                <div class="col-xs-6">
+                                    <h4>Поля для аукциона</h4>
+                                    <label style="display:none" for="LotID">Идентификатор лота (id)</label>
+                                    <input type="hidden" class="form-control" name="LotID" id="LotID" >
 
                                     <label for="LotNumber">№ лота</label>
                                     <input type="text" class="form-control" name="LotNumber" id="LotNumber" >
 
                                     <label for="EgknID">EGKNID</label>
-                                    <input type="text" class="form-control" name="EgknID" id="EgknID" >
+                                    <input type="text" class="form-control" name="EgknID" id="EgknID" disabled>
 
                                     <label for="StatusZU">Статус ЗУ</label>
                                     <select name="StatusZU" class="form-control">
@@ -61,7 +52,7 @@
                                     <input type="text" class="form-control" name="RentConditionsKaz" id="RentConditionsKaz" >
 
                                     <label for="Area">Площадь, га.</label>
-                                    <input type="text" class="form-control" name="Area" id="Area" >
+                                    <input type="number" class="form-control" name="Area" id="Area" >
 
                                     <label for="CadastreCost">Кадастровая стоимость, тг.</label>
                                     <input type="number" class="form-control" name="CadastreCost" id="CadastreCost" >
@@ -112,19 +103,97 @@
                                     <label for="AddressKaz">Месторасположение ЗУ каз.яз.</label>
                                     <input type="text" class="form-control" name="AddressKaz" id="AddressKaz" >
 
-                                    <label for="NoteRus">Примечание рус для ЭТП. Например: Начальная цена рассчитана в соответствии с п.п 3, п. 1, Постановления правительства Республики Казахстан от 2 сентября 2003 года №890 "Об установлении базовых ставок платы на земельные участки" в размере 6 процент (2х3 года) от кадастровой (оценочной) стоимости земельного участка (с уменьшением пропорционально площади сервитута)</label>
-                                    {{--<input type="text" class="form-control" name="NoteRus" id="NoteRus" required>--}}
-
-                                    <label for="NoteKaz">Примечание каз для ЭТП. Например: Начальная цена рассчитана в соответствии с п.п 3, п. 1, Постановления правительства Республики Казахстан от 2 сентября 2003 года №890 "Об установлении базовых ставок платы на земельные участки" в размере 6 процент (2х3 года) от кадастровой (оценочной) стоимости земельного участка (с уменьшением пропорционально площади сервитута)</label>
-                                    {{--<input type="text" class="form-control" name="NoteKaz" id="NoteKaz" required>--}}
-
                                     <label for="RestrictionsAndBurdensRus">Ограничения и обременения при наличии кроме ТУ на рус</label>
                                     <input type="text" class="form-control" name="RestrictionsAndBurdensRus" id="RestrictionsAndBurdensRus" >
 
                                     <label for="RestrictionsAndBurdensKaz">Ограничения и обременения при наличии кроме ТУ на каз</label>
                                     <input type="text" class="form-control" name="RestrictionsAndBurdensKaz" id="RestrictionsAndBurdensKaz" >
 
+                                    <label for="InstallmentPeriod">Срок рассрочки, мес</label>
+                                    <input type="number" class="form-control" name="InstallmentPeriod" id="InstallmentPeriod" >
 
+                                    <label for="InstalmentSelling">Продажа в рассчроку</label>
+                                    <select name="InstalmentSelling" class="form-control">
+                                        <option value="">Не выбран</option>
+                                        <option value="1">Да</option>
+                                        <option value="2">Нет</option>
+                                    </select>
+                                    <br>
+
+                                    <h4>Продавец (Тип описывающий формат продавца)</h4>
+                                    <label for="IINBIN">ИИН/БИН</label>
+                                    <input type="text" class="form-control" name="IINBIN" id="IINBIN" >
+
+                                    <label for="NameRus">ФИО/Наименование рус.яз.</label>
+                                    <input type="text" class="form-control" name="NameRus" id="NameRus" >
+
+                                    <label for="NameKaz">ФИО/Наименование каз.яз.</label>
+                                    <input type="text" class="form-control" name="NameKaz" id="NameKaz" >
+
+                                    <label for="IsFl">ФЛ? Обязательноe поле = true or false</label>
+                                    <br>
+                                    <input type="radio" name="IsFl" checked value="true">Да
+                                    <input type="radio" name="IsFl" checked value="false">Нет
+                                    <br>
+                                    <br>
+
+                                    {{--<h4>Покупатель (Тип описывающий формат покупателя)</h4>--}}
+                                    {{--<label for="IINBIN">ИИН/БИН</label>--}}
+                                    {{--<input type="text" class="form-control" name="IINBIN" id="IINBIN" required>--}}
+
+                                    {{--<label for="NameRus">ФИО/Наименование рус.яз.</label>--}}
+                                    {{--<input type="text" class="form-control" name="NameRus" id="NameRus" required>--}}
+
+                                    {{--<label for="NameKaz">ФИО/Наименование каз.яз.</label>--}}
+                                    {{--<input type="text" class="form-control" name="NameKaz" id="NameKaz" required>--}}
+
+                                    {{--<label for="IsFl">ФЛ? Обязательноо поле = true or false</label>--}}
+                                    {{--<input type="radio" class="form-control" name="IsFl" checked value="true">Да--}}
+                                    {{--<input type="radio" class="form-control" name="IsFl" checked value="false">Нет--}}
+                                    {{--<br>--}}
+
+                                    <h4>Справочники</h4>
+                                    <label for="Target">Целевое назначение (справочник ЕГКН)</label>
+                                    <select name="Target" class="form-control">
+                                        <option value="">Не выбран</option>
+                                        <option value="г. Нурсултан">г. Нурсултан</option>
+                                    </select>
+
+                                    <label for="Purpose">Цель использования (справочник ЕГКН)</label>
+                                    <select name="Purpose" class="form-control">
+                                        <option value="">Не выбран</option>
+                                        <option value="1">английский</option>
+                                        <option value="2">голландский</option>
+                                    </select>
+
+                                    <label for="RightType">Вид права (справочник ЕГКН)</label>
+                                    <select name="RightType" class="form-control">
+                                        <option value="">Не выбран</option>
+                                        <option value="1">английский</option>
+                                        <option value="2">голландский</option>
+                                    </select>
+
+                                    <label for="LandDivisibility">Делимость ЗУ (спарвочник ЕГКН)</label>
+                                    <select name="LandDivisibility" class="form-control">
+                                        <option value="">Не выбран</option>
+                                        <option value="1">английский</option>
+                                        <option value="2">голландский</option>
+                                    </select>
+                                    <br>
+
+                                    <h4>Прикрепленые документы</h4>
+                                    <label>Документы</label>
+                                    <div class="custom-file mt-1 col-md-12">
+                                        <input type="file" class="custom-file-input" id="Files" name="Files">
+                                        <label class="custom-file-label" for="Files ">Выберите Файл</label>
+                                    </div>
+                                    <br>
+
+                                </div>
+
+                                <div class="col-xs-6">
+
+                                    <h4>Координаты</h4>
                                     <label for="Coordinates1">Координаты 1</label>
                                     <input type="text" class="form-control" name="Coordinates1" id="Coordinates1" >
 
@@ -142,22 +211,10 @@
 
                                     <label for="CoordinateSystem">Система координат</label>
                                     <input type="text" class="form-control" name="CoordinateSystem" id="CoordinateSystem" >
-
-
-                                    <label for="InstalmentSelling">Метод аукциона</label>
-                                    <select name="InstalmentSelling" class="form-control">
-                                        <option value="">Не выбран</option>
-                                        <option value="1">Да</option>
-                                        <option value="2">Нет</option>
-                                    </select>
-
-                                    <label for="InstallmentPeriod">Срок рассрочки, мес</label>
-                                    <input type="number" class="form-control" name="InstallmentPeriod" id="InstallmentPeriod" >
                                     <br>
+
 
                                     <h4>Технические условия (Тип описывающий формат технических условий)</h4>
-                                    <br>
-
                                     <label for="ElektrPower">Выделяемая мощность (лимит) (кВт)</label>
                                     <input type="number" class="form-control" name="ElektrPower" id="ElektrPower" >
 
@@ -225,80 +282,26 @@
                                     <input type="number" class="form-control" name="GasHotWater" id="GasHotWater" >
                                     <br>
 
-                                    <h4>Продавец (Тип описывающий формат продавца)</h4>
-                                    <br>
+                                    <h4>Итоги</h4>
+                                    <label for="NoteRus">Примечание рус для ЭТП.</label>
+                                    <input type="text" class="form-control" name="NoteRus" id="NoteRus" disabled value=" Начальная цена рассчитана в соответствии с п.п 3, п. 1, Постановления правительства Республики Казахстан от 2 сентября 2003 года №890 "Об установлении базовых ставок платы на земельные участки" в размере 6 процент (2х3 года) от кадастровой (оценочной) стоимости земельного участка (с уменьшением пропорционально площади сервитута)" required>
 
-                                    <label for="IINBIN">ИИН/БИН</label>
-                                    <input type="text" class="form-control" name="IINBIN" id="IINBIN" >
+                                    <label for="NoteKaz">Примечание каз для ЭТП.</label>
+                                    <input type="text" class="form-control" name="NoteKaz" id="NoteKaz" disabled value=" Начальная цена рассчитана в соответствии с п.п 3, п. 1, Постановления правительства Республики Казахстан от 2 сентября 2003 года №890 "Об установлении базовых ставок платы на земельные участки" в размере 6 процент (2х3 года) от кадастровой (оценочной) стоимости земельного участка (с уменьшением пропорционально площади сервитута)" required>
 
-                                    <label for="NameRus">ФИО/Наименование рус.яз.</label>
-                                    <input type="text" class="form-control" name="NameRus" id="NameRus" >
-
-                                    <label for="NameKaz">ФИО/Наименование каз.яз.</label>
-                                    <input type="text" class="form-control" name="NameKaz" id="NameKaz" >
-
-                                    <label for="IsFl">ФЛ? Обязательноо поле = true or false</label>
-                                    <input type="radio" class="form-control" name="IsFl" checked value="true">Да
-                                    <input type="radio" class="form-control" name="IsFl" checked value="false">Нет
-                                    <br>
-
-                                    {{--<h4>Покупатель (Тип описывающий формат покупателя)</h4>--}}
-                                    {{--<br>--}}
-                                    {{--<label for="IINBIN">ИИН/БИН</label>--}}
-                                    {{--<input type="text" class="form-control" name="IINBIN" id="IINBIN" required>--}}
-
-                                    {{--<label for="NameRus">ФИО/Наименование рус.яз.</label>--}}
-                                    {{--<input type="text" class="form-control" name="NameRus" id="NameRus" required>--}}
-
-                                    {{--<label for="NameKaz">ФИО/Наименование каз.яз.</label>--}}
-                                    {{--<input type="text" class="form-control" name="NameKaz" id="NameKaz" required>--}}
-
-                                    {{--<label for="IsFl">ФЛ? Обязательноо поле = true or false</label>--}}
-                                    {{--<input type="radio" class="form-control" name="IsFl" checked value="true">Да--}}
-                                    {{--<input type="radio" class="form-control" name="IsFl" checked value="false">Нет--}}
-                                    {{--<br>--}}
-
-                                    <h4>Справочники</h4>
-                                    <br>
-                                    <label for="Target">Целевое назначение (справочник ЕГКН)</label>
-                                    <select name="Target" class="form-control">
+                                    <label for="LotStatus">Статус лота</label>
+                                    <select name="LotStatus" class="form-control">
                                         <option value="">Не выбран</option>
-                                        <option value="г. Нурсултан">г. Нурсултан</option>
+                                        <option value="1">Предстоящий</option>
+                                        <option value="2">Несостоявшийся</option>
+                                        <option value="3">Состоявшийся</option>
                                     </select>
-
-                                    <label for="Purpose">Цель использования (справочник ЕГКН)</label>
-                                    <select name="Purpose" class="form-control">
-                                        <option value="">Не выбран</option>
-                                        <option value="1">английский</option>
-                                        <option value="2">голландский</option>
-                                    </select>
-
-                                    <label for="RightType">Вид права (справочник ЕГКН)</label>
-                                    <select name="RightType" class="form-control">
-                                        <option value="">Не выбран</option>
-                                        <option value="1">английский</option>
-                                        <option value="2">голландский</option>
-                                    </select>
-
-                                    <label for="LandDivisibility">Делимость ЗУ (спарвочник ЕГКН)</label>
-                                    <select name="LandDivisibility" class="form-control">
-                                        <option value="">Не выбран</option>
-                                        <option value="1">английский</option>
-                                        <option value="2">голландский</option>
-                                    </select>
-
                                     <br>
 
-                                    <h4>Прикрепленые документы</h4>
-                                    <br>
-                                    <label>Документы</label>
-                                    <div class="custom-file mt-1 col-md-12">
-                                        <input type="file" class="custom-file-input" id="Files" name="Files">
-                                        <label class="custom-file-label" for="Files ">Выберите Файл</label>
-                                    </div>
-                                    <br>
                                 </div>
-                                <button type="submit" class="btn btn-success">Отправить</button>
+                                <div class="col-xs-6">
+                                    <button type="submit" class="btn btn-success">Отправить</button>
+                                </div>
                             </form>
                         </div>
                     </div>
