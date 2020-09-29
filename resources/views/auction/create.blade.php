@@ -52,7 +52,7 @@
                                     <input type="text" class="form-control" name="RentConditionsKaz" id="RentConditionsKaz" >
 
                                     <label for="Area">Площадь, га.</label>
-                                    <input type="number" class="form-control" name="Area" id="Area" >
+                                    <input type="number" step="0.01" class="form-control" name="Area" id="Area" >
 
                                     <label for="CadastreCost">Кадастровая стоимость, тг.</label>
                                     <input type="number" class="form-control" name="CadastreCost" id="CadastreCost" >
@@ -132,8 +132,8 @@
 
                                     <label for="IsFl">ФЛ? Обязательноe поле = true or false</label>
                                     <br>
-                                    <input type="radio" name="IsFl" checked value="true">Да
-                                    <input type="radio" name="IsFl" checked value="false">Нет
+                                    <input type="radio" name="IsFl" checked value="1">Да
+                                    <input type="radio" name="IsFl" checked value="2">Нет
                                     <br>
                                     <br>
 
@@ -216,70 +216,78 @@
 
                                     <h4>Технические условия (Тип описывающий формат технических условий)</h4>
                                     <label for="ElektrPower">Выделяемая мощность (лимит) (кВт)</label>
-                                    <input type="number" class="form-control" name="ElektrPower" id="ElektrPower" >
+                                    <input type="number" step="0.01" class="form-control" name="ElektrPower" id="ElektrPower" >
 
                                     <label for="ElektrFaza1">Характер нагрузки: Однофазная (кВт)</label>
-                                    <input type="number" class="form-control" name="ElektrFaza1" id="ElektrFaza1" >
+                                    <input type="number" step="0.01" class="form-control" name="ElektrFaza1" id="ElektrFaza1" >
 
                                     <label for="ElektrFaza3">Характер нагрузки: Трехфазная (кВт)</label>
-                                    <input type="number" class="form-control" name="ElektrFaza3" id="ElektrFaza3" >
+                                    <input type="number" step="0.01" class="form-control" name="ElektrFaza3" id="ElektrFaza3" >
 
                                     <label for="WaterPower">Общая потребность в воде (лимит) (м3/час)</label>
-                                    <input type="number" class="form-control" name="WaterPower" id="WaterPower" >
+                                    <input type="number" step="0.01" class="form-control" name="WaterPower" id="WaterPower" >
 
                                     <label for="WaterHoz">На хозпитьевые нужды (м3/час)</label>
-                                    <input type="number" class="form-control" name="WaterHoz" id="WaterHoz" >
+                                    <input type="number" step="0.01" class="form-control" name="WaterHoz" id="WaterHoz" >
 
                                     <label for="WaterProduction">На производственные нужды (м3/час)</label>
-                                    <input type="number" class="form-control" name="WaterProduction" id="WaterProduction" >
+                                    <input type="number" step="0.01" class="form-control" name="WaterProduction" id="WaterProduction" >
 
                                     <label for="SeweragePower">Общее количество сточных вод (м3/час)</label>
-                                    <input type="number" class="form-control" name="SeweragePower" id="SeweragePower" >
+                                    <input type="number" step="0.01" class="form-control" name="SeweragePower" id="SeweragePower" >
 
                                     <label for="SewerageFecal">Фекальных (м3/час)</label>
-                                    <input type="number" class="form-control" name="SewerageFecal" id="SewerageFecal" >
+                                    <input type="number" step="0.01" class="form-control" name="SewerageFecal" id="SewerageFecal" >
 
                                     <label for="SewerageProduction">Производственно-загрязненных (м3/час)</label>
-                                    <input type="number" class="form-control" name="SewerageProduction" id="SewerageProduction" >
+                                    <input type="number" step="0.01" class="form-control" name="SewerageProduction" id="SewerageProduction" >
 
                                     <label for="SewerageClean">Условно-чистых сбрасываемых на городскую канализацию (м3/час)</label>
-                                    <input type="number" class="form-control" name="SewerageClean" id="SewerageClean" >
+                                    <input type="number" step="0.01" class="form-control" name="SewerageClean" id="SewerageClean" >
 
                                     <label for="HeatPower">Общая тепловая нагрузка (лимит) (Гкал/час)</label>
-                                    <input type="number" class="form-control" name="HeatPower" id="HeatPower" >
+                                    <input type="number" step="0.01" class="form-control" name="HeatPower" id="HeatPower" >
 
                                     <label for="HeatFiring">Отопление (Гкал/час)</label>
-                                    <input type="number" class="form-control" name="HeatFiring" id="HeatFiring" >
+                                    <input type="number" step="0.01" class="form-control" name="HeatFiring" id="HeatFiring" >
 
                                     <label for="HeatVentilation">Вентиляция (Гкал/час)</label>
-                                    <input type="number" class="form-control" name="HeatVentilation" id="HeatVentilation" >
+                                    <input type="number" step="0.01" class="form-control" name="HeatVentilation" id="HeatVentilation" >
 
                                     <label for="HeatHotWater">Горячее водоснабжение (Гкал/час)</label>
-                                    <input type="number" class="form-control" name="HeatHotWater" id="HeatHotWater" >
+                                    <input type="number" step="0.01" class="form-control" name="HeatHotWater" id="HeatHotWater" >
 
                                     <label for="StormWater">Ливневая канализация</label>
-                                    <input type="number" class="form-control" name="StormWater" id="StormWater" >
+                                    <select name="StormWater" class="form-control">
+                                        <option value="">Не выбран</option>
+                                        <option value="1">Да</option>
+                                        <option value="2">Нет</option>
+                                    </select>
 
                                     <label for="Telekom">Телефонизация</label>
-                                    <input type="number" class="form-control" name="Telekom" id="Telekom" >
+                                    <select name="Telekom" class="form-control">
+                                        <option value="">Не выбран</option>
+                                        <option value="1">Да</option>
+                                        <option value="2">Нет</option>
+                                    </select>
 
                                     <label for="GasPower">Общая потребность (лимит) (м3/час)</label>
-                                    <input type="number" class="form-control" name="GasPower" id="GasPower" >
+                                    <input type="number" step="0.01" class="form-control" name="GasPower" id="GasPower" >
 
                                     <label for="GasOnCooking">На приготовление пищи (м3/час)</label>
-                                    <input type="number" class="form-control" name="GasOnCooking" id="GasOnCooking" >
+                                    <input type="number" step="0.01" class="form-control" name="GasOnCooking" id="GasOnCooking" >
 
                                     <label for="GasHeating">Отопление</label>
-                                    <input type="number" class="form-control" name="GasHeating" id="GasHeating" >
+                                    <input type="number" step="0.01" class="form-control" name="GasHeating" id="GasHeating" >
 
                                     <label for="GasVentilation">Вентиляция (м3/час)</label>
-                                    <input type="number" class="form-control" name="GasVentilation" id="GasVentilation" >
+                                    <input type="number" step="0.01" class="form-control" name="GasVentilation" id="GasVentilation" >
 
                                     <label for="GasConditioning">Кондиционирование (м3/час)</label>
-                                    <input type="number" class="form-control" name="GasConditioning" id="GasConditioning" >
+                                    <input type="number" step="0.01" class="form-control" name="GasConditioning" id="GasConditioning" >
 
                                     <label for="GasHotWater">Горячее водоснабжение при газификации многоэтажных домов (м3/час)</label>
-                                    <input type="number" class="form-control" name="GasHotWater" id="GasHotWater" >
+                                    <input type="number" step="0.01" class="form-control" name="GasHotWater" id="GasHotWater" >
                                     <br>
 
                                     <h4>Итоги</h4>

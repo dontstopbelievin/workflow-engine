@@ -43,6 +43,7 @@ class AuctionController extends Controller
 
         $auction = new Auction;
         $auction->lot_id = $request->LotID;
+        $auction->egkn_id = $request->EgknID;
         $auction->lot_status = $request->LotStatus;
         $auction->lot_number = $request->LotNumber;
         $auction->status_zu = $request->StatusZU;
