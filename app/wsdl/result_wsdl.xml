@@ -1,0 +1,577 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns0="http://bip.bee.kz/SyncChannel/v10/Interfaces" xmlns:tns="http://bip.bee.kz/SyncChannel/v10/Types" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" name="SyncChannelHttp_Service" targetNamespace="http://bip.bee.kz/SyncChannel/v10/Interfaces">
+  <wsdl:types>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns0="http://bip.bee.kz/SyncChannel/v10/Interfaces" xmlns:tns="http://bip.bee.kz/SyncChannel/v10/Types" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://bip.bee.kz/SyncChannel/v10/Interfaces">
+      
+  <xsd:import namespace="http://bip.bee.kz/SyncChannel/v10/Types"/>
+      
+  <xsd:import namespace="http://bip.bee.kz/common/v10/Types"/>
+    
+</xsd:schema>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns0="http://bip.bee.kz/SyncChannel/v10/Interfaces" xmlns:tns="http://bip.bee.kz/SyncChannel/v10/Types" xmlns:bons2="http://bip.bee.kz/SyncChannel/v10/Types/Request" xmlns:bons1="http://bip.bee.kz/SyncChannel/v10/Types" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://bip.bee.kz/SyncChannel/v10/Types/Request">
+      
+  <xsd:import namespace="http://bip.bee.kz/SyncChannel/v10/Types"/>
+      
+  <xsd:complexType name="RequestData">
+        
+    <xsd:sequence>
+          
+      <xsd:element minOccurs="0" name="data" type="xsd:anyType"/>
+        
+    </xsd:sequence>
+      
+  </xsd:complexType>
+      
+  <xsd:complexType name="SyncSendMessageRequest">
+        
+    <xsd:annotation>
+          
+      <xsd:documentation>Формат объекта запроса метода отправки сообщения по синхронному каналу</xsd:documentation>
+        
+    </xsd:annotation>
+        
+    <xsd:sequence>
+          
+      <xsd:element minOccurs="1" name="requestInfo" type="bons1:SyncMessageInfo">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Объект информация о сообщения запроса</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="1" name="requestData" type="bons2:RequestData">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Объект передачи бизнес данных запроса</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+        
+    </xsd:sequence>
+      
+  </xsd:complexType>
+    
+</xsd:schema>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns0="http://bip.bee.kz/SyncChannel/v10/Interfaces" xmlns:tns="http://bip.bee.kz/SyncChannel/v10/Types" xmlns:bons2="http://bip.bee.kz/SyncChannel/v10/Types/Response" xmlns:bons1="http://bip.bee.kz/SyncChannel/v10/Types" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://bip.bee.kz/SyncChannel/v10/Types/Response">
+      
+  <xsd:import namespace="http://bip.bee.kz/SyncChannel/v10/Types"/>
+      
+  <xsd:complexType name="ResponseData">
+        
+    <xsd:sequence>
+          
+      <xsd:element minOccurs="0" name="data" type="xsd:anyType"/>
+        
+    </xsd:sequence>
+      
+  </xsd:complexType>
+      
+  <xsd:complexType name="SyncSendMessageResponse">
+        
+    <xsd:annotation>
+          
+      <xsd:documentation>информация о сообщении ответе</xsd:documentation>
+        
+    </xsd:annotation>
+        
+    <xsd:sequence>
+          
+      <xsd:element minOccurs="1" name="responseInfo" type="bons1:SyncMessageInfoResponse">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Мета данные ответа</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="1" name="responseData" type="bons2:ResponseData">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Объект бизнесс данные ответа</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+        
+    </xsd:sequence>
+      
+  </xsd:complexType>
+    
+</xsd:schema>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns0="http://bip.bee.kz/SyncChannel/v10/Interfaces" xmlns:tns="http://bip.bee.kz/SyncChannel/v10/Types" xmlns:bons0="http://bip.bee.kz/common/v10/Types" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://bip.bee.kz/common/v10/Types">
+      
+  <xs:simpleType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="guid">
+        
+    <xs:annotation>
+          
+      <xs:documentation>Оисание типа данных guid</xs:documentation>
+        
+    </xs:annotation>
+        
+    <xs:restriction base="xs:string">
+          
+      <xs:pattern value="\{[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\}"/>
+        
+    </xs:restriction>
+      
+  </xs:simpleType>
+      
+  <xsd:complexType name="ErrorInfo">
+        
+    <xsd:sequence>
+          
+      <xsd:element minOccurs="1" name="errorCode" type="xsd:string">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Код ошибки</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="1" name="errorMessage" type="xsd:string">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Сообщение ошибки</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="0" name="errorData" type="xsd:string">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Дополнительное описание ошибки</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="1" name="errorDate" type="xsd:dateTime">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Дата ошибки</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="0" name="subError" type="bons0:ErrorInfo">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Дочерняя ошибка</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="0" name="sessionId" type="bons0:guid">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Идентификатор сессии в которой произошла ошибка</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+        
+    </xsd:sequence>
+      
+  </xsd:complexType>
+      
+  <xsd:complexType name="StatusInfo">
+        
+    <xsd:annotation>
+          
+      <xsd:documentation>Статус</xsd:documentation>
+        
+    </xsd:annotation>
+        
+    <xsd:sequence>
+          
+      <xsd:element minOccurs="1" name="code" type="xsd:string">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Код статуса (простовляется системой получателя запроса)</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="1" name="message">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Сообщение о статусе</xsd:documentation>
+            
+        </xsd:annotation>
+            
+        <xsd:simpleType>
+              
+          <xsd:restriction base="xsd:string">
+                
+            <xsd:maxLength value="250"/>
+              
+          </xsd:restriction>
+            
+        </xsd:simpleType>
+          
+      </xsd:element>
+        
+    </xsd:sequence>
+      
+  </xsd:complexType>
+      
+  <xsd:complexType name="SenderInfo">
+        
+    <xsd:annotation>
+          
+      <xsd:documentation>Структура данных информации об отправителе</xsd:documentation>
+        
+    </xsd:annotation>
+        
+    <xsd:sequence>
+          
+      <xsd:element minOccurs="1" name="senderId" type="xsd:string">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Идентификатор отправителя (системы отправителя)</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="0" name="password" type="xsd:string">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Пароль отправителя</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+        
+    </xsd:sequence>
+      
+  </xsd:complexType>
+      
+  <xsd:complexType name="Property">
+        
+    <xsd:annotation>
+          
+      <xsd:documentation>Тип данных своиство.</xsd:documentation>
+        
+    </xsd:annotation>
+        
+    <xsd:sequence>
+          
+      <xsd:element minOccurs="1" name="key">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Ключ своиства</xsd:documentation>
+            
+        </xsd:annotation>
+            
+        <xsd:simpleType>
+              
+          <xsd:restriction base="xsd:string">
+                
+            <xsd:minLength value="0"/>
+                
+            <xsd:maxLength value="30"/>
+              
+          </xsd:restriction>
+            
+        </xsd:simpleType>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="1" name="value">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Значение своиства</xsd:documentation>
+            
+        </xsd:annotation>
+            
+        <xsd:simpleType>
+              
+          <xsd:restriction base="xsd:string">
+                
+            <xsd:maxLength value="500"/>
+                
+            <xsd:minLength value="0"/>
+              
+          </xsd:restriction>
+            
+        </xsd:simpleType>
+          
+      </xsd:element>
+        
+    </xsd:sequence>
+      
+  </xsd:complexType>
+    
+</xsd:schema>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns0="http://bip.bee.kz/SyncChannel/v10/Interfaces" xmlns:tns="http://bip.bee.kz/SyncChannel/v10/Types" xmlns:bons2="http://bip.bee.kz/SyncChannel/v10/Types/Response" xmlns:bons1="http://bip.bee.kz/SyncChannel/v10/Types/Request" xmlns:bons0="http://bip.bee.kz/common/v10/Types" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://bip.bee.kz/SyncChannel/v10/Types">
+      
+  <xsd:import namespace="http://bip.bee.kz/common/v10/Types"/>
+      
+  <xsd:import namespace="http://bip.bee.kz/SyncChannel/v10/Types/Request"/>
+      
+  <xsd:import namespace="http://bip.bee.kz/SyncChannel/v10/Types/Response"/>
+      
+  <xsd:element name="SendMessage">
+        
+    <xsd:complexType>
+          
+      <xsd:sequence>
+            
+        <xsd:element name="request" nillable="true" type="bons1:SyncSendMessageRequest">
+              
+          <xsd:annotation>
+                
+            <xsd:documentation>Объект запроса</xsd:documentation>
+              
+          </xsd:annotation>
+            
+        </xsd:element>
+          
+      </xsd:sequence>
+        
+    </xsd:complexType>
+      
+  </xsd:element>
+      
+  <xsd:element name="SendMessageResponse">
+        
+    <xsd:complexType>
+          
+      <xsd:sequence>
+            
+        <xsd:element name="response" nillable="true" type="bons2:SyncSendMessageResponse">
+              
+          <xsd:annotation>
+                
+            <xsd:documentation>Объект ответа</xsd:documentation>
+              
+          </xsd:annotation>
+            
+        </xsd:element>
+          
+      </xsd:sequence>
+        
+    </xsd:complexType>
+      
+  </xsd:element>
+      
+  <xsd:element name="SendMessageFault1_SendMessageFault" nillable="true" type="bons0:ErrorInfo"/>
+      
+  <xsd:complexType name="SyncMessageInfoResponse">
+        
+    <xsd:sequence>
+          
+      <xsd:element minOccurs="1" name="messageId" type="xsd:string">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Идентификатор сообщения в системе получателя (заполняет система получателя запроса (система отрабатывающая сообщение)</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="0" name="correlationId" type="xsd:string">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Идентификатор цепочки сообщения в системе получателя запроса (если сообщения существует в рамках цепочки сообщений системы отправителя(система отрабатывающая сообщение)</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="1" name="responseDate" type="xsd:dateTime">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Дата ответа в системе получателя запроса(заполняется системой получателя запроса)</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="1" name="status" type="bons0:StatusInfo">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Объект информации о статусе</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="0" name="sessionId" type="bons0:guid">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Идентификатор сессии на ШЭП. Устанавливается на ШЭП. При отправки ответа системой получателя запроса заполнять не нужно.</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+        
+    </xsd:sequence>
+      
+  </xsd:complexType>
+      
+  <xsd:complexType name="SyncMessageInfo">
+        
+    <xsd:sequence>
+          
+      <xsd:element minOccurs="1" name="messageId" type="xsd:string">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Идентификатор сообщения в системе отправителя (заполняется системой отправителя)</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="0" name="correlationId" type="xsd:string">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Идентификатор цепочки сообщения в системе отправителя (если сообщения существует в рамках цепочки сообщений, заполнятеся системой отправителя)</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="1" name="serviceId" type="xsd:string">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Идентификатор взаимодействия, по реестру взаимодействий ШЭП</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="1" name="messageDate" type="xsd:dateTime">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Дата создания сообщения в системе отправителя (заполняется отправителем)</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="0" name="routeId" type="xsd:string">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Идентификатор маршурута сообщения (если есть необходимость в дополнительной маршрутизации, идентификатор по реестру, заполняется системой отправителя)</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="1" name="sender" type="bons0:SenderInfo">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Объест информация об отправителе (заполняется отправителем)</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="properties" type="bons0:Property">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Массив своиств, можно добавить дополнительные своиства запроса (по согласовнию с ШЭП и системой получателя)</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+          
+      <xsd:element minOccurs="0" name="sessionId" type="bons0:guid">
+            
+        <xsd:annotation>
+              
+          <xsd:documentation>Идентификатор сессии ШЭП. Заполняется на ШЭП, отправителю заполнять не надо.</xsd:documentation>
+            
+        </xsd:annotation>
+          
+      </xsd:element>
+        
+    </xsd:sequence>
+      
+  </xsd:complexType>
+    
+</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="SendMessage_sendMessageFaultMsg">
+    <wsdl:part element="tns:SendMessageFault1_SendMessageFault" name="sendMessageFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SendMessageResponseMsg">
+    <wsdl:part element="tns:SendMessageResponse" name="SendMessageResult">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SendMessageRequestMsg">
+    <wsdl:part element="tns:SendMessage" name="SendMessageParameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="ISyncChannel">
+<wsdl:documentation>Интерфейс для работы с синхронным каналом</wsdl:documentation>
+    <wsdl:operation name="SendMessage">
+<wsdl:documentation>Метод отправки сообщения по синхронному каналу</wsdl:documentation>
+      <wsdl:input message="tns0:SendMessageRequestMsg" name="SendMessageRequest">
+    </wsdl:input>
+      <wsdl:output message="tns0:SendMessageResponseMsg" name="SendMessageResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns0:SendMessage_sendMessageFaultMsg" name="sendMessageFault">
+    </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="SyncChannelHttpBinding" type="tns0:ISyncChannel">
+    <binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="SendMessage">
+      <operation soapAction=""/>
+      <wsdl:input name="SendMessageRequest">
+        <body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="SendMessageResponse">
+        <body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="sendMessageFault">
+        <fault name="sendMessageFault" namespace="" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ISyncChannelHttpService">
+    <wsdl:port binding="tns0:SyncChannelHttpBinding" name="SyncChannelHttpPort">
+      <address location="http://127.0.0.1:9033/bip-sync/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

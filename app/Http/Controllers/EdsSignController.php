@@ -53,4 +53,17 @@ class EdsSignController extends Controller
         }
         return false;
     }
+
+    public function example($wsdl)
+    {
+        switch ($wsdl) {
+            case 'shep':
+                $xml = file_get_contents(base_path('app\wsdl\result_wsdl.xml'));
+                echo $xml;
+                break;
+            default:
+                echo 'no route for integration';
+                break;
+        }
+    }
 }
