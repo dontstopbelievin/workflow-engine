@@ -95,12 +95,8 @@ class ProcessController extends Controller
 
         $numberOfDays = intval($request->get('deadline'));
         $deadline = Carbon::now()->addDays($numberOfDays);
-        $acceptedTemplate = Template::where('name', $request->accepted_template)->first();
-        $rejectedTemplate = Template::where('name', $request->rejected_template)->first();
         $process->name = $request->name;
         $process->deadline = $request->deadline;
-        $process->accepted_template_id = $acceptedTemplate->id;
-        $process->rejected_template_id = $rejectedTemplate->id;
         $process->update();
         return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был обновлен');
     }

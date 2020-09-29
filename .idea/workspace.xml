@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ade0dd1d-d276-4255-a875-9797a6031e7d" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/resources/views/auction/create.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/auction/index.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TemplateController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TemplateController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/layouts/master.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/master.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>

@@ -43,7 +43,7 @@
 
 <body class="">
   <div class="wrapper ">
-    <div class="sidebar" data-color="blue">
+    <div class="sidebar" data-color="yellow">
       <!--
         Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
     -->
@@ -56,7 +56,6 @@
         <ul class="nav">
         @if(auth()->check())
             @if (auth()->user()->isAdmin())
-                {{--{{dd(auth()->user()->isAdmin())}}--}}
             <li class="{{'dashboard' == request()->path() ? 'active' : ''}}">
                 <a href="{{ route('dashboard.index') }}">
                   <i class="now-ui-icons tech_tv"></i>

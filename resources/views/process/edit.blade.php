@@ -153,9 +153,9 @@
                                     <div>
                                         <h4 class="font-weight-bold">Маршрут Процесса | {{ $nameMainOrg ?? ''}} </h4>
                                     </div>
-                                    <div class="border border-info" id="items">
-                                        <ul class="list-group">
+                                    <div class="border border-light" id="items">
                                         @if(isset($sAllRoles))
+                                        <ul class="list-group"> 
                                             @foreach($sAllRoles as $key=>$role)
                                                 <li class="list-group-item my-auto ourItem" data-toggle="modal" data-target="#myModal2">{{$key}}
                                                     <input type="hidden" id="roleName" value = {{$key}}>
@@ -173,10 +173,12 @@
                                             @endforeach
                                         @else 
                                             @foreach($process->routes as $route)
-                                                <li class="ourItem" data-toggle="modal" data-target="#myModal2">{{$route->name}}
-                                                    <input type="hidden" id="roleName" value = {{$route->name}}>
-                                                    <input type="hidden" id="processId" value = {{$process->id}}>
-                                                </li>
+                                                <ul class="list-group">
+                                                    <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal2">{{$route->name}}
+                                                        <input type="hidden" id="roleName" value = {{$route->name}}>
+                                                        <input type="hidden" id="processId" value = {{$process->id}}>
+                                                    </li>
+                                                </ul>    
                                             @endforeach
                                         @endif
                                         </ul>
@@ -202,7 +204,7 @@
                                         </form>
                                         @endempty
                                         @isset($accepted)
-                                            <p>{{$accepted->name}}</p>
+                                            <p><u>{{$accepted->name}}</u></p>
                                         @endisset
                                     </div>
                                     <div class="col-xs-6">
@@ -220,7 +222,7 @@
                                         </form>
                                         @endempty
                                         @isset($rejected)
-                                             <p>{{$rejected->name}}</p>
+                                             <p><u>{{$rejected->name}}</u></p>
                                         @endisset
                                     </div>
                                 </div>

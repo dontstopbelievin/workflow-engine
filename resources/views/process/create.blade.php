@@ -16,7 +16,6 @@
                         </div>
                     @endif
                 </div>
-                
                 <div class="card-body">
                     <div class="row justify-content-center align-items-center">
                         <div class="col-md-9">
@@ -24,10 +23,10 @@
                                 @csrf
                                 @empty($process)
                                 <div class="form-group">
-                                        <label for="name">Наименование</label>
-                                        <input type="text" class="form-control" name="name" placeholder="Введите наименование проекта">
-                                        <label class="my-3" for="duration">Срок(количество дней)</label>
-                                        <input type="number" min="0" class="form-control" name="deadline" placeholder="Введите срок">
+                                    <label for="name">Наименование</label>
+                                    <input type="text" class="form-control" name="name" placeholder="Введите наименование проекта">
+                                    <label class="my-3" for="duration">Срок(количество дней)</label>
+                                    <input type="number" min="0" class="form-control" name="deadline" placeholder="Введите срок">
                                 </div>
                                 <button type="submit"  class="btn btn-info btn-lg my-2">Создать</button>
                                 @endempty
