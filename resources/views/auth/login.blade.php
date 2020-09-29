@@ -12,7 +12,7 @@
         <script src="../assets/js/init-alpine.js"></script>
     </head>
 
-    <body>
+    <body class="pt-8">
         <div class="flex items-center min-h-screen p-6">
             <div class="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
                 <div class="flex flex-col overflow-y-auto md:flex-row">
@@ -56,7 +56,7 @@
                             <hr class="my-8" />
 
                             <a class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                                href="/forgot-password">
+                                href="/reset">
                                 Забыли пароль?
                             </a>
                             <p class="mt-1">

@@ -58,7 +58,7 @@
         .links>a {
             color: #636b6f;
             padding: 0 25px;
-            font-size: 13px;
+            font-size: 10px;
             font-weight: 600;
             letter-spacing: .1rem;
             text-decoration: none;
@@ -114,7 +114,7 @@
         .links>a {
             color: #636b6f;
             padding: 0 25px;
-            font-size: 13px;
+            font-size: 10px;
             font-weight: 600;
             letter-spacing: .1rem;
             text-decoration: none;
@@ -133,7 +133,7 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                     <!-- Right Side Of Navbar -->
-                    <div class="top-right links">
+                    <div class="top-right links text-center">
                             <!-- Authentication Links -->
                             @guest
                                 <a href="{{ route('login') }}">Авторизоваться</a>

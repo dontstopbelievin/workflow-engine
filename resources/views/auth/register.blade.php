@@ -12,7 +12,7 @@
         <script src="../assets/js/init-alpine.js"></script>
     </head>
 
-    <body class="pt-6">
+    <body class="pt-8">
         <div class="flex items-center min-h-screen p-6">
             <div class="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
                 <div class="flex flex-col overflow-y-auto md:flex-row">
@@ -39,17 +39,17 @@
                                 </label>
                                 <label class="block mt-4 text-sm">
                                     <span for="name" class="text-gray-700 dark:text-gray-400">Телефон</label>
-                                <input type="text" id="phone" name="phone" placeholder="Введите 10 цифр вашего номера"
-                                    class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
+                                <input type="text" id="phone" name="phone" pattern="[0-9]{10}" title="Введите 10 цифр вашего номера" placeholder="10 цифр вашего номера. Пример: 77077007777"
+                                    class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input form-control @error('email') border-red-500 @enderror">
                                 </label>
                                 <label class="block mt-4 text-sm">
                                     <span for="iin" class="text-gray-700 dark:text-gray-400">ИИН</label>
-                                <input type="text" id="iin" name="iin" placeholder="950206886596"
+                                <input type="text" id="iin" name="iin" pattern="[0-9]{12}" placeholder="950206886596"
                                     class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
                                 </label>
                                 <label class="block mt-4 text-sm">
                                     <span for="bin" class="text-gray-700 dark:text-gray-400">БИН</label>
-                                <input type="text" id="bin" name="bin" placeholder="950206886596"
+                                <input type="text" id="bin" name="bin" pattern="[0-9]{12}" placeholder="950206886596"
                                     class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
                                 </label>
                                 <label for="email" class="block mt-4 text-sm">

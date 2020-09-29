@@ -52,7 +52,7 @@
         .links>a {
             color: #636b6f;
             padding: 0 25px;
-            font-size: 13px;
+            font-size: 10px;
             font-weight: 600;
             letter-spacing: .1rem;
             text-decoration: none;
@@ -69,9 +69,9 @@
 <body>
     <div class="flex-center position-ref full-height">
         @if (Route::has('login'))
-            <div class="top-right links">
+            <div class="top-right links text-center">
                 @auth
-                    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                    <a class="inline-block" href="{{ route('logout') }}" onclick="event.preventDefault();
                         document.getElementById('logout-form').submit();">
                         {{ __('Выйти') }}
                     </a>
@@ -105,7 +105,7 @@
                         </div>
                     </div>
                     <div class="lg:max-w-lg lg:w-full md:w-1/2 w-5/6">
-                        <img class="object-cover object-center rounded" alt="hero"
+                        <img class="object-contain object-center rounded" alt="hero"
                             src="/images/Way-of-Working-720x600.jpeg">
                     </div>
                 </div>
