@@ -39,6 +39,7 @@ Auth::routes();
 Route::get('/integrations/{shep}','EdsSignController@example')->middleware('guest');
 Route::post('/integrations/shep','EdsSignController@receive')->middleware('guest');
 
+
 Route::post('soap', 'XMLController@index')->middleware('guest');
 Route::post('loginwithecp/bar')->name('loginwithecp.store')->uses('EdsSignController@loginByCert')->middleware('guest');
 

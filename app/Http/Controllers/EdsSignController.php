@@ -58,7 +58,7 @@ class EdsSignController extends Controller
     {
         switch ($wsdl) {
             case 'shep':
-                header('Content-Type: application/xml');
+                header('Content-Type: text/xml');
                 $bodyContent  = file_get_contents(base_path('app/wsdl/result_wsdl.xml'));
                 echo $bodyContent;
                 break;
@@ -70,8 +70,8 @@ class EdsSignController extends Controller
 
     public function receive()
     {
-        header('Content-Type: application/xml');
-        $bodyContent  = 'Eto Otvet!!!';
+        header('Content-Type: text/xml');
+        $bodyContent  = file_get_contents(base_path('app/wsdl/responce_wsdl.xml'));
         echo $bodyContent;
         exit;
     }
