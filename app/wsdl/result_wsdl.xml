@@ -571,7 +571,7 @@
   </wsdl:binding>
   <wsdl:service name="ISyncChannelHttpService">
     <wsdl:port binding="tns0:SyncChannelHttpBinding" name="SyncChannelHttpPort">
-      <address location="http://127.0.0.1:9033/bip-sync/"/>
+      <address location="https://portal.esaulet.kz/integrations/shep"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>
