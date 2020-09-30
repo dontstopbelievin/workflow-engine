@@ -54,26 +54,25 @@ class EdsSignController extends Controller
         return false;
     }
 
-    public function example(Request $request)
+    public function example($wsdl)
     {
-        $post = $request->all();
-
-        if(!empty($post)) {
-            header('Content-Type: application/xml');
-            $bodyContent  = file_get_contents(base_path('app/wsdl/result_wsdl.xml'));
-            echo $bodyContent;
-        } else {
-            header('Content-Type: application/xml');
-            $bodyContent  = file_get_contents(base_path('app/wsdl/result_wsdl.xml'));
-            echo $bodyContent;
+        switch ($wsdl) {
+            case 'shep':
+                header('Content-Type: application/xml');
+                $bodyContent  = file_get_contents(base_path('app/wsdl/result_wsdl.xml'));
+                echo $bodyContent;
+                break;
+            default:
+                echo 'no route for integration';
+                break;
         }
-//        switch ($e) {
-//            case 'shep':
-//
-//                break;
-//            default:
-//                echo 'no route for integration';
-//                break;
-//        }
+    }
+
+    public function receive()
+    {
+        header('Content-Type: application/xml');
+        $bodyContent  = 'Eto Otvet!!!';
+        echo $bodyContent;
+        exit;
     }
 }
