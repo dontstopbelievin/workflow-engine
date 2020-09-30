@@ -58,8 +58,9 @@ class EdsSignController extends Controller
     {
         switch ($wsdl) {
             case 'shep':
-                $xml = file_get_contents(base_path('app\wsdl\result_wsdl.xml'));
-                echo $xml;
+                header('Content-Type: application/xml');
+                $bodyContent  = file_get_contents(base_path('app/wsdl/result_wsdl.xml'));
+                echo $bodyContent;
                 break;
             default:
                 echo 'no route for integration';
