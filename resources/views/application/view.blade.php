@@ -7,7 +7,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Ajax Project </title>
+    <title>Просмотр Заявки</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -116,27 +116,44 @@
                         </div>
 
                         <div id="revisionReasonTab" class="tabcontent">
-                            @isset($application->revision_reason)
-                                <div class="panel panel-default">
-                                    <div class="panel-body" id="items">
-                                        <ul class="list-group">
-                                            <p>{{$application->revision_reason}}</p>
-                                        </ul>
-                                    </div>
-                                </div>
-                            @endisset
+                            <table class="table" style="background: white;">
+                                <thead>
+                                    <tr>
+                                        <th>Кто отправил</th>
+                                        <th>Причина</th>
+                                        <th>Кому отправили</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @isset($revisionReasonArray)
+                                    <tr>
+                                        <td>{{$revisionReasonArray["fromRole"]}}</td>
+                                        <td>{{$revisionReasonArray["revisionReason"]}}</td>
+                                        <td>{{$revisionReasonArray["toRole"]}}</td>
+                                    </tr>
+                                    @endisset
+                                </tbody>
+                            </table>
+                            
                         </div>
 
                         <div id="rejectReasonTab" class="tabcontent">
-                            @isset($application->reject_reason)
-                                <div class="panel panel-default">
-                                    <div class="panel-body" id="items">
-                                        <ul class="list-group">
-                                            <p>{{$application->reject_reason}}</p>
-                                        </ul>
-                                    </div>
-                                </div>
-                            @endisset
+                            <table class="table" style="background: white;">
+                                <thead>
+                                    <tr>
+                                        <th>Кто отказал</th>
+                                        <th>Причина</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @isset($rejectReasonArray)
+                                    <tr>
+                                        <td>{{$rejectReasonArray["fromRole"]}}</td>
+                                        <td>{{$rejectReasonArray["rejectReason"]}}</td>
+                                    </tr>
+                                    @endisset
+                                </tbody>
+                            </table>
                         </div>
                         
                         <div class="modal fade" id="myModal" tabindex="-1" role="dialog">

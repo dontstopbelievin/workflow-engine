@@ -162,8 +162,20 @@ class ProcessController extends Controller
             $dbQueryString = "ALTER TABLE $tableName ADD reject_reason varchar(255)";
             DB::statement($dbQueryString);
         }
+        if (!Schema::hasColumn($tableName, 'reject_reason_from_spec_id')) {
+            $dbQueryString = "ALTER TABLE $tableName ADD reject_reason_from_spec_id varchar(255)";
+            DB::statement($dbQueryString);
+        }
         if (!Schema::hasColumn($tableName, 'revision_reason')) {
             $dbQueryString = "ALTER TABLE $tableName ADD revision_reason varchar(255)";
+            DB::statement($dbQueryString);
+        }
+        if (!Schema::hasColumn($tableName, 'revision_reason_from_spec_id')) {
+            $dbQueryString = "ALTER TABLE $tableName ADD revision_reason_from_spec_id varchar(255)";
+            DB::statement($dbQueryString);
+        }
+        if (!Schema::hasColumn($tableName, 'revision_reason_to_spec_id')) {
+            $dbQueryString = "ALTER TABLE $tableName ADD revision_reason_to_spec_id varchar(255)";
             DB::statement($dbQueryString);
         }
         return Redirect::route('processes.edit', [$process])->with('status', 'Справочники успешно сохранены');

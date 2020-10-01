@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-   Изменение процесса
+   Редактирование процесса
 @endsection
 
 @section('content')

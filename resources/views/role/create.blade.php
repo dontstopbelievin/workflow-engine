@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Role Creation
+    Создание Роли
 @endsection
 
 @section('content')

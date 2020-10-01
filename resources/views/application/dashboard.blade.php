@@ -2,7 +2,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Dashboard
+    Услуги
 @endsection
 
 @section('content')
