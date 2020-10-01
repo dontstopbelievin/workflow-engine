@@ -33,8 +33,8 @@
                             <button class="tablinks" onclick="openTab(event, 'specialistFields')">Поля заполненные специалистами</button>
                             <button class="tablinks" onclick="openTab(event, 'comments')">Комментарии</button>
                             <button class="tablinks" onclick="openTab(event, 'logs')">Ход согласования</button>
-                            <button class="tablinks" onclick="openTab(event, 'revisionReason')">Причина отправки на доработку</button>
-                            <button class="tablinks" onclick="openTab(event, 'rejectReason')">Причина отказа</button>
+                            <button class="tablinks" onclick="openTab(event, 'revisionReasonTab')">Причина отправки на доработку</button>
+                            <button class="tablinks" onclick="openTab(event, 'rejectReasonTab')">Причина отказа</button>
                         </div>
                         <div id="applicationInfo" class="tabcontent">
                             <!-- <h4 class="text-center">Информация о заявителе</h4> -->
@@ -63,9 +63,7 @@
                             @isset($templateTableFields)
                                 <ul class="list-group" id="list">
                                 @foreach($templateTableFields as $key=>$value)
-
-                                        <li class="list-group-item">{{$key}}: {{$value}}</li>
-
+                                    <li class="list-group-item">{{$key}}: {{$value}}</li>
                                     @endforeach
                                 </ul>
                                 @endisset
@@ -114,10 +112,10 @@
                                     @endforeach
                                 @endisset
                                 </tbody>
-                            </tablе>
+                            </table>
                         </div>
-                        
-                        <div id="revisionReason" class="tabcontent">
+
+                        <div id="revisionReasonTab" class="tabcontent">
                             @isset($application->revision_reason)
                                 <div class="panel panel-default">
                                     <div class="panel-body" id="items">
@@ -126,10 +124,10 @@
                                         </ul>
                                     </div>
                                 </div>
-
                             @endisset
                         </div>
-                        <div id="rejectReason" class="tabcontent">
+
+                        <div id="rejectReasonTab" class="tabcontent">
                             @isset($application->reject_reason)
                                 <div class="panel panel-default">
                                     <div class="panel-body" id="items">
@@ -140,10 +138,9 @@
                                 </div>
                             @endisset
                         </div>
-
-                    
-                        <div class="modal fade" id="myModal" role="dialog">
-                            <div class="modal-dialog">
+                        
+                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
                                 <!-- Modal content-->
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -159,14 +156,14 @@
                                             </div>
                                             <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
                                             <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
-                                            <button class="btn btn-info" style="float:center" id="rejectButton">Отправить</button>
+                                            <button class="btn btn-info" style="float:center" data-dismiss="modal" id="rejectButton">Отправить</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal fade" id="myModal3" role="dialog">
-                            <div class="modal-dialog">
+                        <div class="modal fade" id="myModal3" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
                                 <!-- Modal content-->
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -174,7 +171,6 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="form-group">
-                                            {{--<input type="text" id="comments" name="comments" placeholder="Введите комментарии">--}}
                                             <div class="form-group row">
                                                 <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Введите комментарии") }}</label>
                                                 <div class="col-md-6">
@@ -183,14 +179,14 @@
                                             </div>
                                             <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
                                             <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
-                                            <button class="btn btn-info" id="commentButton">Отправить</button>
+                                            <button class="btn btn-info" data-dismiss="modal" id="commentButton">Отправить</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal fade" id="myModal2" role="dialog">
-                            <div class="modal-dialog">
+                        <div class="modal fade" id="myModal2" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
                                 <!-- Modal content-->
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -198,7 +194,6 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="form-group">
-                                            {{--<input type="text" id="revisionReason" name="revision_reason" placeholder="Введите причину отправки на доработку">--}}
                                             <div class="form-group row">
                                                 <label for="revisionReason" class="col-md-4 col-form-label text-md-right">{{ __("Введите причину отправки на доработку") }}</label>
                                                 <div class="col-md-6">
@@ -216,15 +211,15 @@
                                             </div>
                                             <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
                                             <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
-                                            <button class="btn btn-info" id="revisionButton">Отправить</button>
+                                            <button class="btn btn-info" data-dismiss="modal" id="revisionButton">Отправить</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="modal fade" id="sendToSubRouteId" role="dialog">
-                            <div class="modal-dialog">
+                        <div class="modal fade" id="sendToSubRouteId" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
                                 <!-- Modal content-->
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -233,70 +228,74 @@
                                     <div class="modal-body">
                                         <div class="form-group">
                                             <div class="form-group row">
-                                                <label for="revisionReason" class="col-md-4 col-form-label text-md-right">{{ __("Введите комментарий (не обязательно)") }}</label>
+                                                <label for="subOrgComments" class="col-md-4 col-form-label text-md-right">{{ __("Введите комментарий (не обязательно)") }}</label>
                                                 <div class="col-md-6">
-                                                    <input type="text" id="subOrgComments" class="form-control" name="sendToAnotherOrganization"  autocomplete="revisionReason" autofocus>
+                                                    <input type="text" id="subOrgComments" class="form-control" name="sendToAnotherOrganization" autofocus>
                                                 </div>
                                             </div>
                                             <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
                                             <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
-                                            <button class="btn btn-info" id="sendToSubOrgButton">Отправить</button>
+                                            <button class="btn btn-info" data-dismiss="modal" id="sendToSubOrgButton">Отправить</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        @if($canApprove)
-                                @isset($templateFields)
-                                    <h4 class="card-title text-center" style="margin-top:50px;">Поля Шаблона</h4>
-                                    <form id = "templateFieldsId" method="POST">
-                                        @foreach($templateFields as $item)
-                                            <div class="form-group row">
-                                                <label for="{{$item->name}}" class="col-md-4 col-form-label text-md-right">{{ __($item->label_name) }}</label>
-                                                <div class="col-md-6">
-                                                    <input type="text" class="form-control"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
+                        <div id="items">
+                            @if($canApprove)
+                                    @isset($templateFields)
+                                        <h4 class="card-title text-center" style="margin-top:50px;">Поля Шаблона</h4>
+                                        <form id = "templateFieldsId" method="POST">
+                                            @foreach($templateFields as $item)
+                                                <div class="form-group row">
+                                                    <label for="{{$item->name}}" class="col-md-4 col-form-label text-md-right">{{ __($item->label_name) }}</label>
+                                                    <div class="col-md-6">
+                                                        <input type="text" class="form-control"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        @endforeach
-                                    </form>
-                                @endisset
-                            @if($toCitizen)
-                                <form action="{{ route('applications.toCitizen', ['application_id' => $application->id]) }}" method="post">
-                                    @csrf
-                                    <input type="hidden" name="process_id" value = {{$process->id}}>
-                                    <div style="text-align: center">
-                                        <button class="btn btn-danger" style="margin-bottom: 30px;" type="submit">Отправить заявителю</button>
-                                    </div>
-                                </form>
-                            @elseif($backToMainOrg)
-                                <form action="{{ route('applications.backToMainOrg', ['application_id' => $application->id]) }}" method="post">
-                                    @csrf
-                                    <input type="hidden" name="process_id" value = {{$process->id}}>
-                                    <button class="btn btn-warning" style="margin-bottom: 70px;" type="submit">Отправить обратно в организацию</button>
-                                </form>
-                            @else
-                                @if(isset($sendToSubRoute["name"]))
-                                    <form action="{{ route('applications.sendToSubRoute', ['application_id' => $application->id]) }}" method="post">
+                                            @endforeach
+                                        </form>
+                                    @endisset
+                                @if($toCitizen)
+                                    <form action="{{ route('applications.toCitizen', ['application_id' => $application->id]) }}" method="post">
                                         @csrf
                                         <input type="hidden" name="process_id" value = {{$process->id}}>
-                                        <button class="btn btn-warning" type="button" data-toggle="modal" data-target="#sendToSubRouteId">Отправить в {{$sendToSubRoute["name"]}}</button>
+                                        <div style="text-align: center">
+                                            <button class="btn btn-danger" style="margin-bottom: 30px;" type="submit">Отправить заявителю</button>
+                                        </div>
                                     </form>
+                                @elseif($backToMainOrg)
+                                    <form action="{{ route('applications.backToMainOrg', ['application_id' => $application->id]) }}" method="post">
+                                        @csrf
+                                        <input type="hidden" name="process_id" value = {{$process->id}}>
+                                        <button class="btn btn-warning" style="margin-bottom: 70px;" type="submit">Отправить обратно в организацию</button>
+                                    </form>
+                                @else
+                                    @if(isset($sendToSubRoute["name"]))
+                                        <form action="{{ route('applications.sendToSubRoute', ['application_id' => $application->id]) }}" method="post">
+                                            @csrf
+                                            <input type="hidden" name="process_id" value = {{$process->id}}>
+                                            <button class="btn btn-warning" type="button" data-toggle="modal" data-target="#sendToSubRouteId">Отправить в {{$sendToSubRoute["name"]}}</button>
+                                        </form>
+                                    @endif
+                                    <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
+                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
+                                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
+                                    </div>
                                 @endif
-                                <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
-                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
-                                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
-                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
-                                </div>
                             @endif
-                        @endif
+                        </div>
                     </div>  
                 </div>      
             </div>
         </div>
     </div>
+    <div class="my-2 text-center">
+        <a href="{{ route('applications.index', ['process' => $process]) }}" class="btn btn-info btn-lg my-5">Назад</a>
+    </div>
     
-    
-<!-- {{csrf_field()}} -->
+{{csrf_field()}}
 
 <style>
     .tab {
@@ -376,20 +375,16 @@
             var applicationId = $('#applicationId').val();
             console.log(rejectReason, processId, applicationId)
             $.post('/applications/reject', {'rejectReason':rejectReason,'processId':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
-                var modal =  $('#myModal');
-                modal.style.display = 'none';
+
                 $('#items').load(location.href + ' #items');
             });
         });
         $('#revisionButton').click(function(event) {
-            var revisionReason = $('#revisionReason').val();
+            let revisionReason = $('#revisionReason').val();
             var roleToRevise = $( "#roleToRevise option:selected" ).text();
             var processId = $('#processId').val();
             var applicationId = $('#applicationId').val();
-            console.log(rejectReason, processId, applicationId)
             $.post('/applications/revision', {'revisionReason':revisionReason,'processId':processId,'applicationId':applicationId,'roleToRevise':roleToRevise, '_token':$('input[name=_token]').val()}, function(data){
-                var modal =  $('#myModal2');
-                modal.style.display = 'none';
                 $('#items').load(location.href + ' #items');
             });
         });
@@ -402,10 +397,7 @@
             });
             var processId = $('#processId').val();
             var applicationId = $('#applicationId').val();
-            console.log(comments, processId, applicationId)
             $.post('/applications/approve', {'comments':comments,'fieldValues':values,'process_id':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
-                var modal =  $('#myModal3');
-                modal.style.display = 'none';
                 $('#items').load(location.href + ' #items');
             });
         });
@@ -420,8 +412,7 @@
             var applicationId = $('#applicationId').val();
             console.log(comments, processId, applicationId)
             $.post('/applications/sendToSubRoute', {'comments':comments,'fieldValues':values,'processId':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
-                var modal =  $('#myModal3');
-                modal.style.display = 'none';
+
                 $('#items').load(location.href + ' #items');
             });
         });

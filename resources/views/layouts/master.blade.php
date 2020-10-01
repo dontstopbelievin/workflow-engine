@@ -56,18 +56,18 @@
         <ul class="nav">
         @if(auth()->check())
             @if (auth()->user()->isAdmin())
-            <li class="{{'dashboard' == request()->path() ? 'active' : ''}}">
-                <a href="{{ route('dashboard.index') }}">
+          <li class="{{'dashboard' == request()->path() ? 'active' : ''}}">
+              <a href="{{ route('dashboard.index') }}">
+                <i class="now-ui-icons tech_tv"></i>
+                <p>Приборная Панель</p>
+              </a>
+          </li>
+          <li class="{{'dashboard' == request()->path() ? 'active' : ''}}">
+              <a href="{{ route('auction.index') }}">
                   <i class="now-ui-icons tech_tv"></i>
-                  <p>Приборная Панель</p>
-                </a>
-            </li>
-                    <li class="{{'dashboard' == request()->path() ? 'active' : ''}}">
-                        <a href="{{ route('auction.index') }}">
-                            <i class="now-ui-icons tech_tv"></i>
-                            <p>Аукцион</p>
-                        </a>
-                    </li>
+                  <p>Аукцион</p>
+              </a>
+          </li>
           <li class="{{'process' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('processes.index') }}">
               <i class="now-ui-icons media-2_sound-wave"></i>
@@ -112,8 +112,6 @@
               <p>Заявки </p>
             </a>
           </li>
-
-         
         </ul>
       </div>
     </div>

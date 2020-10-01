@@ -320,7 +320,7 @@ class ApplicationController extends Controller
     }
 
     public function revision(Request $request) {
-
+        
         $roleToRevise = $request->roleToRevise; //Роль, которому форма отправляется на доработку
         $mainCounter = 0;
         $subCounter = 0;
