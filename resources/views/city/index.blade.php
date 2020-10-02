@@ -1,25 +1,43 @@
 @extends('layouts.master')
 
 @section('title')
-   Роли
+   Городские организации
 @endsection
 
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Городские Управлнеия <a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
-                </div>
-                <div class="panel-body" id="items">
-                    <ul class="list-group">
+            <div class="card bg-white">
+                <h3 class="card-title font-weight-bold text-center px-4">Организации<a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
+                <div class="card-body" id="items">
+                    <!-- <ul class="list-group">
                         @foreach($cityManagements as $cityManagement)
                             <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal">{{$cityManagement->name}}
                                 <input type="hidden" id="itemId" value = {{$cityManagement->id}}>
                             </li>
-
                         @endforeach
-                    </ul>
+                    </ul> -->
+                    <div class="table-responsive" id="items">
+                        <table class="table">
+                            <thead>
+                                <tr class="p-3 mb-5 rounded text-secondary">
+                                    <th class="text-center"><h6>№</h6></th>
+                                    <th class="text-center"><h6>Наименование организации</h6></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($cityManagements as $cityManagement)
+                                <tr>
+                                    <td class="text-center align-middle border" style="1px solid #ccc"><h4>{{$cityManagement->id}}</h4></td>
+                                    <td class="text-center align-middle border ourItem" data-toggle="modal" data-target="#myModal">
+                                        <h4>{{$cityManagement->name}}</h4>
+                                        <input type="hidden" id="itemId" value = {{$cityManagement->id}}>
+                                    </td>
+                                </tr>   
+                            @endforeach                             
+                            </tbody>
+                        </tablе>
+                    </div>
                 </div>
             </div>
 
@@ -28,11 +46,10 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
                             <h4 class="modal-title" id="title">Добавить организацию</h4>
                         </div>
                         <div class="modal-body">
-
                             <input type="hidden" id="id">
                             <p><input type="text" placeholder="Введите название" id="addItem" class="form-control"></p>
                         </div>

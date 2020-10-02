@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Process;
 use App\Template;
 use App\TemplateField;
 use App\InputType;
@@ -13,35 +14,41 @@ use App\Traits\dbQueries;
 
 class TemplateController extends Controller
 {
+    use dbQueries;
+
     public function index() {
 
         $acceptedTemplates = Template::accepted()->get(); // make camelcase
         $rejectedTemplates = Template::rejected()->get();
         return view('template.index', compact('acceptedTemplates', 'rejectedTemplates'));
     }
-    use dbQueries;
+
     public function create() {
+
         return view('template.create');
     }
 
     public function store(Request $request) {
 
         $templateState = $request->template_state === "accepted";
-
         $request->validate([
             'name' => 'required',
             'template_state' => 'required',
-            'file_input' => ['required', 'file'] // max size of 5 mb
         ]);
-        $docPath = request()->file_input->store('templates', 'public');
-
         $template = new Template([
             'name' => $request->name,
-            'doc_path' => $docPath,
             'accept_template' => $templateState,
         ]);
         $template->save();
-        return Redirect::route('templatefield.create', [$template])->with('status','Шаблон успешно создан');
+        $process = Process::find($request->processId);
+        if ($request->template_state === "accepted") {
+            $process->update(['accepted_template_id' => $template->id]);
+            return Redirect::route('templatefield.create', [$template])->with('status','Шаблон успешно создан');
+        } else if ($request->template_state === "rejected") {
+            $process->update(['rejected_template_id' => $template->id]);
+            return Redirect::back();
+        }
+        echo('404 not found');
     }
 
     public function edit(Template $template) {
