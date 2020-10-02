@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-   Роли
+  Просмотр Процесса
 @endsection
 
 @section('content')

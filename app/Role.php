@@ -21,7 +21,5 @@ class Role extends Model
         return $this->belongsTo(CityManagement::class);
     }
 
-    public function processes() {
-        return $this->belongsToMany(Application::class)->withPivot('parent_role_id');;
-    }
+
 }
