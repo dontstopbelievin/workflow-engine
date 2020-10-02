@@ -36,6 +36,13 @@ Route::get('/loginwithecp', function () {
 
 Auth::routes();
 
+
+Route::get('/integrations/{shep}','EdsSignController@example')->middleware('guest');
+Route::post('/integrations/shep','EdsSignController@receive')->middleware('guest');
+
+
+Route::post('soap', 'XMLController@index')->middleware('guest');
+
 Route::post('loginwithecp/bar')->name('loginwithecp.store')->uses('EdsSignController@loginByCert')->middleware('guest');
 Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('services', 'ApplicationController@service')->name('applications.service');
@@ -110,6 +117,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('auction', 'AuctionController@index')->name('auction.index');
     Route::get('auction/create', 'AuctionController@create')->name('auction.create');
     Route::post('auction/store', 'AuctionController@store')->name('auction.store');
+    Route::get('auction/sender/{id}', 'AuctionController@sender')->name('auction.sender');
 
     Route::get('select-options/create', 'SelectOptionController@create')->name('selectoptions.create');
     Route::post('/select-options/store', 'SelectOptionController@store')->name('selectoptions.store');

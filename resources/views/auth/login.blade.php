@@ -32,10 +32,10 @@
                             {{ __('Войти') }}
                         </button>
                     </form>
-                    <div class="text-center pt-12 pb-12">
+                    {{-- <div class="text-center pt-12 pb-12">
                         <p>Еще не зарегистрирован? <a href="{{ route('register') }}"
                                 class="underline font-semibold">Зарегистрироваться</a></p>
-                    </div>
+                    </div> --}}
                 </div>
 
             </div>
