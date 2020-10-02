@@ -29,19 +29,19 @@
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
-                                <tr class="shadow p-3 mb-5 rounded text-secondary">
-                                    <th class="text-left border-0"><h6>№</h6></th>
-                                    <th class="w-25 text-left border-0"><h6>Имя</h6></th>
-                                    <th class="text-left border-0"><h6>Управление</h6></th>
+                                <tr class="p-3 mb-5 rounded text-secondary">
+                                    <th class="text-center border-0"><h6>№</h6></th>
+                                    <th class="w-25 text-center border-0"><h6>Имя</h6></th>
+                                    <th class="text-center border-0"><h6>Управление</h6></th>
                                     <th colspan="2" class="text-center border-0"><h6>Действия</h6></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($roles as $role)
-                                <tr class="shadow p-3 mb-5 rounded">
-                                    <td class="text-left align-middle"><a href="{{ route('role.view', ['role' => $role]) }}"><h4>{{$role->id}}</h4></a></td>
-                                    <td class="w-25 text-left align-middle"><h4>{{$role->name}}</h4></td>
-                                    <td class="text-left align-middle"><h4>{{$role->cityManagement->name ?? ''}}</h4></td>
+                                <tr class="p-3 mb-5 rounded">
+                                    <td class="text-center align-middle border"><a href="{{ route('role.view', ['role' => $role]) }}"><h4>{{$role->id}}</h4></a></td>
+                                    <td class="w-25 text-center align-middle border"><h4>{{$role->name}}</h4></td>
+                                    <td class="text-center align-middle border"><h4>{{$role->cityManagement->name ?? ''}}</h4></td>
                                     <td class="text-right align-middle">
                                         <button class="rounded-circle bg-white" onclick="window.location='{{route('role.edit', ['role' => $role])}}'">
                                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-fill rounded cicrle" fill="blue" xmlns="http://www.w3.org/2000/svg">

@@ -20,26 +20,26 @@
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
-                                <tr class="shadow p-3 mb-5 rounded text-secondary">
-                                    <th class="text-left border-0"><h6>№</h6></th>
-                                    <th class="text-left border-0"><h6>Имя</h6></th>
-                                    <th class="text-left border-0"><h6>Телефон</h6></th>
-                                    <th class="text-left border-0"><h6>Почта</h6></th>
-                                    <th class="text-left border-0"><h6>Роль</h6></th>
+                                <tr class="p-3 mb-5 rounded text-secondary">
+                                    <th class="text-center border-0"><h6>№</h6></th>
+                                    <th class="text-center border-0"><h6>Имя</h6></th>
+                                    <th class="text-center border-0"><h6>Телефон</h6></th>
+                                    <th class="text-center border-0"><h6>Почта</h6></th>
+                                    <th class="text-center border-0"><h6>Роль</h6></th>
                                     <th colspan="2" class="text-center border-0"><h6>Действия</h6></th>
                                 </tr>
                             </thead>
                             <tbody>
                             @foreach($users as $user)
-                                <tr class="shadow p-3 mb-5 rounded">
-                                    <td class="text-left align-middle"><h4>{{$user->id}}</h4></td>
-                                    <td class="text-left align-middle"><h4>{{$user->name}}</h4></td>
-                                    <td class="text-left align-middle"><h4>{{$user->phone}}</h4></td>
-                                    <td class="text-left align-middle"><h4>{{$user->email}}</h4></td>
+                                <tr class="p-3 mb-5 rounded">
+                                    <td class="text-center align-middle border"><h4>{{$user->id}}</h4></td>
+                                    <td class="text-center align-middle border"><h4>{{$user->name}}</h4></td>
+                                    <td class="text-center align-middle border"><h4>{{$user->phone}}</h4></td>
+                                    <td class="text-center align-middle border"><h4>{{$user->email}}</h4></td>
                                     @if ($user->role)
-                                    <td class="text-left align-middle"><h4>{{$user->role->name}}</h4></td>
+                                    <td class="text-center align-middle border"><h4>{{$user->role->name}}</h4></td>
                                     @else 
-                                    <td class="text-left align-middle"><h4>-</h4></td>
+                                    <td class="text-center align-middle border"><h4>-</h4></td>
                                     @endif
                                     <td>
                                         <button class="rounded-circle bg-white" onclick="window.location='{{route('user-role.edit', ['user' => $user])}}'">

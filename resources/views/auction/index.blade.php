@@ -42,7 +42,7 @@
                             @endforeach
                         </table>
                     </div>
-                    <a href="{{route('auction.create')}}" class="btn btn-primary">Добавить аукцион</a>
+                    <a href="{{route('auction.create')}}"  class="btn btn-info btn-lg my-5">Создать Лот</a>
                 </div>
             </div>
         </div>

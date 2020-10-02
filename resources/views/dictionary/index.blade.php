@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Process Creation
+    Создание Полей
 @endsection
 
 @section('content')
@@ -9,27 +9,27 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card bg-white">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Справочник <a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
+                    <div>
+                        <div>
+                            <h3 class="card-title font-weight-bold text-center px-4">Справочник <a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive" id="items">
                             <table class="table">
                                 <thead>
-                                    <tr class="shadow p-3 mb-5 rounded text-secondary">
-                                        <th><h6>Наименование поля</h6></th>
-                                        <th><h6>Тип вводимого</h6></th>
-                                        <th><h6>Тип сохраняемого</h6></th>
+                                    <tr class="p-3 mb-5 rounded text-secondary">
+                                        <th class="text-center"><h6>Наименование поля</h6></th>
+                                        <th class="text-center"><h6>Тип вводимого</h6></th>
+                                        <th class="text-center"><h6>Тип сохраняемого</h6></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($dictionaries as $item)
-                                    <tr class="shadow p-3 mb-5 rounded">
-                                        <td class="align-middle"><h4>{{$item["labelName"]}}</h4></td>
-                                        <td class="align-middle"><h4>{{$item["inputName"]}}</h4></td>
-                                        <td class="align-middle"><h4>{{$item["insertName"]}}</h4></td>
+                                    <tr class="p-3 mb-5 rounded">
+                                        <td class="text-center align-middle border"><h4>{{$item["labelName"]}}</h4></td>
+                                        <td class="text-center align-middle border"><h4>{{$item["inputName"]}}</h4></td>
+                                        <td class="text-center align-middle border"><h4>{{$item["insertName"]}}</h4></td>
                                     </tr>   
                                 @endforeach                             
                                 </tbody>
