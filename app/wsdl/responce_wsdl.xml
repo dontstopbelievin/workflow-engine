@@ -1,0 +1,17 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap:Header>
+        <ResponseHeader xmlns="https://www.google.com/apis/ads/publisher/v202008">
+            <requestId>9086954860458</requestId>
+            <responseTime>1063</responseTime>
+        </ResponseHeader>
+    </soap:Header>
+    <soap:Body>
+        <getAdUnitsByStatementResponse xmlns="https://www.google.com/apis/ads/publisher/v202008">
+            <rval>
+                <results>
+                    <description>Test</description>
+                </results>
+            </rval>
+        </getAdUnitsByStatementResponse>
+    </soap:Body>
+</soap:Envelope>

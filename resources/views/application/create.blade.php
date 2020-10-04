@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Process Creation
+    Создание Заявки
 @endsection
 
 @section('content')

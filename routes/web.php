@@ -37,14 +37,17 @@ Route::get('/loginwithecp', function () {
 Auth::routes();
 
 
+Route::get('/integrations/{shep}','EdsSignController@example')->middleware('guest');
+Route::post('/integrations/shep','EdsSignController@receive')->middleware('guest');
+
+
+Route::post('soap', 'XMLController@index')->middleware('guest');
+
 Route::post('loginwithecp/bar')->name('loginwithecp.store')->uses('EdsSignController@loginByCert')->middleware('guest');
-
-
-Route::get('services', 'ApplicationController@service')->name('applications.service');
+Route::group(['middleware' => ['admin', 'auth']], function () {
+    Route::get('services', 'ApplicationController@service')->name('applications.service');
 Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');
 Route::get('application-view/{process_id}/{application_id}', 'ApplicationController@view')->name('applications.view');
-
-
 Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
 Route::post('applications/store', 'ApplicationController@store')->name('applications.store');
 Route::post('applications/approve', 'ApplicationController@approve')->name('applications.approve');
@@ -53,14 +56,17 @@ Route::post('applications/revision', 'ApplicationController@revision')->name('ap
 Route::post('applications/sendToSubRoute', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
 Route::post('applications/backToMainOrg/{application_id}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
 
+});
+
+
 Route::post('applications/toCitizen/{application_id}', 'ApplicationController@toCitizen')->name('applications.toCitizen');
 
 Route::group(['middleware' => ['admin', 'auth']], function () {
+
     Route::get('/dictionary', 'DictionaryController@index')->name('dictionary');
     Route::post('/dictionary/create', 'DictionaryController@create')->name('dictionary.create');
     Route::get('/dictionary/createFields', 'DictionaryController@createFields')->name('dictionary.createFields');
     Route::post('/dictionary/saveToTable', 'DictionaryController@saveToTable')->name('dictionary.saveToTable');
-
 
     Route::get('/list', 'ListController@index');
     Route::post('/list', 'ListController@create');
@@ -81,7 +87,6 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::put('role-register-update/{user}', 'Admin\DashboardController@registerupdate')->name('user-role.update');
     Route::delete('user-delete/{user}', 'Admin\DashboardController@registerdelete')->name('user-role.delete');
 
-
     Route::get('roles', 'RoleController@index')->name('role.index');
     Route::get('role/{role}', 'RoleController@view')->name('role.view');
     Route::get('roles/create', 'RoleController@create')->name('role.create');
@@ -90,7 +95,6 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::put('role-update/{role}', 'RoleController@update')->name('role.update');
     Route::delete('role-delete/{role}', 'RoleController@delete')->name('role.delete');
     Route::post('roles/search', 'RoleController@search')->name('role.search');
-
     
     Route::get('routes', 'RouteController@index')->name('route.index');
     Route::get('route/{id}', 'RouteController@view')->name('route.view');
@@ -99,7 +103,6 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('route-edit/{id}', 'RouteController@edit')->name('route.edit');
     Route::put('route-update/{id}', 'RouteController@update')->name('route.update');
     Route::delete('route-delete/{id}', 'RouteController@delete')->name('route.delete');
-
 
     Route::get('templates', 'TemplateController@index')->name('template.index');
     Route::get('templates/create', 'TemplateController@create')->name('template.create');
@@ -114,6 +117,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('auction', 'AuctionController@index')->name('auction.index');
     Route::get('auction/create', 'AuctionController@create')->name('auction.create');
     Route::post('auction/store', 'AuctionController@store')->name('auction.store');
+    Route::get('auction/sender/{id}', 'AuctionController@sender')->name('auction.sender');
 
     Route::get('select-options/create', 'SelectOptionController@create')->name('selectoptions.create');
     Route::post('/select-options/store', 'SelectOptionController@store')->name('selectoptions.store');

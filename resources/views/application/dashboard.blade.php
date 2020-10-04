@@ -2,7 +2,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Dashboard
+    Услуги
 @endsection
 
 @section('content')
@@ -10,7 +10,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Все услуги</h4>
+                    <h3 class="card-title font-weight-bold text-center">Все услуги</h3>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -20,17 +20,27 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table">
-                            <thead class="text-primary">
-                                <th>#</th>
-                                <th>Наименование услуги</th>
+                            <thead>
+                                <tr class="p-3 mb-5 rounded text-secondary">
+                                    <th class="text-center border-0"><h6>№</h6></th>
+                                    <th class="text-center border-0"><h6>Наименование услуги</h6></th>
+                                    <th class="text-center border-0"><h6>Действия</h6></th>
+                                </tr>
                             </thead>
                             <tbody>
                             @foreach($processes as $process)
-                              <tr>
-                                <td><a href="{{ route('applications.index', ['process' => $process]) }}">{{$process->id}}</a></td>
-                                <td><a href="{{ route('applications.index', ['process' => $process]) }}">{{$process->name}}</a></td>                              
-                              </tr> 
-                              @endforeach
+                                <tr class="p-3 mb-5 rounded">
+                                    <td class="text-center align-middle border"><h4>{{$process->id}}</h4></td>
+                                    <td class="text-center align-middle border"><h4>{{$process->name}}</h4></td>   
+                                    <td class="text-center align-middle border">
+                                        <button class="rounded-circle bg-white active:border-0" onclick="window.location='{{route('applications.index', ['process' => $process])}}'">
+                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                            </svg>
+                                        </button>
+                                    </td>                           
+                                </tr> 
+                            @endforeach
                             </tbody>
                         </tablе>
                     </div>

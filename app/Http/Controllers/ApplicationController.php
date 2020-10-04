@@ -84,6 +84,34 @@ class ApplicationController extends Controller
                 $backToMainOrg = true;
             }
         }
+        // Обработка причины и участников доработки
+        $fromRole = Role::where('id', $application->revision_reason_from_spec_id)->first(); // кто отправил на доработку
+        $toRole = Role::where('id', $application->revision_reason_to_spec_id)->first(); // кому отправили на доработку
+        $revisionReasonArray = [];
+        $revisionReasonArray["revisionReason"] = $application->revision_reason;
+        if (isset($fromRole)) {
+            $revisionReasonArray["fromRole"] = $fromRole->name;
+        } else {
+            $revisionReasonArray["fromRole"] = Null;
+        }
+        if (isset($fromRole)) {
+            $revisionReasonArray["toRole"] = $toRole->name;
+        } else {
+            $revisionReasonArray["toRole"] = Null;
+        }
+        //
+
+        // Обработка причины отказа
+        $rejectFromRole = Role::where('id', $application->reject_reason_from_spec_id)->first(); // кто отправил на отказ
+        $rejectReasonArray = [];
+        $rejectReasonArray["rejectReason"] = $application->reject_reason;
+        if (isset($rejectFromRole)) {
+            $rejectReasonArray["fromRole"] = $rejectFromRole->name;
+        } else {
+            $rejectReasonArray["fromRole"] = Null;
+        }
+        
+        //
         $sendToSubRoute = [];
         $sendToSubRoute["isset"] = false;
         if (Null !==($process->roles()->where('parent_role_id', '<>', Null)->first())) {
@@ -134,7 +162,7 @@ class ApplicationController extends Controller
                 $templateTableFields = $this->filterTemplateFieldsTable($templateTableFields, $exceptionArray);
             }
         }
-        return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records'));
+        return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray'));
     }
 
     public function create(Process $process) {
@@ -311,16 +339,17 @@ class ApplicationController extends Controller
         if ($application->to_revision === 0) {
             DB::table($tableName)
                 ->where('id', $request->applicationId)
-                ->update(['status_id' => $status->id, 'reject_reason' => $request->rejectReason]);
+                ->update(['status_id' => $status->id, 'reject_reason' => $request->rejectReason, 'reject_reason_from_spec_id' => $user->id]);
         } else {
             DB::table($tableName)
                 ->where('id', $request->applicationId)
-                ->update(['status_id' => $status->id, 'reject_reason' => $request->rejectReason, 'to_revision' => 0]);
+                ->update(['status_id' => $status->id, 'reject_reason' => $request->rejectReason, 'to_revision' => 0, 'reject_reason_from_spec_id' => $user->id]);
         }
     }
 
     public function revision(Request $request) {
-
+        
+        // dd($request->all());
         $roleToRevise = $request->roleToRevise; //Роль, которому форма отправляется на доработку
         $mainCounter = 0;
         $subCounter = 0;
@@ -362,11 +391,11 @@ class ApplicationController extends Controller
         if ($index === 0) {
             DB::table($tableName)
                 ->where('id', $request->applicationId)
-                ->update(['status_id' => $status->id, 'revision_reason' => $request->revisionReason,'to_revision' => 1,'index_sub_route' => $indexSubRoute] );
+                ->update(['status_id' => $status->id, 'revision_reason' => $request->revisionReason,'to_revision' => 1,'index_sub_route' => $indexSubRoute, 'revision_reason_from_spec_id' =>  $user->id, 'revision_reason_to_spec_id' =>  $idOfNextRole] );
         } else {
             DB::table($tableName)
                 ->where('id', $request->applicationId)
-                ->update(['status_id' => $status->id, 'revision_reason' => $request->revisionReason,'to_revision' => 1, 'index_main' => $index] );
+                ->update(['status_id' => $status->id, 'revision_reason' => $request->revisionReason,'to_revision' => 1, 'index_main' => $index, 'revision_reason_from_spec_id' =>  $user->id, 'revision_reason_to_spec_id' =>  $idOfNextRole] );
         }
     }
 

@@ -29,7 +29,7 @@ class TemplateController extends Controller
     }
 
     public function store(Request $request) {
-        
+
         $templateState = $request->template_state === "accepted";
         $request->validate([
             'name' => 'required',

@@ -136,9 +136,9 @@
                     <div class="top-right links text-center">
                             <!-- Authentication Links -->
                             @guest
-                                <a href="{{ route('login') }}">Авторизоваться</a>
+                                <a href="{{ route('login') }}">Авторизация</a>
                                 @if (Route::has('register'))
-                                    <a href="{{ route('register') }}">Зарегистрироваться</a>
+                                    {{-- <a href="{{ route('register') }}">Зарегистрироваться</a> --}}
                                 @endif
                                 @else
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"

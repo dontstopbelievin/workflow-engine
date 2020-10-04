@@ -53,4 +53,26 @@ class EdsSignController extends Controller
         }
         return false;
     }
+
+    public function example($wsdl)
+    {
+        switch ($wsdl) {
+            case 'shep':
+                header('Content-Type: text/xml');
+                $bodyContent  = file_get_contents(base_path('app/wsdl/result_wsdl.xml'));
+                echo $bodyContent;
+                break;
+            default:
+                echo 'no route for integration';
+                break;
+        }
+    }
+
+    public function receive()
+    {
+        header('Content-Type: text/xml');
+        $bodyContent  = file_get_contents(base_path('app/wsdl/responce_wsdl.xml'));
+        echo $bodyContent;
+        exit;
+    }
 }
