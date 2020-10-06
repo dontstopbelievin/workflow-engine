@@ -40,7 +40,7 @@
                                         <td class="text-left align-middle"><h4>{{$field->auction_date_time}}</h4></td>
                                         <td class="text-left align-middle"><h4>{{$field->lot_status}}</h4></td>
                                         <td class="text-left align-middle"><h4>{{$field->publish_date}}</h4></td>
-                                        <td class="text-left align-middle"><i class="fa fa-caret-square-o-right" style="font-size:36px"></i></td>
+                                        <td class="text-left align-middle"><a href="{{route('auction.sender', ['id' => $field->id])}}"><i class="fa fa-caret-square-o-right" style="font-size:36px"></i></a></td>
                                     </tr>
                                 </tbody>
                             @endforeach

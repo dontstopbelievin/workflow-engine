@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Auction;
+use App\Traits\dbQueries;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
 class AuctionController extends Controller
 {
+    use dbQueries;
+
     public function index() {
         $fields = Auction::all();
         return view('auction.index', compact('fields'));
@@ -116,5 +119,10 @@ class AuctionController extends Controller
         $auction->identification_doc = $identificationDocPath;
         $auction->save();
         return Redirect::route('auction.index')->with('status','Поля успешно сохранены');
+    }
+
+    public function sender(Request $request) {
+        $aAuctionRaws = $this->getAuctionRaws($request->id);
+        return $aAuctionRaws;
     }
 }

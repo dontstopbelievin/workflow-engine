@@ -182,6 +182,16 @@ trait dbQueries
         return json_decode(json_encode($query), true);
     }
 
+    public function getAuctionRaws($id) {
+
+        $query = DB::table('auctions')
+            ->select('*')
+            ->where('id',$id)
+            ->get()->toArray();
+        return json_decode(json_encode($query), true);
+    }
+
+
     public function getAllTemplateFields($id) {
 
         $query = DB::table('template_fields')
