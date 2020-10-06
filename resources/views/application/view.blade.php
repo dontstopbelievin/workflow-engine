@@ -31,7 +31,7 @@
                         <div class="tab">
                             <button class="tablinks" onclick="openTab(event, 'applicationInfo')">Информация о заявителе</button>
                             <button class="tablinks" onclick="openTab(event, 'specialistFields')">Поля заполненные специалистами</button>
-                            <button class="tablinks" onclick="openTab(event, 'comments')">Комментарии</button>
+                            <button class="tablinks" onclick="openTab(event, 'commentsTab')">Комментарии</button>
                             <button class="tablinks" onclick="openTab(event, 'logs')">Ход согласования</button>
                             <button class="tablinks" onclick="openTab(event, 'revisionReasonTab')">Причина отправки на доработку</button>
                             <button class="tablinks" onclick="openTab(event, 'rejectReasonTab')">Причина отказа</button>
@@ -92,7 +92,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div id="comments" class="tabcontent">
+                        <div id="commentsTab" class="tabcontent">
                             <table class="table" style="background: white;">
                                 <thead>
                                     <tr>
@@ -103,13 +103,11 @@
                                 </thead>
                                 <tbody>
                                 @isset($comments)
-                                    @foreach ($comments as $comment)
-                                        <tr>
-                                            <td>{{$comment["role"]}}</td>
-                                            <td>{{$comment["comment"]}}</td>
-                                            <td>{{$comment["created_at"]}}</td>
-                                        </tr>
-                                    @endforeach
+                                    <tr>
+                                        <td>{{$comments[0]["role"]}}</td>
+                                        <td>{{$comments[0]["comment"]}}</td>
+                                        <td>{{$comments[0]["created_at"]}}</td>
+                                    </tr>
                                 @endisset
                                 </tbody>
                             </table>

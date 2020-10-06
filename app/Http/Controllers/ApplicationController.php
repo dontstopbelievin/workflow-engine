@@ -68,6 +68,7 @@ class ApplicationController extends Controller
         }
 
         $comments = $this->getComments($application->id, $table->id);
+//        dd($comments);
         $roleId = $thisRole->id; //роль действующего юзера
         $records = $this->getRecords($application->id, $table->id);
 
@@ -208,7 +209,7 @@ class ApplicationController extends Controller
     }
 
     public function approve(Request $request) {
-
+//        dd($request->all());
         $process = Process::find($request->process_id);
         $tableName = $this->getTableName($process->name);
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
@@ -410,7 +411,7 @@ class ApplicationController extends Controller
     }
 
     private function insertComments($comments, $applicationId, $tableId) {
-
+//        dd($comments);
         if ($comments !== Null) {
             $comment = new Comment( [
                 'name' => $comments,
@@ -419,6 +420,7 @@ class ApplicationController extends Controller
                 'role_id' => Auth::user()->role->id,
             ]);
             $comment->save();
+//            dd($comment);
         }
     }
 
