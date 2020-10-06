@@ -19,7 +19,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table">
-                            @foreach($fields as $field)
+
                                 <thead class="text-primary">
                                 <th>Номер лота</th>
                                 <th>Местоположение земельного участка</th>
@@ -30,12 +30,16 @@
                                 <th>Дата публикации</th>
                                 <th><button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Изменить"><i class="fa fa-edit"></i></button></th>
                                 </thead>
+                            @foreach($fields as $field)
                                 <tbody>
                                     <tr class="shadow p-3 mb-5 rounded">
-                                        <td class="text-left align-middle"><h4>{{$field->id}}</h4></td>
-                                        <td class="text-left align-middle"><h4>{{$field->first_name}}</h4></td>
-                                        <td class="text-left align-middle"><h4>{{$field->surname}}</h4></td>
-                                        <td class="text-left align-middle"><h4>{{$field->cadastre}}</h4></td>
+                                        <td class="text-left align-middle"><h4>{{$field->lot_number}}</h4></td>
+                                        <td class="text-left align-middle"><h4>{{$field->address_rus}}</h4></td>
+                                        <td class="text-left align-middle"><h4>{{$field->purpose}}</h4></td>
+                                        <td class="text-left align-middle"><h4>{{$field->area}}</h4></td>
+                                        <td class="text-left align-middle"><h4>{{$field->auction_date_time}}</h4></td>
+                                        <td class="text-left align-middle"><h4>{{$field->lot_status}}</h4></td>
+                                        <td class="text-left align-middle"><h4>{{$field->publish_date}}</h4></td>
                                         <td class="text-left align-middle"><i class="fa fa-caret-square-o-right" style="font-size:36px"></i></td>
                                     </tr>
                                 </tbody>
