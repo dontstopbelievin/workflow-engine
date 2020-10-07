@@ -121,8 +121,95 @@ class AuctionController extends Controller
         return Redirect::route('auction.index')->with('status','Поля успешно сохранены');
     }
 
-    public function sender(Request $request) {
+    public function prepareDataForEgkn(Request $request)
+    {
         $aAuctionRaws = $this->getAuctionRaws($request->id);
-        return $aAuctionRaws;
+//        dd($aAuctionRaws);
+        return array(
+            'Request' => [
+                'Auction' => [
+                    'LotID' => $aAuctionRaws[0]['lot_id'],
+                    'EgknID' => $aAuctionRaws[0]['egkn_id'],
+                    'StatusZU' => $aAuctionRaws[0]['status_zu'], // "free" - свободный ЗУ; "auction" - аукцион/торги
+                    'LotNumber' => $aAuctionRaws[0]['lot_number'],
+                    'LotStatus' => $aAuctionRaws[0]['lot_status'], //"1" - Предстоящий; "2" - Несостоявшийся; "3" - Состоявшийся
+                    'Target' => [
+                        'ID' => $aAuctionRaws[0]['target'],
+                        'NameRus' => $aAuctionRaws[0]['target'],
+                        'NameKaz' => $aAuctionRaws[0]['target']
+                    ],
+                    'Purpose' => [
+                        'ID' => $aAuctionRaws[0]['purpose'],
+                        'NameRus' => $aAuctionRaws[0]['purpose'],
+                        'NameKaz' => $aAuctionRaws[0]['purpose']
+                    ],
+                    'RightType' => [
+                        'ID' => '',
+                        'NameRus' => $aAuctionRaws[0]['right_type'],
+                        'NameKaz' => $aAuctionRaws[0]['right_type']
+                    ],
+                    'RentConditionsRus' => $aAuctionRaws[0]['rent_conditions_rus'],
+                    'RentConditionsKaz' => $aAuctionRaws[0]['rent_conditions_kaz'],
+                    'Area' => $aAuctionRaws[0]['area'],
+                    'CadastreCost' => $aAuctionRaws[0]['cadastre_cost'],
+                    'StartCost' => $aAuctionRaws[0]['start_cost'],
+                    'TaxCost' => $aAuctionRaws[0]['tax_cost'],
+                    'ParticipationCost' => $aAuctionRaws[0]['participation_cost'],
+                    'AuctionMethod' => $aAuctionRaws[0]['auction_method'], //"1" - английский; "2" - голландский
+                    'AuctionDate' => $aAuctionRaws[0]['auction_date_time'],
+                    'AuctionPlaceRus' => $aAuctionRaws[0]['auction_place_rus'],
+                    'AuctionPlaceKaz' => $aAuctionRaws[0]['auction_place_kaz'],
+                    'RequestAddressRus' => $aAuctionRaws[0]['request_address_rus'],
+                    'RequestAddressKaz' => $aAuctionRaws[0]['request_address_kaz'],
+                    'CommentRus' => $aAuctionRaws[0]['comment_rus'],
+                    'CommentKaz' => $aAuctionRaws[0]['comment_kaz'],
+                    'Seller' => [
+                        'IINBIN' => $aAuctionRaws[0]['iin_bin'],
+                        'NameRus' => $aAuctionRaws[0]['name_rus'],
+                        'NameKaz' => $aAuctionRaws[0]['name_kaz']
+                    ],
+                    'Customer' => [
+                        'IINBIN' => $aAuctionRaws[0]['iin_bin'],
+                        'NameRus' => $aAuctionRaws[0]['name_rus'],
+                        'NameKaz' => $aAuctionRaws[0]['name_kaz']
+                    ],
+                    'AddressRus' => $aAuctionRaws[0]['address_rus'],
+                    'AddressKaz' => $aAuctionRaws[0]['address_kaz'],
+                    'PublishDate' => $aAuctionRaws[0]['publish_date'],
+                    'Files' => [
+                        'FileName' => $aAuctionRaws[0]['identification_doc'], //with extension
+                        'FileData' => $aAuctionRaws[0]['identification_doc']
+                    ],
+                    'Coordinates' => $aAuctionRaws[0]['coordinates_1'],
+                    'CoordinateSystem' => $aAuctionRaws[0]['coordinate_system'],
+                    'AteID' => $aAuctionRaws[0]['ate_id'],
+                    'TechConditions' => [
+                        'ElektrPower' => $aAuctionRaws[0]['elektr_power'],
+                        'ElektrFaza1' => $aAuctionRaws[0]['elektr_faza_1'],
+                        'ElektrFaza3' => $aAuctionRaws[0]['elektr_faza_3'],
+                        'WaterPower' => $aAuctionRaws[0]['water_power'],
+                        'WaterHoz' => $aAuctionRaws[0]['water_hoz'],
+                        'WaterProduction' => $aAuctionRaws[0]['water_production'],
+                        'SeweragePower' => $aAuctionRaws[0]['sewerage_power'],
+                        'SewerageFecal' => $aAuctionRaws[0]['sewerage_fecal'],
+                        'SewerageProduction' => $aAuctionRaws[0]['sewerage_production'],
+                        'SewerageClean' => $aAuctionRaws[0]['sewerage_clean'],
+                        'HeatPower' => $aAuctionRaws[0]['heat_power'],
+                        'HeatFiring' => $aAuctionRaws[0]['heat_firing'],
+                        'HeatVentilation' => $aAuctionRaws[0]['heat_ventilation'],
+                        'HeatHotWater' => $aAuctionRaws[0]['heat_hot_water'],
+                        'StormWater' => $aAuctionRaws[0]['storm_water'],
+                        'Telekom' => $aAuctionRaws[0]['telekom'],
+                        'GasPower' => $aAuctionRaws[0]['gas_power'],
+                        'GasOnCooking' => $aAuctionRaws[0]['gas_on_cooking'],
+                        'GasHeating' => $aAuctionRaws[0]['gas_heating'],
+                        'GasVentilation' => $aAuctionRaws[0]['gas_ventilation'],
+                        'GasConditioning' => $aAuctionRaws[0]['gas_conditioning'],
+                        'GasHotWater' => $aAuctionRaws[0]['gas_hot_water']
+                    ]
+                ]
+            ],
+            'Signature' => true
+        );
     }
 }
