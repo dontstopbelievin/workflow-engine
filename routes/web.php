@@ -48,7 +48,7 @@ Route::post('/integrations/shep','EdsSignController@receive')->middleware('guest
 Route::post('soap', 'XMLController@index')->middleware('guest');
 
 Route::post('loginwithecp/bar')->name('loginwithecp.store')->uses('EdsSignController@loginByCert')->middleware('guest');
-Route::group(['middleware' => ['admin', 'auth']], function () {
+Route::group(['middleware' => ['auth']], function () {
     Route::get('services', 'ApplicationController@service')->name('applications.service');
 Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');
 Route::get('application-view/{process_id}/{application_id}', 'ApplicationController@view')->name('applications.view');
