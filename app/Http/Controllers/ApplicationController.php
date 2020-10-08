@@ -51,6 +51,7 @@ class ApplicationController extends Controller
         $process = Process::find($processId);
         $templateId = $process->accepted_template_id;
          $templateFields= TemplateField::where('template_id', $templateId)->get();
+//         dd($templateFields);
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $applicationId)->first();
@@ -111,7 +112,6 @@ class ApplicationController extends Controller
         } else {
             $rejectReasonArray["fromRole"] = Null;
         }
-        
         //
         $sendToSubRoute = [];
         $sendToSubRoute["isset"] = false;

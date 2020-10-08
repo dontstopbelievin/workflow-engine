@@ -102,7 +102,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @isset($comments)
+                                @isset($comments[0])
                                     <tr>
                                         <td>{{$comments[0]["role"]}}</td>
                                         <td>{{$comments[0]["comment"]}}</td>
@@ -260,13 +260,19 @@
                             @if($canApprove)
                                     @isset($templateFields)
                                         <h4 class="card-title text-center" style="margin-top:50px;">Поля Шаблона</h4>
-                                        <form id = "templateFieldsId" method="POST">
+                                        <form id = "templateFieldsId" method="POST" enctype="multipart/form-data">
                                             @foreach($templateFields as $item)
                                                 <div class="form-group row">
                                                     <label for="{{$item->name}}" class="col-md-4 col-form-label text-md-right">{{ __($item->label_name) }}</label>
-                                                    <div class="col-md-6">
-                                                        <input type="text" class="form-control"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
-                                                    </div>
+                                                    @if($item->input_type_id === 1)
+                                                        <div class="col-md-6">
+                                                            <input type="text" class="form-control"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
+                                                        </div>
+                                                    @elseif($item->input_type_id === 2)
+                                                        <div class="col-md-6">
+                                                            <input type="file" class="form-control"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             @endforeach
                                         </form>
