@@ -76,7 +76,7 @@ class CreateAuctionsTable extends Migration
             $table->float('gas_conditioning')->nullable();
             $table->float('gas_hot_water')->nullable();
 
-            $table->integer('iin_bin')->nullable();
+            $table->string('iin_bin')->nullable();
             $table->string('name_rus')->nullable();
             $table->string('name_kaz')->nullable();
             $table->string('is_fl')->nullable();
