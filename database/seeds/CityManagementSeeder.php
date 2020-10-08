@@ -21,6 +21,9 @@ class CityManagementSeeder extends Seeder
             [
                 'name' => 'Коммунальные Службы' //1
             ],
+            [
+                'name' => 'НАО' //1
+            ],
 
         ]);
     }

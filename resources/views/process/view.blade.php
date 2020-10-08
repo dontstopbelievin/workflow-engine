@@ -22,10 +22,12 @@
                             <li class="list-group-item">Название процесса: {{$process->name}}</li>
                             <li class="list-group-item">Длительность обработки заявки: {{$process->deadline}}</li>
                             <li class="list-group-item">Дэдлайн процесса: {{$process->deadline_until}}</li>
+
                             <li class="list-group-item">Шаблон одобрения: {{$process->accepted_template->name}}</li>
                             @if($process->rejected_template)
                             <li class="list-group-item">Шаблон отказа: {{$process->rejected_template->name}}</li>
                             @endif
+
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h3 class="panel-title">Поля процесса {{$process->name}}</h3>

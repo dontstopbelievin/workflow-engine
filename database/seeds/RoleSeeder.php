@@ -19,6 +19,7 @@ class RoleSeeder extends Seeder
                 'name' => 'Заявитель', // 1
             ],
             [
+
                 'name' => 'Специалист Апз',// 2
             ],
             [
@@ -50,6 +51,7 @@ class RoleSeeder extends Seeder
             ],
             [
                 'name' => 'Начальник Отдела Гор Арх',// 12
+
             ],
 
             [
@@ -73,6 +75,7 @@ class RoleSeeder extends Seeder
             ],
             [
                 'name' => 'Зам Рук Упр',// 19
+
             ],
             [
                 'name' => 'Рук Упр',//20
