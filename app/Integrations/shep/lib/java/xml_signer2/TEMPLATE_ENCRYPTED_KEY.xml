@@ -1,0 +1,20 @@
+<xenc:EncryptedKey Id="EK-CC6EEC76DDB55C0EEA15376087357816" xmlns:xenc="http://www.w3.org/2001/04/xmlenc#">
+	<xenc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-1_5"/>
+	<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+		<wsse:SecurityTokenReference>
+			<ds:X509Data>
+				<ds:X509IssuerSerial>
+					<ds:X509IssuerName>[CERT_ISSUER_NAME]</ds:X509IssuerName>
+					<ds:X509SerialNumber>[CERT_NUMBER]</ds:X509SerialNumber>
+				</ds:X509IssuerSerial>
+			</ds:X509Data>
+		</wsse:SecurityTokenReference>
+	</ds:KeyInfo>
+	<xenc:CipherData>
+		<xenc:CipherValue>[CERT_CIPHER_VALUE]</xenc:CipherValue>
+	</xenc:CipherData>
+	<xenc:ReferenceList>
+		<xenc:DataReference URI="#ED-CC6EEC76DDB55C0EEA15376087357937"/>
+	</xenc:ReferenceList>
+</xenc:EncryptedKey>
+			
