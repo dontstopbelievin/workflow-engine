@@ -2,8 +2,11 @@
 
 namespace App\Integrations\shep\sender\services;
 
+use App\Integrations\shep\sender\XmlBuilderInterface;
+use App\Integrations\shep\ShepUtil;
+use App\Integrations\shep\ShepXmlUtil;
 
-class EdsTempFilesService extends ShepService implements \App\Integrations\shep\sender\XmlBuilderInterface
+class EdsTempFilesService extends ShepService implements XmlBuilderInterface
 {
     const SERVICE_TYPE = 'sync';
     const SERVICE_ID = 'EDS_TEMP_FILES';
