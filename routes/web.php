@@ -121,7 +121,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('auction', 'AuctionController@index')->name('auction.index');
     Route::get('auction/create', 'AuctionController@create')->name('auction.create');
     Route::post('auction/store', 'AuctionController@store')->name('auction.store');
-    Route::get('auction/sender', 'AuctionController@prepareDataForEgkn')->name('auction.sender');
+    Route::get('auction/send/{id}', 'AuctionController@sendToEgkn')->name('auction.send');
 
     Route::get('select-options/create', 'SelectOptionController@create')->name('selectoptions.create');
     Route::post('/select-options/store', 'SelectOptionController@store')->name('selectoptions.store');
