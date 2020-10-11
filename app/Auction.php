@@ -10,7 +10,7 @@ class Auction extends Model
     
     public function getDataForEgkn()
     {
-        return array(
+        return [
             'Request' => [
                 'BusinessData' => [
                     'LayerCode' => 'FREE_LAND',
@@ -110,8 +110,7 @@ class Auction extends Model
                         ]
                     ]
                 ]
-            ],
-            'Signature' => true
-        );
+            ]
+        ];
     }
 }
