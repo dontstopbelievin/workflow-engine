@@ -132,8 +132,7 @@ class AuctionController extends Controller
             $response = ShepRequestSender::send('geoportal_egkn_receive_layer', $this->tempMethodGetDataForEgkn());
             print_r($response);
         } catch( \Exception $e) {
-            echo $e->getMessage();
-            log($e->getMessage());
+            echo 'SHEP sending error: ' . $e->getMessage();
         }
         exit;
     }
