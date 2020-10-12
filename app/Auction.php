@@ -97,6 +97,11 @@ class Auction extends Model
                             'GasVentilation' => '1818',
                             'GasConditioning' => '19',
                             'GasHotWater' => '2020'
+                        ],
+                        'LandCategory' => [
+                            'ID' => 'landcat_znp',
+                            'NameRus' => 'Земли населенных пунктов',
+                            'NameKaz' => 'Елді мекендердің жерлері'
                         ]
                     ]
                 ]
