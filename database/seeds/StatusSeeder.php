@@ -77,7 +77,6 @@ class StatusSeeder extends Seeder
             ],
             [
                 'name' => 'Отправлено Заявителю' // 22
-
             ],
         ]);
     }

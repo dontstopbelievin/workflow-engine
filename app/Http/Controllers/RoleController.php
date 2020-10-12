@@ -60,6 +60,7 @@ class RoleController extends Controller
     }
 
     public function delete(Role $role) {
+
         $role->users()->delete();
         $role->delete();
         return Redirect::route('role.index')->with('status','Роль успешно удалена');

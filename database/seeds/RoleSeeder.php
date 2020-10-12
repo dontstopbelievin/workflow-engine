@@ -11,15 +11,13 @@ class RoleSeeder extends Seeder
      * @return void
      */
     public function run()
-    {   
-        // factory(\App\Role::class, 10)->create();
+    {
 
         DB::table('roles')->insert([
             [
                 'name' => 'Заявитель', // 1
             ],
             [
-
                 'name' => 'Специалист Апз',// 2
             ],
             [
@@ -51,9 +49,7 @@ class RoleSeeder extends Seeder
             ],
             [
                 'name' => 'Начальник Отдела Гор Арх',// 12
-
             ],
-
             [
                 'name' => 'Начальник Отдела Гор Арх Делимости/Неделимости',// 13
             ],
@@ -63,7 +59,6 @@ class RoleSeeder extends Seeder
             [
                 'name' => 'Рук Апо Гор Арх',// 15
             ],
-
             [
                 'name' => 'Зам Рук Апо Гор Арх',// 16
             ],
@@ -75,12 +70,10 @@ class RoleSeeder extends Seeder
             ],
             [
                 'name' => 'Зам Рук Упр',// 19
-
             ],
             [
                 'name' => 'Рук Упр',//20
             ],
-
 
         ]);
     }
