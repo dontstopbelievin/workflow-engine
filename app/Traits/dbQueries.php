@@ -74,11 +74,18 @@ trait dbQueries
         }
         return json_encode($res);
     }
-    public function getTableWithStatuses($table) {
-        return DB::table($table)
-            ->join('statuses', $table.'.status_id','=', 'statuses.id')
-            ->select($table.'.*', 'statuses.name as status')
-            ->get()->toArray();
+    private function getTableWithStatuses($table) {
+
+        if(Schema::hasTable($table)) {
+            return DB::table($table)
+                ->join('statuses', $table.'.status_id','=', 'statuses.id')
+                ->select($table.'.*', 'statuses.name as status')
+                ->get()->toArray();
+        } else {
+            echo 'Процесс не был сформирован полностью. Сначала завершите формирование процесса';
+            exit();
+        }
+
     }
 
     public function getSubRoutes($id) {
@@ -101,9 +108,9 @@ trait dbQueries
 
     public function getOptionsOfThisSelect($name) {
 
-        $dics = Dictionary::where('name', $name)->first()->selectOptions()->get();
+        $dictionaries = Dictionary::where('name', $name)->first()->selectOptions()->get();
         $selectedOptions = [];
-        foreach ($dics as $dic) {
+        foreach ($dictionaries as $dic) {
             array_push($selectedOptions, $dic->name);
         }
         return $selectedOptions;
@@ -123,9 +130,11 @@ trait dbQueries
     }
 
     public function isRussian($text) {
+
         return preg_match('/[А-Яа-яЁё]/u', $text);
     }
     public function isEnglish($text) {
+
         return preg_match('/[A-Za-z]/u', $text);
     }
 
@@ -135,6 +144,7 @@ trait dbQueries
     }
 
     public function getTableName($table) {
+
         $tableName = $this->translateSybmols($table);
         if (strlen($tableName) > 60) {
             $tableName = $this->truncateTableName($tableName); // если количество символов больше 64, то необходимо укоротить длину названия до 64
@@ -144,12 +154,14 @@ trait dbQueries
     }
 
     public function getOriginalColumns($tableColumns) {
+
         $array = [];
         foreach ($tableColumns as $column) {
             array_push($array, str_replace('_', ' ', $column));
         }
         return $array;
     }
+
     public function filterArray($array) {
         $result = [];
         foreach($array as $item) {
@@ -160,6 +172,7 @@ trait dbQueries
         return $result;
 
     }
+
     public function addOptionsToDictionary($dictionaries) {
         $array = [];
         foreach($dictionaries as $dictionary) {
@@ -172,6 +185,7 @@ trait dbQueries
         }
         return $array;
     }
+
     public function getAllDictionaries() {
 
         $query = DB::table('dictionaries')
@@ -181,6 +195,16 @@ trait dbQueries
             ->get()->toArray();
         return json_decode(json_encode($query), true);
     }
+
+    public function getAuctionRaws($id){
+
+        $query = DB::table('auctions')
+            ->select('*')
+            ->where('id',$id)
+            ->get()->toArray();
+        return json_decode(json_encode($query), true);
+    }
+
 
     public function getAllTemplateFields($id) {
 
@@ -194,6 +218,7 @@ trait dbQueries
     }
 
     public function getComments($applicationId, $tableId) {
+
         $query = DB::table('comments')
             ->join('roles', 'comments.role_id', '=', 'roles.id')
             ->select('roles.name as role', 'comments.name as comment', 'comments.created_at as created_at')
@@ -204,6 +229,7 @@ trait dbQueries
     }
 
     public function mergeRoles($mainRoles, $subRoles) {
+
         $mainRolesNames = [];
         foreach($mainRoles as $role) {
             array_push($mainRolesNames, $role->name);
@@ -212,6 +238,7 @@ trait dbQueries
     }
 
     public function getMainRoleArray($mainRoles) {
+
         $mainRoleArr = [];
         foreach ($mainRoles as $role) {
             array_push($mainRoleArr, $role->name);
@@ -220,6 +247,7 @@ trait dbQueries
     }
 
     public function getRecords($applicationId, $tableId) {
+
         $query = DB::table('logs')
             ->join('roles', 'logs.role_id', '=', 'roles.id')
             ->join('statuses', 'logs.status_id', '=', 'statuses.id')
@@ -232,6 +260,7 @@ trait dbQueries
     }
 
     public function truncateTableName($name) {
+
         $arrOfLetters = str_split($name, 1);
         $resArr = [];
         for ($i = 0; $i <=60; $i++) {
@@ -242,16 +271,30 @@ trait dbQueries
 
     }
 
+    public function filterApplicationArray($array, $notInArray){
+
+        $res = [];
+        foreach($array as $key=>$value) {
+            if (!in_array($key, $notInArray)) {
+                $res[$key] = $value;
+            }
+        }
+        return $res;
+    }
+
     public function checkForWrongCharacters($name) {
+
         $arrayOfWrongCharacters = array('!', ' ', '-', '?');
         return str_replace( $arrayOfWrongCharacters,'_',$name);
     }
 
-
     public function modifyTableName($name) {
+
         return 'wf_'.$name;
     }
+
     public function modifyTemplateTable($name) {
+
         return 'wf_tt_'.$name;
     }
 }

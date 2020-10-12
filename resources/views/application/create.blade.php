@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Process Creation
+    Создание Заявки
 @endsection
 
 @section('content')
@@ -20,7 +20,7 @@
                     <div class="row">
                         <div class="col-md-6">
 
-                            <form action="{{ route('applications.store') }}" method="POST">
+                            <form action="{{ route('applications.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 @foreach($arrayToFront as $item)
                                     <label>{{$item["labelName"]}}</label>

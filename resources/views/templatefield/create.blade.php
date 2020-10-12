@@ -24,7 +24,6 @@
                         <th>Тип сохраняемого</th>
                         </thead>
                         <tbody>
-                        {{--{{dd($oTemplateFields)}}--}}
                         @foreach($oTemplateFields as $item)
                             <tr>
                                 <td><h4>{{$item["labelName"]}}</h4></td>
@@ -90,11 +89,13 @@
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
             </div><!-- /.modal -->
+
         </div>
     </div>
-    {{--</div>--}}
+    <div>
+        <a href="{{route('processes.edit', ['process' => $processId])}}">Продолжить</a>
+    </div>
 
-    {{--{{csrf_field()}}--}}
     <script
         src="https://code.jquery.com/jquery-3.5.1.min.js"
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="

@@ -4130,6 +4130,21 @@ Created using IcoMoon - icomoon.io
   color: #f96332;
 }
 
+.sidebar[data-color="white"]:after,
+.off-canvas-sidebar[data-color="white"]:after {
+  background: #FFFFFF;
+}
+
+.sidebar[data-color="white"] .nav li.active>a:not([data-toggle="collapse"]),
+.off-canvas-sidebar[data-color="white"] .nav li.active>a:not([data-toggle="collapse"]) {
+  color: #FFFFFF;
+}
+
+.sidebar[data-color="white"] .nav li.active>a:not([data-toggle="collapse"]) i,
+.off-canvas-sidebar[data-color="white"] .nav li.active>a:not([data-toggle="collapse"]) i {
+  color: #FFFFFF;
+}
+
 .sidebar[data-color="red"]:after,
 .off-canvas-sidebar[data-color="red"]:after {
   background: #FF3636;

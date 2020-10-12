@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
-use Malikzh\PhpNCANode;
+use App\Libs\PhpNCANode;
 
 class EdsSignController extends Controller
 {
@@ -52,5 +52,27 @@ class EdsSignController extends Controller
             return $contents;
         }
         return false;
+    }
+
+    public function example($wsdl)
+    {
+        switch ($wsdl) {
+            case 'shep':
+                header('Content-Type: text/xml');
+                $bodyContent  = file_get_contents(base_path('app/wsdl/result_wsdl.xml'));
+                echo $bodyContent;
+                break;
+            default:
+                echo 'no route for integration';
+                break;
+        }
+    }
+
+    public function receive()
+    {
+        header('Content-Type: text/xml');
+        $bodyContent  = file_get_contents(base_path('app/wsdl/responce_wsdl.xml'));
+        echo $bodyContent;
+        exit;
     }
 }

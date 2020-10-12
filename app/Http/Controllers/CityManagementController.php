@@ -22,6 +22,7 @@ class CityManagementController extends Controller
     }
 
     public function delete(Request $request) {
+
         CityManagement::where('id', $request->id)->delete();
     }
 
