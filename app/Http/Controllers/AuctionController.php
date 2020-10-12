@@ -145,7 +145,7 @@ class AuctionController extends Controller
                 'BusinessData' => [
                     'LayerCode' => 'FREE_LAND',
                     'Auction' => [
-                        'LotID' => '2404_007',
+                        'LotID' => '2404_006',
                         'EgknID' => '',
                         'StatusZU' => 'auction', // "free" - свободный ЗУ; "auction" - аукцион/торги
                         'LotNumber' => '14',
