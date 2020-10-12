@@ -31,7 +31,6 @@ class TemplateFieldsController extends Controller
 
         $inputItem = InputType::where('name',$request->inputItem)->first();
         $insertItem = InsertType::where('name',$request->insertItem)->first();
-
         $templateField = new TemplateField;
         $templateField->name = $request->fieldName;
         $templateField->label_name = $request->labelName;

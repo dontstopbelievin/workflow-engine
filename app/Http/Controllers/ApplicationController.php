@@ -51,7 +51,6 @@ class ApplicationController extends Controller
         $process = Process::find($processId);
         $templateId = $process->accepted_template_id;
          $templateFields= TemplateField::where('template_id', $templateId)->get();
-//         dd($templateFields);
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $applicationId)->first();
@@ -69,7 +68,6 @@ class ApplicationController extends Controller
         }
 
         $comments = $this->getComments($application->id, $table->id);
-//        dd($comments);
         $roleId = $thisRole->id; //роль действующего юзера
         $records = $this->getRecords($application->id, $table->id);
 
@@ -209,7 +207,7 @@ class ApplicationController extends Controller
     }
 
     public function approve(Request $request) {
-//        dd($request->all());
+
         $process = Process::find($request->process_id);
         $tableName = $this->getTableName($process->name);
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();

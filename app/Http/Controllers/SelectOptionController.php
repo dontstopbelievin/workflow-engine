@@ -19,16 +19,15 @@ class SelectOptionController extends Controller
         $item->name = $request->text;
         $item->save();
     }
+
     public function delete(Request $request) {
         SelectOption::where('id', $request->id)->delete();
     }
-
 
     public function update(Request $request) {
 
         $item = SelectOption::find($request->id);
         $item->name = $request->value;
         $item->update();
-//        return $request->all();
     }
 }

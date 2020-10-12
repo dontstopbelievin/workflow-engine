@@ -13,11 +13,13 @@ class AuctionController extends Controller
     use dbQueries;
 
     public function index() {
+
         $fields = Auction::all();
         return view('auction.index', compact('fields'));
     }
 
     public function create() {
+
         return view('auction.create');
     }
 
