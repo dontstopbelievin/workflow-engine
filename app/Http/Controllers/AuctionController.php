@@ -178,7 +178,7 @@ class AuctionController extends Controller
                         'TaxCost' => '101300.0',
                         'ParticipationCost' => '115450.0',
                         'AuctionMethod' => '1', //"1" - английский; "2" - голландский
-                        'AuctionDate' => '2020-10-12T17:17:25.497+06:00',
+                        'AuctionDateTime' => '2020-10-20T17:17:25.497+06:00',
                         'AuctionPlaceRus' => 'Акимат города Астана',
                         'AuctionPlaceKaz' => 'Астана қаласының әкімдігі',
                         'RequestAddressRus' => 'Улица Алтынсарина, 2',
