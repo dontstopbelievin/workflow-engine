@@ -6,6 +6,7 @@ use App\Auction;
 use App\Traits\dbQueries;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use App\Integrations\shep\ShepUtil;
 use App\Integrations\shep\sender\ShepRequestSender;
 
 class AuctionController extends Controller
@@ -125,14 +126,21 @@ class AuctionController extends Controller
     }
 
     public function sendToEgkn(Request $request)
-    {
+    {        
         try {
 //            $auction = Auction::find($request->id);
 //            $response = ShepRequestSender::send('geoportal_egkn_receive_layer', $auction->getDataForEgkn());
             $response = ShepRequestSender::send('geoportal_egkn_receive_layer', $this->tempMethodGetDataForEgkn());
-            print_r($response);
+            if ($response['status'] == 1) {
+                $responseBody = ShepUtil::getSoapBody($response['data']);
+                $responseBodyData = ShepUtil::xmlToArray($responseBody['response']['responseData']['data']);
+                $responseData = $responseBodyData['BusinessData'];
+            } else {
+                $responseData = $response['data'];
+            }
+            echo json_encode(['status' => 1, 'data' => $responseData]);
         } catch( \Exception $e) {
-            echo 'SHEP sending error: ' . $e->getMessage();
+            echo json_encode(['status' => 0, 'data' => 'SHEP sending error: ' . $e->getMessage()]);
         }
         exit;
     }
