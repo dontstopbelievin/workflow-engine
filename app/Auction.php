@@ -38,7 +38,7 @@ class Auction extends Model
                         'LandDivisibility' => [
                             'ID' => 'divis_y',
                             'NameRus' => 'Частная собственность',
-                            'NameKaz' => 'Жеке мулик'
+                            'NameKaz' => 'Жеке меншік'
                         ],
                         'RentConditionsRus' => 'Право аренды сроком на 3 года',
                         'RentConditionsKaz' => 'Право аренды сроком на 3 года',
@@ -62,21 +62,11 @@ class Auction extends Model
                             'NameRus' => 'ГУ АППАРАТ АКИМА ГОРОДА НУР-СУЛТАН',
                             'NameKaz' => 'ГУ АППАРАТ АКИМА ГОРОДА НУР-СУЛТАН (каз.яз.)'
                         ],
-                        'Customer' => [
-                            'IINBIN' => '900319350069',
-                            'IsFl' => 'true',
-                            'NameRus' => 'Иванов Иван Иванович',
-                            'NameKaz' => 'Иванов Иван Иванович'
-                        ],
                         'AddressRus' => 'Астана, мкр. Промышленный',
                         'AddressKaz' => 'Астана қ., Промышленный ауд.',
                         'PublishDate' => '2020-10-10',
-//                        'Files' => [
-//                            'FileName' => $this->identification_doc, //with extension
-//                            'FileData' => $this->identification_doc
-//                        ],
                         'Coordinates' => 'MULTIPOLYGON(((5180471.87897782 7195642.55024562,5180481.43360635 7195986.5168729,5180963.9423474 7195943.52104449,5180973.49697594 7195671.21413122,5180471.87897782 7195642.55024562)))',
-                        'CoordinateSystem' => '3857',
+                        'CoordinateSystem' => '32642',
                         'AteID' => '68402',
                         'NoteRus' => 'примечание рус',
                         'NoteKaz' => 'примечание каз',
