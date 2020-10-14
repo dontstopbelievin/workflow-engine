@@ -161,6 +161,7 @@ class ApplicationController extends Controller
                 $templateTableFields = $this->filterTemplateFieldsTable($templateTableFields, $exceptionArray);
             }
         }
+//        dd($application);
         return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray'));
     }
 

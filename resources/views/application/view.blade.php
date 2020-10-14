@@ -289,15 +289,22 @@
                                     <form action="{{ route('applications.backToMainOrg', ['application_id' => $application->id]) }}" method="post">
                                         @csrf
                                         <input type="hidden" name="process_id" value = {{$process->id}}>
-                                        <button class="btn btn-warning" style="margin-bottom: 70px;" type="submit">Отправить обратно в организацию</button>
+                                        <button class="btn btn-warning" style="margin-bottom: 70px;" type="submit">Согласовать</button>
                                     </form>
                                 @else
                                     @if(isset($sendToSubRoute["name"]))
-                                        <form action="{{ route('applications.sendToSubRoute', ['application_id' => $application->id]) }}" method="post">
+                                        @if($application->index_sub_route === Null)
+                                                    <form action="{{ route('applications.sendToSubRoute', ['application_id' => $application->id]) }}" method="post">
+                                                        @csrf
+                                                        <input type="hidden" name="process_id" value = {{$process->id}}>
+                                                        <button class="btn btn-warning" type="button" data-toggle="modal" data-target="#sendToSubRouteId">Отправить в {{$sendToSubRoute["name"]}}</button>
+                                                    </form>
+                                        @else <form action="{{ route('applications.sendToSubRoute', ['application_id' => $application->id]) }}" method="post">
                                             @csrf
                                             <input type="hidden" name="process_id" value = {{$process->id}}>
-                                            <button class="btn btn-warning" type="button" data-toggle="modal" data-target="#sendToSubRouteId">Отправить в {{$sendToSubRoute["name"]}}</button>
+                                            <button class="btn btn-warning" type="button" data-toggle="modal" data-target="#sendToSubRouteId">Согласовать в {{$sendToSubRoute["name"]}}</button>
                                         </form>
+                                                @endif
                                     @endif
                                     <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
