@@ -156,58 +156,81 @@
                                     <label for="Target">Целевое назначение (справочник ЕГКН)</label>
                                     <select name="Target" class="form-control">
                                         <option value="">Не выбран</option>
-                                        <option value="г. Нурсултан">г. Нурсултан</option>
+                                        @if (isset($aTarget)) {
+                                            @foreach($aTarget as $aValue)
+                                                <option value="{{$aValue->target_id}}">{{$aValue->name_rus}}</option>
+                                            @endforeach
+                                        @endif
                                     </select>
 
                                     <label for="Purpose">Цель использования (справочник ЕГКН)</label>
                                     <select name="Purpose" class="form-control">
                                         <option value="">Не выбран</option>
-                                        <option value="1">английский</option>
-                                        <option value="2">голландский</option>
+                                        @if (isset($aPurpose)) {
+                                            @foreach($aPurpose as $aValue)
+                                                <option value="{{$aValue->purpose_id}}">{{$aValue->name_rus}}</option>
+                                            @endforeach
+                                        @endif
                                     </select>
 
                                     <label for="RightType">Вид права (справочник ЕГКН)</label>
                                     <select name="RightType" class="form-control">
                                         <option value="">Не выбран</option>
-                                        <option value="1">английский</option>
-                                        <option value="2">голландский</option>
+                                            @if (isset($aRightType)) {
+                                                @foreach($aRightType as $aValue)
+                                                    <option value="{{$aValue->right_type_code}}">{{$aValue->name_rus}}</option>
+                                                @endforeach
+                                            @endif
                                     </select>
 
                                     <label for="LandDivisibility">Делимость ЗУ (спарвочник ЕГКН)</label>
                                     <select name="LandDivisibility" class="form-control">
                                         <option value="">Не выбран</option>
-                                        <option value="1">английский</option>
-                                        <option value="2">голландский</option>
+                                        @if (isset($aLandDivisibility)) {
+                                            @foreach($aLandDivisibility as $aValue)
+                                                <option value="{{$aValue->land_divisibility_code}}">{{$aValue->name_rus}}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+
+                                    <label for="LandCategory">Категория земель (спарвочник ЕГКН)</label>
+                                    <select name="LandCategory" class="form-control">
+                                        <option value="">Не выбран</option>
+                                        @if (isset($aLandCategory)) {
+                                            @foreach($aLandCategory as $aValue)
+                                                <option value="{{$aValue->land_category_cod}}">{{$aValue->name_rus}}</option>
+                                            @endforeach
+                                        @endif
                                     </select>
                                     <br>
 
-                                    <h4>Прикрепленые документы</h4>
-                                    <label>Документы</label>
-                                    <div class="custom-file mt-1 col-md-12">
-                                        <input type="file" class="custom-file-input" id="Files" name="Files">
-                                        <label class="custom-file-label" for="Files ">Выберите Файл</label>
-                                    </div>
-                                    <br>
+                                    {{--<h4>Прикрепленые документы</h4>--}}
+                                    {{--<label>Документы</label>--}}
+                                    {{--<div class="custom-file mt-1 col-md-12">--}}
+                                        {{--<input type="file" class="custom-file-input" id="Files" name="Files">--}}
+                                        {{--<label class="custom-file-label" for="Files ">Выберите Файл</label>--}}
+                                    {{--</div>--}}
+                                    {{--<br>--}}
 
                                 </div>
 
                                 <div class="col-xs-6">
 
-                                    <h4>Координаты</h4>
-                                    <label for="Coordinates1">Координаты 1</label>
-                                    <input type="text" class="form-control" name="Coordinates1" id="Coordinates1" >
+                                    {{--<h4>Координаты</h4>--}}
+                                    {{--<label for="Coordinates1">Координаты 1</label>--}}
+                                    {{--<input type="text" class="form-control" name="Coordinates1" id="Coordinates1" >--}}
 
-                                    <label for="Coordinates2">Координаты 2</label>
-                                    <input type="text" class="form-control" name="Coordinates2" id="Coordinates2" >
+                                    {{--<label for="Coordinates2">Координаты 2</label>--}}
+                                    {{--<input type="text" class="form-control" name="Coordinates2" id="Coordinates2" >--}}
 
-                                    <label for="Coordinates3">Координаты 3</label>
-                                    <input type="text" class="form-control" name="Coordinates3" id="Coordinates3" >
+                                    {{--<label for="Coordinates3">Координаты 3</label>--}}
+                                    {{--<input type="text" class="form-control" name="Coordinates3" id="Coordinates3" >--}}
 
-                                    <label for="Coordinates4">Координаты 4</label>
-                                    <input type="text" class="form-control" name="Coordinates4" id="Coordinates4" >
+                                    {{--<label for="Coordinates4">Координаты 4</label>--}}
+                                    {{--<input type="text" class="form-control" name="Coordinates4" id="Coordinates4" >--}}
 
-                                    {{--<label for="Coordinates">Координаты</label>--}}
-                                    {{--<input type="text" class="form-control" name="Coordinates" id="Coordinates" >--}}
+                                    <label for="Coordinates">Координаты</label>
+                                    <input type="text" class="form-control" name="Coordinates" id="Coordinates" >
 
                                     <label for="CoordinateSystem">Система координат</label>
                                     <input type="text" class="form-control" name="CoordinateSystem" id="CoordinateSystem" >

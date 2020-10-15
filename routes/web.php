@@ -44,6 +44,8 @@ Route::post('/integrations/shep/async-request-receiver', 'IntegrationController@
 Route::get('/integrations/{shep}','EdsSignController@example')->middleware('guest');
 Route::post('/integrations/shep','EdsSignController@receive')->middleware('guest');
 
+Route::get('/dataformater','AuctionController@dataFormater')->middleware('guest');
+
 
 Route::post('soap', 'XMLController@index')->middleware('guest');
 

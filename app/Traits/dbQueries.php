@@ -182,6 +182,8 @@ trait dbQueries
         return json_decode(json_encode($query), true);
     }
 
+
+
     public function getAuctionRaws($id)
     {
         $query = DB::table('auctions')
