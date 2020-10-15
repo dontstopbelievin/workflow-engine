@@ -142,7 +142,6 @@ class ApplicationController extends Controller
         $subRoles = $this->getSubRoutes($process->id);
         $allRoles = $this->mergeRoles($mainRoles, $subRoles);
 
-
         $templateId = $process->accepted_template_id;
         $template = Template::where('id', $templateId)->first();
         $templateName = $template->name;
@@ -161,7 +160,6 @@ class ApplicationController extends Controller
                 $templateTableFields = $this->filterTemplateFieldsTable($templateTableFields, $exceptionArray);
             }
         }
-//        dd($application);
         return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray'));
     }
 
@@ -202,7 +200,7 @@ class ApplicationController extends Controller
 
         $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
         $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
-        $logsArray = $this->getLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
+        $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
         DB::table('logs')->insert( $logsArray);
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
     }
@@ -348,8 +346,7 @@ class ApplicationController extends Controller
     }
 
     public function revision(Request $request) {
-        
-        // dd($request->all());
+
         $roleToRevise = $request->roleToRevise; //Роль, которому форма отправляется на доработку
         $mainCounter = 0;
         $subCounter = 0;
@@ -409,8 +406,18 @@ class ApplicationController extends Controller
         return $logsArray;
     }
 
+    private function getFirstLogs($statusId, $tableId, $applicationId, $roleId) {
+        $logsArray = [];
+        $logsArray["status_id"] = $statusId;
+        $logsArray["role_id"] = 1;
+        $logsArray["table_id"] = $tableId;
+        $logsArray["application_id"] = $applicationId;
+        $logsArray["created_at"] = Carbon::now();
+        return $logsArray;
+    }
+
     private function insertComments($comments, $applicationId, $tableId) {
-//        dd($comments);
+
         if ($comments !== Null) {
             $comment = new Comment( [
                 'name' => $comments,
@@ -419,7 +426,6 @@ class ApplicationController extends Controller
                 'role_id' => Auth::user()->role->id,
             ]);
             $comment->save();
-//            dd($comment);
         }
     }
 

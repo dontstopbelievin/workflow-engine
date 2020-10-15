@@ -72,8 +72,6 @@ class RoleSeeder extends Seeder
                 'name' => 'Директор Гор Архитектуры', // 1
             ],
 
-
-
         ]);
     }
 }
