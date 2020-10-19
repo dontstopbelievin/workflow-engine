@@ -187,6 +187,7 @@ class ApplicationController extends Controller
     public function store(Request $request) {
 
         $input = $request->input();
+        $input["attachment"] = $request->file('attachment')->store('applicant-attachments','public');
         $applicationTableFields = array_slice($input, 1, sizeof($input)-1);
         $process = Process::find($request->process_id);
         $routes = $this->getRolesWithoutParent($process->id);
@@ -203,6 +204,15 @@ class ApplicationController extends Controller
         $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
         DB::table('logs')->insert( $logsArray);
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
+    }
+
+    public function download($file) {
+        echo ($file);
+        $path = storage_path().'/'.'app/'.$path;
+        dd($path);
+        if (file_exists($path)) {
+            return response()->download($path);
+        }
     }
 
     public function approve(Request $request) {
@@ -516,6 +526,7 @@ class ApplicationController extends Controller
     }
 
     private function getAllDictionariesWithOptions($dictionariesWithOptions) {
+
         $arrayToFront = [];
         foreach($dictionariesWithOptions as $item) {
             $replaced = str_replace(' ', '_', $item["name"]);

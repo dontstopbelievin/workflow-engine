@@ -114,7 +114,7 @@
           <li class="{{'applications' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('applications.service') }}">
               <i class="now-ui-icons design_bullet-list-67"></i>
-              <p>Заявки </p>
+              <p>Услуги </p>
             </a>
           </li>
         </ul>

@@ -28,7 +28,7 @@
                             <tbody>
                             @foreach($cityManagements as $cityManagement)
                                 <tr>
-                                    <td class="text-center align-middle border" style="1px solid #ccc"><h4>{{$cityManagement->id}}</h4></td>
+                                    <td class="text-center align-middle border" style="1px solid #ccc"><h4>{{$loop->iteration}}</h4></td>
                                     <td class="text-center align-middle border ourItem" data-toggle="modal" data-target="#myModal">
                                         <h4>{{$cityManagement->name}}</h4>
                                         <input type="hidden" id="itemId" value = {{$cityManagement->id}}>

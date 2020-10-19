@@ -30,7 +30,7 @@
                             <tbody>
                                 @foreach($processes as $process)
                                     <tr class="p-3 mb-5 rounded">
-                                        <td class="text-center border align-middle"><a href="{{ route('processes.view', ['process' => $process]) }}"><h4>{{$process->id}}</h4></a></td>
+                                        <td class="text-center border align-middle"><a href="{{ route('processes.view', ['process' => $process]) }}"><h4>{{$loop->iteration}}</h4></a></td>
                                         <td class="w-25 text-center border align-middle"><h4>{{$process->name}}</h4></td>
                                         <td class="text-center border align-middle"><h4>{{$process->deadline}}</h4></td>
                                         <td class="text-right align-middle">

@@ -30,7 +30,7 @@
                             <tbody>
                             @foreach($processes as $process)
                                 <tr class="p-3 mb-5 rounded">
-                                    <td class="text-center align-middle border"><h4>{{$process->id}}</h4></td>
+                                    <td class="text-center align-middle border"><h4>{{$loop->iteration}}</h4></td>
                                     <td class="text-center align-middle border"><h4>{{$process->name}}</h4></td>   
                                     <td class="text-center align-middle border">
                                         <button class="rounded-circle bg-white active:border-0" onclick="window.location='{{route('applications.index', ['process' => $process])}}'">

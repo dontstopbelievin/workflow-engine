@@ -55,6 +55,9 @@
                                 @isset($application->cadastral_number)
                                     <li class="list-group-item">Кадастровый номер: {{$application->cadastral_number ?? ''}}</li>
                                 @endisset
+                                @isset($application->attachment)
+                                    <li class="list-group-item">Загруженный документ:  <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></li>
+                                @endisset
                             </ul>
                         </div>
                         

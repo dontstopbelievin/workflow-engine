@@ -32,7 +32,7 @@
                             <tbody>
                             @foreach($users as $user)
                                 <tr class="p-3 mb-5 rounded">
-                                    <td class="text-center align-middle border"><h4>{{$user->id}}</h4></td>
+                                    <td class="text-center align-middle border"><h4>{{$loop->iteration}}</h4></td>
                                     <td class="text-center align-middle border"><h4>{{$user->name}}</h4></td>
                                     <td class="text-center align-middle border"><h4>{{$user->phone}}</h4></td>
                                     <td class="text-center align-middle border"><h4>{{$user->email}}</h4></td>

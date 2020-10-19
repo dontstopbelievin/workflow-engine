@@ -31,7 +31,7 @@
                             <tbody>
                             @foreach($arrayApps as $app)
                                 <tr class="p-3 mb-5 rounded">
-                                    <td class="text-center align-middle border"><h4>{{$app["id"]}}</h4></td>
+                                    <td class="text-center align-middle border"><h4>{{$loop->iteration}}</h4></td>
                                     <td class="text-center align-middle border"><h4>{{$app["name"] ?? '' }}</h4></td>
                                     <td class="text-center align-middle border"><h4>{{$app["status"] ?? ''}}</h4></td>
                                     <td class="text-center align-middle border">
