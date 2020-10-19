@@ -20,18 +20,18 @@
                                 <thead>
                                     <tr class="p-3 mb-5 rounded text-secondary">
                                         <th class="text-center"><h6>№</h6></th>
-                                        <th class="text-center"><h6>Наименование поля</h6></th>
-                                        <th class="text-center"><h6>Тип вводимого</h6></th>
-                                        <th class="text-center"><h6>Тип сохраняемого</h6></th>
+                                        <th class="text-left"><h6>Наименование поля</h6></th>
+                                        <th class="text-left"><h6>Тип вводимого</h6></th>
+                                        <th class="text-left"><h6>Тип сохраняемого</h6></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($dictionaries as $item)
                                     <tr class="p-3 mb-5 rounded">
-                                        <td class="text-center align-middle border"><h4>{{$loop->iteration}}</h4></td>
-                                        <td class="text-center align-middle border"><h4>{{$item["labelName"]}}</h4></td>
-                                        <td class="text-center align-middle border"><h4>{{$item["inputName"]}}</h4></td>
-                                        <td class="text-center align-middle border"><h4>{{$item["insertName"]}}</h4></td>
+                                        <td class="text-center align-middle border"><h5>{{$loop->iteration}}</h5></td>
+                                        <td class="text-left align-middle border"><h5>{{$item["labelName"]}}</h5></td>
+                                        <td class="text-left align-middle border"><h5>{{$item["inputName"]}}</h5></td>
+                                        <td class="text-left align-middle border"><h5>{{$item["insertName"]}}</h5></td>
                                     </tr>   
                                 @endforeach                             
                                 </tbody>
