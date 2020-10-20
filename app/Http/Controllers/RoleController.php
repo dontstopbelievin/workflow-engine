@@ -42,8 +42,12 @@ class RoleController extends Controller
     }
 
     public function edit(Role $role) {
+        if(isset($role->cityManagement->id)) {
+            $cityManagements = CityManagement::all()->whereNotIn('id', [$role->cityManagement->id]);
+        } else {
+            $cityManagements = CityManagement::all();
+        }
 
-        $cityManagements = CityManagement::all();
         return view('role.edit', compact('role','cityManagements'));
     }
 
