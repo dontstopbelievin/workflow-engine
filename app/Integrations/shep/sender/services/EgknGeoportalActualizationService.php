@@ -18,7 +18,7 @@ class EgknGeoportalActualizationService extends ShepService implements XmlBuilde
 
     public function buildXml(array $aArguments)
     {
-        include_once app_path('Integrations/shep/arrays/egkn-status.php');
+        include_once app_path('Integrations/shep/arrays/egkn-geoportal-actualization.php');
         $sUnsignedXml = ShepUtil::arrayToXML($aData);
         $sUnsignedXml = str_replace('<Request>', '<ns3:Request>', $sUnsignedXml);
         $sUnsignedXml = str_replace('</Request>', '</ns3:Request>', $sUnsignedXml);
