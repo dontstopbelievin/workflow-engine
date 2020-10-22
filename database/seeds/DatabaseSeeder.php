@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(SelectOptionSeeder::class);
         $this->call(ProcessSeeder::class);
         $this->call(DictionarySeeder::class);
+        $this->call(UserSeeder::class);
 
     }
 }

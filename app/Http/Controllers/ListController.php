@@ -22,6 +22,7 @@ class ListController extends Controller
     }
 
     public function delete(Request $request) {
+
         Item::where('id', $request->id)->delete();
     }
 
