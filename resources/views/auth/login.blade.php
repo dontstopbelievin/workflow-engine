@@ -1,10 +1,15 @@
 @extends('layouts.app')
 
+@section('title')
+    Авторизация
+@endsection
+
 @section('content')
 
     <html :class="{ 'theme-dark': dark } bg-gray-50 dark:bg-gray-900" x-data="data()" lang="en">
 
     <head>
+        <title>Авторизация</title>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
             rel="stylesheet" />
         <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
@@ -48,7 +53,7 @@
                                 <!-- You should use a button here, as the anchor is only used for the example  -->
                                 <button type="submit"
                                     class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-                                    href="../index.html">
+                                    href="/index">
                                     Авторизоваться
                                 </button>
 
@@ -56,7 +61,7 @@
                             <hr class="my-8" />
 
                             <a class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                                href="/reset">
+                                href="/password/reset">
                                 Забыли пароль?
                             </a>
                             <p class="mt-1">

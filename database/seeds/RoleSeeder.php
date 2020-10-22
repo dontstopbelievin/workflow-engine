@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\CityManagement;
+use Illuminate\Support\Facades\DB;
 
 class RoleSeeder extends Seeder
 {

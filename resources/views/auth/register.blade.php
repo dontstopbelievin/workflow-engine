@@ -1,10 +1,15 @@
-{{-- @extends('layouts.app')
+@extends('layouts.app')
+
+@section('title')
+    Регистрация
+@endsection
 
 @section('content')
 
     <html :class="{ 'theme-dark': dark } bg-gray-50 dark:bg-gray-900" x-data="data()" lang="en">
 
     <head>
+        <title>Регистрация</title>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
             rel="stylesheet" />
         <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
