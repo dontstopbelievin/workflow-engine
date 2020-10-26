@@ -72,6 +72,23 @@ class ApplicationController extends Controller
         $records = $this->getRecords($application->id, $table->id);
 
         $canApprove = $roleId === $statusId; //может ли специалист подвисывать услугу
+
+        //parallel approve
+        $toMultipleRoles = [];
+        if ($canApprove) {
+            $appRoutes = json_decode($this->getAppRoutes($application->process_id));
+            $index = $application->index_main;
+            $nextRole = $appRoutes[$index];
+            $hasMultipleOptions = $this->hasMultipleOptions($process, $nextRole);
+            if (empty($hasMultipleOptions)) {
+                $toMultipleRoles["exists"] = false;
+            } else {
+                $toMultipleRoles["exists"] = true;
+                $toMultipleRoles["roleOptions"] = $hasMultipleOptions;
+            }
+        }
+//        dd($toMultipleRoles);
+
         $toCitizen = false;
         $backToMainOrg = false;
         $userRole = Role::find($roleId);
@@ -160,7 +177,20 @@ class ApplicationController extends Controller
                 $templateTableFields = $this->filterTemplateFieldsTable($templateTableFields, $exceptionArray);
             }
         }
-        return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray'));
+        return view('application.view', compact('application','toMultipleRoles','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray'));
+    }
+
+    private function hasMultipleOptions($process, $role) {
+        $parallelRoles = $process->roles()->where('is_parallel', '<>', 0)->get();
+        $parallelRole = $parallelRoles->where('name', $role)->first();
+        $isParallelInt = $parallelRole->pivot->is_parallel;
+        $pRolesArr = [];
+        foreach($parallelRoles as $pRole) {
+            if ($pRole->pivot->is_parallel === $isParallelInt) {
+                array_push($pRolesArr, $pRole);
+            }
+        }
+        return $pRolesArr;
     }
 
     public function create(Process $process) {
@@ -226,7 +256,6 @@ class ApplicationController extends Controller
         $template = Template::where('id', $templateId)->first();
         $templateName = $template->name;
         $templateTable = $this->getTemplateTableName($templateName);
-
         $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
         $user = Auth::user();
         $role = $user->role;

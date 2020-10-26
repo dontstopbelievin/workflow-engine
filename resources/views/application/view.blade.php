@@ -294,6 +294,17 @@
                                         <input type="hidden" name="process_id" value = {{$process->id}}>
                                         <button class="btn btn-warning" style="margin-bottom: 70px;" type="submit">Согласовать</button>
                                     </form>
+
+                                    @elseif($toMultipleRoles["exists"])
+
+                                                <select name="role" id="role">
+                                                    @foreach($toMultipleRoles["roleOptions"] as $role)
+                                                    <option value="{{$role->name}}">{{$role->name}}</option>
+                                                    @endforeach
+                                                </select>
+
+
+
                                 @else
                                     @if(isset($sendToSubRoute["name"]))
                                         @if($application->index_sub_route === Null)
