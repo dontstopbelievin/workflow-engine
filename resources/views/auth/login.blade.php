@@ -9,7 +9,7 @@
     <html :class="{ 'theme-dark': dark } bg-gray-50 dark:bg-gray-900" x-data="data()" lang="en">
 
     <head>
-        <title>Авторизация</title>
+        <title>Вход без ЭЦП</title>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
             rel="stylesheet" />
         <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
@@ -33,7 +33,7 @@
                                 <a href="#" class="p-4"><img src="/images/astana-logo.png"></a>
                             </div>
                             <h1 class="mb-4 text-center text-xl font-semibold text-gray-700 dark:text-gray-200">
-                                Авторизация
+                                Вход без ЭЦП
                             </h1>
                             <form class="flex flex-col pt-3 md:pt-8" action="/login" method="post">
                                 @csrf
@@ -59,17 +59,18 @@
 
                             </form>
                             <hr class="my-8" />
-
-                            <a class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+                            <a class="flex flex-wrap text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+                                href="/loginwithecp">
+                                Вход по ЭЦП
+                            </a>
+                            <a class="pt-2 text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
                                 href="/password/reset">
                                 Забыли пароль?
+                            </a>                            
+                            <a class="pt-2 flex flex-wrap text-sm font-bold text-purple-600 dark:text-purple-400 hover:underline"
+                                href="/register">
+                                Зарегистрироваться
                             </a>
-                            <p class="mt-1">
-                                <a class="text-sm font-bold text-purple-600 dark:text-purple-400 hover:underline"
-                                    href="/register">
-                                    Зарегистрироваться
-                                </a>
-                            </p>
                         </div>
                     </div>
                 </div>
