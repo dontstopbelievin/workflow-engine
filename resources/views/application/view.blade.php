@@ -294,17 +294,6 @@
                                         <input type="hidden" name="process_id" value = {{$process->id}}>
                                         <button class="btn btn-warning" style="margin-bottom: 70px;" type="submit">Согласовать</button>
                                     </form>
-
-                                    @elseif($toMultipleRoles["exists"])
-
-                                                <select name="role" id="role">
-                                                    @foreach($toMultipleRoles["roleOptions"] as $role)
-                                                    <option value="{{$role->name}}">{{$role->name}}</option>
-                                                    @endforeach
-                                                </select>
-
-
-
                                 @else
                                     @if(isset($sendToSubRoute["name"]))
                                         @if($application->index_sub_route === Null)
@@ -323,7 +312,21 @@
                                     <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
                                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
-                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
+                                        @if($toMultipleRoles["exists"])
+                                            <form action="{{ route('applications.multipleApprove', ['application_id' => $application->id]) }}" method="post"">
+                                                @csrf
+                                                <select name="role" id="role">
+                                                @foreach($toMultipleRoles["roleOptions"] as $role)
+                                                    <option value="{{$role->id}}">{{$role->name}}</option>
+                                                @endforeach
+                                                </select>
+                                                <input type="hidden" name="process_id" value = {{$process->id}}>
+                                                <button type="submit">Submit</button>
+                                            </form>
+                                            @else
+                                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
+                                            @endif
+
                                     </div>
                                 @endif
                             @endif

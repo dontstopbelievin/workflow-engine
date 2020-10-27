@@ -60,6 +60,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('applications/revision', 'ApplicationController@revision')->name('applications.revision');
     Route::post('applications/sendToSubRoute', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
     Route::post('applications/backToMainOrg/{application_id}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
+    Route::post('applications/multipleApprove/{application_id}', 'ApplicationController@multipleApprove')->name('applications.multipleApprove');
+
     Route::get('download/{file}', 'ApplicationController@download')->name('applications.download');
 
 });
