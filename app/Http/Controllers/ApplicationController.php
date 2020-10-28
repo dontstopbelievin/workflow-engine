@@ -292,6 +292,7 @@ class ApplicationController extends Controller
 
     public function approve(Request $request)
     {
+//        dd($request->all());
         $process = Process::find($request->process_id);
         $tableName = $this->getTableName($process->name);
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
@@ -419,7 +420,20 @@ class ApplicationController extends Controller
 
     public function toCitizen($id, Request $request)
     {
+        $applicationId = $request->application_id;
         $process = Process::find($request->process_id);
+        $fieldValues = $request->fieldValues;
+        $tableName = $this->getTableName($process->name);
+        $application = DB::table($tableName)->where('id', $applicationId)->first();
+        $table = CreatedTable::where('name', $tableName)->first();
+        $templateId = $process->accepted_template_id;
+        $template = Template::where('id', $templateId)->first();
+        $templateName = $template->name;
+        $templateTable = $this->getTemplateTableName($templateName);
+        if ($fieldValues !== Null) {
+            $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
+        }
+
         $tableName = $this->getTableName($process->name);
         $statusCount = count(Status::all());
         $status = Status::find($statusCount);
