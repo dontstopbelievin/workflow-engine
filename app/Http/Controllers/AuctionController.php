@@ -84,7 +84,7 @@ class AuctionController extends Controller
         $auction->restrictions_and_burdens_rus = $request->RestrictionsAndBurdensRus;
         $auction->restrictions_and_burdens_kaz = $request->RestrictionsAndBurdensKaz;
 
-        $auction->coordinates = $request->Coordinates;
+        $auction->coordinates = 'MULTIPOLYGON((('.$request->Coordinates.')))';
         $auction->coordinate_system = $request->CoordinateSystem;
 
         $auction->instalment_selling = $request->InstalmentSelling;

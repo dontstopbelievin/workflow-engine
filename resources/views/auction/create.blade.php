@@ -21,7 +21,7 @@
                         <div>
                             <form action="{{ route('auction.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
-                                <div class="col-xs-6">
+                                <div class="col-xs-6" style="width: 400px">
                                     <h4>Поля для аукциона</h4>
                                     <label style="display:none" for="LotID">Идентификатор лота (id)</label>
                                     <input type="hidden" class="form-control" name="LotID" id="LotID" >
@@ -137,21 +137,6 @@
                                     <br>
                                     <br>
 
-                                    {{--<h4>Покупатель (Тип описывающий формат покупателя)</h4>--}}
-                                    {{--<label for="IINBIN">ИИН/БИН</label>--}}
-                                    {{--<input type="text" class="form-control" name="IINBIN" id="IINBIN" required>--}}
-
-                                    {{--<label for="NameRus">ФИО/Наименование рус.яз.</label>--}}
-                                    {{--<input type="text" class="form-control" name="NameRus" id="NameRus" required>--}}
-
-                                    {{--<label for="NameKaz">ФИО/Наименование каз.яз.</label>--}}
-                                    {{--<input type="text" class="form-control" name="NameKaz" id="NameKaz" required>--}}
-
-                                    {{--<label for="IsFl">ФЛ? Обязательноо поле = true or false</label>--}}
-                                    {{--<input type="radio" class="form-control" name="IsFl" checked value="true">Да--}}
-                                    {{--<input type="radio" class="form-control" name="IsFl" checked value="false">Нет--}}
-                                    {{--<br>--}}
-
                                     <h4>Справочники</h4>
                                     <label for="Target">Целевое назначение (справочник ЕГКН)</label>
                                     <select name="Target" class="form-control">
@@ -203,31 +188,11 @@
                                         @endif
                                     </select>
                                     <br>
-
-                                    {{--<h4>Прикрепленые документы</h4>--}}
-                                    {{--<label>Документы</label>--}}
-                                    {{--<div class="custom-file mt-1 col-md-12">--}}
-                                        {{--<input type="file" class="custom-file-input" id="Files" name="Files">--}}
-                                        {{--<label class="custom-file-label" for="Files ">Выберите Файл</label>--}}
-                                    {{--</div>--}}
-                                    {{--<br>--}}
-
                                 </div>
 
                                 <div class="col-xs-6">
 
-                                    {{--<h4>Координаты</h4>--}}
-                                    {{--<label for="Coordinates1">Координаты 1</label>--}}
-                                    {{--<input type="text" class="form-control" name="Coordinates1" id="Coordinates1" >--}}
-
-                                    {{--<label for="Coordinates2">Координаты 2</label>--}}
-                                    {{--<input type="text" class="form-control" name="Coordinates2" id="Coordinates2" >--}}
-
-                                    {{--<label for="Coordinates3">Координаты 3</label>--}}
-                                    {{--<input type="text" class="form-control" name="Coordinates3" id="Coordinates3" >--}}
-
-                                    {{--<label for="Coordinates4">Координаты 4</label>--}}
-                                    {{--<input type="text" class="form-control" name="Coordinates4" id="Coordinates4" >--}}
+                                    <div style="width: 600px; height: 400px">@include('auction.map')</div>
 
                                     <label for="Coordinates">Координаты</label>
                                     <input type="text" class="form-control" name="Coordinates" id="Coordinates" >

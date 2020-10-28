@@ -43,12 +43,8 @@ class CreateAuctionsTable extends Migration
             $table->string('restrictions_and_burdens_rus')->nullable();
             $table->string('restrictions_and_burdens_kaz')->nullable();
 
-//            $table->string('coordinates_1')->nullable();
-//            $table->string('coordinates_2')->nullable();
-//            $table->string('coordinates_3')->nullable();
-//            $table->string('coordinates_4')->nullable();
-            $table->string('coordinates')->nullable();
-            $table->string('coordinate_system')->nullable();
+            $table->text('coordinates')->nullable();
+            $table->text('coordinate_system')->nullable();
 
             $table->string('instalment_selling')->nullable();
             $table->integer('installment_period')->nullable();
