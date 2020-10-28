@@ -30,7 +30,7 @@ class ProcessController extends Controller
         $parentId = $this->getParentRoleId($process->id);
         $tableName = $this->getTableName($process->name);
         $tableColumns = $this->getColumns($tableName);
-        $tableColumns = array_slice($tableColumns, 0, -7);
+        $tableColumns = array_slice($tableColumns, 0, -10);
         if ($parentId === 0) {
             return view('process.view', compact('process','tableColumns'));
         } 
@@ -70,7 +70,7 @@ class ProcessController extends Controller
         $roles = Role::where('name' ,'<>', 'Заявитель')->get();
         $tableName = $this->getTableName($process->name);
         $tableColumns = $this->getColumns($tableName);
-        $tableColumns = array_slice($tableColumns, 0, -7);
+        $tableColumns = array_slice($tableColumns, 0, -10);
         $parentId = $this->getParentRoleId($process->id);
         $organizations = CityManagement::all();
         $mainOrg = CityManagement::find($process->main_organization_id);

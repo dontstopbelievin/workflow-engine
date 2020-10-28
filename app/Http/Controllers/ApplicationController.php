@@ -110,7 +110,6 @@ class ApplicationController extends Controller
         } else {
             $rejectReasonArray["fromRole"] = Null;
         }
-        
         //
         $sendToSubRoute = [];
         $sendToSubRoute["isset"] = false;
@@ -142,7 +141,6 @@ class ApplicationController extends Controller
         $mainRoles = $this->getIterateRoles($process);
         $subRoles = $this->getSubRoutes($process->id);
         $allRoles = $this->mergeRoles($mainRoles, $subRoles);
-
 
         $templateId = $process->accepted_template_id;
         $template = Template::where('id', $templateId)->first();
@@ -189,6 +187,7 @@ class ApplicationController extends Controller
     public function store(Request $request) {
 
         $input = $request->input();
+        $input["attachment"] = $request->file('attachment')->store('applicant-attachments','public');
         $applicationTableFields = array_slice($input, 1, sizeof($input)-1);
         $process = Process::find($request->process_id);
         $routes = $this->getRolesWithoutParent($process->id);
@@ -202,9 +201,18 @@ class ApplicationController extends Controller
 
         $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
         $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
-        $logsArray = $this->getLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
+        $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
         DB::table('logs')->insert( $logsArray);
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
+    }
+
+    public function download($file) {
+        echo ($file);
+        $path = storage_path().'/'.'app/'.$path;
+        dd($path);
+        if (file_exists($path)) {
+            return response()->download($path);
+        }
     }
 
     public function approve(Request $request) {
@@ -348,8 +356,7 @@ class ApplicationController extends Controller
     }
 
     public function revision(Request $request) {
-        
-        // dd($request->all());
+
         $roleToRevise = $request->roleToRevise; //Роль, которому форма отправляется на доработку
         $mainCounter = 0;
         $subCounter = 0;
@@ -403,6 +410,16 @@ class ApplicationController extends Controller
         $logsArray = [];
         $logsArray["status_id"] = $statusId;
         $logsArray["role_id"] = $roleId;
+        $logsArray["table_id"] = $tableId;
+        $logsArray["application_id"] = $applicationId;
+        $logsArray["created_at"] = Carbon::now();
+        return $logsArray;
+    }
+
+    private function getFirstLogs($statusId, $tableId, $applicationId, $roleId) {
+        $logsArray = [];
+        $logsArray["status_id"] = $statusId;
+        $logsArray["role_id"] = 1;
         $logsArray["table_id"] = $tableId;
         $logsArray["application_id"] = $applicationId;
         $logsArray["created_at"] = Carbon::now();
@@ -509,6 +526,7 @@ class ApplicationController extends Controller
     }
 
     private function getAllDictionariesWithOptions($dictionariesWithOptions) {
+
         $arrayToFront = [];
         foreach($dictionariesWithOptions as $item) {
             $replaced = str_replace(' ', '_', $item["name"]);

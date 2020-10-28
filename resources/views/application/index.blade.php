@@ -23,17 +23,17 @@
                             <thead>
                                 <tr class="p-3 mb-5 rounded text-secondary">
                                     <th class="text-center border-0"><h6>№</h6></th>
-                                    <th class="text-center border-0"><h6>Имя заявителя</h6></th>
-                                    <th class="text-center border-0"><h6>Статус заявки</h6></th>
+                                    <th class="text-left border-0"><h6>Имя заявителя</h6></th>
+                                    <th class="text-left border-0"><h6>Статус заявки</h6></th>
                                     <th class="text-center border-0"><h6>Действия</h6></th>
                                 </tr>
                             </thead>
                             <tbody>
                             @foreach($arrayApps as $app)
                                 <tr class="p-3 mb-5 rounded">
-                                    <td class="text-center align-middle border"><h4>{{$app["id"]}}</h4></td>
-                                    <td class="text-center align-middle border"><h4>{{$app["name"] ?? '' }}</h4></td>
-                                    <td class="text-center align-middle border"><h4>{{$app["status"] ?? ''}}</h4></td>
+                                    <td class="text-center align-middle border"><h5>{{$loop->iteration}}</h5></td>
+                                    <td class="text-left align-middle border"><h5>{{$app["name"] ?? '' }}</h5></td>
+                                    <td class="text-left align-middle border"><h5>{{$app["status"] ?? ''}}</h5></td>
                                     <td class="text-center align-middle border">
                                         <button class="rounded-circle bg-white" onclick="window.location='{{route('applications.view', ['process_id' => $process["id"] , 'application_id' => $app["id"]])}}'">
                                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

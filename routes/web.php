@@ -38,6 +38,10 @@ Route::get('/loginwithecp', function () {
 
 Auth::routes();
 
+Route::get('/integrations/{type}', 'IntegrationController@index')->middleware('guest');
+Route::post('/integrations/shep/receiver', 'IntegrationController@receive')->middleware('guest');
+Route::post('/integrations/shep/sync-request-receiver', 'IntegrationController@sync')->middleware('guest');
+Route::post('/integrations/shep/async-request-receiver', 'IntegrationController@async')->middleware('guest');
 
 Route::get('/integrations/{shep}','EdsSignController@example')->middleware('guest');
 Route::post('/integrations/shep','EdsSignController@receive')->middleware('guest');
@@ -46,17 +50,19 @@ Route::post('/integrations/shep','EdsSignController@receive')->middleware('guest
 Route::post('soap', 'XMLController@index')->middleware('guest');
 
 Route::post('loginwithecp/bar')->name('loginwithecp.store')->uses('EdsSignController@loginByCert')->middleware('guest');
-Route::group(['middleware' => ['admin', 'auth']], function () {
+Route::group(['middleware' => ['auth']], function () {
+
     Route::get('services', 'ApplicationController@service')->name('applications.service');
-Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');
-Route::get('application-view/{process_id}/{application_id}', 'ApplicationController@view')->name('applications.view');
-Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
-Route::post('applications/store', 'ApplicationController@store')->name('applications.store');
-Route::post('applications/approve', 'ApplicationController@approve')->name('applications.approve');
-Route::post('applications/reject', 'ApplicationController@reject')->name('applications.reject');
-Route::post('applications/revision', 'ApplicationController@revision')->name('applications.revision');
-Route::post('applications/sendToSubRoute', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
-Route::post('applications/backToMainOrg/{application_id}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
+    Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');
+    Route::get('application-view/{process_id}/{application_id}', 'ApplicationController@view')->name('applications.view');
+    Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
+    Route::post('applications/store', 'ApplicationController@store')->name('applications.store');
+    Route::post('applications/approve', 'ApplicationController@approve')->name('applications.approve');
+    Route::post('applications/reject', 'ApplicationController@reject')->name('applications.reject');
+    Route::post('applications/revision', 'ApplicationController@revision')->name('applications.revision');
+    Route::post('applications/sendToSubRoute', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
+    Route::post('applications/backToMainOrg/{application_id}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
+    Route::get('download/{file}', 'ApplicationController@download')->name('applications.download');
 
 });
 
@@ -110,8 +116,8 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('templates/create', 'TemplateController@create')->name('template.create');
     Route::post('templates/create', 'TemplateController@store')->name('template.store');
     Route::get('template-edit/{template}', 'TemplateController@edit')->name('template.edit');
-    Route::put('template-update/{template}', 'TemplateController@update')->name('template.update');
-    Route::delete('template-delete/{template}', 'TemplateController@delete')->name('template.delete');
+    Route::post('template-update/{id}', 'TemplateController@update')->name('template.update');
+    Route::post('template-delete/{id}', 'TemplateController@delete')->name('template.delete');
 
     Route::get('template-field-create/{template}', 'TemplateFieldsController@create')->name('templatefield.create');
     Route::post('template-field-create', 'TemplateFieldsController@store')->name('templatefield.store');
@@ -119,7 +125,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('auction', 'AuctionController@index')->name('auction.index');
     Route::get('auction/create', 'AuctionController@create')->name('auction.create');
     Route::post('auction/store', 'AuctionController@store')->name('auction.store');
-    Route::get('auction/sender/{id}', 'AuctionController@sender')->name('auction.sender');
+    Route::get('auction/send/{id}', 'AuctionController@sendToEgkn')->name('auction.send');
 
     Route::get('select-options/create', 'SelectOptionController@create')->name('selectoptions.create');
     Route::post('/select-options/store', 'SelectOptionController@store')->name('selectoptions.store');
@@ -138,7 +144,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::post('process-add-role/{process}', 'ProcessController@addRole')->name('processes.addRole');
     Route::delete('process-delete/{process}', 'ProcessController@delete')->name('processes.delete');
 
-    
+
     View::composer(['*'], function($view) {
         $usersCount = count(User::active()->get());
         $rolesCount = count(Role::all());

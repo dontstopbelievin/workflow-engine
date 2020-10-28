@@ -23,15 +23,15 @@
                             <thead>
                                 <tr class="p-3 mb-5 rounded text-secondary">
                                     <th class="text-center border-0"><h6>№</h6></th>
-                                    <th class="text-center border-0"><h6>Наименование услуги</h6></th>
+                                    <th class="text-left border-0"><h6>Наименование услуги</h6></th>
                                     <th class="text-center border-0"><h6>Действия</h6></th>
                                 </tr>
                             </thead>
                             <tbody>
                             @foreach($processes as $process)
                                 <tr class="p-3 mb-5 rounded">
-                                    <td class="text-center align-middle border"><h4>{{$process->id}}</h4></td>
-                                    <td class="text-center align-middle border"><h4>{{$process->name}}</h4></td>   
+                                    <td class="text-center align-middle border"><h5>{{$loop->iteration}}</h5></td>
+                                    <td class="text-left align-middle border"><h5>{{$process->name}}</h5></td>
                                     <td class="text-center align-middle border">
                                         <button class="rounded-circle bg-white active:border-0" onclick="window.location='{{route('applications.index', ['process' => $process])}}'">
                                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

@@ -31,7 +31,7 @@
                         <div class="tab">
                             <button class="tablinks" onclick="openTab(event, 'applicationInfo')">Информация о заявителе</button>
                             <button class="tablinks" onclick="openTab(event, 'specialistFields')">Поля заполненные специалистами</button>
-                            <button class="tablinks" onclick="openTab(event, 'comments')">Комментарии</button>
+                            <button class="tablinks" onclick="openTab(event, 'commentsTab')">Комментарии</button>
                             <button class="tablinks" onclick="openTab(event, 'logs')">Ход согласования</button>
                             <button class="tablinks" onclick="openTab(event, 'revisionReasonTab')">Причина отправки на доработку</button>
                             <button class="tablinks" onclick="openTab(event, 'rejectReasonTab')">Причина отказа</button>
@@ -54,6 +54,9 @@
                                 @endisset
                                 @isset($application->cadastral_number)
                                     <li class="list-group-item">Кадастровый номер: {{$application->cadastral_number ?? ''}}</li>
+                                @endisset
+                                @isset($application->attachment)
+                                    <li class="list-group-item">Загруженный документ:  <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></li>
                                 @endisset
                             </ul>
                         </div>
@@ -92,7 +95,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div id="comments" class="tabcontent">
+                        <div id="commentsTab" class="tabcontent">
                             <table class="table" style="background: white;">
                                 <thead>
                                     <tr>
@@ -102,14 +105,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @isset($comments)
-                                    @foreach ($comments as $comment)
-                                        <tr>
-                                            <td>{{$comment["role"]}}</td>
-                                            <td>{{$comment["comment"]}}</td>
-                                            <td>{{$comment["created_at"]}}</td>
-                                        </tr>
-                                    @endforeach
+                                @isset($comments[0])
+                                    <tr>
+                                        <td>{{$comments[0]["role"]}}</td>
+                                        <td>{{$comments[0]["comment"]}}</td>
+                                        <td>{{$comments[0]["created_at"]}}</td>
+                                    </tr>
                                 @endisset
                                 </tbody>
                             </table>
@@ -262,13 +263,19 @@
                             @if($canApprove)
                                     @isset($templateFields)
                                         <h4 class="card-title text-center" style="margin-top:50px;">Поля Шаблона</h4>
-                                        <form id = "templateFieldsId" method="POST">
+                                        <form id = "templateFieldsId" method="POST" enctype="multipart/form-data">
                                             @foreach($templateFields as $item)
                                                 <div class="form-group row">
                                                     <label for="{{$item->name}}" class="col-md-4 col-form-label text-md-right">{{ __($item->label_name) }}</label>
-                                                    <div class="col-md-6">
-                                                        <input type="text" class="form-control"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
-                                                    </div>
+                                                    @if($item->input_type_id === 1)
+                                                        <div class="col-md-6">
+                                                            <input type="text" class="form-control"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
+                                                        </div>
+                                                    @elseif($item->input_type_id === 2)
+                                                        <div class="col-md-6">
+                                                            <input type="file" class="form-control"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             @endforeach
                                         </form>
@@ -285,15 +292,22 @@
                                     <form action="{{ route('applications.backToMainOrg', ['application_id' => $application->id]) }}" method="post">
                                         @csrf
                                         <input type="hidden" name="process_id" value = {{$process->id}}>
-                                        <button class="btn btn-warning" style="margin-bottom: 70px;" type="submit">Отправить обратно в организацию</button>
+                                        <button class="btn btn-warning" style="margin-bottom: 70px;" type="submit">Согласовать</button>
                                     </form>
                                 @else
                                     @if(isset($sendToSubRoute["name"]))
-                                        <form action="{{ route('applications.sendToSubRoute', ['application_id' => $application->id]) }}" method="post">
+                                        @if($application->index_sub_route === Null)
+                                                    <form action="{{ route('applications.sendToSubRoute', ['application_id' => $application->id]) }}" method="post">
+                                                        @csrf
+                                                        <input type="hidden" name="process_id" value = {{$process->id}}>
+                                                        <button class="btn btn-warning" type="button" data-toggle="modal" data-target="#sendToSubRouteId">Отправить в {{$sendToSubRoute["name"]}}</button>
+                                                    </form>
+                                        @else <form action="{{ route('applications.sendToSubRoute', ['application_id' => $application->id]) }}" method="post">
                                             @csrf
                                             <input type="hidden" name="process_id" value = {{$process->id}}>
-                                            <button class="btn btn-warning" type="button" data-toggle="modal" data-target="#sendToSubRouteId">Отправить в {{$sendToSubRoute["name"]}}</button>
+                                            <button class="btn btn-warning" type="button" data-toggle="modal" data-target="#sendToSubRouteId">Согласовать в {{$sendToSubRoute["name"]}}</button>
                                         </form>
+                                                @endif
                                     @endif
                                     <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
