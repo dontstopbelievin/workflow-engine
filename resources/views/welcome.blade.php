@@ -107,6 +107,8 @@
                                 <option type="submit" onclick="window.open('/policy docs/13 - Правила проведения внутреннего аудита.pdf')">Правила проведения внутр. аудита</option>
                                 <option type="submit" onclick="window.open('/policy docs/14 - Правила использования сети и почты.pdf')">Правила использования сети и почты</option>
                                 <option type="submit" onclick="window.open('/policy docs/15 - Правила разгранечения прав доступа.pdf')">Правила разгранечения прав доступа</option>
+                                <option type="submit" onclick="window.open('/policy docs/16 - Руководство админ. по сопровождению.pdf')">Руководство админ по сопровождению</option>
+                                
                             </select>
                         </div>
                     </div>
