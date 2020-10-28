@@ -10,6 +10,8 @@ use App\Application;
 use App\CityManagement;
 use App\Dictionary;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 
 /*
 |--------------------------------------------------------------------------

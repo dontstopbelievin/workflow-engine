@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Авторизация</title>
+   
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -58,7 +58,7 @@
         .links>a {
             color: #636b6f;
             padding: 0 25px;
-            font-size: 13px;
+            font-size: 10px;
             font-weight: 600;
             letter-spacing: .1rem;
             text-decoration: none;
@@ -114,7 +114,7 @@
         .links>a {
             color: #636b6f;
             padding: 0 25px;
-            font-size: 13px;
+            font-size: 10px;
             font-weight: 600;
             letter-spacing: .1rem;
             text-decoration: none;
@@ -133,7 +133,7 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                     <!-- Right Side Of Navbar -->
-                    <div class="top-right links">
+                    <div class="top-right links text-center">
                             <!-- Authentication Links -->
                             @guest
                                 <a href="{{ route('login') }}">Авторизация</a>
@@ -149,7 +149,7 @@
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                         <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
                                                              document.getElementById('logout-form').submit();">
-                                            {{ __('Logout') }}
+                                            {{ __('Выйти') }}
                                         </a>
 
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST"
