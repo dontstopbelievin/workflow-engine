@@ -152,9 +152,9 @@
                 </div>
                     <a href="{{ route('login') }}">Авторизоваться</a>
 
-                    @if (Route::has('register'))
+                    {{-- @if (Route::has('register'))
                         <a href="{{ route('register') }}">Зарегистрироваться</a>
-                    @endif
+                    @endif --}}
                 @endauth
             </div>
         @endif
