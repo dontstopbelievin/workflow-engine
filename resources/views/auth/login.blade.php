@@ -67,10 +67,10 @@
                                 href="/password/reset">
                                 Забыли пароль?
                             </a>                            
-                            <a class="pt-2 flex flex-wrap text-sm font-bold text-purple-600 dark:text-purple-400 hover:underline"
+                            {{-- <a class="pt-2 flex flex-wrap text-sm font-bold text-purple-600 dark:text-purple-400 hover:underline"
                                 href="/register">
                                 Зарегистрироваться
-                            </a>
+                            </a> --}}
                         </div>
                     </div>
                 </div>
