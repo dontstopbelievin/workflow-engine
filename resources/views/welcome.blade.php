@@ -168,7 +168,7 @@
                         </h1>
                         <p class="mb-2 leading-relaxed">Для начала не забудьте пройти авторизацию</p>
                         <div class="flex justify-center">
-                            <a href="/services">
+                            <a href="/loginwithecp">
                                 <button
                                     class="inline-flex w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">Войти</button>
                             </a>

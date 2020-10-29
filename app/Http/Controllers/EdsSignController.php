@@ -12,6 +12,7 @@ class EdsSignController extends Controller
 {
     public function loginByCert(Request $request)
     {
+//        dd($request->all());
         $data = $request->data;
         $oDate = new \DateTime('now');
         preg_match('|<ds\:X509Certificate[^>]*?>(.*?)</ds\:X509Certificate>|si', $data, $x509Info);
@@ -33,7 +34,8 @@ class EdsSignController extends Controller
                 if (isset($aUser)) {
 //                    dd($aUser);
                   Auth::login($aUser);
-//                  return view('applications.services');
+//                  dd('helloworld');
+                    return Redirect::route('applications.service');
                 } else {
                     return response(['message'=>'Пользователь не существует в системе! Обратитесь администратору!'], 409);
                 }
