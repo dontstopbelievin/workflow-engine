@@ -71,15 +71,6 @@
         @if (Route::has('login'))
             <div class="top-right links text-center">
                 @auth
-                    <a class="inline-block" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                document.getElementById('logout-form').submit();">
-                        {{ __('Выйти') }}
-                    </a>
-
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
-                    </form>
-                @else
                     <!-- This is an example component -->
                     <div class="inline-flex md:flex-wrap">
                         <div class="relative inline-flex">
@@ -92,26 +83,73 @@
                             <select
                                 class="border border-gray-300 rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none">
                                 <option disabled class="font-bold">Правила информационной безопасности</option>
-                                <option type="submit" onclick="window.open('/policy docs/1 - Политика информ безопасности.pdf')">Политика информ. безопасности</option>
-                                <option type="submit" onclick="window.open('/policy docs/2 - Правила организации физ защиты.pdf')">Правила организации физ защиты</option>
-                                <option type="submit" onclick="window.open('/policy docs/3 - Правила использования моб устройств.pdf')">Правила организации моб. устройств</option>
-                                <option type="submit" onclick="window.open('/policy docs/4 - Регламент резервного копирования.pdf')">Регламент резерв. копирования</option>
-                                <option type="submit" onclick="window.open('/policy docs/5 - Правила использования крипто защиты.pdf')">Правила использования крипто защиты</option>
-                                <option type="submit" onclick="window.open('/policy docs/6 - Правила организации аутентификации.pdf')">Правила организации аутентификации</option>
-                                <option type="submit" onclick="window.open('/policy docs/7 - Правила организации антивирусного.pdf')">Правила организации антивирус.</option>
-                                <option type="submit" onclick="window.open('/policy docs/8 - Инструкция о порядке действий пользователей.pdf')">Инструкция о порядке действий</option>
-                                <option type="submit" onclick="window.open('/policy docs/9 - Методики оценки рисков.pdf')">Методики оценки рисков</option>
-                                <option type="submit" onclick="window.open('/policy docs/10 - Правила идент, классиф и маркировки.pdf')">Правила идентиф, классиф и маркир.</option>
-                                <option type="submit" onclick="window.open('/policy docs/11 - Правила обеспечения непрерывной.pdf')">Правила обеспечения непрерывной</option>
-                                <option type="submit" onclick="window.open('/policy docs/12 - Правила инвентаризации и паспортизации.pdf')">Правила инвент. и паспортизации</option>
-                                <option type="submit" onclick="window.open('/policy docs/13 - Правила проведения внутреннего аудита.pdf')">Правила проведения внутр. аудита</option>
-                                <option type="submit" onclick="window.open('/policy docs/14 - Правила использования сети и почты.pdf')">Правила использования сети и почты</option>
-                                <option type="submit" onclick="window.open('/policy docs/15 - Правила разгранечения прав доступа.pdf')">Правила разгранечения прав доступа</option>
-                                <option type="submit" onclick="window.open('/policy docs/16 - Руководство админ. по сопровождению.pdf')">Руководство админ по сопровождению</option>
-                                
+                                <option type="submit"
+                                    onclick="window.open('/policydocs/1_Политика_информ_безопасности.pdf')">Политика информ.
+                                    безопасности</option>
+                                <option type="submit"
+                                    onclick="window.open('/policydocs/2_Правила_организации_физ_защиты.pdf')">Правила
+                                    организации физ защиты</option>
+                                <option type="submit"
+                                    onclick="window.open('/policydocs/3_Правила_использования_моб_устройств.pdf')">
+                                    Правила организации моб. устройств</option>
+                                <option type="submit"
+                                    onclick="window.open('/policydocs/4_Регламент_резервного_копирования.pdf')">Регламент
+                                    резерв. копирования</option>
+                                <option type="submit"
+                                    onclick="window.open('/policydocs/5_Правила_использования_крипто_защиты.pdf')">
+                                    Правила использования крипто защиты</option>
+                                <option type="submit"
+                                    onclick="window.open('/policydocs/6_Правила_организации_аутентификации.pdf')">Правила
+                                    организации аутентификации</option>
+                                <option type="submit"
+                                    onclick="window.open('/policydocs/7_Правила_организации_антивирусного.pdf')">Правила
+                                    организации антивирус.</option>
+                                <option type="submit"
+                                    onclick="window.open('/policydocs/8_Инструкция_о_порядке_действий_пользователей.pdf')">
+                                    Инструкция о порядке действий</option>
+                                <option type="submit" 
+                                    onclick="window.open('/policydocs/9_Методики_оценки рисков.pdf')">
+                                    Методики оценки рисков</option>
+                                <option type="submit"
+                                    onclick="window.open('/policydocs/10_Правила_идент_классиф_и_маркировки.pdf')">
+                                    Правила идентиф, классиф и маркир.</option>
+                                <option type="submit"
+                                    onclick="window.open('/policydocs/11_Правила_обеспечения_непрерывной.pdf')">Правила
+                                    обеспечения непрерывной</option>
+                                <option type="submit"
+                                    onclick="window.open('/policydocs/12_Правила_инвентаризации_и_паспортизации.pdf')">
+                                    Правила инвент. и паспортизации</option>
+                                <option type="submit"
+                                    onclick="window.open('/policydocs/13_Правила_проведения_внутреннего_аудита.pdf')">
+                                    Правила проведения внутр. аудита</option>
+                                <option type="submit"
+                                    onclick="window.open('/policydocs/14_Правила_использования_сети_и_почты.pdf')">
+                                    Правила использования сети и почты</option>
+                                <option type="submit"
+                                    onclick="window.open('/policydocs/15_Правила_разгранечения_прав_доступа.pdf')">
+                                    Правила разгранечения прав доступа</option>
+                                <option type="submit"
+                                    onclick="window.open('/policydocs/16_Руководство_админ_по_сопровождению.pdf')">
+                                    Руководство админ по сопровождению</option>
+
                             </select>
                         </div>
                     </div>
+                    <a class="inline-block" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();">
+                        {{ __('Выйти') }}
+                    </a>
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                @else
+                <!-- This is an example component -->
+                <div class="inline-flex md:flex-wrap">
+                    <div class="relative inline-flex">
+                        <a class="" href="">Политика конфиденциальности</a>
+                    </div>
+                </div>
                     <a href="{{ route('login') }}">Авторизоваться</a>
 
                     @if (Route::has('register'))
