@@ -147,7 +147,7 @@
                 <!-- This is an example component -->
                 <div class="inline-flex md:flex-wrap">
                     <div class="relative inline-flex">
-                        <a class="" href="">Политика конфиденциальности</a>
+                        <a class="" href="/policydocs/Политика_конфиденциальности.pdf">Политика конфиденциальности</a>
                     </div>
                 </div>
                     <a href="{{ route('login') }}">Авторизоваться</a>
