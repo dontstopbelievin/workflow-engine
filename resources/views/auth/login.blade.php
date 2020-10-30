@@ -39,53 +39,37 @@
                                 @csrf
                                 <label class="block text-sm">
                                     <span class="text-gray-700 dark:text-gray-400">Ваш email</span>
-                                    <input type="email" name="email" id="email"
-                                        class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                                    <input type="email" name="email" id="email" value="{{ old('email') }}"
+                                        class="@error('email') is-invalid @enderror block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                                         placeholder="aset@gmail.com" />
+                                    @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
                                 </label>
                                 <label class="block mt-4 text-sm">
                                     <span class="text-gray-700 dark:text-gray-400">Ваш пароль</span>
                                     <input
-                                        class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                                        class="@error('password') is-invalid @enderror block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                                         placeholder="***************" type="password" name="password" id="password" />
+                                    @error('password')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
                                 </label>
-
-                <div class="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32">
-                    <p class="text-center text-3xl">Электронные услуги</p>
-                    <form class="flex flex-col pt-3 md:pt-8" action="/login" method="post">
-                        @csrf
-                        <div class="flex flex-col pt-4">
-                            <label for="email" class="text-lg">Ваш email</label>
-                            <input type="email" name="email" id="email" value="{{ old('email') }}"
-                                class="@error('email') is-invalid @enderror shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline required">
-                            @error('email')
-                                <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                            @enderror
-                        </div>
-
-                        <div class="flex flex-col pt-4">
-                            <label for="password"  class="text-lg">Пароль</label>
-                            <input type="password" name="password" id="password"
-                                class="@error('password') is-invalid @enderror shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline"  required autocomplete="current-password">
-                            @error('password')
-                                <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                            @enderror
-                        </div>
-                        <button type="submit"
-                            class="btn btn-primary bg-indigo-500 text-white font-bold text-lg hover:bg-indigo-600 p-2 mt-8">
-                            {{ __('Войти') }}
-                        </button>
-                        @if (Route::has('password.request'))
-                            <a class="btn btn-link" href="{{ route('password.request') }}">
-                                {{ __('Забыли пароль?') }}
-                            </a>
-                        @endif
-                    </form>
-                    <a class="flex flex-wrap text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+                                <button type="submit"
+                                    class="btn btn-primary bg-indigo-500 text-white font-bold text-lg hover:bg-indigo-600 p-2 mt-8">
+                                    {{ __('Войти') }}
+                                </button>
+                                @if (Route::has('password.request'))
+                                    <a class="btn btn-link" href="{{ route('password.request') }}">
+                                        {{ __('Забыли пароль?') }}
+                                    </a>
+                                @endif
+                            </form>
+                            <a class="flex flex-wrap text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
                                 href="/loginwithecp">
                                 Вход по ЭЦП
                             </a>

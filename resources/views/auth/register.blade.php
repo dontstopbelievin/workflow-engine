@@ -59,15 +59,27 @@
                                 </label>
                                 <label for="email" class="block mt-4 text-sm">
                                     <span class="text-gray-700 dark:text-gray-400">Ваш email</span>
-                                    <input
-                                        class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                                        type="email" id="email" name="email" placeholder="your@email.com" />
+                                    <input type="email" id="email" name="email" value="{{ old('email') }}" required autocomplete="email"
+                                           class="@error('email') is-invalid @enderror shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
+
+                                    @error('name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
                                 </label>
                                 <label for="password" class="block mt-4 text-sm">
                                     <span class="text-gray-700 dark:text-gray-400">Придумайте пароль</span>
-                                    <input
-                                        class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                                        placeholder="***************" type="password" id="password" name="password" />
+                                    <input type="password" id="password" name="password"  required autocomplete="new-password"
+                                           class="@error('password') is-invalid @enderror shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
+                                    <small id="emailHelp" class="form-text text-muted">1.Длина пароля должна быть не менее 8 символов</small>
+                                    <small id="emailHelp" class="form-text text-muted">2.Пароль должен состоять из букв латинского алфавита (A-z) и арабских цифр (0-9)</small>
+                                    <small id="emailHelp" class="form-text text-muted">3. Пароль должен содержать не менее одного из следующих символов:( !$#% ).</small>
+                                    @error('password')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
                                 </label>
                                 <label for="confirm-password" class="block mt-4 text-sm">
                                     <span class="text-gray-700 dark:text-gray-400">
@@ -88,33 +100,10 @@
                                         </span>
                                     </label>
                                 </div>
-
-                        <div class="flex flex-col pt-4">
-                            <label for="email" class="text-lg">Почтовый адрес</label>
-                            <input type="email" id="email" name="email" value="{{ old('email') }}" required autocomplete="email"
-                                class="@error('email') is-invalid @enderror shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
-
-                            @error('name')
-                                <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                            @enderror
-                        </div>
-
-                        <div class="flex flex-col pt-4">
-                            <label for="password" class="text-lg">Введите пароль</label>
-                            <input type="password" id="password" name="password"  required autocomplete="new-password"
-                                class="@error('password') is-invalid @enderror shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
-                            <small id="emailHelp" class="form-text text-muted">1.Длина пароля должна быть не менее 8 символов</small>
-                            <small id="emailHelp" class="form-text text-muted">2.Пароль должен состоять из букв латинского алфавита (A-z) и арабских цифр (0-9)</small>
-                            <small id="emailHelp" class="form-text text-muted">3. Пароль должен содержать не менее одного из следующих символов:
-
-                                ( !$#% ).</small>
-                            @error('password')
-                                <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                            @enderror</div>
+                                <button type="submit"
+                                        class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                                    {{ __('Зарегистрироваться') }}
+                                </button>
 
                             <a class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
                                 href="/login">
