@@ -50,29 +50,49 @@
                                         placeholder="***************" type="password" name="password" id="password" />
                                 </label>
 
-                                <!-- You should use a button here, as the anchor is only used for the example  -->
-                                <button type="submit"
-                                    class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-                                    href="/index">
-                                    Авторизоваться
-                                </button>
+                <div class="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32">
+                    <p class="text-center text-3xl">Электронные услуги</p>
+                    <form class="flex flex-col pt-3 md:pt-8" action="/login" method="post">
+                        @csrf
+                        <div class="flex flex-col pt-4">
+                            <label for="email" class="text-lg">Ваш email</label>
+                            <input type="email" name="email" id="email" value="{{ old('email') }}"
+                                class="@error('email') is-invalid @enderror shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline required">
+                            @error('email')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
+                        </div>
 
-                            </form>
-                            <hr class="my-8" />
-                            <a class="flex flex-wrap text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+                        <div class="flex flex-col pt-4">
+                            <label for="password"  class="text-lg">Пароль</label>
+                            <input type="password" name="password" id="password"
+                                class="@error('password') is-invalid @enderror shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline"  required autocomplete="current-password">
+                            @error('password')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
+                        </div>
+                        <button type="submit"
+                            class="btn btn-primary bg-indigo-500 text-white font-bold text-lg hover:bg-indigo-600 p-2 mt-8">
+                            {{ __('Войти') }}
+                        </button>
+                        @if (Route::has('password.request'))
+                            <a class="btn btn-link" href="{{ route('password.request') }}">
+                                {{ __('Забыли пароль?') }}
+                            </a>
+                        @endif
+                    </form>
+                    <a class="flex flex-wrap text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
                                 href="/loginwithecp">
                                 Вход по ЭЦП
                             </a>
-                            <a class="pt-2 text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                                href="/password/reset">
-                                Забыли пароль?
-                            </a>                            
-                            {{-- <a class="pt-2 flex flex-wrap text-sm font-bold text-purple-600 dark:text-purple-400 hover:underline"
-                                href="/register">
-                                Зарегистрироваться
-                            </a> --}}
-                        </div>
-                    </div>
+                    {{-- <div class="text-center pt-12 pb-12">
+                        <p>Еще не зарегистрирован? <a href="{{ route('register') }}"
+                                class="underline font-semibold">Зарегистрироваться</a></p>
+                    </div> --}}
                 </div>
             </div>
         </div>

@@ -9,6 +9,7 @@ use App\CityManagement;
 use App\Comment;
 use App\CreatedTable;
 use App\Template;
+use Mpdf\Mdpf;
 use App\TemplateField;
 use App\Traits\dbQueries;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Schema;
+use Mpdf\Mpdf;
 use PhpOffice\PhpWord\TemplateProcessor;
 use Illuminate\Support\Facades\DB;
 
@@ -23,21 +25,21 @@ class ApplicationController extends Controller
 {
     use dbQueries;
 
-    public function service() {
-
+    public function service()
+    {
         $processes = Process::all();
+//        dd($processes);
         return view('application.dashboard', compact('processes'));
     }
 
-    public function index(Process $process) {
-
+    public function index(Process $process)
+    {
         $tableName = $this->getTableName($process->name);
         $applications = $this->getTableWithStatuses($tableName);
         $arrayApps = json_decode(json_encode($applications), true);
         foreach($arrayApps as &$app) {
             if ($app["to_revision"] === 1) {
                 $app["status"] = $app["status"] . " на доработку";
-
             } else {
                 $app["status"] = $app["status"] . " на согласование";
             }
@@ -46,8 +48,8 @@ class ApplicationController extends Controller
         return view('application.index', compact('arrayApps', 'process','statuses'));
     }
 
-    public function view($processId, $applicationId) {
-
+    public function view($processId, $applicationId)
+    {
         $process = Process::find($processId);
         $templateId = $process->accepted_template_id;
          $templateFields= TemplateField::where('template_id', $templateId)->get();
@@ -66,12 +68,31 @@ class ApplicationController extends Controller
             echo 'Дайте роль юзеру';
             return;
         }
-
         $comments = $this->getComments($application->id, $table->id);
         $roleId = $thisRole->id; //роль действующего юзера
         $records = $this->getRecords($application->id, $table->id);
-
         $canApprove = $roleId === $statusId; //может ли специалист подвисывать услугу
+        $isCurrentUserRoleInParallel = $this->checkIfCurrentUserRoleInParallel($process);
+        //parallel approve
+        $toMultipleRoles["exists"] = false;
+        if ($canApprove && !$isCurrentUserRoleInParallel) { // if not in parallel
+            $appRoutes = json_decode($this->getAppRoutes($application->process_id));
+            $index = $application->index_main;
+
+            $multipleOptions = [];
+            if (isset($appRoutes[$index])) {
+                $nextRole = $appRoutes[$index];
+                $multipleOptions = $this->hasMultipleOptions($process, $nextRole);
+            }
+
+            if (empty($multipleOptions)) {
+                $toMultipleRoles["exists"] = false;
+            } else {
+                $toMultipleRoles["exists"] = true;
+                $toMultipleRoles["roleOptions"] = $multipleOptions;
+            }
+        }
+
         $toCitizen = false;
         $backToMainOrg = false;
         $userRole = Role::find($roleId);
@@ -100,7 +121,6 @@ class ApplicationController extends Controller
             $revisionReasonArray["toRole"] = Null;
         }
         //
-
         // Обработка причины отказа
         $rejectFromRole = Role::where('id', $application->reject_reason_from_spec_id)->first(); // кто отправил на отказ
         $rejectReasonArray = [];
@@ -160,11 +180,60 @@ class ApplicationController extends Controller
                 $templateTableFields = $this->filterTemplateFieldsTable($templateTableFields, $exceptionArray);
             }
         }
-        return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray'));
+        return view('application.view', compact('application','toMultipleRoles','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray'));
     }
 
-    public function create(Process $process) {
 
+    private function hasMultipleOptions($process, $role)
+    {
+        $parallelRoles = $process->roles()->where('is_parallel', '<>', 0)->get();
+        $parallelRole = $parallelRoles->where('name', $role)->first();
+        $pRolesArr = [];
+        if (isset($parallelRole->pivot->is_parallel)) {
+            $isParallelInt = $parallelRole->pivot->is_parallel;
+
+            foreach($parallelRoles as $pRole) {
+                if ($pRole->pivot->is_parallel === $isParallelInt) {
+                    array_push($pRolesArr, $pRole);
+                }
+            }
+
+        }
+        return $pRolesArr;
+    }
+
+    private function checkIfCurrentUserRoleInParallel($process)
+    {
+        $parallelRoles = $process->roles()->where('is_parallel', '<>', 0)->get()->pluck('name')->toArray();
+        $role = Auth::user()->role->name;
+        return in_array($role, $parallelRoles);
+    }
+
+    public function multipleApprove(Request $request, $application_id)
+    {
+        $process = Process::find($request->process_id);
+        $tableName = $this->getTableName($process->name);
+        $table = CreatedTable::where('name', $tableName)->first();
+        $application = DB::table($tableName)->where('id', $application_id)->first();
+        $index = $application->index_main;
+        $appRoutes = json_decode($this->getAppRoutes($application->process_id));
+        $nextRole = Role::where('id', $request->role)->first();
+        $nextRoleId = $nextRole->id;
+        $updatedStatus = Status::where('id', $nextRoleId)->first();
+        $pos = array_search($nextRole->name, $appRoutes);
+
+        $index = $index + $pos;
+        $role = Auth::user()->role;
+        $logsArray = $this->getLogs($updatedStatus->id, $table->id, $application->id, $role->id);
+        DB::table('logs')->insert( $logsArray);
+        $success = DB::table($tableName)
+            ->where('id', $application_id)
+            ->update(['status_id' => $updatedStatus->id, 'index_main' => $index]);
+        return Redirect::route('applications.service')->with('status', $updatedStatus->name);
+    }
+
+    public function create(Process $process)
+    {
         $tableName = $this->getTableName($process->name);
         $tableColumns = $this->getColumns($tableName);
         $originalTableColumns = $this->getOriginalColumns($tableColumns);
@@ -184,8 +253,8 @@ class ApplicationController extends Controller
         return view('application.create', compact('process', 'arrayToFront'));
     }
 
-    public function store(Request $request) {
-
+    public function store(Request $request)
+    {
         $input = $request->input();
         $input["attachment"] = $request->file('attachment')->store('applicant-attachments','public');
         $applicationTableFields = array_slice($input, 1, sizeof($input)-1);
@@ -206,7 +275,8 @@ class ApplicationController extends Controller
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
     }
 
-    public function download($file) {
+    public function download($file)
+    {
         echo ($file);
         $path = storage_path().'/'.'app/'.$path;
         dd($path);
@@ -215,8 +285,8 @@ class ApplicationController extends Controller
         }
     }
 
-    public function approve(Request $request) {
-
+    public function approve(Request $request)
+    {
         $process = Process::find($request->process_id);
         $tableName = $this->getTableName($process->name);
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
@@ -226,21 +296,28 @@ class ApplicationController extends Controller
         $template = Template::where('id', $templateId)->first();
         $templateName = $template->name;
         $templateTable = $this->getTemplateTableName($templateName);
-
         $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
-        $user = Auth::user();
-        $role = $user->role;
-        $this->insertComments($request->comments, $request->applicationId, $table->id);
-        $index = $application->index_main;
-        $appRoutes = json_decode($this->getAppRoutes($application->process_id));
-        $nextRole = $appRoutes[$index]; // find next role
-        $nextR = Role::where('name', $nextRole)->first(); //find $nextRole in Role table
-        $idOfNextRole = $nextR->id; // get id of next role
-        $index = $index + 1;
-        $status = Status::find($idOfNextRole);
-        $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
-        DB::table('logs')->insert( $logsArray);
+        $role = Auth::user()->role;
+        $isCurrentUserRoleInParallel = $this->checkIfCurrentUserRoleInParallel($process);
+        if ($isCurrentUserRoleInParallel) {
+            $roleAfterParallelWithIndex = $this->getRoleAfterParallel($process);
+            $roleAfterParallel = $roleAfterParallelWithIndex["roleAfterParallel"];
+            $index = $roleAfterParallelWithIndex["index"];
+            $status = Status::find($roleAfterParallel["id"]);
+            $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role["id"]);
 
+        } else {
+            $index = $application->index_main;
+            $appRoutes = json_decode($this->getAppRoutes($application->process_id));
+            $nextRole = $appRoutes[$index]; // find next role
+            $nextR = Role::where('name', $nextRole)->first(); //find $nextRole in Role table
+            $idOfNextRole = $nextR->id; // get id of next role
+            $index = $index + 1;
+            $status = Status::find($idOfNextRole);
+            $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
+        }
+        DB::table('logs')->insert( $logsArray);
+        $this->insertComments($request->comments, $request->applicationId, $table->id);
         if ($application->to_revision === 0) {
             DB::table($tableName)
                 ->where('id', $request->applicationId)
@@ -253,8 +330,8 @@ class ApplicationController extends Controller
         return Redirect::route('applications.service')->with('status', $status->name);
     }
 
-    public function sendToSubRoute(Request $request) {
-
+    public function sendToSubRoute(Request $request)
+    {
         $fieldValues = $request->fieldValues;
         $process = Process::find($request->processId);
         $tableName = $this->getTableName($process->name);
@@ -289,11 +366,10 @@ class ApplicationController extends Controller
                 ->update(['status_id' => $status->id, 'index_sub_route' => $index, 'to_revision' => 0]);
         }
         return Redirect::route('applications.service')->with('status', $status->name);
-        
     }
 
-    public function backToMainOrg($id, Request $request) {
-
+    public function backToMainOrg($id, Request $request)
+    {
         $process = Process::find($request->process_id);
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
@@ -314,9 +390,22 @@ class ApplicationController extends Controller
         return Redirect::route('applications.service')->with('status', $status->name);
     }
 
-    public function toCitizen($id, Request $request) {
-
+    public function toCitizen($id, Request $request)
+    {
+        $applicationId = $request->application_id;
         $process = Process::find($request->process_id);
+        $fieldValues = $request->fieldValues;
+        $tableName = $this->getTableName($process->name);
+        $application = DB::table($tableName)->where('id', $applicationId)->first();
+        $table = CreatedTable::where('name', $tableName)->first();
+        $templateId = $process->accepted_template_id;
+        $template = Template::where('id', $templateId)->first();
+        $templateName = $template->name;
+        $templateTable = $this->getTemplateTableName($templateName);
+        if ($fieldValues !== Null) {
+            $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
+        }
+
         $tableName = $this->getTableName($process->name);
         $statusCount = count(Status::all());
         $status = Status::find($statusCount);
@@ -329,11 +418,18 @@ class ApplicationController extends Controller
         $affected = DB::table($tableName)
             ->where('id', $id)
             ->update(['status_id' => $status->id, 'index_main' => Null]);
+
+//        $template = 'PDFtemplates.accept' ;
+//        $variable = "Кенжебеков Нуржан Кенжебекович";
+//        $content = view($template, ['variable' => $variable])->render();
+//        $mpdf = new Mpdf();
+//        $mpdf->WriteHTML($content);
+//        dd($mpdf->Output());
         return Redirect::route('applications.service')->with('status', $status->name);
     }
 
-    public function reject(Request $request) {
-
+    public function reject(Request $request)
+    {
         $process = Process::find($request->processId);
         $tableName = $this->getTableName($process->name);
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
@@ -355,8 +451,8 @@ class ApplicationController extends Controller
         }
     }
 
-    public function revision(Request $request) {
-
+    public function revision(Request $request)
+    {
         $roleToRevise = $request->roleToRevise; //Роль, которому форма отправляется на доработку
         $mainCounter = 0;
         $subCounter = 0;
@@ -406,7 +502,29 @@ class ApplicationController extends Controller
         }
     }
 
-    private function getLogs($statusId, $tableId, $applicationId, $roleId) {
+    private function getRoleAfterParallel($process)
+    {
+        $roleWithIndex = [];
+        $allRoles = $process->roles()->get()->toArray();
+        $isParallel = false;
+//        $roleAfterParallel = 0;
+        $index = 0;
+        foreach($allRoles as $role) {
+            $index++;
+            if ($isParallel && $role["pivot"]["is_parallel"] === 0) {
+                $roleWithIndex["roleAfterParallel"] = $role;
+                break;
+            }
+            if ($role["pivot"]["is_parallel"] !== 0) {
+                $isParallel = true;
+            }
+        }
+        $roleWithIndex["index"] = $index;
+        return $roleWithIndex;
+    }
+
+    private function getLogs($statusId, $tableId, $applicationId, $roleId)
+    {
         $logsArray = [];
         $logsArray["status_id"] = $statusId;
         $logsArray["role_id"] = $roleId;
@@ -416,7 +534,8 @@ class ApplicationController extends Controller
         return $logsArray;
     }
 
-    private function getFirstLogs($statusId, $tableId, $applicationId, $roleId) {
+    private function getFirstLogs($statusId, $tableId, $applicationId, $roleId)
+    {
         $logsArray = [];
         $logsArray["status_id"] = $statusId;
         $logsArray["role_id"] = 1;
@@ -426,8 +545,8 @@ class ApplicationController extends Controller
         return $logsArray;
     }
 
-    private function insertComments($comments, $applicationId, $tableId) {
-
+    private function insertComments($comments, $applicationId, $tableId)
+    {
         if ($comments !== Null) {
             $comment = new Comment( [
                 'name' => $comments,
@@ -439,8 +558,8 @@ class ApplicationController extends Controller
         }
     }
 
-    private function filterTemplateFieldsTable($array, $exceptionArray) {
-
+    private function filterTemplateFieldsTable($array, $exceptionArray)
+    {
         $res = [];
         foreach($array as $item) {
             foreach($item as $key=>$value) {
@@ -452,8 +571,8 @@ class ApplicationController extends Controller
         return $res;
     }
 
-    private function modifyApplicationTableFields($applicationTableFields, $statusId, $userId) {
-
+    private function modifyApplicationTableFields($applicationTableFields, $statusId, $userId)
+    {
         $applicationTableFields["status_id"] = $statusId;
         $applicationTableFields["user_id"] = $userId;
         $applicationTableFields["index_main"] = 1;
@@ -461,8 +580,8 @@ class ApplicationController extends Controller
         return $applicationTableFields;
     }
 
-    private function insertTemplateFields($fieldValues, $templateTable,$processId, $applicationId, $templateId) {
-
+    private function insertTemplateFields($fieldValues, $templateTable,$processId, $applicationId, $templateId)
+    {
         if (!Schema::hasTable($templateTable)) {
             $dbQueryString = "CREATE TABLE $templateTable (id INT PRIMARY KEY AUTO_INCREMENT)";
             DB::statement($dbQueryString);
@@ -500,8 +619,8 @@ class ApplicationController extends Controller
         }
     }
 
-    private function getTemplateTableColumns($fieldValues,$templateId, $processId, $applicationId ) {
-
+    private function getTemplateTableColumns($fieldValues,$templateId, $processId, $applicationId )
+    {
         $templateTableColumns = [];
         foreach($fieldValues as $key=>$value) {
             if ($value !== Null) {
@@ -514,8 +633,8 @@ class ApplicationController extends Controller
         return $templateTableColumns;
     }
 
-    private function getTemplateTableName($templateName) {
-
+    private function getTemplateTableName($templateName)
+    {
         $templateTable = $this->translateSybmols($templateName);
         $templateTable = $this->checkForWrongCharacters($templateTable);
         $templateTable = $this->modifyTemplateTable($templateTable);
@@ -525,8 +644,8 @@ class ApplicationController extends Controller
         return $templateTable;
     }
 
-    private function getAllDictionariesWithOptions($dictionariesWithOptions) {
-
+    private function getAllDictionariesWithOptions($dictionariesWithOptions)
+    {
         $arrayToFront = [];
         foreach($dictionariesWithOptions as $item) {
             $replaced = str_replace(' ', '_', $item["name"]);

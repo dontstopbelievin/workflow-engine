@@ -74,20 +74,26 @@ class ProcessController extends Controller
         $parentId = $this->getParentRoleId($process->id);
         $organizations = CityManagement::all();
         $mainOrg = CityManagement::find($process->main_organization_id);
-        $nameMainOrg='';
-        if (empty($mainOrg)) {
-            return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles', 'organizations', 'nameMainOrg'));
+//        dd($mainOrg->name);
+        $nameMainOrg = '';
+        if(isset($mainOrg->name)) {
+            $nameMainOrg=$mainOrg->name;
         }
-        $nameMainOrg = $mainOrg->name;
-        if (empty($organizations)) {
-            echo 'Добавьте организации';
-            return;
-        }
-        if ($parentId === 0) {
-            return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','columns','organizations','nameMainOrg'));
-        }
+
+//        if (empty($mainOrg)) {
+//            return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles', 'organizations', 'nameMainOrg'));
+//        }
+//        $nameMainOrg = $mainOrg->name;
+//        if (empty($organizations)) {
+//            echo 'Добавьте организации';
+//            return;
+//        }
+//        if ($parentId === 0) {
+//            return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','columns','organizations','nameMainOrg'));
+//        }
         $iterateRoles = $this->getIterateRoles($process);
         $sAllRoles = $this->getAllRoles($process, $parentId,$iterateRoles);
+//        dd($sAllRoles);
         return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','sAllRoles', 'organizations', 'nameMainOrg'));
     }
 
@@ -183,15 +189,30 @@ class ProcessController extends Controller
 
     public function addRole(Request $request, Process $process) {
 
-        $role = Role::where('name', $request->role)->first();
-        $route = new Route;
-        $route->name = $request->role;
-        $route->role_id = $role->id;
-        $route->process_id = $process->id;
-        $route->save();
-        $process->roles()->attach($role);
-        $process->save();
-        return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу'); 
+        if (!isset($request->roles)) {
+            echo 'Пожалуйста, выберите специалистов';
+        } else if (sizeof($request->roles) === 1) {
+            $role = Role::where('id', intval($request->roles[0]))->first();
+            $route = new Route;
+            $route->name = $role->name;
+            $route->role_id = $role->id;
+            $route->process_id = $process->id;
+            $route->save();
+            $process->roles()->attach($role);
+            $process->save();
+            return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
+        } else {
+            $rolesId = $request->roles;
+            $maxParallelNumber = DB::table('process_role')->max('is_parallel');
+            foreach ($rolesId as $id) {
+                $role = Role::where('id', intval($id))->first();
+                $process->roles()->attach($role, ['is_parallel' => $maxParallelNumber + 1]);
+            }
+
+
+            return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
+        }
+
     }
 
     public function addOrganization(Request $request, Process $process) {

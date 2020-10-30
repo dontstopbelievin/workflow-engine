@@ -47,27 +47,35 @@ Route::get('/integrations/{shep}','EdsSignController@example')->middleware('gues
 Route::post('/integrations/shep','EdsSignController@receive')->middleware('guest');
 
 
-Route::post('soap', 'XMLController@index')->middleware('guest');
+//Route::post('soap', 'XMLController@index')->middleware('guest');
 
-Route::post('loginwithecp/bar')->uses('EdsSignController@loginByCert')->middleware('guest');
-Route::group(['middleware' => ['auth']], function () {
+Route::post('loginwithecp/bar')->name('loginwithecp.store')->uses('EdsSignController@loginByCert')->middleware('guest');
+Route::middleware(['auth'])->group(function () {
 
-    Route::get('services', 'ApplicationController@service')->name('applications.service');
-    Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');
-    Route::get('application-view/{process_id}/{application_id}', 'ApplicationController@view')->name('applications.view');
-    Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
-    Route::post('applications/store', 'ApplicationController@store')->name('applications.store');
-    Route::post('applications/approve', 'ApplicationController@approve')->name('applications.approve');
-    Route::post('applications/reject', 'ApplicationController@reject')->name('applications.reject');
-    Route::post('applications/revision', 'ApplicationController@revision')->name('applications.revision');
-    Route::post('applications/sendToSubRoute', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
-    Route::post('applications/backToMainOrg/{application_id}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
-    Route::get('download/{file}', 'ApplicationController@download')->name('applications.download');
+    Route::middleware(['password_expired'])->group(function () {
+        Route::get('services', 'ApplicationController@service')->name('applications.service');
+        Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');
+        Route::get('application-view/{process_id}/{application_id}', 'ApplicationController@view')->name('applications.view');
+        Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
+        Route::post('applications/store', 'ApplicationController@store')->name('applications.store');
+        Route::post('applications/approve', 'ApplicationController@approve')->name('applications.approve');
+        Route::post('applications/reject', 'ApplicationController@reject')->name('applications.reject');
+        Route::post('applications/revision', 'ApplicationController@revision')->name('applications.revision');
+        Route::post('applications/sendToSubRoute', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
+        Route::post('applications/backToMainOrg/{application_id}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
+        Route::post('applications/multipleApprove/{application_id}', 'ApplicationController@multipleApprove')->name('applications.multipleApprove');
+        Route::post('applications/toCitizen/{application_id}', 'ApplicationController@toCitizen')->name('applications.toCitizen');
+        Route::get('download/{file}', 'ApplicationController@download')->name('applications.download');
+    });
+    Route::get('password/expired', 'Auth\ExpiredPasswordController@expired')
+        ->name('password.expired');
+    Route::post('password/post_expired', 'Auth\ExpiredPasswordController@postExpired')
+        ->name('password.post_expired');
 
 });
 
 
-Route::post('applications/toCitizen/{application_id}', 'ApplicationController@toCitizen')->name('applications.toCitizen');
+
 
 Route::group(['middleware' => ['admin', 'auth']], function () {
 

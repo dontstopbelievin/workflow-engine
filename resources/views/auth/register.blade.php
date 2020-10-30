@@ -89,14 +89,32 @@
                                     </label>
                                 </div>
 
-                                <!-- You should use a button here, as the anchor is only used for the example  -->
-                                <button type="submit"
-                                    class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                                    {{ __('Зарегистрироваться') }}
-                                </button>
-                            </form>
+                        <div class="flex flex-col pt-4">
+                            <label for="email" class="text-lg">Почтовый адрес</label>
+                            <input type="email" id="email" name="email" value="{{ old('email') }}" required autocomplete="email"
+                                class="@error('email') is-invalid @enderror shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
 
-                            <hr class="my-8" />
+                            @error('name')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
+                        </div>
+
+                        <div class="flex flex-col pt-4">
+                            <label for="password" class="text-lg">Введите пароль</label>
+                            <input type="password" id="password" name="password"  required autocomplete="new-password"
+                                class="@error('password') is-invalid @enderror shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
+                            <small id="emailHelp" class="form-text text-muted">1.Длина пароля должна быть не менее 8 символов</small>
+                            <small id="emailHelp" class="form-text text-muted">2.Пароль должен состоять из букв латинского алфавита (A-z) и арабских цифр (0-9)</small>
+                            <small id="emailHelp" class="form-text text-muted">3. Пароль должен содержать не менее одного из следующих символов:
+
+                                ( !$#% ).</small>
+                            @error('password')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror</div>
 
                             <a class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
                                 href="/login">

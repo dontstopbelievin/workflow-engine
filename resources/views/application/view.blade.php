@@ -65,7 +65,38 @@
                             <!-- <h4 class="text-center">Поля заполненные специалистами</h4> -->
                             @isset($templateTableFields)
                                 <ul class="list-group" id="list">
+                                    @if (isset($templateTableFields["scheme_upload"]))
+
+                                        <p class="list-group-item">Загруженная схема: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
+
+                                    @endif
+                                        @if (isset($templateTableFields["discharge_upload"]))
+
+                                            <p class="list-group-item">Загруженное заключение: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
+
+                                        @endif
+                                        @if (isset($templateTableFields["answer"]))
+
+                                            <p class="list-group-item">Загруженный ответ: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
+
+                                        @endif
+                                        @if (isset($templateTableFields["spravka_upload"]))
+
+                                            <p class="list-group-item">Загруженная справка: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
+
+                                        @endif
+                                        @if (isset($templateTableFields["file_upload"]))
+
+                                            <p class="list-group-item">Загруженный файл: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
+
+                                        @endif
+                                        @if (isset($templateTableFields["prikaz"]))
+
+                                            <p class="list-group-item">Приказ: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
+
+                                        @endif
                                 @foreach($templateTableFields as $key=>$value)
+
                                     <li class="list-group-item">{{$key}}: {{$value}}</li>
                                     @endforeach
                                 </ul>
@@ -284,6 +315,7 @@
                                     <form action="{{ route('applications.toCitizen', ['application_id' => $application->id]) }}" method="post">
                                         @csrf
                                         <input type="hidden" name="process_id" value = {{$process->id}}>
+                                        <input type="hidden" name="application_id" value = {{$application->id}}>
                                         <div style="text-align: center">
                                             <button class="btn btn-danger" style="margin-bottom: 30px;" type="submit">Отправить заявителю</button>
                                         </div>
@@ -312,7 +344,23 @@
                                     <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
                                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
-                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
+                                        @if($toMultipleRoles["exists"])
+                                            <div class="col-md-6">
+                                                <form action="{{ route('applications.multipleApprove', ['application_id' => $application->id]) }}" method="post"">
+                                                    @csrf
+                                                    <select name="role" id="role" class="form-control">
+                                                    @foreach($toMultipleRoles["roleOptions"] as $role)
+                                                        <option value="{{$role->id}}">{{$role->name}}</option>
+                                                    @endforeach
+                                                    </select>
+                                                    <input type="hidden" name="process_id" value = {{$process->id}}>
+                                                    <button  class="btn btn-success" type="submit">Согласовать</button>
+                                                </form>
+                                            </div>
+                                            @else
+                                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
+                                            @endif
+
                                     </div>
                                 @endif
                             @endif
