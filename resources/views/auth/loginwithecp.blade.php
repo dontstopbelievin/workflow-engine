@@ -52,10 +52,11 @@
                            href="/login">
                             Вход без ЭЦП
                         </a>
-                        <a class="pt-2 text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                           href="/password/reset">
-                            Забыли пароль?
-                        </a>
+                        @if (Route::has('password.request'))
+                            <a class="btn btn-link" href="{{ route('password.request') }}">
+                                {{ __('Забыли пароль?') }}
+                            </a>
+                        @endif
                         <a class="pt-2 flex flex-wrap text-sm font-bold text-purple-600 dark:text-purple-400 hover:underline"
                            href="/register">
                             Зарегистрироваться
