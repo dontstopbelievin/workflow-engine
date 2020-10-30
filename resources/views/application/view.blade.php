@@ -72,7 +72,27 @@
                                     @endif
                                         @if (isset($templateTableFields["discharge_upload"]))
 
-                                            <p class="list-group-item">Загруженная Выписка: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
+                                            <p class="list-group-item">Загруженное заключение: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
+
+                                        @endif
+                                        @if (isset($templateTableFields["answer"]))
+
+                                            <p class="list-group-item">Загруженный ответ: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
+
+                                        @endif
+                                        @if (isset($templateTableFields["spravka_upload"]))
+
+                                            <p class="list-group-item">Загруженная справка: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
+
+                                        @endif
+                                        @if (isset($templateTableFields["file_upload"]))
+
+                                            <p class="list-group-item">Загруженный файл: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
+
+                                        @endif
+                                        @if (isset($templateTableFields["prikaz"]))
+
+                                            <p class="list-group-item">Приказ: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
 
                                         @endif
                                 @foreach($templateTableFields as $key=>$value)

@@ -9,6 +9,7 @@ use App\CityManagement;
 use App\Comment;
 use App\CreatedTable;
 use App\Template;
+use Mpdf\Mdpf;
 use App\TemplateField;
 use App\Traits\dbQueries;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Schema;
+use Mpdf\Mpdf;
 use PhpOffice\PhpWord\TemplateProcessor;
 use Illuminate\Support\Facades\DB;
 
@@ -26,6 +28,7 @@ class ApplicationController extends Controller
     public function service()
     {
         $processes = Process::all();
+//        dd($processes);
         return view('application.dashboard', compact('processes'));
     }
 
@@ -65,13 +68,11 @@ class ApplicationController extends Controller
             echo 'Дайте роль юзеру';
             return;
         }
-
         $comments = $this->getComments($application->id, $table->id);
         $roleId = $thisRole->id; //роль действующего юзера
         $records = $this->getRecords($application->id, $table->id);
         $canApprove = $roleId === $statusId; //может ли специалист подвисывать услугу
         $isCurrentUserRoleInParallel = $this->checkIfCurrentUserRoleInParallel($process);
-//        dd($isCurrentUserRoleInParallel);
         //parallel approve
         $toMultipleRoles["exists"] = false;
         if ($canApprove && !$isCurrentUserRoleInParallel) { // if not in parallel
@@ -182,12 +183,6 @@ class ApplicationController extends Controller
         return view('application.view', compact('application','toMultipleRoles','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray'));
     }
 
-//    private function checkIfNextRoleIsParallel($routes, $process) {
-//        $role = Auth::user()->role->name;
-//        $parallelRoles = $process->roles()->where('is_parallel', '<>', 0)->get();
-//        dd($routes, $process);
-//
-//    }
 
     private function hasMultipleOptions($process, $role)
     {
@@ -207,7 +202,8 @@ class ApplicationController extends Controller
         return $pRolesArr;
     }
 
-    private function checkIfCurrentUserRoleInParallel($process) {
+    private function checkIfCurrentUserRoleInParallel($process)
+    {
         $parallelRoles = $process->roles()->where('is_parallel', '<>', 0)->get()->pluck('name')->toArray();
         $role = Auth::user()->role->name;
         return in_array($role, $parallelRoles);
@@ -222,7 +218,6 @@ class ApplicationController extends Controller
         $index = $application->index_main;
         $appRoutes = json_decode($this->getAppRoutes($application->process_id));
         $nextRole = Role::where('id', $request->role)->first();
-//        dd($nextRole);
         $nextRoleId = $nextRole->id;
         $updatedStatus = Status::where('id', $nextRoleId)->first();
         $pos = array_search($nextRole->name, $appRoutes);
@@ -292,7 +287,6 @@ class ApplicationController extends Controller
 
     public function approve(Request $request)
     {
-//        dd($request->all());
         $process = Process::find($request->process_id);
         $tableName = $this->getTableName($process->name);
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
@@ -306,33 +300,12 @@ class ApplicationController extends Controller
         $role = Auth::user()->role;
         $isCurrentUserRoleInParallel = $this->checkIfCurrentUserRoleInParallel($process);
         if ($isCurrentUserRoleInParallel) {
-//            $firstParallelRole = $process->roles()->where('is_parallel','<>', 0)->first();
-//            dd($firstParallelRole->pivot);
-//            $res = DB::table('process_role')
-//                ->select('id')
-//                ->where('process_id',$id)
-//                ->where('process_role.parent_role_id',Null)
-//                ->get();
-//            $nextNotParallelRole = $process->roles()->where('is_parallel', 0)->where('process_role.id', '>', $firstParallelRole->id)->first();
-//            dd($nextNotParallelRole);
-            $allRoles = $process->roles()->get()->toArray();
-            $isParallel = false;
-            $roleAfterParallel = 0;
-            $index = 0;
-            foreach($allRoles as $role) {
-                $index++;
-                if ($isParallel && $role["pivot"]["is_parallel"] === 0) {
-                    $roleAfterParallel = $role;
-                    break;
-                }
-                if ($role["pivot"]["is_parallel"] !== 0) {
-                    $isParallel = true;
-                }
-            }
-
+            $roleAfterParallelWithIndex = $this->getRoleAfterParallel($process);
+            $roleAfterParallel = $roleAfterParallelWithIndex["roleAfterParallel"];
+            $index = $roleAfterParallelWithIndex["index"];
             $status = Status::find($roleAfterParallel["id"]);
             $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role["id"]);
-            DB::table('logs')->insert( $logsArray);
+
         } else {
             $index = $application->index_main;
             $appRoutes = json_decode($this->getAppRoutes($application->process_id));
@@ -342,9 +315,8 @@ class ApplicationController extends Controller
             $index = $index + 1;
             $status = Status::find($idOfNextRole);
             $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
-            DB::table('logs')->insert( $logsArray);
         }
-
+        DB::table('logs')->insert( $logsArray);
         $this->insertComments($request->comments, $request->applicationId, $table->id);
         if ($application->to_revision === 0) {
             DB::table($tableName)
@@ -446,6 +418,13 @@ class ApplicationController extends Controller
         $affected = DB::table($tableName)
             ->where('id', $id)
             ->update(['status_id' => $status->id, 'index_main' => Null]);
+
+//        $template = 'PDFtemplates.accept' ;
+//        $variable = "Кенжебеков Нуржан Кенжебекович";
+//        $content = view($template, ['variable' => $variable])->render();
+//        $mpdf = new Mpdf();
+//        $mpdf->WriteHTML($content);
+//        dd($mpdf->Output());
         return Redirect::route('applications.service')->with('status', $status->name);
     }
 
@@ -521,6 +500,27 @@ class ApplicationController extends Controller
                 ->where('id', $request->applicationId)
                 ->update(['status_id' => $status->id, 'revision_reason' => $request->revisionReason,'to_revision' => 1, 'index_main' => $index, 'revision_reason_from_spec_id' =>  $user->id, 'revision_reason_to_spec_id' =>  $idOfNextRole] );
         }
+    }
+
+    private function getRoleAfterParallel($process)
+    {
+        $roleWithIndex = [];
+        $allRoles = $process->roles()->get()->toArray();
+        $isParallel = false;
+//        $roleAfterParallel = 0;
+        $index = 0;
+        foreach($allRoles as $role) {
+            $index++;
+            if ($isParallel && $role["pivot"]["is_parallel"] === 0) {
+                $roleWithIndex["roleAfterParallel"] = $role;
+                break;
+            }
+            if ($role["pivot"]["is_parallel"] !== 0) {
+                $isParallel = true;
+            }
+        }
+        $roleWithIndex["index"] = $index;
+        return $roleWithIndex;
     }
 
     private function getLogs($statusId, $tableId, $applicationId, $roleId)

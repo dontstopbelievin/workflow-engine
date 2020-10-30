@@ -18,19 +18,34 @@
                         @csrf
                         <div class="flex flex-col pt-4">
                             <label for="email" class="text-lg">Ваш email</label>
-                            <input type="email" name="email" id="email" placeholder="your@email.com"
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
+                            <input type="email" name="email" id="email" value="{{ old('email') }}"
+                                class="@error('email') is-invalid @enderror shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline required">
+                            @error('email')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
                         </div>
 
                         <div class="flex flex-col pt-4">
                             <label for="password"  class="text-lg">Пароль</label>
-                            <input type="password" name="password" id="password" placeholder="Ваш пароль"
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
+                            <input type="password" name="password" id="password"
+                                class="@error('password') is-invalid @enderror shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline"  required autocomplete="current-password">
+                            @error('password')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
                         </div>
                         <button type="submit"
                             class="btn btn-primary bg-indigo-500 text-white font-bold text-lg hover:bg-indigo-600 p-2 mt-8">
                             {{ __('Войти') }}
                         </button>
+                        @if (Route::has('password.request'))
+                            <a class="btn btn-link" href="{{ route('password.request') }}">
+                                {{ __('Забыли пароль?') }}
+                            </a>
+                        @endif
                     </form>
                     {{-- <div class="text-center pt-12 pb-12">
                         <p>Еще не зарегистрирован? <a href="{{ route('register') }}"

@@ -40,16 +40,31 @@
                         </div>
 
                         <div class="flex flex-col pt-4">
-                            <label for="email" class="text-lg">Ваш email</label>
-                            <input type="email" id="email" name="email" placeholder="your@email.com"
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
+                            <label for="email" class="text-lg">Почтовый адрес</label>
+                            <input type="email" id="email" name="email" value="{{ old('email') }}" required autocomplete="email"
+                                class="@error('email') is-invalid @enderror shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
+
+                            @error('name')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
                         </div>
 
                         <div class="flex flex-col pt-4">
-                            <label for="password" class="text-lg">Придумайте пароль</label>
-                            <input type="password" id="password" name="password" placeholder="Ваш пароль"
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
-                        </div>
+                            <label for="password" class="text-lg">Введите пароль</label>
+                            <input type="password" id="password" name="password"  required autocomplete="new-password"
+                                class="@error('password') is-invalid @enderror shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
+                            <small id="emailHelp" class="form-text text-muted">1.Длина пароля должна быть не менее 8 символов</small>
+                            <small id="emailHelp" class="form-text text-muted">2.Пароль должен состоять из букв латинского алфавита (A-z) и арабских цифр (0-9)</small>
+                            <small id="emailHelp" class="form-text text-muted">3. Пароль должен содержать не менее одного из следующих символов:
+
+                                ( !$#% ).</small>
+                            @error('password')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror</div>
 
                         <div class="flex flex-col pt-4">
                             <label for="confirm-password" class="text-lg">Повторите пароль</label>
