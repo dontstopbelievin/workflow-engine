@@ -18,7 +18,7 @@ class EdsSignController extends Controller
         preg_match('|<ds\:X509Certificate[^>]*?>(.*?)</ds\:X509Certificate>|si', $data, $x509Info);
         $replacedXml = str_replace("\r\n", '', $x509Info[1]);
 
-        $oNca = new PhpNCANode\NCANodeClient('http://95.59.124.162:14579');
+        $oNca = new PhpNCANode\NCANodeClient('http://192.168.10.25:14579'); //95.59.124.162 когда локально
         $oPkcs12Info = $oNca->x509Info($replacedXml);
 
         if ($oPkcs12Info->isLegalFix() === true) {
