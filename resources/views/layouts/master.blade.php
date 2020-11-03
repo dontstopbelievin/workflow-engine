@@ -169,6 +169,7 @@
                             </li>
                         </ul>
                     </div>
+                    <a href="/policy" class=""> Правила информационной безопасности </a>
                 </div>
             </nav>
             <!-- End Navbar -->
