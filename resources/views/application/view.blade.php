@@ -7,6 +7,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>Просмотр Заявки</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -65,39 +66,12 @@
                             <!-- <h4 class="text-center">Поля заполненные специалистами</h4> -->
                             @isset($templateTableFields)
                                 <ul class="list-group" id="list">
-                                    @if (isset($templateTableFields["scheme_upload"]))
-
-                                        <p class="list-group-item">Загруженная схема: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
-
-                                    @endif
-                                        @if (isset($templateTableFields["discharge_upload"]))
-
-                                            <p class="list-group-item">Загруженное заключение: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
-
-                                        @endif
-                                        @if (isset($templateTableFields["answer"]))
-
-                                            <p class="list-group-item">Загруженный ответ: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
-
-                                        @endif
-                                        @if (isset($templateTableFields["spravka_upload"]))
-
-                                            <p class="list-group-item">Загруженная справка: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
-
-                                        @endif
-                                        @if (isset($templateTableFields["file_upload"]))
-
-                                            <p class="list-group-item">Загруженный файл: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
-
-                                        @endif
-                                        @if (isset($templateTableFields["prikaz"]))
-
-                                            <p class="list-group-item">Приказ: <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></p>
-
-                                        @endif
                                 @foreach($templateTableFields as $key=>$value)
-
+                                    @if(substr($value, 0, 16) === 'application-docs')
+                                            <li class="list-group-item">{{$key}}: <a href="{{asset('storage/' .$value )}}" target="_blanc">Просмотр</a></li>
+                                        @else
                                     <li class="list-group-item">{{$key}}: {{$value}}</li>
+                                        @endif
                                     @endforeach
                                 </ul>
                                 @endisset
@@ -295,16 +269,17 @@
                                     @isset($templateFields)
                                         <h4 class="card-title text-center" style="margin-top:50px;">Поля Шаблона</h4>
                                         <form id = "templateFieldsId" method="POST" enctype="multipart/form-data">
+                                            <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
                                             @foreach($templateFields as $item)
                                                 <div class="form-group row">
                                                     <label for="{{$item->name}}" class="col-md-4 col-form-label text-md-right">{{ __($item->label_name) }}</label>
                                                     @if($item->input_type_id === 1)
                                                         <div class="col-md-6">
-                                                            <input type="text" class="form-control"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
+                                                            <input type="text" class="form-control" id="{{$item->name}}"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
                                                         </div>
                                                     @elseif($item->input_type_id === 2)
                                                         <div class="col-md-6">
-                                                            <input type="file" class="form-control"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
+                                                            <input type="file" class="form-control" id="{{$item->name}}"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
                                                         </div>
                                                     @endif
                                                 </div>
@@ -468,17 +443,40 @@
             });
         });
         $('#commentButton').click(function(event) {
-            var comments = $('#comments').val();
-            var inputs = $('#templateFieldsId :input');
-            var values = {};
+            // event.preventDefault();
+            let formData = new FormData();
+            let comments = $('#comments').val();
+            let processId = $('#processId').val();
+            let applicationId = $('#applicationId').val();
+            let inputs = $('#templateFieldsId :input');
+            formData.append('comments', comments)
+            formData.append('process_id', processId)
+            formData.append('applicationId', applicationId)
             inputs.each(function() {
-                values[this.name] = $(this).val();
+                if ($(this)[0].files === null) {
+                    // values[this.name] = $(this).val();
+                    formData.append(this.name, $(this).val());
+                } else {
+                    var file = $('input[type=file]')[0].files[0];
+                    if(file!==undefined) {
+                        formData.append(this.name, file);
+                    }
+                }
             });
-            var processId = $('#processId').val();
-            var applicationId = $('#applicationId').val();
-            $.post('/applications/approve', {'comments':comments,'fieldValues':values,'process_id':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
-                $('#items').load(location.href + ' #items');
+            formData.append('_token', $('input[name=_token]').val());
+            $.ajax({
+                method: "POST",
+                url: '{{ route('applications.approve') }}',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data){
+                    $('#items').load(location.href + ' #items');
+                }
             });
+            // $.post('/applications/approve', {'comments':comments,'fieldValues':formData, 'process_id':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
+            //     $('#items').load(location.href + ' #items');
+            // });
         });
         $('#sendToSubOrgButton').click(function(event) {
             var comments = $('#subOrgComments').val();

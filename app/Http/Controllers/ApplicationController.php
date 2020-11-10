@@ -44,6 +44,7 @@ class ApplicationController extends Controller
                 $app["status"] = $app["status"] . " на согласование";
             }
         }
+
         $statuses = [];
         return view('application.index', compact('arrayApps', 'process','statuses'));
     }
@@ -287,11 +288,29 @@ class ApplicationController extends Controller
 
     public function approve(Request $request)
     {
+//        dd($request->all());
+//        if ($request->hasFile('scheme_upload')){
+//            $request->file('scheme_upload')->store('application-docs','public');
+//        }
+        $requestVal = $request->all();
+        for ($i = 0; $i <=3; $i ++) {
+            array_shift($requestVal);
+        }
+        $fieldValues = $requestVal;
+//        dd($fieldValues);
+        foreach($fieldValues as $key=>$val) {
+            if (is_file($val)) {
+                $path = $request->file($key)->store('application-docs','public');
+                $fieldValues[$key] = $path;
+            }
+        }
+//        dd($fieldValues);
+
         $process = Process::find($request->process_id);
         $tableName = $this->getTableName($process->name);
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
         $table = CreatedTable::where('name', $tableName)->first();
-        $fieldValues = $request->fieldValues;
+//        $fieldValues = $request->fieldValues;
         $templateId = $process->accepted_template_id;
         $template = Template::where('id', $templateId)->first();
         $templateName = $template->name;
