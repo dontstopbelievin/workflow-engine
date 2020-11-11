@@ -9,7 +9,7 @@
         <div class="col-md-12">
             <div class="card bg-white">
                 <div class="card-header">
-                    <h3 class="card-title font-weight-bold text-center">Список Ролей<a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
+                    <h3 class="card-title font-weight-bold text-center">Список Ролей</h3>
                     <!-- <form action="{{ route('role.search') }}" method="POST" role="search">
                         {{ csrf_field() }}
                         <div class="input-group">

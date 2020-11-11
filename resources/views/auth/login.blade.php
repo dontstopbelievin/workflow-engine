@@ -69,7 +69,7 @@
                                 </button>
                                 @if (Route::has('password.request'))
                                     <a class="flex flex-wrap text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline" href="{{ route('password.request') }}">
-                                        {{ __('Забыли пароль?') }}
+                                        {{ __('Сменить пароль') }}
                                     </a>
                                 @endif
                             </form>
