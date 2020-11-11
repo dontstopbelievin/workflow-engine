@@ -22,6 +22,11 @@ class AuctionController extends Controller
         return view('auction.index', compact('fields'));
     }
 
+    public function view(Request $request) {
+        $aAuctionRaws = $this->getAuctionRaws($request->id);
+        return view('auction.view', compact('aAuctionRaws'));
+    }
+
     public function create() {
         $aLandCategory = LandCategoryDictionary::all();
         $aRightType = RightTypeDictionary::all();
@@ -131,7 +136,9 @@ class AuctionController extends Controller
 
     public function prepareDataForEgkn(Request $request)
     {
-        $aAuctionRaws = $this->getAuctionRaws($request->id);
+
+//        $aAuctionRaws = $this->getAuctionRaws($request->id);
+        $aAuctionRaws = Auction::where('id', $request->id)->get()->toArray();
         $aTarget = TargetDictionary::where("target_id", $aAuctionRaws[0]['target'])->first();
         $aPurpose = PurposeDictionary::where("purpose_id", $aAuctionRaws[0]['purpose'])->first();
         $aRightType = RightTypeDictionary::where("right_type_code", $aAuctionRaws[0]['right_type'])->first();

@@ -68,6 +68,12 @@
                   <p>Аукцион</p>
               </a>
           </li>
+              <li class="{{'dashboard' == request()->path() ? 'active' : ''}}">
+                  <a href="{{ route('egknservice.index') }}">
+                      <i class="now-ui-icons tech_tv"></i>
+                      <p>Поступившие заявки</p>
+                  </a>
+              </li>
           <li class="{{'process' == request()->path() ? 'active' : ''}}">
             <a href="{{ route('processes.index') }}">
               <i class="now-ui-icons media-2_sound-wave"></i>

@@ -5,17 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Libs\PhpNCANode;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
 class EdsSignController extends Controller
 {
     public function loginByCert(Request $request)
     {
+//        dd($request->all());
         $data = $request->data;
         $oDate = new \DateTime('now');
         preg_match('|<ds\:X509Certificate[^>]*?>(.*?)</ds\:X509Certificate>|si', $data, $x509Info);
         $replacedXml = str_replace("\r\n", '', $x509Info[1]);
 
-        $oNca = new PhpNCANode\NCANodeClient('http://95.59.124.164:14579');
+        $oNca = new PhpNCANode\NCANodeClient('http://95.59.124.162:14579'); //95.59.124.162 когда локально
         $oPkcs12Info = $oNca->x509Info($replacedXml);
 
         if ($oPkcs12Info->isLegalFix() === true) {
@@ -26,12 +29,11 @@ class EdsSignController extends Controller
                     $aUser = User::where('iin', $sIin)->first();
                 } else if (isset($aCertRaws['subject']['bin'])) {
                     $sBin = $aCertRaws['subject']['bin'];
-                    $aUser = User::where('bin', $sBin)->first();
+                    $aUser = User::whereW('bin', $sBin)->first();
                 }
                 if (isset($aUser)) {
-//                    dd($aUser);
-                  Auth::login($aUser);
-                  return redirect('/home')->with('status','you are not allowed to Admin Dashboard');
+                    Auth::login($aUser);
+                    return Redirect::route('applications.service');
                 } else {
                     return response(['message'=>'Пользователь не существует в системе! Обратитесь администратору!'], 409);
                 }
