@@ -25,9 +25,10 @@
                                 @foreach($arrayToFront as $item)
                                     <label>{{$item["labelName"]}}</label>
                                     @if($item["inputName"] === 'file')
-                                        <input type="file" name={{$item["name"]}} multiple><br><br>
+                                        <input type="file" name={{$item["name"]}}  multiple><br><br>
                                     @elseif($item["inputName"] === 'text')
-                                        <input type="text" name={{$item["name"]}} id={{$item["name"]}} class="form-control">
+                                        {{--{{dd($egkn)}}--}}
+                                        <input type="text" name={{$item["name"]}} id={{$item["name"]}} value="{{$egkn->firstname ?? ''}}" class="form-control">
                                     @elseif($item["inputName"] === 'url')
                                         <input type="text" name={{$item["name"]}} id={{$item["name"]}} class="form-control" >
                                     @elseif($item["inputName"] === 'image')
