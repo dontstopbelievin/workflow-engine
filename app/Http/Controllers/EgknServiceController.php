@@ -36,5 +36,9 @@ class EgknServiceController extends Controller
         return Redirect::back();
     }
 
+    public function act(Request $request)
+    {
+        dd($request->id);
+    }
 
 }

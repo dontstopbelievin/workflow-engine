@@ -17,6 +17,8 @@
                     @endif
                     @if ($aFields[0]['egkn_status'] == 'Заявка создана')
                         <a href="{{route('egknservice.status', ['id' => $aFields[0]['id']])}}">Зарегистрировать</a>
+                    @else
+                        <a href="{{route('egknservice.act', ['id' => $aFields[0]['id']])}}">Создать акт выбора</a>
                     @endif
                 </div>
                 <div class="card-body">
