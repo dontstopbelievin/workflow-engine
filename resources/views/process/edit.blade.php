@@ -84,6 +84,20 @@
                                                 @endisset
                                             </div>
                                             <div class="modal-footer">
+                                                <div>
+                                                    <input type="radio" id="straight" name="approveType" value="straight"
+                                                           checked>
+                                                    <label for="straight">Прямое</label>
+                                                </div>
+                                                <div>
+                                                    <input type="radio" id="parallel" name="approveType" value="parallel"
+                                                           checked>
+                                                    <label for="parallel">Параллельное</label>
+                                                </div>
+                                                <div>
+                                                    <input type="radio" id="selective" name="approveType" value="selective">
+                                                    <label for="selective">Выборочное</label>
+                                                </div>
                                                 <button type="submit" class="btn btn-success">Выбрать</button>
                                                 <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                                             </div>
@@ -154,24 +168,24 @@
                             </div>
                             @endisset
                             <button type="button" class="btn btn-light btn-lg my-3" data-toggle="modal" data-target="#routeModal">Выбрать Участников</button>
-                            @isset($roles)
+                            {{--@isset($roles)--}}
 
-                                <div class="my-4">
-                                    <form action="{{ route('processes.addRole', ['process' => $process]) }}" method="POST">
-                                    @csrf
-                                        <div class="form-group-row">
-                                            <label>Выберите участников процесса</label>
-                                            <select name="role" class="form-control form-control-lg">
-                                                <option selected="true" disabled="disabled">Выберите Ниже</option>
-                                                @foreach($roles as $role)
-                                                    <option>{{$role->name}} </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <button type="submit" class="btn btn-info btn-lg my-2">Выбрать</button>
-                                    </form>
-                                </div>
-                            @endisset
+                                {{--<div class="my-4">--}}
+                                    {{--<form action="{{ route('processes.addRole', ['process' => $process]) }}" method="POST">--}}
+                                    {{--@csrf--}}
+                                        {{--<div class="form-group-row">--}}
+                                            {{--<label>Выберите участников процесса</label>--}}
+                                            {{--<select name="role" class="form-control form-control-lg">--}}
+                                                {{--<option selected="true" disabled="disabled">Выберите Ниже</option>--}}
+                                                {{--@foreach($roles as $role)--}}
+                                                    {{--<option>{{$role->name}} </option>--}}
+                                                {{--@endforeach--}}
+                                            {{--</select>--}}
+                                        {{--</div>--}}
+                                        {{--<button type="submit" class="btn btn-info btn-lg my-2">Выбрать</button>--}}
+                                    {{--</form>--}}
+                                {{--</div>--}}
+                            {{--@endisset--}}
                             <hr>
                             @isset($process->routes)
                                 <div>

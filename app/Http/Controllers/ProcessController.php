@@ -189,6 +189,18 @@ class ProcessController extends Controller
 
     public function addRole(Request $request, Process $process) {
 
+//        dd($request->all());
+        if ($request->approveType === "parallel") {
+            $requestRoles = $request->roles;
+            $rolesLen = sizeof($requestRoles);
+            $parallelRoles = [];
+            foreach($requestRoles as $id) {
+                $role = Role::find($id);
+                array_push($parallelRoles, $role);
+            }
+            $roles = Role::all();
+            return view('process.parallel', compact('parallelRoles', 'process','roles', 'rolesLen'));
+        }
         if (!isset($request->roles)) {
             echo 'Пожалуйста, выберите специалистов';
         } else if (sizeof($request->roles) === 1) {
@@ -208,8 +220,6 @@ class ProcessController extends Controller
                 $role = Role::where('id', intval($id))->first();
                 $process->roles()->attach($role, ['is_parallel' => $maxParallelNumber + 1]);
             }
-
-
             return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
         }
 
