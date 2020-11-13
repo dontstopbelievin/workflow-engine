@@ -282,6 +282,16 @@ class UserSeeder extends Seeder
                 'updated_at' => \Carbon\Carbon::now(),
                 'role_id' => 3,
             ],
+            [
+                'name' => 'Жанбыршы Алмас Маликович',
+                'phone' => '7771234567',
+                'usertype' => Null,
+                'email' => 'zhanbyrshy.almas@gmail.com',
+                'password' => '$2y$10$WUQcTjSXfXIroglEmHZT4ubkTpmHXDOGFKDiZlkYNINvv0vymJmim',
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
+                'role_id' => 24,
+            ],
 
 
         ]);
