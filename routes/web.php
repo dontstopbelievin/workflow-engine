@@ -42,10 +42,10 @@ Route::get('/loginwithecp', function () {
 
 Auth::routes();
 
-Route::get('/integrations/{type}', 'IntegrationController@index')->middleware('guest');
-Route::post('/integrations/shep/receiver', 'IntegrationController@receive')->middleware('guest');
-Route::post('/integrations/shep/sync-request-receiver', 'IntegrationController@sync')->middleware('guest');
-Route::post('/integrations/shep/async-request-receiver', 'IntegrationController@async')->middleware('guest');
+// Route::get('/integrations/{type}', 'IntegrationController@index')->middleware('guest');
+// Route::post('/integrations/shep/receiver', 'IntegrationController@receive')->middleware('guest');
+// Route::post('/integrations/shep/sync-request-receiver', 'IntegrationController@sync')->middleware('guest');
+// Route::post('/integrations/shep/async-request-receiver', 'IntegrationController@async')->middleware('guest');
 
 Route::get('/integrations/{shep}','EdsSignController@example')->middleware('guest');
 Route::post('/integrations/shep','EdsSignController@receive')->middleware('guest');
