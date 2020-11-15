@@ -15,7 +15,9 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                    <a href="{{ route('applications.create', ['process' => $process]) }}" class="btn btn-info btn-lg my-5">Создать Заявку</a>
+                    @if (Auth::user()->role->name === 'Заявитель')
+                        <a href="{{ route('applications.create', ['process' => $process]) }}" class="btn btn-info btn-lg my-5">Создать Заявку</a>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
