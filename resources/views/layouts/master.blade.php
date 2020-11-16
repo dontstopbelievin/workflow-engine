@@ -131,7 +131,7 @@
         <div class="main-panel" id="main-panel">
             <!-- Navbar -->
             <nav class="navbar navbar-expand-lg navbar-transparent  bg-primary  navbar-absolute">
-                <div class="container-fluid">
+                <div class="container">
                     <div class="collapse navbar-collapse justify-content-end" id="navigation">
                         <form>
                             {{--<div class="input-group no-border">
@@ -158,7 +158,7 @@
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
                         document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
+                                        {{ __('Выйти') }}
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST"
