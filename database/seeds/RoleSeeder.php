@@ -119,6 +119,18 @@ class RoleSeeder extends Seeder
                 'city_management_id' => 1,
                 'name' => 'Руководитель управления', // 26
             ],
+            [
+                'city_management_id' => 1,
+                'name' => 'В отпуске', // 27
+            ],
+            [
+                'city_management_id' => 1,
+                'name' => 'Уволен', // 28
+            ],
+            [
+                'city_management_id' => 1,
+                'name' => 'Уволен', // 29
+            ],
 
         ]);
     }
