@@ -50,6 +50,8 @@ Auth::routes();
 Route::get('/integrations/{shep}','EdsSignController@example')->middleware('guest');
 Route::post('/integrations/shep','EdsSignController@receive')->middleware('guest');
 
+Route::get('/dataformater','AuctionController@dataFormater')->middleware('guest');
+
 
 //Route::post('soap', 'XMLController@index')->middleware('guest');
 
@@ -136,8 +138,15 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
 
     Route::get('auction', 'AuctionController@index')->name('auction.index');
     Route::get('auction/create', 'AuctionController@create')->name('auction.create');
+    Route::get('auction/view', 'AuctionController@view')->name('auction.view');
     Route::post('auction/store', 'AuctionController@store')->name('auction.store');
     Route::get('auction/send/{id}', 'AuctionController@sendToEgkn')->name('auction.send');
+
+    Route::get('egknservice', 'EgknServiceController@index')->name('egknservice.index');
+    Route::get('egknservice/view', 'EgknServiceController@view')->name('egknservice.view');
+    Route::get('egknservice/load', 'EgknServiceController@load')->name('egknservice.load');
+    Route::get('egknservice/status', 'EgknServiceController@status')->name('egknservice.status');
+    Route::get('egknservice/act', 'EgknServiceController@act')->name('egknservice.act');
 
     Route::get('select-options/create', 'SelectOptionController@create')->name('selectoptions.create');
     Route::post('/select-options/store', 'SelectOptionController@store')->name('selectoptions.store');

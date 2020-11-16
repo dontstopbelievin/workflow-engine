@@ -29,6 +29,7 @@
                                 <th>Статус</th>
                                 <th>Дата публикации</th>
                                 <th><button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Изменить"><i class="fa fa-edit"></i></button></th>
+                                <th><button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Изменить"><i class="fa fa-edit"></i></button></th>
                                 </thead>
                             @foreach($fields as $field)
                                 <tbody>
@@ -38,9 +39,20 @@
                                         <td class="text-left align-middle"><h4>{{$field->purpose}}</h4></td>
                                         <td class="text-left align-middle"><h4>{{$field->area}}</h4></td>
                                         <td class="text-left align-middle"><h4>{{$field->auction_date_time}}</h4></td>
-                                        <td class="text-left align-middle"><h4>{{$field->lot_status}}</h4></td>
+                                        <td class="text-left align-middle"><h4>@switch($field->lot_status)
+                                                    @case(1)
+                                                    Предстоящий
+                                                    @break
+                                                    @case(2)
+                                                    Несостоявшийся
+                                                    @break
+                                                    @case(3)
+                                                    Состоявшийся
+                                                    @break
+                                                @endswitch</h4></td>
                                         <td class="text-left align-middle"><h4>{{$field->publish_date}}</h4></td>
-                                        <td class="text-left align-middle"><a href="{{route('auction.sender', ['id' => $field->id])}}"><i class="fa fa-caret-square-o-right" style="font-size:36px"></i></a></td>
+                                        <td class="text-left align-middle"><a href="{{route('auction.view', ['id' => $field->id])}}"><i class="fa fa-eye" style="font-size:36px"></i></a></td>
+                                        <td class="text-left align-middle"><a href="{{route('auction.sender', ['id' => $field->id])}}"><i class="fa fa-upload" style="font-size:36px"></i></a></td>
                                     </tr>
                                 </tbody>
                             @endforeach

@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Услуги
+    Dashboard
 @endsection
 
 @section('content')
@@ -9,7 +9,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title font-weight-bold text-center">Все заявки по услуге {{$process->name}}</h3>
+                    <h4 class="card-title">Все заявки по услуге {{$process->name}}</h4>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
