@@ -54,12 +54,6 @@ class LoginController extends Controller
             'email' => 'required',
             'password' => 'required',
         ]);
-        if (method_exists($this, 'hasTooManyLoginAttempts') &&
-            $this->hasTooManyLoginAttempts($request)) {
-            $this->fireLockoutEvent($request);
-
-            return $this->sendLockoutResponse($request);
-        }
 
         $user = \DB::table('users')->where('email', $request->input('email'))->first();
 
@@ -86,26 +80,15 @@ class LoginController extends Controller
             fwrite($myfile, $txt);
             fclose($myfile);
 
-
 //            return redirect($this->redirectTo);
         }
+        \Session::put('login_error', 'Your email and password wrong!!');
         $myfile = fopen("../storage/logs/logfile.txt", "a") or die("Unable to open file!");
         $mytime = Carbon::now()->toDateTimeString();
         $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Не успешный вход в систему\r\n";
         fwrite($myfile, $txt);
         fclose($myfile);
-        \Session::put('login_error', 'Your email and password wrong!!');
-        if ($this->attemptLogin($request)) {
-            return $this->sendLoginResponse($request);
-        }
-
-        // If the login attempt was unsuccessful we will increment the number of attempts
-        // to login and redirect the user back to the login form. Of course, when this
-        // user surpasses their maximum number of attempts they will get locked out.
-        $this->incrementLoginAttempts($request);
-
-        return $this->sendFailedLoginResponse($request);
-//        return back();
+        return back();
 
     }
 
