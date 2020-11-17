@@ -52,7 +52,7 @@
     </style>
 </head>
 
-<body class="">
+<body>
     <div class="wrapper ">
         <div class="sidebar" data-color="sidebar-blue">
             <!--
@@ -66,15 +66,7 @@
             <div class="sidebar-wrapper" id="sidebar-wrapper">
                 <ul class="nav">
                     @if (auth()->check())
-                        @if (auth()
-        ->user()
-        ->isAdmin())
-                            <!-- <li class="{{ 'dashboard' == request()->path() ? 'active' : '' }}">
-              <a href="{{ route('dashboard.index') }}">
-                <i class="now-ui-icons tech_tv"></i>
-                <p>Приборная Панель</p>
-              </a>
-          </li> -->
+                        @if (auth()->user()->isAdmin())
                             <li class="{{ 'dashboard' == request()->path() ? 'active' : '' }}">
                                 <a href="{{ route('auction.index') }}">
                                     <i class="now-ui-icons tech_tv"></i>
@@ -99,12 +91,6 @@
                                     <p>Организации | {{ $cityManagementCount }}</p>
                                 </a>
                             </li>
-                            <!-- <li class="{{ 'templates' == request()->path() ? 'active' : '' }}">
-            <a href="{{ route('template.index') }}">
-              <i class="now-ui-icons education_agenda-bookmark"></i>
-              <p>Шаблоны | {{ $templatesCount }}</p>
-            </a>
-          </li> -->
                             <li class="{{ 'role-registerw' == request()->path() ? 'active' : '' }}">
                                 <a href="{{ route('user-role.register') }}">
                                     <i class="now-ui-icons users_single-02"></i>
@@ -115,6 +101,12 @@
                                 <a href="{{ route('dictionary') }}">
                                     <i class="now-ui-icons users_single-02"></i>
                                     <p>Справочник | {{ $dictionariesCount }}</p>
+                                </a>
+                            </li>
+                            <li class="{{ 'dictionaries' == request()->path() ? 'active' : '' }}">
+                                <a href="{{ route('logs') }}">
+                                    <i class="now-ui-icons users_single-02"></i>
+                                    <p>Логи сервиса</p>
                                 </a>
                             </li>
                         @endif
