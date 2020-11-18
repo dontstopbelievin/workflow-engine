@@ -38,9 +38,9 @@ class DashboardController extends Controller
       $user->update();
 
 //        $myfile = fopen("../public/storage/logs/logfile.txt", "a") or die("Unable to open file!");
-//        $mytime = Carbon::now()->toDateTimeString();
-//        $txt = $admin . ' ' . 'поменял роль' . ' ' . $user->name . ' ' . 'с' . ' ' . $roleName . ' ' . 'на' . ' ' . $newRoleName . ' ' .  $mytime . "\r\n" ;
-////        $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Успешный вход в систему\r\n";
+        $mytime = Carbon::now()->toDateTimeString();
+        $txt = $admin . ' ' . 'поменял роль' . ' ' . $user->name . ' ' . 'с' . ' ' . $roleName . ' ' . 'на' . ' ' . $newRoleName . ' ' .  $mytime . "\r\n" ;
+        file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
 //        fwrite($myfile, $txt);
 //        fclose($myfile);
       return Redirect::route('user-role.register')->with('status','Данные пользователя изменены');

@@ -79,7 +79,7 @@ class LoginController extends Controller
             $mytime = Carbon::now()->toDateTimeString();
 
             $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Успешный вход в систему\r\n";
-            file_put_contents(base_path('public\storage\logs\logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
+            file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
             //            fwrite($myfile, $txt);
 //            fclose($myfile);
 
@@ -92,7 +92,7 @@ class LoginController extends Controller
 //        $myfile = fopen(storage_path('public/storage/logs/'. "logfile.txt"), "a") or die("Unable to open file!");
         $mytime = Carbon::now()->toDateTimeString();
         $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Не успешный вход в систему\r\n";
-        file_put_contents(base_path('app/public/storage/logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
+        file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
 //        fwrite($myfile, $txt);
 //        fclose($myfile);
         return back();
@@ -104,11 +104,12 @@ class LoginController extends Controller
         $user = Auth::user();
         \Session::flush();
         \Session::put('success','you are logout Successfully');
-        $myfile = fopen(base_path()."/public/storage/logs/logfile.txt", "a") or die("Unable to open file!");
+//        $myfile = fopen(base_path()."/public/storage/logs/logfile.txt", "a") or die("Unable to open file!");
         $mytime = Carbon::now()->toDateTimeString();
         $txt = $user->name . ' ' . $user->email . ' ' . $mytime . ' ' . "Успешный выход из системы\r\n";
-        fwrite($myfile, $txt);
-        fclose($myfile);
+        file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
+        //        fwrite($myfile, $txt);
+//        fclose($myfile);
         return redirect()->to('/login');
     }
 }

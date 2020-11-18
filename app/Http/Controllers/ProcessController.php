@@ -250,7 +250,7 @@ class ProcessController extends Controller
     }
 
     public function logs() {
-        $contents = Storage::get('public/logs/logfile.txt');
+        $contents = file_get_contents(storage_path('logs/logfile.txt'));
         // dd($contents);
         $result = str_split($contents);
         // echo $contents;
