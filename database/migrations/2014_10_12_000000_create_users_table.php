@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->timestamp('password_changed_at')->nullable();
             $table->rememberToken();
+            $table->string('session_id')->nullable();
             $table->timestamps();
             
         });

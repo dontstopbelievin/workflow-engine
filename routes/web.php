@@ -42,10 +42,10 @@ Route::get('/loginwithecp', function () {
 
 Auth::routes();
 
-Route::get('/integrations/{type}', 'IntegrationController@index')->middleware('guest');
-Route::post('/integrations/shep/receiver', 'IntegrationController@receive')->middleware('guest');
-Route::post('/integrations/shep/sync-request-receiver', 'IntegrationController@sync')->middleware('guest');
-Route::post('/integrations/shep/async-request-receiver', 'IntegrationController@async')->middleware('guest');
+// Route::get('/integrations/{type}', 'IntegrationController@index')->middleware('guest');
+// Route::post('/integrations/shep/receiver', 'IntegrationController@receive')->middleware('guest');
+// Route::post('/integrations/shep/sync-request-receiver', 'IntegrationController@sync')->middleware('guest');
+// Route::post('/integrations/shep/async-request-receiver', 'IntegrationController@async')->middleware('guest');
 
 Route::get('/integrations/{shep}','EdsSignController@example')->middleware('guest');
 Route::post('/integrations/shep','EdsSignController@receive')->middleware('guest');
@@ -130,7 +130,6 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('template-edit/{template}', 'TemplateController@edit')->name('template.edit');
     Route::post('template-update/{id}', 'TemplateController@update')->name('template.update');
     Route::post('template-delete/{id}', 'TemplateController@delete')->name('template.delete');
-
     Route::get('template-field-create/{template}', 'TemplateFieldsController@create')->name('templatefield.create');
     Route::post('template-field-create', 'TemplateFieldsController@store')->name('templatefield.store');
 
@@ -140,9 +139,9 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('auction/send/{id}', 'AuctionController@sendToEgkn')->name('auction.send');
 
     Route::get('select-options/create', 'SelectOptionController@create')->name('selectoptions.create');
-    Route::post('/select-options/store', 'SelectOptionController@store')->name('selectoptions.store');
-    Route::post('/select-options/delete', 'SelectOptionController@delete')->name('selectoptions.delete');
-    Route::post('/select-options/update', 'SelectOptionController@update')->name('selectoptions.update');
+    Route::post('select-options/store', 'SelectOptionController@store')->name('selectoptions.store');
+    Route::post('select-options/delete', 'SelectOptionController@delete')->name('selectoptions.delete');
+    Route::post('select-options/update', 'SelectOptionController@update')->name('selectoptions.update');
 
     Route::get('processes', 'ProcessController@index')->name('processes.index');
     Route::get('processes/{process}', 'ProcessController@view')->name('processes.view');
@@ -155,7 +154,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::post('create-process-table/{process}', 'ProcessController@createProcessTable')->name('processes.createProcessTable');
     Route::post('process-add-role/{process}', 'ProcessController@addRole')->name('processes.addRole');
     Route::delete('process-delete/{process}', 'ProcessController@delete')->name('processes.delete');
-
+    Route::get('logs', 'ProcessController@logs')->name('logs');
 
     View::composer(['*'], function($view) {
         $usersCount = count(User::active()->get());

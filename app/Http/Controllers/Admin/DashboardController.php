@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 use App\User;
 use App\Role;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Carbon;
 
 class DashboardController extends Controller
 {   
@@ -26,11 +28,21 @@ class DashboardController extends Controller
       return view('admin.register-edit', compact('user', 'roles'));
     }
 
-    public function registerupdate(Request $request, User $user) {
-
+    public function registerupdate(Request $request, User $user)
+    {
+        $admin = Auth::user()->name;
+        $roleName = $user->role->name;
+        $newRoleName = Role::find($request->role_id)->name;
       $user->name = $request->username;
       $user->role_id = $request->role_id;
       $user->update();
+
+        $myfile = fopen("../storage/app/public/logs/logfile.txt", "a") or die("Unable to open file!");
+        $mytime = Carbon::now()->toDateTimeString();
+        $txt = $admin . ' ' . 'поменял роль' . ' ' . $user->name . ' ' . 'с' . ' ' . $roleName . ' ' . 'на' . ' ' . $newRoleName . ' ' .  $mytime . "\r\n" ;
+//        $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Успешный вход в систему\r\n";
+        fwrite($myfile, $txt);
+        fclose($myfile);
       return Redirect::route('user-role.register')->with('status','Данные пользователя изменены');
    }
 

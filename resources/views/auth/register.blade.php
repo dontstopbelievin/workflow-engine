@@ -13,8 +13,6 @@
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
             rel="stylesheet" />
         <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
-        <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
-        <script src="../assets/js/init-alpine.js"></script>
     </head>
 
     <body class="pt-8">
@@ -44,7 +42,7 @@
                                 </label>
                                 <label class="block mt-4 text-sm">
                                     <span for="name" class="text-gray-700 dark:text-gray-400">Телефон</label>
-                                <input type="text" id="phone" name="phone" pattern="[0-9]{10}" title="Введите 10 цифр вашего номера" placeholder="10 цифр вашего номера. Пример: 77077007777"
+                                <input type="text" id="phone" name="phone" pattern="[0-9]{10}" title="Введите 10 цифр вашего номера" placeholder="10 цифр вашего номера. Пример: 7077007777"
                                     class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input form-control @error('email') border-red-500 @enderror">
                                 </label>
                                 <label class="block mt-4 text-sm">

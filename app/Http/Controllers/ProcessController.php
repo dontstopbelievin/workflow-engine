@@ -12,6 +12,7 @@ use App\Traits\dbQueries;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Redirect;
 
@@ -256,5 +257,31 @@ class ProcessController extends Controller
         Schema::dropIfExists($tableName);
         $process->delete();
         return Redirect::route('processes.index')->with('status', 'Процесс успешно удален');  
+    }
+
+    public function logs() {
+        $contents = Storage::get('public/logs/logfile.txt');
+        // dd($contents);
+        $result = str_split($contents);
+        // echo $contents;
+        // dd($contents);
+        // dd($result);
+        $logsArr = [];
+        $start = 0;
+        $index = 0;
+        $len =0;
+        if (sizeof($result) == 0) {
+            echo "Логов пока нет";
+        } 
+        for ($i = 0; $i < sizeof($result); $i ++) {
+            $len++;
+            if ($result[$i] === "\r") {
+                $logsArr[$index] = implode('',(array_slice($result, $start, $len)));
+            $index++;
+            $len = 0;
+            $start = $i+2;
+            }
+        }
+        return view('process.logs', compact('logsArr'));
     }
 }
