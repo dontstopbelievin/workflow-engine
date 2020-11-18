@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Schema;
 use PhpOffice\PhpWord\TemplateProcessor;
 use Illuminate\Support\Facades\DB;
+use Notification;
+use App\Notifications\ApproveNotification;
 
 class ApplicationController extends Controller
 {
@@ -255,6 +257,7 @@ class ApplicationController extends Controller
 
     public function store(Request $request)
     {
+
         $input = $request->input();
         $input["attachment"] = $request->file('attachment')->store('applicant-attachments','public');
         $applicationTableFields = array_slice($input, 1, sizeof($input)-1);
@@ -264,6 +267,9 @@ class ApplicationController extends Controller
         $startRole = $arrRoutes[0]["name"]; //с какой роли начинается маршрут. Находится для того, чтобы присвоить статус маршруту
         $role = Role::where('name', $startRole)->first();
         $status = Status::find($role->id);
+
+
+//        dd($notifyUsers);
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $user = Auth::user();
@@ -272,6 +278,25 @@ class ApplicationController extends Controller
         $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
         $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
         DB::table('logs')->insert( $logsArray);
+        $notifyUsers = $role->users;
+        foreach($notifyUsers as $notifyUser) {
+            $details = [
+
+                'greeting' => 'Привет' . ', ' . $notifyUser->name,
+
+                'body' => 'Это уведомление о том, что Вы должны согласовать заявку',
+
+                'thanks' => 'Пожалуйста, зайтите на портал и согласуйте услугу',
+
+                'actionText' => 'Workflow Engine',
+//
+                'actionURL' => url('/services'),
+//
+                'order_id' => 101
+
+            ];
+            Notification::send($notifyUser, new ApproveNotification($details));
+        }
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
     }
 
@@ -296,26 +321,24 @@ class ApplicationController extends Controller
             array_shift($requestVal);
         }
         $fieldValues = $requestVal;
-//        dd($fieldValues);
+
         foreach($fieldValues as $key=>$val) {
             if (is_file($val)) {
                 $path = $request->file($key)->store('application-docs','public');
                 $fieldValues[$key] = $path;
             }
         }
-//        dd($fieldValues);
-
         $process = Process::find($request->process_id);
         $tableName = $this->getTableName($process->name);
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
         $table = CreatedTable::where('name', $tableName)->first();
-//        $fieldValues = $request->fieldValues;
         $templateId = $process->accepted_template_id;
         $template = Template::where('id', $templateId)->first();
         $templateName = $template->name;
         $templateTable = $this->getTemplateTableName($templateName);
         $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
         $role = Auth::user()->role;
+        
         $isCurrentUserRoleInParallel = $this->checkIfCurrentUserRoleInParallel($process);
         if ($isCurrentUserRoleInParallel) {
             $roleAfterParallelWithIndex = $this->getRoleAfterParallel($process);
@@ -329,6 +352,8 @@ class ApplicationController extends Controller
             $appRoutes = json_decode($this->getAppRoutes($application->process_id));
             $nextRole = $appRoutes[$index]; // find next role
             $nextR = Role::where('name', $nextRole)->first(); //find $nextRole in Role table
+//            $notifyUsers = $nextR->users();
+//            dd($notifyUsers);
             $idOfNextRole = $nextR->id; // get id of next role
             $index = $index + 1;
             $status = Status::find($idOfNextRole);
@@ -344,6 +369,25 @@ class ApplicationController extends Controller
             DB::table($tableName)
                 ->where('id', $request->applicationId)
                 ->update(['status_id' => $status->id, 'index_main' => $index,'to_revision' => 0 ]);
+        }
+        $notifyUsers = $role->users;
+        foreach($notifyUsers as $notifyUser) {
+            $details = [
+
+                'greeting' => 'Привет' . ', ' . $notifyUser->name,
+
+                'body' => 'Это уведомление о том, что Вы должны согласовать заявку',
+
+                'thanks' => 'Пожалуйста, зайтите на портал и согласуйте услугу',
+
+                'actionText' => 'Workflow Engine',
+//
+                'actionURL' => url('/services'),
+//
+                'order_id' => 101
+
+            ];
+            Notification::send($notifyUser, new ApproveNotification($details));
         }
         return Redirect::route('applications.service')->with('status', $status->name);
     }

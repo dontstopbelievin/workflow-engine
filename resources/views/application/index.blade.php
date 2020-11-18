@@ -15,6 +15,7 @@
                             {{ session('status') }}
                         </div>
                     @endif
+                    {{--{{dd(Auth::user()->role)}}--}}
                     @if (Auth::user()->role->name === 'Заявитель')
                         <a href="{{ route('applications.create', ['process' => $process]) }}" class="btn btn-info btn-lg my-5">Создать Заявку</a>
                     @endif

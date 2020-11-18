@@ -251,11 +251,7 @@ class ProcessController extends Controller
 
     public function logs() {
         $contents = file_get_contents(storage_path('logs/logfile.txt'));
-        // dd($contents);
         $result = str_split($contents);
-        // echo $contents;
-        // dd($contents);
-        // dd($result);
         $logsArr = [];
         $start = 0;
         $index = 0;

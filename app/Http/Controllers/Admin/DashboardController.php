@@ -30,12 +30,18 @@ class DashboardController extends Controller
 
     public function registerupdate(Request $request, User $user)
     {
+//        dd($user);
         $admin = Auth::user()->name;
-        $roleName = $user->role->name;
+        $roleName = '';
+        if ($user->role) {
+            $roleName = $user->role->name;
+        }
+
         $newRoleName = Role::find($request->role_id)->name;
       $user->name = $request->username;
       $user->role_id = $request->role_id;
       $user->update();
+//      dd($user);
 
 //        $myfile = fopen("../public/storage/logs/logfile.txt", "a") or die("Unable to open file!");
         $mytime = Carbon::now()->toDateTimeString();
