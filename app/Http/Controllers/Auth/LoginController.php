@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Redirect;
 
 class LoginController extends Controller
 {
@@ -74,16 +75,18 @@ class LoginController extends Controller
             \DB::table('users')->where('id', $user->id)->update(['session_id' => $new_sessid]);
 
             $user = auth()->guard('web')->user();
-            $myfile = fopen("../public/storage/logs/logfile.txt", "a") or die("Unable to open file!");
+            $myfile = fopen(base_path()."../public/storage/logs/logfile.txt", "a") or die("Unable to open file!");
             $mytime = Carbon::now()->toDateTimeString();
             $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Успешный вход в систему\r\n";
             fwrite($myfile, $txt);
             fclose($myfile);
 
-//            return redirect($this->redirectTo);
+//            return Redirect::route('applications.service');
+
+            return redirect($this->redirectTo());
         }
         \Session::put('login_error', 'Your email and password wrong!!');
-        $myfile = fopen("../public/storage/logs/logfile.txt", "a") or die("Unable to open file!");
+        $myfile = fopen(base_path()."../public/storage/logs/logfile.txt", "a") or die("Unable to open file!");
         $mytime = Carbon::now()->toDateTimeString();
         $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Не успешный вход в систему\r\n";
         fwrite($myfile, $txt);
@@ -97,7 +100,7 @@ class LoginController extends Controller
         $user = Auth::user();
         \Session::flush();
         \Session::put('success','you are logout Successfully');
-        $myfile = fopen("../public/storage/logs/logfile.txt", "a") or die("Unable to open file!");
+        $myfile = fopen(base_path()."../public/storage/logs/logfile.txt", "a") or die("Unable to open file!");
         $mytime = Carbon::now()->toDateTimeString();
         $txt = $user->name . ' ' . $user->email . ' ' . $mytime . ' ' . "Успешный выход из системы\r\n";
         fwrite($myfile, $txt);
