@@ -26,7 +26,7 @@ class ServiceRequestRouter
                     $oShepServiceStrategy = new GeoportalPEPAsyncRequestStrategy($aResponseData);
                     break;
                 default:
-                    throw new \SoapFault(0, 'No service found');
+                    throw new \SoapFault('Server', 'No service found');
             }
             $sUnsignedResponse = (new ShepServiceExecutor($oShepServiceStrategy))->execute();
             header('Content-Type: application/soap+xml; charset=utf-8');
@@ -34,7 +34,7 @@ class ServiceRequestRouter
             exit;
         } catch (\Exception $e) {
             logger($e->getMessage());
-            return new \SoapFault('0', 'Внутренняя ошибка сервиса. Свяжитесь с поставщиком сервиса.');
+            return new \SoapFault('Server', 'Внутренняя ошибка сервиса. Свяжитесь с поставщиком сервиса.');
         }
     }
 }

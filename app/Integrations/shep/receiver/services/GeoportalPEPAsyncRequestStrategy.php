@@ -26,7 +26,7 @@ class GeoportalPEPAsyncRequestStrategy implements ShepServiceStrategyInterface
         $sCorrelationId = $this->aRequestData['request']['messageInfo']['correlationId'];
         //TODO: вставить реальные данные
         $aData = array(
-            'requestMessage' => array(
+            'responseMessage' => array(
                 'SystemInfo' => array(
                     'RequestNumber' => '10000000000000005764',
                     'ChainId' => '10000000000000005764',
