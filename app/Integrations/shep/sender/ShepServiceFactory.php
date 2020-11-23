@@ -7,6 +7,7 @@ use App\Integrations\shep\sender\services\EgknUniversalReceiveOrderService;
 use App\Integrations\shep\sender\services\EgknUniversalReceiveStatusService;
 use App\Integrations\shep\sender\services\GeoportalEgknReceiveLayerService;
 use App\Integrations\shep\sender\services\EgknGeoportalActualizationService;
+use App\Integrations\shep\sender\services\GeoportalPEPAsyncService;
 
 class ShepServiceFactory
 {
@@ -23,6 +24,8 @@ class ShepServiceFactory
                 return new EgknGeoportalActualizationService();
             case 'eds_temp_files':
                 return new EdsTempFilesService();
+            case 'geoportal_pep_async':
+                return new GeoportalPEPAsyncService();
             default:
                 throw new \Exception('Не найден сервис ' . $sServiceName);
         }

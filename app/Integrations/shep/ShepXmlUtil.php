@@ -18,7 +18,7 @@ class ShepXmlUtil
 
     public static function getSoapResponse($sCode, $sSuccess, $sXml)
     {
-        return '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:typ="http://bip.bee.kz/SyncChannel/v10/Types"><soapenv:Body><typ:SendMessageResponse><response><responseInfo><messageId>' . Uuid::generateV4() . '</messageId><responseDate>' . date('Y-m-d').'T'. date('H:i:sP') . '</responseDate><status><code>' . $sCode . '</code><message>' . $sSuccess . '</message></status></responseInfo><responseData><data>' . $sXml . '</data></responseData></response></typ:SendMessageResponse></soapenv:Body></soapenv:Envelope>';
+        return '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:typ="http://bip.bee.kz/SyncChannel/v10/Types"><soapenv:Body><typ:SendMessageResponse><response><responseInfo><messageId>' . Uuid::generateV4() . '</messageId><responseDate>' . date('Y-m-d').'T'. date('H:i:sP') . '</responseDate><status><code>' . $sCode . '</code><message>' . $sSuccess . '</message></status></responseInfo><responseData><data>' . $sXml . '</data></responseData></response></typ:SendMessageResponse></soapenv:Body></soapenv:Envelope>';
     }
 
     public static function getSoapRequest($sServiceId, $sXml)
