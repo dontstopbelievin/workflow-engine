@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Process;
 use App\Role;
 use App\Status;
@@ -29,8 +30,8 @@ class ApplicationController extends Controller
     public function service()
     {
         $processes = Process::all();
-//        dd($processes);
-        return view('application.dashboard', compact('processes'));
+        $modalPopup = User::where('name', 'Admin')->first()->has_not_accepted_agreement;
+        return view('application.dashboard', compact('processes', 'modalPopup'));
     }
 
     public function index(Process $process)
@@ -45,7 +46,6 @@ class ApplicationController extends Controller
                 $app["status"] = $app["status"] . " на согласование";
             }
         }
-
         $statuses = [];
         return view('application.index', compact('arrayApps', 'process','statuses'));
     }
@@ -185,6 +185,15 @@ class ApplicationController extends Controller
         return view('application.view', compact('application','toMultipleRoles','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray'));
     }
 
+    public function acceptAgreement(Request $request) {
+        if ($request->accepted) {
+            $user = User::where('name', 'Admin')->first();
+            $user->has_not_accepted_agreement = false;
+            $user->update();
+//            return Redirect::route('applications.service');
+        }
+//        return Redirect::route('applications.service');
+    }
 
     private function hasMultipleOptions($process, $role)
     {
@@ -268,18 +277,10 @@ class ApplicationController extends Controller
         $role = Role::where('name', $startRole)->first();
         $status = Status::find($role->id);
 
-
-//        dd($notifyUsers);
-        $tableName = $this->getTableName($process->name);
-        $table = CreatedTable::where('name', $tableName)->first();
-        $user = Auth::user();
-
-        $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
-        $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
-        $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
-        DB::table('logs')->insert( $logsArray);
         $notifyUsers = $role->users;
+//        dd($notifyUsers, $role);
         foreach($notifyUsers as $notifyUser) {
+//            dd($notifyUser);
             $details = [
 
                 'greeting' => 'Привет' . ', ' . $notifyUser->name,
@@ -297,6 +298,16 @@ class ApplicationController extends Controller
             ];
             Notification::send($notifyUser, new ApproveNotification($details));
         }
+//        dd($notifyUsers);
+        $tableName = $this->getTableName($process->name);
+        $table = CreatedTable::where('name', $tableName)->first();
+        $user = Auth::user();
+
+        $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
+        $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
+        $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
+        DB::table('logs')->insert( $logsArray);
+
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
     }
 
@@ -338,7 +349,7 @@ class ApplicationController extends Controller
         $templateTable = $this->getTemplateTableName($templateName);
         $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
         $role = Auth::user()->role;
-        
+
         $isCurrentUserRoleInParallel = $this->checkIfCurrentUserRoleInParallel($process);
         if ($isCurrentUserRoleInParallel) {
             $roleAfterParallelWithIndex = $this->getRoleAfterParallel($process);
@@ -371,6 +382,7 @@ class ApplicationController extends Controller
                 ->update(['status_id' => $status->id, 'index_main' => $index,'to_revision' => 0 ]);
         }
         $notifyUsers = $role->users;
+//        dd(notifyUsers);
         foreach($notifyUsers as $notifyUser) {
             $details = [
 
