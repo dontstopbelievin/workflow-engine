@@ -5,104 +5,192 @@
 @endsection
 
 @section('content')
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card bg-white">
-                    <div>
-                        <div>
-                            <h3 class="card-title font-weight-bold text-center px-4">Справочник <a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive" id="items">
-                            <table class="table">
-                                <thead>
-                                    <tr class="p-3 mb-5 rounded text-secondary">
-                                        <th class="text-center"><h6>№</h6></th>
-                                        <th class="text-left"><h6>Наименование поля</h6></th>
-                                        <th class="text-left"><h6>Тип вводимого</h6></th>
-                                        <th class="text-left"><h6>Тип сохраняемого</h6></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($dictionaries as $item)
-                                    <tr class="p-3 mb-5 rounded">
-                                        <td class="text-center align-middle border"><h5>{{$loop->iteration}}</h5></td>
-                                        <td class="text-left align-middle border"><h5>{{$item["labelName"]}}</h5></td>
-                                        <td class="text-left align-middle border"><h5>{{$item["inputName"]}}</h5></td>
-                                        <td class="text-left align-middle border"><h5>{{$item["insertName"]}}</h5></td>
-                                    </tr>   
-                                @endforeach                             
-                                </tbody>
-                            </tablе>
-                        </div>
-
-                    </div>
-                
-                <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h3 class="modal-title" id="title">Добавить новое поле</h3>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            </div>
-                            <div class="modal-body">
-                                <input type="hidden" id="id">
-                                <p><input type="text" placeholder="Введите название поля" id="addItem" class="form-control"></p>
-                                <p><input type="text" placeholder="Введите ярлык поля(label name)" id="addLabelName" class="form-control"></p>
-                                <input type="hidden" id="processId" value="1">
-                                @isset($inputTypes)
-                                    <label for="inputType">Выберите Тип Вводимого</label>
-                                    <select class="form-control" name="inputType" id="inputType">
-                                    <option selected disabled>Выберите Ниже</option>
-                                    @foreach($inputTypes as $type)
-                
-                                        <option value="{{$type->name}}">{{$type->name}}</>
-                                    @endforeach
-                                    </select>
-                                @endisset
-                                <div id="hidden_div" style="display: none;">
-                                @isset($options)
-                                    @foreach ($options as $option)
-                                        <div class="checkbox">
-                                            <label><input class="get_value" type="checkbox" value="{{$option->name}}">{{$option->name}}</label>
-                                        </div>
-                                    @endforeach   
-                                @endisset
-                                </div>
-                                @isset($insertTypes)
-                                <label for="inputType">Выберите Тип Сохранения</label>
-                                    <select class="form-control" name="insertType" id="insertType">
-                                    <option selected disabled>Выберите Ниже</option>
-                                    @foreach($insertTypes as $type)
-                                        <option value="{{$type->name}}">{{$type->name}}</option>
-                                    @endforeach
-                                    </select>
-                                @endisset
-                                
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-warning" id="delete" style="display:none" data-dismiss="modal">Удалить</button>
-                                <button type="button" class="btn btn-primary" id="saveChanges" data-dismiss="modal" style="display:none" >Сохранить изменения</button>
-                                <button type="button" class="btn btn-primary" id="AddButton" data-dismiss="modal">Добавить</button>
-                            </div>
-                        </div><!-- /.modal-content -->
-                    </div><!-- /.modal-dialog -->
-                </div><!-- /.modal -->
+      <div class="sidebar">
+        <div class="scrollbar-inner sidebar-wrapper">
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="" role="button" data-toggle="collapse" href="#settings" aria-expanded="false">
+                <i class="la la-navicon"></i>
+                <p>Настройки</p>
+              </a>
+            </li>
+            <div class="collapse" id="settings">
+              <ul class="nav">
+                <li class="nav-item">
+                  <a href="#">
+                    <span class="link-collapse">My Profile</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="#">
+                    <span class="link-collapse">Edit Profile</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="#">
+                    <span class="link-collapse">Settings</span>
+                  </a>
+                </li>
+              </ul>
             </div>
+            <li class="nav-item ">
+              <a href="{{ route('auction.index') }}">
+                <i class="la la-table"></i>
+                <p>Аукцион</p>
+              </a>
+            </li>
+            <li class="nav-item ">
+              <a href="{{ route('processes.index') }}">
+                <i class="la la-keyboard-o"></i>
+                <p>Процессы</p>
+                <span class="badge badge-count">{{ $processesCount }}</span>
+              </a>
+            </li>
+            <li class="nav-item ">
+              <a href="{{ route('role.index') }}">
+                <i class="la la-th"></i>
+                <p>Роли</p>
+                <span class="badge badge-count">{{ $rolesCount }}</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('city.index') }}">
+                <i class="la la-bell"></i>
+                <p>Организации</p>
+                <span class="badge badge-count">{{ $cityManagementCount }}</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('user-role.register') }}">
+                <i class="la la-font"></i>
+                <p>Пользователи</p>
+                <span class="badge badge-count">{{ $usersCount }}</span>
+              </a>
+            </li>
+            <li class="nav-item active">
+              <a href="{{ route('dictionary') }}">
+                <i class="la la-fonticons"></i>
+                <p>Справочник</p>
+                <span class="badge badge-count">{{ $dictionariesCount }}</span>
+              </a>
+            </li>
+            <li class="nav-item ">
+              <a href="{{ route('applications.service') }}">
+                <i class="la la-dashboard"></i>
+                <p>Все услуги</p>
+              </a>
+            </li>
+          </ul>
         </div>
+      </div>
+      <div class="main-panel">
+				<div class="content">
+					<div class="container-fluid">
+						<div class="d-flex justify-content-between">
+							<div class="">
+								<h4 class="page-title">Справочник</h4>
+							</div>
+							<div class="">
+								<a href="#" id="addNew" class="btn btn-primary" data-toggle="modal" data-target="#myModal"><i class="la la-plus"></i></a>
+							</div>
+						</div>
+						<div class="card">
+							<!-- <div class="card-header">
+				        <div class="card-title">Table</div>
+				      </div> -->
+							<div class="card-body">
+								<table class="table table-hover" id="items">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>НАИМЕНОВАНИЕ УСЛУГИ</th>
+											<th>ТИП ВВОДИМОГО</th>
+											<th>ТИП СОХРАНЯЕМОГО</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach($dictionaries as $item)
+                      <tr>
+                          <td>{{$loop->iteration}}</td>
+                          <td>{{$item["labelName"]}}</td>
+                          <td>{{$item["inputName"]}}</td>
+                          <td>{{$item["insertName"]}}</td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div>
+					</div>
+				</div>
+			</div>
 
 
+
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    		<div class="modal-dialog modal-dialog-centered" role="document">
+    			<div class="modal-content">
+    				<div class="modal-header bg-primary">
+    					<h6 class="modal-title" id="title">Добавить справочник</h6>
+    					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    						<span aria-hidden="true">&times;</span>
+    					</button>
+    				</div>
+    				<div class="modal-body text-center">
+    					<input type="hidden" id="id">
+  						<div class="form-group">
+  							<input type="text" class="form-control" id="addItem" placeholder="Введите название поля">
+  						</div>
+  						<div class="form-group">
+  							<input type="text" class="form-control" id="addLabelName" placeholder="Введите ярлык поля(label name)">
+  						</div>
+              <input type="hidden" id="processId" value="1">
+              @isset($inputTypes)
+                <div class="form-group">
+                  <label for="inputType">Выберите Тип Вводимого</label>
+                  <select class="form-control" name="inputType" id="inputType" data-dropup-auto="false">
+                    <option selected disabled>Выберите Ниже</option>
+                    @foreach($inputTypes as $type)
+                      <option value="{{$type->name}}">{{$type->name}}</>
+                    @endforeach
+                  </select>
+                </div>
+              @endisset
+              <div id="hidden_div" style="display: none;">
+                @isset($options)
+                    @foreach ($options as $option)
+                        <div class="checkbox">
+                            <label><input class="get_value" type="checkbox" value="{{$option->name}}">{{$option->name}}</label>
+                        </div>
+                    @endforeach
+                @endisset
+              </div>
+              @isset($insertTypes)
+                <div class="form-group">
+                  <label for="insertType">Выберите Тип Сохранения</label>
+                  <select class="form-control" id="insertType" name="insertType" data-dropup-auto="false">
+                    <option selected disabled>Выберите Ниже</option>
+                    @foreach($insertTypes as $type)
+                        <option value="{{$type->name}}">{{$type->name}}</option>
+                    @endforeach
+                  </select>
+                </div>
+              @endisset
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-warning" id="delete" style="display:none" data-dismiss="modal">Удалить</button>
+                  <button type="button" class="btn btn-primary" id="saveChanges" data-dismiss="modal" style="display:none" >Сохранить изменения</button>
+                  <button type="button" class="btn btn-primary" id="AddButton" data-dismiss="modal">Добавить</button>
+              </div>
+    				</div>
+    			</div>
+    		</div>
+    	</div>
 
     {{csrf_field()}}
 
 
     {{--<div><a href="{{route('selectoptions.create')}}">Оздать опции</a></div>--}}
-    <script
-        src="https://code.jquery.com/jquery-3.5.1.min.js"
-        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
-        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous"></script>
     <script>
@@ -155,10 +243,10 @@
                 if (text == '') {
                     alert('Введите название поля');
                     alert(selectedOptions);
-                }  
+                }
                 if (inputItem === null) {
                     alert('Выберите тип вводимого');
-                } 
+                }
                 if (insertItem === null) {
                     alert('Выберите тип сохранения');
                 }
@@ -183,9 +271,7 @@
                     $('#items').load(location.href + ' #items');
                 });
             });
-        
+
         });
     </script>
 @endsection
-
-
