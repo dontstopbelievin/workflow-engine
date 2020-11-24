@@ -70,6 +70,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('applications/multipleApprove/{application_id}', 'ApplicationController@multipleApprove')->name('applications.multipleApprove');
         Route::post('applications/toCitizen/{application_id}', 'ApplicationController@toCitizen')->name('applications.toCitizen');
         Route::get('download/{file}', 'ApplicationController@download')->name('applications.download');
+        Route::post('agreement-accept', 'ApplicationController@acceptAgreement')->name('applications.agreement');
     });
     Route::get('password/expired', 'Auth\ExpiredPasswordController@expired')
         ->name('password.expired');
