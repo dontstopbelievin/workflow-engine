@@ -83,53 +83,58 @@
           </ul>
         </div>
       </div>
-
-
-    <div class="row">
-        <div class="col-md-12">
+      <div class="main-panel">
+        <div class="content">
+          <div class="container-fluid">
+            <h4 class="page-title">Создание заявки "{{$process->name}}"</h4>
+            @if (session('status'))
+                <div class="alert alert-success" role="alert">
+                    {{ session('status') }}
+                </div>
+            @endif
             <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">Создание заявки {{$process->name}}</h4>
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-                </div>
+              <form action="{{ route('applications.store') }}" method="POST" enctype="multipart/form-data">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-
-                            <form action="{{ route('applications.store') }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                @foreach($arrayToFront as $item)
-                                    <label>{{$item["labelName"]}}</label>
-                                    @if($item["inputName"] === 'file')
-                                        <input type="file" name={{$item["name"]}} multiple><br><br>
-                                    @elseif($item["inputName"] === 'text')
-                                        <input type="text" name={{$item["name"]}} id={{$item["name"]}} class="form-control">
-                                    @elseif($item["inputName"] === 'url')
-                                        <input type="text" name={{$item["name"]}} id={{$item["name"]}} class="form-control" >
-                                    @elseif($item["inputName"] === 'image')
-                                        <input type="file" name={{$item["name"]}} id={{$item["name"]}} class="form-control">
-                                    @else
-                                        <select name="{{$item["name"]}}" id="{{$item["name"]}}" class="form-control" data-dropup-auto="false">
-                                            <option selected disabled>Выберите Ниже</option>
-                                            @foreach($item["inputName"] as $key=>$val)
-                                                <option>{{$val}}</option>
-                                            @endforeach
-                                        </select>
-                                    @endif
-                                @endforeach
-                                <input type="hidden" name="process_id" value = {{$process->id}}>
-                                <button type="Submit" class="btn btn-secondary">Создать</button>
-                            </form>
+                  @csrf
+                  @foreach($arrayToFront as $item)
+                      <label>{{$item["labelName"]}}</label>
+                      @if($item["inputName"] === 'file')
+                        <div class="form-group">
+                          <input type="file" name={{$item["name"]}} multiple><br><br>
                         </div>
-                    </div>
+                      @elseif($item["inputName"] === 'text')
+                        <div class="form-group">
+                          <input type="text" name={{$item["name"]}} id={{$item["name"]}} class="form-control">
+                        </div>
+                      @elseif($item["inputName"] === 'url')
+                      <div class="form-group">
+                        <input type="text" name={{$item["name"]}} id={{$item["name"]}} class="form-control" >
+                      </div>
+                      @elseif($item["inputName"] === 'image')
+                      <div class="">
+                        <input type="file" name={{$item["name"]}} id={{$item["name"]}} class="form-control">
+                      </div>
+                      @else
+                      <div class="form-group">
+                        <select name="{{$item["name"]}}" id="{{$item["name"]}}" class="form-control" data-dropup-auto="false">
+                            <option selected disabled>Выберите Ниже</option>
+                            @foreach($item["inputName"] as $key=>$val)
+                                <option>{{$val}}</option>
+                            @endforeach
+                        </select>
+                      </div>
+                      @endif
+                  @endforeach
                 </div>
+                <div class="card-action">
+                  <input type="hidden" name="process_id" value = {{$process->id}}>
+                  <button type="submit" class="btn btn-primary">Создать</button>
+                </div>
+              </form>
             </div>
+          </div>
         </div>
-    </div>
+      </div>
 @endsection
 
 @section('scripts')
