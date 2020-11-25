@@ -91,7 +91,7 @@
 								<h4 class="page-title">Справочник</h4>
 							</div>
 							<div class="">
-								<a href="#" id="addNew" class="btn btn-primary" data-toggle="modal" data-target="#myModal"><i class="la la-plus"></i></a>
+								<a href="#" id="addNew" class="btn btn-primary" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i></a>
 							</div>
 						</div>
 						<div class="card">

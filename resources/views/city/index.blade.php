@@ -91,7 +91,7 @@
 								<h4 class="page-title">Организации</h4>
 							</div>
 							<div class="">
-								<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#AddModal"><i class="la la-plus"></i></button>
+								<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#AddModal"><i class="fa fa-plus"></i></button>
 							</div>
 						</div>
 						<div class="card">
@@ -200,12 +200,12 @@
                 $('#items').load(location.href + ' #items');
             });
         });
-        // $( function() {
-        //
-        //     $( "#searchItem" ).autocomplete({
-        //         source: 'http://127.0.0.1:8000/list/search'
-        //     });
-        // } );
+        $( function() {
+
+            $( "#searchItem" ).autocomplete({
+                source: 'http://127.0.0.1:8000/list/search'
+            });
+        } );
     });
 </script>
 @endsection
