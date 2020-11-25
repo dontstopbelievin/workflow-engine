@@ -85,22 +85,22 @@ Route::middleware(['auth'])->group(function () {
 
 Route::group(['middleware' => ['admin', 'auth']], function () {
 
-    Route::get('/dictionary', 'DictionaryController@index')->name('dictionary');
-    Route::post('/dictionary/create', 'DictionaryController@create')->name('dictionary.create');
-    Route::get('/dictionary/createFields', 'DictionaryController@createFields')->name('dictionary.createFields');
-    Route::post('/dictionary/saveToTable', 'DictionaryController@saveToTable')->name('dictionary.saveToTable');
+    Route::get('dictionary', 'DictionaryController@index')->name('dictionary');
+    Route::post('dictionary/create', 'DictionaryController@create')->name('dictionary.create');
+    Route::get('dictionary/createFields', 'DictionaryController@createFields')->name('dictionary.createFields');
+    Route::post('dictionary/saveToTable', 'DictionaryController@saveToTable')->name('dictionary.saveToTable');
 
-    Route::get('/list', 'ListController@index');
-    Route::post('/list', 'ListController@create');
-    Route::post('/list/delete', 'ListController@delete');
-    Route::post('/list/update', 'ListController@update');
-    Route::get('/list/search', 'ListController@search');
+//    Route::get('/list', 'ListController@index');
+//    Route::post('/list', 'ListController@create');
+//    Route::post('/list/delete', 'ListController@delete');
+//    Route::post('/list/update', 'ListController@update');
+//    Route::get('/list/search', 'ListController@search');
 
-    Route::get('/cities', 'CityManagementController@index')->name('city.index');
-    Route::post('/city', 'CityManagementController@create');
-    Route::post('/city/delete', 'CityManagementController@delete');
-    Route::post('/city/update', 'CityManagementController@update');
-    Route::get('/city/search', 'CityManagementController@search');
+    Route::get('cities', 'CityManagementController@index')->name('city.index');
+    Route::post('city', 'CityManagementController@create');
+    Route::post('city/delete', 'CityManagementController@delete');
+    Route::post('city/update', 'CityManagementController@update');
+    Route::get('city/search', 'CityManagementController@search');
 
     Route::get('dashboard', 'Admin\DashboardController@index')->name('dashboard.index');
 
@@ -149,9 +149,9 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('egknservice/act', 'EgknServiceController@act')->name('egknservice.act');
 
     Route::get('select-options/create', 'SelectOptionController@create')->name('selectoptions.create');
-    Route::post('/select-options/store', 'SelectOptionController@store')->name('selectoptions.store');
-    Route::post('/select-options/delete', 'SelectOptionController@delete')->name('selectoptions.delete');
-    Route::post('/select-options/update', 'SelectOptionController@update')->name('selectoptions.update');
+    Route::post('select-options/store', 'SelectOptionController@store')->name('selectoptions.store');
+    Route::post('select-options/delete', 'SelectOptionController@delete')->name('selectoptions.delete');
+    Route::post('select-options/update', 'SelectOptionController@update')->name('selectoptions.update');
 
     Route::get('process', 'ProcessController@index')->name('processes.index');
     Route::get('process/{process}', 'ProcessController@view')->name('processes.view');
@@ -163,6 +163,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::put('processes-update/{process}', 'ProcessController@update')->name('processes.update');
     Route::post('create-process-table/{process}', 'ProcessController@createProcessTable')->name('processes.createProcessTable');
     Route::post('process-add-role/{process}', 'ProcessController@addRole')->name('processes.addRole');
+    Route::post('process/approve-in-parallel', 'ProcessController@approveInParallel')->name('processes.approveParallel');
     Route::delete('process-delete/{process}', 'ProcessController@delete')->name('processes.delete');
 
 

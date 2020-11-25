@@ -187,6 +187,10 @@ class ProcessController extends Controller
         return Redirect::route('processes.edit', [$process])->with('status', 'Справочники успешно сохранены');
     }
 
+    public function approveInParallel(Request $request) {
+        dd($request->all());
+    }
+
     public function addRole(Request $request, Process $process) {
 
 
