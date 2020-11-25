@@ -17,9 +17,9 @@
                 <option value="{{$i}}">{{$i}}</option>
                     @endfor
             </select>
-            <select onchange="val({{$it}})" name="role" id="role">
-                @foreach($roles as $r)
-                <option id = "option" value="{{$r->name}}">{{$r->name}}</option>
+            <select onchange="val({{"$it"}})" name="role" id="role" class="role">
+                @foreach($roles as $role)
+                <option value="{{$role->name}}">{{$role->name}}</option>
                     @endforeach
             </select>
 
@@ -30,15 +30,21 @@
 
 
     <script>
+
         function val(iteration) {
+            let ul
+            let li
             console.log(iteration)
-            // d = document.getElementById("role").value;
-            var ul = document.getElementById(iteration);
-            console.log(ul);
-            // twoIterations = iteration + iteration;
-            var li = document.createElement(li);
-            li.innerHTML = document.getElementById("role").value;
+            console.log(document.getElementById("role").value);
+            ul = document.getElementById(iteration);
+            li = document.createElement("li");
+            console.log(li)
+            let e = document.getElementsByClassName("role")[iteration-1]
+            console.log(e)
+            li.innerHTML = e.value;
+            // console.log(li);
             ul.appendChild(li);
+
         }
     </script>
 </body>

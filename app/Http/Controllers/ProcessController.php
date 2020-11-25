@@ -189,7 +189,7 @@ class ProcessController extends Controller
 
     public function addRole(Request $request, Process $process) {
 
-//        dd($request->all());
+
         if ($request->approveType === "parallel") {
             $requestRoles = $request->roles;
             $rolesLen = sizeof($requestRoles);

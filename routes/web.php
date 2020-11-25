@@ -153,12 +153,12 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::post('/select-options/delete', 'SelectOptionController@delete')->name('selectoptions.delete');
     Route::post('/select-options/update', 'SelectOptionController@update')->name('selectoptions.update');
 
-    Route::get('processes', 'ProcessController@index')->name('processes.index');
-    Route::get('processes/{process}', 'ProcessController@view')->name('processes.view');
+    Route::get('process', 'ProcessController@index')->name('processes.index');
+    Route::get('process/{process}', 'ProcessController@view')->name('processes.view');
     Route::get('process/create', 'ProcessController@create')->name('processes.create');
-    Route::post('processes/store', 'ProcessController@store')->name('processes.store');
-    Route::post('add-sub-roles', 'ProcessController@addSubRoles')->name('processes.addSubRoles');
-    Route::post('add-organization/{process}', 'ProcessController@addOrganization')->name('processes.addOrganization');
+    Route::post('process/store', 'ProcessController@store')->name('processes.store');
+    Route::post('process/add-sub-roles', 'ProcessController@addSubRoles')->name('processes.addSubRoles');
+    Route::post('process/add-organization/{process}', 'ProcessController@addOrganization')->name('processes.addOrganization');
     Route::get('processes-edit/{process}', 'ProcessController@edit')->name('processes.edit');
     Route::put('processes-update/{process}', 'ProcessController@update')->name('processes.update');
     Route::post('create-process-table/{process}', 'ProcessController@createProcessTable')->name('processes.createProcessTable');
