@@ -318,7 +318,7 @@
                 }
             });
             console.log(roleToAdd)
-            $.post('/add-sub-roles', {'roleToAdd':roleToAdd,'subRoles':subRoles,'processId':processId, 'subOrg':subOrg,  '_token':$('input[name=_token]').val()}, function(data){
+            $.post('/process/add-sub-roles', {'roleToAdd':roleToAdd,'subRoles':subRoles,'processId':processId, 'subOrg':subOrg,  '_token':$('input[name=_token]').val()}, function(data){
                 var modal =  $('#myModal2');
                 // console.log(data);
                 modal.style.display = 'none';

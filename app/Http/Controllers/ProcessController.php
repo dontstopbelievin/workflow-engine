@@ -188,7 +188,28 @@ class ProcessController extends Controller
     }
 
     public function approveInParallel(Request $request) {
-        dd($request->all());
+        $allRequest = $request->all();
+        $process = Process::find($request->process);
+        $setOfParallelRoles = $allRequest["allRoles"];
+//        dd($setOfParallelRoles);
+        $index = 0;
+        $priority = 0;
+        foreach($setOfParallelRoles as $key=>$set) {
+            $index++;
+            $priority = array_shift($set);
+            foreach($set as $role) {
+                $r = Role::where('name', $role)->first();
+                $process->roles()->attach($r,['approve_in_parallel'=>$index, 'priority'=>$priority]);
+            }
+        }dd('done');
+//        $simplifiedSetOfParallelRoles = [];
+//        dd($setOfParallelRoles);
+//        foreach ($setOfParallelRoles as $key => $setOfStraightRoles){
+//            $key = array_shift($setOfStraightRoles);
+//            $simplifiedSetOfParallelRoles[$key] = $setOfStraightRoles;
+//        }
+        dd($simplifiedSetOfParallelRoles);
+
     }
 
     public function addRole(Request $request, Process $process) {
