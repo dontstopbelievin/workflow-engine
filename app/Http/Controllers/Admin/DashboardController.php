@@ -37,7 +37,7 @@ class DashboardController extends Controller
       $user->role_id = $request->role_id;
       $user->update();
 
-        $myfile = fopen("../storage/logs/logfile.txt", "a") or die("Unable to open file!");
+        $myfile = fopen("../storage/app/public/logs/logfile.txt", "a") or die("Unable to open file!");
         $mytime = Carbon::now()->toDateTimeString();
         $txt = $admin . ' ' . 'поменял роль' . ' ' . $user->name . ' ' . 'с' . ' ' . $roleName . ' ' . 'на' . ' ' . $newRoleName . ' ' .  $mytime . "\r\n" ;
 //        $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Успешный вход в систему\r\n";
