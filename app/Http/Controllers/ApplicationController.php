@@ -268,7 +268,10 @@ class ApplicationController extends Controller
     {
 
         $input = $request->input();
-        $input["attachment"] = $request->file('attachment')->store('applicant-attachments','public');
+        if ($request->hasFile('attachment')) {
+            $input["attachment"] = $request->file('attachment')->store('applicant-attachments','public');
+        }
+
         $applicationTableFields = array_slice($input, 1, sizeof($input)-1);
         $process = Process::find($request->process_id);
         $routes = $this->getRolesWithoutParent($process->id);
@@ -302,7 +305,7 @@ class ApplicationController extends Controller
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $user = Auth::user();
-
+//        dd($applicationTableFields);
         $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
         $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
         $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
@@ -319,6 +322,32 @@ class ApplicationController extends Controller
         if (file_exists($path)) {
             return response()->download($path);
         }
+    }
+
+    public function search(Request $request)
+    {
+        $process = Process::find($request->processId);
+        $routes = $this->getRolesWithoutParent($process->id);
+        $arrRoutes = json_decode(json_encode($routes), true);
+        $startRole = $arrRoutes[0]["name"]; //с какой роли начинается маршрут. Находится для того, чтобы присвоить статус маршруту
+        $role = Role::where('name', $startRole)->first();
+        $status = Status::find($role->id);
+
+        $tableName = $this->getTableName($process->name);
+        $table = CreatedTable::where('name', $tableName)->first();
+        $user = Auth::user();
+
+        $aData = ["coordindates" => "5645226",   "goal" => "123213213", "area" => "34123453", "processId" => $process->id];
+        $applicationTableFields["coordindates"] = $aData["coordindates"];
+        $applicationTableFields["goal"] = $aData["goal"];
+        $applicationTableFields["area"] = $aData["area"];
+//        dd($aData, $applicationTableFields);
+        $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
+        $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
+        $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
+        DB::table('logs')->insert( $logsArray);
+
+        return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
     }
 
     public function approve(Request $request)

@@ -58,6 +58,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['password_expired'])->group(function () {
         Route::get('services', 'ApplicationController@service')->name('applications.service');
+        Route::post('applications/search', 'ApplicationController@search')->name('applications.search');
         Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');
         Route::get('application-view/{process_id}/{application_id}', 'ApplicationController@view')->name('applications.view');
         Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
