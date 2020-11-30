@@ -15,7 +15,15 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                    <a href="{{ route('applications.create', ['process' => $process]) }}" class="btn btn-primary">Создать Заявку</a>
+                    @if (Auth::user()->role->name === 'Заявитель')
+                        <a href="{{ route('applications.create', ['process' => $process]) }}" class="btn btn-info btn-lg my-5">Создать Заявку</a>
+
+                        <form action="{{ route('applications.search')}}" method="POST">
+                            @csrf
+                            <input type="hidden" name="processId" value="{{$process->id}}">
+                            <button type="submit">Обновить</button>
+                        </form>
+                    @endif
             </div>
                 <div class="card-body">
                     <div class="table-responsive">
