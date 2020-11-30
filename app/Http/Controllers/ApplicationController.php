@@ -102,7 +102,6 @@ class ApplicationController extends Controller
             $revisionReasonArray["toRole"] = Null;
         }
         //
-
         // Обработка причины отказа
         $rejectFromRole = Role::where('id', $application->reject_reason_from_spec_id)->first(); // кто отправил на отказ
         $rejectReasonArray = [];
@@ -193,7 +192,6 @@ class ApplicationController extends Controller
         if ($request->hasFile('attachment')) {
             $input["attachment"] = $request->file('attachment')->store('applicant-attachments','public');
         }
-
         $applicationTableFields = array_slice($input, 1, sizeof($input)-1);
         $process = Process::find($request->process_id);
         $routes = $this->getRolesWithoutParent($process->id);
@@ -539,6 +537,17 @@ class ApplicationController extends Controller
             $templateTable = $this->truncateTableName($templateTable); // если количество символов больше 64, то необходимо укоротить длину названия до 64
         }
         return $templateTable;
+    }
+
+    private function getFirstLogs($statusId, $tableId, $applicationId, $roleId)
+    {
+        $logsArray = [];
+        $logsArray["status_id"] = $statusId;
+        $logsArray["role_id"] = 1;
+        $logsArray["table_id"] = $tableId;
+        $logsArray["application_id"] = $applicationId;
+        $logsArray["created_at"] = Carbon::now();
+        return $logsArray;
     }
 
     private function getAllDictionariesWithOptions($dictionariesWithOptions) {
