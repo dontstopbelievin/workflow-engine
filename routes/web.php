@@ -51,17 +51,18 @@ Route::post('soap', 'XMLController@index')->middleware('guest');
 
 Route::post('loginwithecp/bar')->name('loginwithecp.store')->uses('EdsSignController@loginByCert')->middleware('guest');
 Route::group(['middleware' => ['admin', 'auth']], function () {
-    Route::get('services', 'ApplicationController@service')->name('applications.service');
-Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');
-Route::get('application-view/{process_id}/{application_id}', 'ApplicationController@view')->name('applications.view');
-Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
-Route::post('applications/store', 'ApplicationController@store')->name('applications.store');
-Route::post('applications/approve', 'ApplicationController@approve')->name('applications.approve');
-Route::post('applications/reject', 'ApplicationController@reject')->name('applications.reject');
-Route::post('applications/revision', 'ApplicationController@revision')->name('applications.revision');
-Route::post('applications/sendToSubRoute', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
-Route::post('applications/backToMainOrg/{application_id}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
 
+    Route::get('services', 'ApplicationController@service')->name('applications.service');
+    Route::post('applications/search', 'ApplicationController@search')->name('applications.search');
+    Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');
+    Route::get('application-view/{process_id}/{application_id}', 'ApplicationController@view')->name('applications.view');
+    Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
+    Route::post('applications/store', 'ApplicationController@store')->name('applications.store');
+    Route::post('applications/approve', 'ApplicationController@approve')->name('applications.approve');
+    Route::post('applications/reject', 'ApplicationController@reject')->name('applications.reject');
+    Route::post('applications/revision', 'ApplicationController@revision')->name('applications.revision');
+    Route::post('applications/sendToSubRoute', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
+    Route::post('applications/backToMainOrg/{application_id}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
 });
 
 
