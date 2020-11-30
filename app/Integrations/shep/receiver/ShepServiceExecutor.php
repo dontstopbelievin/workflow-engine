@@ -1,6 +1,6 @@
 <?php
 
-namespace shep\receiver;
+namespace App\Integrations\shep\receiver;
 
 
 class ShepServiceExecutor
@@ -15,8 +15,8 @@ class ShepServiceExecutor
         $this->oShepServiceStrategy = $oShepServiceStrategy;
     }
 
-    public function execute(array $aArguments)
+    public function execute()
     {
-        return $this->oShepServiceStrategy->receive($aArguments);
+        return $this->oShepServiceStrategy->receive();
     }
 }

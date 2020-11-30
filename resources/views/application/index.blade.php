@@ -15,6 +15,7 @@
                             {{ session('status') }}
                         </div>
                     @endif
+ 
                     @if (Auth::user()->role->name === 'Заявитель')
                         <a href="{{ route('applications.create', ['process' => $process]) }}" class="btn btn-info btn-lg my-5">Создать Заявку</a>
 
@@ -24,22 +25,36 @@
                             <button type="submit">Обновить</button>
                         </form>
                     @endif
-            </div>
+                </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table">
-                            <thead class="text-primary">
-                                <th>#</th>
-                                <th>Имя заявителя</th>
-                                <th>Статус заявки</th>
+                            <thead>
+                                <tr class="p-3 mb-5 rounded text-secondary">
+                                    <th class="text-center border-0"><h6>№</h6></th>
+                                    <th class="text-left border-0"><h6>Имя заявителя</h6></th>
+                                    <th class="text-left border-0"><h6>Статус заявки</h6></th>
+                                    <th class="text-center border-0"><h6>Действия</h6></th>
+                                </tr>
                             </thead>
                             <tbody>
                             @foreach($arrayApps as $app)
-                                  <tr>
-                                    <td><a href="{{ route('applications.view', ['process_id' => $process["id"] , 'application_id' => $app["id"]]) }}">{{$app["id"]}}</a></td>
-                                    <td>{{$app["name"] ?? '' }}</td>
-                                    <td>{{$app["status"] ?? ''}}</td>
-                                  </tr>
+                                <tr class="p-3 mb-5 rounded">
+                                    <td class="text-center align-middle border"><h5>{{$loop->iteration}}</h5></td>
+                                    <td class="text-left align-middle border"><h5>{{$app["name"] ?? '' }}</h5></td>
+                                    @if($app["status"] === 'Отправлено заявителю на согласование')
+                                        <td class="text-left align-middle border"><h5>Отправлено заявителю</h5></td>
+                                    @else
+                                        <td class="text-left align-middle border"><h5>{{$app["status"] ?? ''}}</h5></td>
+                                        @endif
+                                        <td class="text-center align-middle border">
+                                        <button class="rounded-circle bg-white" onclick="window.location='{{route('applications.view', ['process_id' => $process["id"] , 'application_id' => $app["id"]])}}'">
+                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                            </svg>
+                                        </button>
+                                    </td>  
+                                </tr>
                             @endforeach
                             </tbody>
 

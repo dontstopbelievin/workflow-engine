@@ -37,7 +37,6 @@
                                 </div>
                             </form>
                             <hr>
-                            @empty($arrayJson)
                             <button type="button" class="btn btn-light btn-lg my-3" data-toggle="modal" data-target="#myModal">Выбрать Поля</button>
                                 <!-- Modal -->
                             <div class="modal fade" id="myModal" role="dialog">
@@ -64,6 +63,32 @@
                                             </div>      
                                         </form>
                                     </div>                                          
+                                </div>
+                            </div>
+                            <div class="modal fade" id="routeModal" role="dialog">
+                                <div class="modal-dialog">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Список Ролей</h4>
+                                        </div>
+                                        <form action="{{ route('processes.addRole', ['process' => $process]) }}" method="POST">
+                                            @csrf
+                                            <div class="modal-body">
+                                                @isset($roles)
+                                                    @foreach ($roles as $role)
+                                                        <div class="checkbox">
+                                                            <label><input type="checkbox" name="roles[]" value="{{$role->id}}">{{$role->name}}</label>
+                                                        </div>
+                                                    @endforeach
+                                                @endisset
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-success">Выбрать</button>
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                             <div class="modal fade" id="myModal2" role="dialog">
@@ -101,8 +126,6 @@
                                     </div>
                                 </div>
                             </div>
-                             
-                            @endempty
                             @isset($tableColumns)
                             <h4 class="font-weight-bold text-left">Поля процесса:</h4>
                                 @foreach($tableColumns as $column)
@@ -130,7 +153,9 @@
                                 </form>
                             </div>
                             @endisset
+                            <button type="button" class="btn btn-light btn-lg my-3" data-toggle="modal" data-target="#routeModal">Выбрать Участников</button>
                             @isset($roles)
+
                                 <div class="my-4">
                                     <form action="{{ route('processes.addRole', ['process' => $process]) }}" method="POST">
                                     @csrf

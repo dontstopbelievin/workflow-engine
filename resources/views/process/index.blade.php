@@ -21,18 +21,18 @@
                         <table class="table">
                             <thead>
                                 <tr class="p-3 mb-5 rounded text-secondary">
-                                    <th class="text-center"><h6>№</h6></th>
-                                    <th class=" w-25 text-center"><h6>Название</h6></th>
-                                    <th class="text-center"><h6>Кол-во дней</h6></th>
-                                    <th colspan="2" class="text-center"><h6>Действия</h6></th>
+                                    <th class="text-center col-md-1"><h6>№</h6></th>
+                                    <th class="w-50 text-left col-md-7"><h6>Название</h6></th>
+                                    <th class="text-left col-md-1"><h6>Кол-во дней</h6></th>
+                                    <th colspan="2" class="text-center col-md-3"><h6>Действия</h6></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($processes as $process)
                                     <tr class="p-3 mb-5 rounded">
-                                        <td class="text-center border align-middle"><a href="{{ route('processes.view', ['process' => $process]) }}"><h4>{{$process->id}}</h4></a></td>
-                                        <td class="w-25 text-center border align-middle"><h4>{{$process->name}}</h4></td>
-                                        <td class="text-center border align-middle"><h4>{{$process->deadline}}</h4></td>
+                                        <td class="text-center border align-middle"><a href="{{ route('processes.view', ['process' => $process]) }}"><h5>{{$loop->iteration}}</h5></a></td>
+                                        <td class="w-50 text-left border align-middle"><h5>{{$process->name}}</h5></td>
+                                        <td class="text-left border align-middle"><h5>{{$process->deadline}}</h5></td>
                                         <td class="text-right align-middle">
                                             <button class="rounded-circle bg-white" onclick="window.location='{{route('processes.edit', ['process' => $process])}}'">
                                                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-fill rounded cicrle" fill="blue" xmlns="http://www.w3.org/2000/svg">

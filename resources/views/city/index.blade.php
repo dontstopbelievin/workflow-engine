@@ -22,15 +22,15 @@
                             <thead>
                                 <tr class="p-3 mb-5 rounded text-secondary">
                                     <th class="text-center"><h6>№</h6></th>
-                                    <th class="text-center"><h6>Наименование организации</h6></th>
+                                    <th class="text-left"><h6>Наименование организации</h6></th>
                                 </tr>
                             </thead>
                             <tbody>
                             @foreach($cityManagements as $cityManagement)
                                 <tr>
-                                    <td class="text-center align-middle border" style="1px solid #ccc"><h4>{{$cityManagement->id}}</h4></td>
-                                    <td class="text-center align-middle border ourItem" data-toggle="modal" data-target="#myModal">
-                                        <h4>{{$cityManagement->name}}</h4>
+                                    <td class="text-center align-middle border" style="1px solid #ccc"><h5>{{$loop->iteration}}</h5></td>
+                                    <td class="text-left align-middle border ourItem" data-toggle="modal" data-target="#myModal">
+                                        <h5>{{$cityManagement->name}}</h5>
                                         <input type="hidden" id="itemId" value = {{$cityManagement->id}}>
                                     </td>
                                 </tr>   

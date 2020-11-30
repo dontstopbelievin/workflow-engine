@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Integrations\shep\ShepUtil;
-use App\Integrations\shep\ShepXmlUtil;
 use Illuminate\Http\Request;
 use App\Integrations\shep\sender\ShepRequestSender;
-use Illuminate\Support\Facades\Storage;
+use App\Integrations\shep\receiver\ServiceRequestRouter;
 
 class IntegrationController extends Controller
 {
@@ -31,16 +29,7 @@ class IntegrationController extends Controller
 
     public function receive(Request $request)
     {
-        $sXml = $request->getContent();
-        Storage::disk('local')->put('async_responses/' . time(), $sXml);
-        $aResponseData = ShepUtil::getSoapBody($sXml);
-        if (isset($aResponseData['request'])) {
-            $sCorrelationId = $aResponseData['request']['messageInfo']['correlationId'];
-            $sUnsignedXml = ShepXmlUtil::getSoapAsyncResponse($sCorrelationId);
-            header('Content-Type: application/soap+xml; charset=utf-8');
-            echo ShepUtil::signXml($sUnsignedXml);
-            exit;
-        }
+        ServiceRequestRouter::route($request);
     }
 
     public function sync(Request $request)

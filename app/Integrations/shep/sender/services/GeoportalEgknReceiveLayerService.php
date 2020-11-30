@@ -16,14 +16,12 @@ class GeoportalEgknReceiveLayerService extends ShepService implements XmlBuilder
         parent::__construct(self::SERVICE_TYPE, $sShepUrl);
     }
 
-    public function buildXml(array $aArguments)
+    public function buildXml(array $aPreparedData)
     {
-        //TODO: use real data from $aArguments param
-        include_once app_path('Integrations/shep/arrays/egkn-status.php');
-        $sUnsignedXml = ShepUtil::arrayToXML($aData);
-        $sUnsignedXml = str_replace('<Request>', '<ns3:Request>', $sUnsignedXml);
-        $sUnsignedXml = str_replace('</Request>', '</ns3:Request>', $sUnsignedXml);
-        $sUnsignedXml = str_replace('<ns3:Request>', '<ns3:Request xmlns:ns3="http://newshep.geoportal.free.gbdrn.tamur.kz">', $sUnsignedXml);
+        $sUnsignedXml = ShepUtil::arrayToXML($aPreparedData);
+        $sUnsignedXml = str_replace('<', '<tns:', $sUnsignedXml);
+        $sUnsignedXml = str_replace('<tns:/', '</tns:', $sUnsignedXml);
+        $sUnsignedXml = str_replace('<tns:Request>', '<tns:Request xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns="http://newshep.geoportal.free.gbdrn.tamur.kz" xsi:schemaLocation="http://newshep.geoportal.free.gbdrn.tamur.kz EgknGeoportalFree.xsd ">', $sUnsignedXml);
         $sSignedBusinessDataXml = ShepUtil::signXmlJar($sUnsignedXml);
         $sSignedBusinessDataXml = str_replace('<', '&lt;', $sSignedBusinessDataXml);
         $sRequestXml = ShepXmlUtil::getSoapRequest(self::SERVICE_ID, $sSignedBusinessDataXml);

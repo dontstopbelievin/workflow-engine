@@ -9,7 +9,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Пользователи с ролью {{$role->name}}</h4>
+                    <h4 class="card-title">Пользователи с ролью <i>"{{$role->name}}"</i></h4>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -20,20 +20,20 @@
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
-                                <tr>
-                                    <th>№</th>
-                                    <th>Имя</th>
-                                    <th>Телефон</th>
-                                    <th>Почта</th>
+                                <tr class="p-3 mb-5 rounded text-secondary">
+                                    <th class="text-center border-0">№</th>
+                                    <th class="w-50 text-left border-0">Имя</th>
+                                    <th class="text-left border-0">Телефон</th>
+                                    <th class="text-left border-0">Почта</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($role->users as $user)
-                                <tr>
-                                    <td>{{$user->id}}</td>
-                                    <td>{{$user->name}}</td>
-                                    <td>{{$user->phone}}</td>
-                                    <td>{{$user->email}}</td> 
+                                <tr class="p-3 mb-5 rounded">
+                                    <td class="text-center align-middle border">{{$loop->iteration}}</td>
+                                    <td class="text-left align-middle border">{{$user->name}}</td>
+                                    <td class="text-left align-middle border">{{$user->phone}}</td>
+                                    <td class="text-left align-middle border">{{$user->email}}</td>
                                 </tr>   
                                 @endforeach                             
                             </tbody>

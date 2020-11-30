@@ -26,8 +26,6 @@ class DictionaryController extends Controller
     
     public function create(Request $request) {
 
-//        dd($request->input());
-
         $fieldName = $request->fieldName;
         $labelName = $request->labelName;
         $inputItem = $request->inputItem;
@@ -71,6 +69,7 @@ class DictionaryController extends Controller
     }
 
     public function createFields() {
+
         $dictionaries = $this->getAllDictionaries();
         $dictionariesWithOptions = $this->addOptionsToDictionary($dictionaries);
         dd($dictionaries, $dictionariesWithOptions);

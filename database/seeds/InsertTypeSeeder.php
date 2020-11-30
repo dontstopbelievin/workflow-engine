@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class InsertTypeSeeder extends Seeder
 {
@@ -16,22 +17,22 @@ class InsertTypeSeeder extends Seeder
                 'name' => 'string' //1
             ],
             [
-                'name' => 'text' //1
+                'name' => 'text' //2
             ],
             [
-                'name' => 'date' //1
+                'name' => 'date' //3
             ],
             [
-                'name' => 'float' //1
+                'name' => 'float' //4
             ],
             [
-                'name' => 'integer' //1
+                'name' => 'integer' //5
             ],
             [
-                'name' => 'json' //1
+                'name' => 'json' //6
             ],
             [
-                'name' => 'boolean' //1
+                'name' => 'boolean' //7
             ],
             
         ]);

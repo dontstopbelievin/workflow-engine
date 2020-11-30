@@ -7,6 +7,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>Просмотр Заявки</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -55,6 +56,9 @@
                                 @isset($application->cadastral_number)
                                     <li class="list-group-item">Кадастровый номер: {{$application->cadastral_number ?? ''}}</li>
                                 @endisset
+                                @isset($application->attachment)
+                                    <li class="list-group-item">Загруженный документ:  <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></li>
+                                @endisset
                             </ul>
                         </div>
                         
@@ -63,7 +67,11 @@
                             @isset($templateTableFields)
                                 <ul class="list-group" id="list">
                                 @foreach($templateTableFields as $key=>$value)
+                                    @if(substr($value, 0, 16) === 'application-docs')
+                                            <li class="list-group-item">{{$key}}: <a href="{{asset('storage/' .$value )}}" target="_blanc">Просмотр</a></li>
+                                        @else
                                     <li class="list-group-item">{{$key}}: {{$value}}</li>
+                                        @endif
                                     @endforeach
                                 </ul>
                                 @endisset
@@ -261,16 +269,17 @@
                                     @isset($templateFields)
                                         <h4 class="card-title text-center" style="margin-top:50px;">Поля Шаблона</h4>
                                         <form id = "templateFieldsId" method="POST" enctype="multipart/form-data">
+                                            <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
                                             @foreach($templateFields as $item)
                                                 <div class="form-group row">
                                                     <label for="{{$item->name}}" class="col-md-4 col-form-label text-md-right">{{ __($item->label_name) }}</label>
                                                     @if($item->input_type_id === 1)
                                                         <div class="col-md-6">
-                                                            <input type="text" class="form-control"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
+                                                            <input type="text" class="form-control" id="{{$item->name}}"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
                                                         </div>
                                                     @elseif($item->input_type_id === 2)
                                                         <div class="col-md-6">
-                                                            <input type="file" class="form-control"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
+                                                            <input type="file" class="form-control" id="{{$item->name}}"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
                                                         </div>
                                                     @endif
                                                 </div>
@@ -281,6 +290,7 @@
                                     <form action="{{ route('applications.toCitizen', ['application_id' => $application->id]) }}" method="post">
                                         @csrf
                                         <input type="hidden" name="process_id" value = {{$process->id}}>
+                                        <input type="hidden" name="application_id" value = {{$application->id}}>
                                         <div style="text-align: center">
                                             <button class="btn btn-danger" style="margin-bottom: 30px;" type="submit">Отправить заявителю</button>
                                         </div>
@@ -289,20 +299,43 @@
                                     <form action="{{ route('applications.backToMainOrg', ['application_id' => $application->id]) }}" method="post">
                                         @csrf
                                         <input type="hidden" name="process_id" value = {{$process->id}}>
-                                        <button class="btn btn-warning" style="margin-bottom: 70px;" type="submit">Отправить обратно в организацию</button>
+                                        <button class="btn btn-warning" style="margin-bottom: 70px;" type="submit">Согласовать</button>
                                     </form>
                                 @else
                                     @if(isset($sendToSubRoute["name"]))
-                                        <form action="{{ route('applications.sendToSubRoute', ['application_id' => $application->id]) }}" method="post">
+                                        @if($application->index_sub_route === Null)
+                                                    <form action="{{ route('applications.sendToSubRoute', ['application_id' => $application->id]) }}" method="post">
+                                                        @csrf
+                                                        <input type="hidden" name="process_id" value = {{$process->id}}>
+                                                        <button class="btn btn-warning" type="button" data-toggle="modal" data-target="#sendToSubRouteId">Отправить в {{$sendToSubRoute["name"]}}</button>
+                                                    </form>
+                                        @else <form action="{{ route('applications.sendToSubRoute', ['application_id' => $application->id]) }}" method="post">
                                             @csrf
                                             <input type="hidden" name="process_id" value = {{$process->id}}>
-                                            <button class="btn btn-warning" type="button" data-toggle="modal" data-target="#sendToSubRouteId">Отправить в {{$sendToSubRoute["name"]}}</button>
+                                            <button class="btn btn-warning" type="button" data-toggle="modal" data-target="#sendToSubRouteId">Согласовать в {{$sendToSubRoute["name"]}}</button>
                                         </form>
+                                                @endif
                                     @endif
                                     <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
                                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
-                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
+                                        @if($toMultipleRoles["exists"])
+                                            <div class="col-md-6">
+                                                <form action="{{ route('applications.multipleApprove', ['application_id' => $application->id]) }}" method="post"">
+                                                    @csrf
+                                                    <select name="role" id="role" class="form-control">
+                                                    @foreach($toMultipleRoles["roleOptions"] as $role)
+                                                        <option value="{{$role->id}}">{{$role->name}}</option>
+                                                    @endforeach
+                                                    </select>
+                                                    <input type="hidden" name="process_id" value = {{$process->id}}>
+                                                    <button  class="btn btn-success" type="submit">Согласовать</button>
+                                                </form>
+                                            </div>
+                                            @else
+                                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
+                                            @endif
+
                                     </div>
                                 @endif
                             @endif
@@ -410,17 +443,40 @@
             });
         });
         $('#commentButton').click(function(event) {
-            var comments = $('#comments').val();
-            var inputs = $('#templateFieldsId :input');
-            var values = {};
+            // event.preventDefault();
+            let formData = new FormData();
+            let comments = $('#comments').val();
+            let processId = $('#processId').val();
+            let applicationId = $('#applicationId').val();
+            let inputs = $('#templateFieldsId :input');
+            formData.append('comments', comments)
+            formData.append('process_id', processId)
+            formData.append('applicationId', applicationId)
             inputs.each(function() {
-                values[this.name] = $(this).val();
+                if ($(this)[0].files === null) {
+                    // values[this.name] = $(this).val();
+                    formData.append(this.name, $(this).val());
+                } else {
+                    var file = $('input[type=file]')[0].files[0];
+                    if(file!==undefined) {
+                        formData.append(this.name, file);
+                    }
+                }
             });
-            var processId = $('#processId').val();
-            var applicationId = $('#applicationId').val();
-            $.post('/applications/approve', {'comments':comments,'fieldValues':values,'process_id':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
-                $('#items').load(location.href + ' #items');
+            formData.append('_token', $('input[name=_token]').val());
+            $.ajax({
+                method: "POST",
+                url: '{{ route('applications.approve') }}',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data){
+                    $('#items').load(location.href + ' #items');
+                }
             });
+            // $.post('/applications/approve', {'comments':comments,'fieldValues':formData, 'process_id':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
+            //     $('#items').load(location.href + ' #items');
+            // });
         });
         $('#sendToSubOrgButton').click(function(event) {
             var comments = $('#subOrgComments').val();

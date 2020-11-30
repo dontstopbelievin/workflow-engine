@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class SelectOptionSeeder extends Seeder
 {
@@ -16,16 +17,16 @@ class SelectOptionSeeder extends Seeder
                 'name' => 'ДА' //1
             ],
             [
-                'name' => 'НЕТ' //1
+                'name' => 'НЕТ' //2
             ],
             [
-                'name' => 'Астана ГорАрхитектура' //1
+                'name' => 'Астана ГорАрхитектура' //3
             ],
             [
-                'name' => 'Управление Архитектуры' //1
+                'name' => 'Управление Архитектуры' //4
             ],
             [
-                'name' => 'Коммунальные службы' //1
+                'name' => 'Коммунальные службы' //5
             ],
         ]);
     }

@@ -23,6 +23,9 @@
                                     <input type="text" name="name" value="{{ $role->name}}" class="form-control">
                                 </div>
                                 <select name="city_management_id" class="form-control">
+                                    @isset($role->cityManagement->id)
+                                        <option value="{{$role->cityManagement->id}}" selected>{{$role->cityManagement->name}}</option>
+                                    @endisset
                                     @foreach($cityManagements as $item)
                                         <option value="{{$item->id}}">{{$item->name}}</option>
                                     @endforeach

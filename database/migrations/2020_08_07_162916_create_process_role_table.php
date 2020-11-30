@@ -14,10 +14,11 @@ class CreateProcessRoleTable extends Migration
     public function up()
     {
         Schema::create('process_role', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->unsignedBigInteger('process_id');
             $table->unsignedBigInteger('role_id');
             $table->string('parent_role_id')->nullable();
+            $table->integer('is_parallel')->default(0)->nullable();
             $table->timestamps();
         });
     }
