@@ -102,22 +102,22 @@ Route::middleware(['auth'])->group(function () {
 
 Route::group(['middleware' => ['admin', 'auth']], function () {
 
-    Route::get('/dictionary', 'DictionaryController@index')->name('dictionary');
-    Route::post('/dictionary/create', 'DictionaryController@create')->name('dictionary.create');
-    Route::get('/dictionary/createFields', 'DictionaryController@createFields')->name('dictionary.createFields');
-    Route::post('/dictionary/saveToTable', 'DictionaryController@saveToTable')->name('dictionary.saveToTable');
+    Route::get('dictionary', 'DictionaryController@index')->name('dictionary');
+    Route::post('dictionary/create', 'DictionaryController@create')->name('dictionary.create');
+    Route::get('dictionary/createFields', 'DictionaryController@createFields')->name('dictionary.createFields');
+    Route::post('dictionary/saveToTable', 'DictionaryController@saveToTable')->name('dictionary.saveToTable');
 
-    Route::get('/list', 'ListController@index');
-    Route::post('/list', 'ListController@create');
-    Route::post('/list/delete', 'ListController@delete');
-    Route::post('/list/update', 'ListController@update');
-    Route::get('/list/search', 'ListController@search');
+    Route::get('list', 'ListController@index');
+    Route::post('list', 'ListController@create');
+    Route::post('list/delete', 'ListController@delete');
+    Route::post('list/update', 'ListController@update');
+    Route::get('list/search', 'ListController@search');
 
-    Route::get('/cities', 'CityManagementController@index')->name('city.index');
-    Route::post('/city', 'CityManagementController@create');
-    Route::post('/city/delete', 'CityManagementController@delete');
-    Route::post('/city/update', 'CityManagementController@update');
-    Route::get('/city/search', 'CityManagementController@search');
+    Route::get('cities', 'CityManagementController@index')->name('city.index');
+    Route::post('city', 'CityManagementController@create');
+    Route::post('city/delete', 'CityManagementController@delete');
+    Route::post('city/update', 'CityManagementController@update');
+    Route::get('city/search', 'CityManagementController@search');
 
     Route::get('dashboard', 'Admin\DashboardController@index')->name('dashboard.index');
 
