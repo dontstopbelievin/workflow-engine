@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-
+   
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -26,28 +26,35 @@
             height: 100vh;
             margin: 0;
         }
+
         .full-height {
             height: 100vh;
         }
+
         .flex-center {
             align-items: center;
             display: flex;
             justify-content: center;
         }
+
         .position-ref {
             position: relative;
         }
+
         .top-right {
             position: absolute;
             right: 10px;
             top: 18px;
         }
+
         .content {
             text-align: center;
         }
+
         .title {
             font-size: 84px;
         }
+
         .links>a {
             color: #636b6f;
             padding: 0 25px;
@@ -57,9 +64,11 @@
             text-decoration: none;
             text-transform: uppercase;
         }
+
         .m-b-md {
             margin-bottom: 30px;
         }
+
     </style><!-- Link to CSS -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <!-- Styles -->
@@ -73,28 +82,35 @@
             height: 100vh;
             margin: 0;
         }
+
         .full-height {
             height: 100vh;
         }
+
         .flex-center {
             align-items: center;
             display: flex;
             justify-content: center;
         }
+
         .position-ref {
             position: relative;
         }
+
         .top-right {
             position: absolute;
             right: 10px;
             top: 18px;
         }
+
         .content {
             text-align: center;
         }
+
         .title {
             font-size: 84px;
         }
+
         .links>a {
             color: #636b6f;
             padding: 0 25px;
@@ -104,9 +120,11 @@
             text-decoration: none;
             text-transform: uppercase;
         }
+
         .m-b-md {
             margin-bottom: 30px;
         }
+
     </style>
 </head>
 
@@ -153,6 +171,7 @@
 <script type=text/javascript>
     var session_id = "{!! (Session::getId())?Session::getId():'' !!}";
     var user_id = "{!! (Auth::user())?Auth::user()->id:'' !!}";
+
     // Initialize Firebase
     var config = {
         apiKey: "firebase.api_key",
@@ -161,12 +180,16 @@
         storageBucket: "firebase.storage_bucket",
     };
     firebase.initializeApp(config);
+
     var database = firebase.database();
+
     if({!! Auth::user() !!}) {
         firebase.database().ref('/users/' + user_id + '/session_id').set(session_id);
     }
+
     firebase.database().ref('/users/' + user_id).on('value', function(snapshot2) {
         var v = snapshot2.val();
+
         if(v.session_id != session_id) {
             toastr.warning('Your account login from another device!!', 'Warning Alert', {timeOut: 3000});
             setTimeout(function() {

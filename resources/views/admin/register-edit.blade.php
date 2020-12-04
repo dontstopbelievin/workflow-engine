@@ -5,114 +5,56 @@
 @endsection
 
 @section('content')
-      <div class="sidebar">
-        <div class="scrollbar-inner sidebar-wrapper">
-          <ul class="nav">
-            <li class="nav-item">
-              <a class="" role="button" data-toggle="collapse" href="#settings" aria-expanded="false">
-                <i class="la la-navicon"></i>
-                <p>Настройки</p>
-              </a>
-            </li>
-            <div class="collapse" id="settings">
-              <ul class="nav">
-                <li class="nav-item">
-                  <a href="#">
-                    <span class="link-collapse">My Profile</span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="#">
-                    <span class="link-collapse">Edit Profile</span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="#">
-                    <span class="link-collapse">Settings</span>
-                  </a>
-                </li>
-              </ul>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h1>Изменение данных пользователя</h1>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <form action="{{ route('user-role.update', ['user' => $user]) }}" method="POST">
+                                {{ csrf_field( )}}
+                                {{ method_field('PUT') }}
+                                <div class="form-group">
+                                    <label>Имя пользователя</label>
+                                    <input type="text" name="username" value="{{ $user->name}}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Присвоить роль</label>
+                                    <select name="role_id" class="form-control">
+                                        @foreach($roles as $role)
+                                            <option value="{{$role->id}}">{{$role->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    <button type="submit" class="btn btn-success">ОБНОВИТЬ</button>
+                                    <a href="{{ route('user-role.register') }}" class="btn btn-danger">ОТМЕНА</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <li class="nav-item ">
-              <a href="{{ route('auction.index') }}">
-                <i class="la la-table"></i>
-                <p>Аукцион</p>
-              </a>
-            </li>
-            <li class="nav-item ">
-              <a href="{{ route('processes.index') }}">
-                <i class="la la-keyboard-o"></i>
-                <p>Процессы</p>
-                <span class="badge badge-count">{{ $processesCount }}</span>
-              </a>
-            </li>
-            <li class="nav-item ">
-              <a href="{{ route('role.index') }}">
-                <i class="la la-th"></i>
-                <p>Роли</p>
-                <span class="badge badge-count">{{ $rolesCount }}</span>
-              </a>
-            </li>
-            <li class="nav-item ">
-              <a href="{{ route('city.index') }}">
-                <i class="la la-bell"></i>
-                <p>Организации</p>
-                <span class="badge badge-count">{{ $cityManagementCount }}</span>
-              </a>
-            </li>
-            <li class="nav-item active">
-              <a href="{{ route('user-role.register') }}">
-                <i class="la la-font"></i>
-                <p>Пользователи</p>
-                <span class="badge badge-count">{{ $usersCount }}</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="{{ route('dictionary') }}">
-                <i class="la la-fonticons"></i>
-                <p>Справочник</p>
-                <span class="badge badge-count">{{ $dictionariesCount }}</span>
-              </a>
-            </li>
-            <li class="nav-item ">
-              <a href="{{ route('applications.service') }}">
-                <i class="la la-dashboard"></i>
-                <p>Все услуги</p>
-              </a>
-            </li>
-          </ul>
         </div>
-      </div>
-      <div class="main-panel">
-				<div class="content">
-					<div class="container-fluid">
-						<h4 class="page-title">Изменение данных пользователя</h4>
-						<div class="card">
-              <form action="{{ route('user-role.update', ['user' => $user]) }}" method="POST">
-                {{ csrf_field( )}}
-                {{ method_field('PUT') }}
-  							<div class="card-body">
-  								<div class="form-group">
-  									<label for="lotNumber">Имя пользователя</label>
-                    <input type="text" name="username" value="{{ $user->name}}" class="form-control">
-  								</div>
-  								<div class="form-group">
-  									<label for="lotNumber">Присвоить роль</label>
-                    <select name="role_id" class="form-control" data-dropup-auto="false">
-                        @foreach($roles as $role)
-                            <option value="{{$role->id}}">{{$role->name}}</option>
-                        @endforeach
-                    </select>
-  								</div>
-  							</div>
-  							<div class="card-action">
-                  <button type="submit" class="btn btn-success">Обновить</button>
-                  <a href="{{ route('user-role.register') }}" class="btn btn-danger">Отмена</a>
-  							</div>
-              </form>
-						</div>
-					</div>
-				</div>
-			</div>
+    </div>
+</div>
+@endsection
 
+
+@section('scripts')
+<script src="../assets/js/core/jquery.min.js"></script>
+  <script src="../assets/js/core/popper.min.js"></script>
+  <script src="../assets/js/core/bootstrap.min.js"></script>
+  <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+  <!--  Google Maps Plugin    -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+  <!-- Chart JS -->
+  <script src="../assets/js/plugins/chartjs.min.js"></script>
+  <!--  Notifications Plugin    -->
+  <script src="../assets/js/plugins/bootstrap-notify.js"></script>
+  <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="../assets/js/now-ui-dashboard.min.js?v=1.5.0" type="text/javascript"></script><!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
+  <script src="../assets/demo/demo.js"></script>
 @endsection

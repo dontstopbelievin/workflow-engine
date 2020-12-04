@@ -132,6 +132,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('template-edit/{template}', 'TemplateController@edit')->name('template.edit');
     Route::post('template-update/{id}', 'TemplateController@update')->name('template.update');
     Route::post('template-delete/{id}', 'TemplateController@delete')->name('template.delete');
+
     Route::get('template-field-create/{template}', 'TemplateFieldsController@create')->name('templatefield.create');
     Route::post('template-field-create', 'TemplateFieldsController@store')->name('templatefield.store');
 
@@ -164,7 +165,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::post('process-add-role/{process}', 'ProcessController@addRole')->name('processes.addRole');
     Route::post('process/approve-in-parallel', 'ProcessController@approveInParallel')->name('processes.approveParallel');
     Route::delete('process-delete/{process}', 'ProcessController@delete')->name('processes.delete');
-    Route::get('logs', 'ProcessController@logs')->name('logs');
+
 
     View::composer(['*'], function($view) {
         $usersCount = count(User::active()->get());
