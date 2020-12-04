@@ -14,7 +14,7 @@ class EgknServiceController extends Controller
 
     public function index()
     {
-        $aFields = EgknService::all();
+        $aFields = EgknService::where('passed_to_process', 0)->get();
         return view('egknservice.index', compact('aFields'));
     }
 
@@ -40,7 +40,7 @@ class EgknServiceController extends Controller
     public function act(Request $request)
     {
         $egkn = EgknService::find($request->id);
-//        dd($ekgn);
+// try to do this by using ddd
         $process = Process::find(17);
         $tableName = $this->getTableName($process->name);
         $tableColumns = $this->getColumns($tableName);
