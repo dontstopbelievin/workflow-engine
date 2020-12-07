@@ -25,7 +25,19 @@ class RoleSeeder extends Seeder
             ],
             [
                 'city_management_id' => 1,
-                'name' => 'Специалист Акимата', // 2
+                'name' => 'Специалист Акимата', // 3
+            ],
+            [
+                'city_management_id' => 1,
+                'name' => 'Канцелярия Акимата', // 4
+            ],
+            [
+                'city_management_id' => 1,
+                'name' => 'Гос Правовой отдел акимата', // 5
+            ],
+            [
+                'city_management_id' => 1,
+                'name' => 'Заместитель акима', // 6
             ],
             [
                 'city_management_id' => 1,

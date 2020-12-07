@@ -100,7 +100,8 @@ class ApplicationController extends Controller
         $backToMainOrg = false;
         $userRole = Role::find($roleId);
         $appRoutes = json_decode($this->getAppRoutes($process->id));
-        if ($appRoutes[sizeof($appRoutes)-1] === $userRole->name) {
+//        dd($appRoutes, $application->index_main);
+        if (($appRoutes[sizeof($appRoutes)-1] === $userRole->name) && (sizeof($appRoutes) === $application->index_main))  {
             $toCitizen = true; // если заявку подписывает последний специалист в обороте, заявка идет обратно к заявителю
         }
         if (!empty($subRoutes)) {

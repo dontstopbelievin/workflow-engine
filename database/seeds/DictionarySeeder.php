@@ -67,12 +67,6 @@ class DictionarySeeder extends Seeder
                 'insert_type_id' => 1
             ],
             [
-                'name' => 'surname',
-                'label_name' => 'Фамилия',
-                'input_type_id' => 1,
-                'insert_type_id' => 1
-            ],
-            [
                 'name' => 'first_name',
                 'label_name' => 'Имя',
                 'input_type_id' => 1,
