@@ -30,19 +30,25 @@ class DashboardController extends Controller
 
     public function registerupdate(Request $request, User $user)
     {
+//        dd($user);
         $admin = Auth::user()->name;
-        $roleName = $user->role->name;
+        $roleName = '';
+        if ($user->role) {
+            $roleName = $user->role->name;
+        }
+
         $newRoleName = Role::find($request->role_id)->name;
       $user->name = $request->username;
       $user->role_id = $request->role_id;
       $user->update();
+//      dd($user);
 
-        $myfile = fopen("../storage/app/public/logs/logfile.txt", "a") or die("Unable to open file!");
+//        $myfile = fopen("../public/storage/logs/logfile.txt", "a") or die("Unable to open file!");
         $mytime = Carbon::now()->toDateTimeString();
         $txt = $admin . ' ' . 'поменял роль' . ' ' . $user->name . ' ' . 'с' . ' ' . $roleName . ' ' . 'на' . ' ' . $newRoleName . ' ' .  $mytime . "\r\n" ;
-//        $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Успешный вход в систему\r\n";
-        fwrite($myfile, $txt);
-        fclose($myfile);
+        file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
+//        fwrite($myfile, $txt);
+//        fclose($myfile);
       return Redirect::route('user-role.register')->with('status','Данные пользователя изменены');
    }
 

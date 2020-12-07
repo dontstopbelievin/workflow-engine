@@ -42,15 +42,15 @@ Route::get('/loginwithecp', function () {
 
 Auth::routes();
 
-// Route::get('/integrations/{type}', 'IntegrationController@index')->middleware('guest');
-// Route::post('/integrations/shep/receiver', 'IntegrationController@receive')->middleware('guest');
-// Route::post('/integrations/shep/sync-request-receiver', 'IntegrationController@sync')->middleware('guest');
-// Route::post('/integrations/shep/async-request-receiver', 'IntegrationController@async')->middleware('guest');
+Route::get('/integrations/{type}', 'IntegrationController@index')->middleware('guest');
+Route::post('/integrations/shep/receiver', 'IntegrationController@receive')->middleware('guest');
+Route::post('/integrations/shep/sync-request-receiver', 'IntegrationController@sync')->middleware('guest');
+Route::post('/integrations/shep/async-request-receiver', 'IntegrationController@async')->middleware('guest');
 
 Route::get('/integrations/{shep}','EdsSignController@example')->middleware('guest');
 Route::post('/integrations/shep','EdsSignController@receive')->middleware('guest');
 
-
+Route::get('send', 'HomeController@sendNotification');
 //Route::post('soap', 'XMLController@index')->middleware('guest');
 
 Route::post('loginwithecp/bar')->name('loginwithecp.store')->uses('EdsSignController@loginByCert')->middleware('guest');
@@ -58,6 +58,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['password_expired'])->group(function () {
         Route::get('services', 'ApplicationController@service')->name('applications.service');
+        Route::post('applications/search', 'ApplicationController@search')->name('applications.search');
         Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');
         Route::get('application-view/{process_id}/{application_id}', 'ApplicationController@view')->name('applications.view');
         Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
@@ -70,6 +71,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('applications/multipleApprove/{application_id}', 'ApplicationController@multipleApprove')->name('applications.multipleApprove');
         Route::post('applications/toCitizen/{application_id}', 'ApplicationController@toCitizen')->name('applications.toCitizen');
         Route::get('download/{file}', 'ApplicationController@download')->name('applications.download');
+        Route::post('agreement-accept', 'ApplicationController@acceptAgreement')->name('applications.agreement');
     });
     Route::get('password/expired', 'Auth\ExpiredPasswordController@expired')
         ->name('password.expired');

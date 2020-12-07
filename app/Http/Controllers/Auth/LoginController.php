@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Process;
+use App\User;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -9,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Redirect;
 
 class LoginController extends Controller
 {
@@ -33,6 +36,7 @@ class LoginController extends Controller
     // protected $redirectTo = RouteServiceProvider::HOME;
 
     protected function redirectTo() {
+
         return 'services';
     }
 
@@ -74,20 +78,25 @@ class LoginController extends Controller
             \DB::table('users')->where('id', $user->id)->update(['session_id' => $new_sessid]);
 
             $user = auth()->guard('web')->user();
-            $myfile = fopen("../storage/app/public/logs/logfile.txt", "a") or die("Unable to open file!");
             $mytime = Carbon::now()->toDateTimeString();
-            $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Успешный вход в систему\r\n";
-            fwrite($myfile, $txt);
-            fclose($myfile);
 
-//            return redirect($this->redirectTo);
+            $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Успешный вход в систему\r\n";
+            file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
+            $processes = Process::all();
+
+            if (Auth::user()->name === 'Admin') {
+
+                $modalPopup = User::where('name', 'Admin')->first()->has_not_accepted_agreement;
+                return view('application.dashboard', compact('processes', 'modalPopup'));
+            }
+            return redirect($this->redirectTo());
         }
         \Session::put('login_error', 'Your email and password wrong!!');
-        $myfile = fopen("../storage/app/public/logs/logfile.txt", "a") or die("Unable to open file!");
+
         $mytime = Carbon::now()->toDateTimeString();
         $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Не успешный вход в систему\r\n";
-        fwrite($myfile, $txt);
-        fclose($myfile);
+        file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
+
         return back();
 
     }
@@ -95,13 +104,14 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         $user = Auth::user();
+        $user->has_not_accepted_agreement = true;
+        $user->update();
         \Session::flush();
-        \Session::put('success','you are logout Successfully');
-        $myfile = fopen("../storage/app/public/logs/logfile.txt", "a") or die("Unable to open file!");
+        \Session::put('success','Вы успешно вышли из системы');
         $mytime = Carbon::now()->toDateTimeString();
         $txt = $user->name . ' ' . $user->email . ' ' . $mytime . ' ' . "Успешный выход из системы\r\n";
-        fwrite($myfile, $txt);
-        fclose($myfile);
+        file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
+
         return redirect()->to('/login');
     }
 }
