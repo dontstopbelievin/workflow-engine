@@ -5,66 +5,133 @@
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title font-weight-bold text-center">Аукцион</h3>
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table">
-
-                                <thead class="text-primary">
-                                <th>Номер лота</th>
-                                <th>Местоположение земельного участка</th>
-                                <th>Целевое назначение земельного участка</th>
-                                <th>Площадь земельного участка (га)</th>
-                                <th>Дата и время проведения аукциона</th>
-                                <th>Статус</th>
-                                <th>Дата публикации</th>
-                                <th><button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Изменить"><i class="fa fa-edit"></i></button></th>
-                                </thead>
-                            @foreach($fields as $field)
-                                <tbody>
-                                    <tr class="shadow p-3 mb-5 rounded">
-                                        <td class="text-left align-middle"><h4>{{$field->lot_number}}</h4></td>
-                                        <td class="text-left align-middle"><h4>{{$field->address_rus}}</h4></td>
-                                        <td class="text-left align-middle"><h4>{{$field->purpose}}</h4></td>
-                                        <td class="text-left align-middle"><h4>{{$field->area}}</h4></td>
-                                        <td class="text-left align-middle"><h4>{{$field->auction_date_time}}</h4></td>
-                                        <td class="text-left align-middle"><h4>{{$field->lot_status}}</h4></td>
-                                        <td class="text-left align-middle"><h4>{{$field->publish_date}}</h4></td>
-                                        <td class="text-left align-middle"><a href="{{route('auction.sender', ['id' => $field->id])}}"><i class="fa fa-caret-square-o-right" style="font-size:36px"></i></a></td>
-                                    </tr>
-                                </tbody>
-                            @endforeach
-                        </table>
-                    </div>
-                    <a href="{{route('auction.create')}}"  class="btn btn-info btn-lg my-5">Создать Лот</a>
-                </div>
-            </div>
+  <div class="sidebar">
+		<div class="scrollbar-inner sidebar-wrapper">
+			<ul class="nav">
+        <li class="nav-item">
+          <a class="" role="button" data-toggle="collapse" href="#settings" aria-expanded="false">
+            <i class="la la-navicon"></i>
+            <p>Настройки</p>
+          </a>
+        </li>
+        <div class="collapse" id="settings">
+          <ul class="nav">
+            <li class="nav-item">
+              <a href="#">
+                <span class="link-collapse">My Profile</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#">
+                <span class="link-collapse">Edit Profile</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#">
+                <span class="link-collapse">Settings</span>
+              </a>
+            </li>
+          </ul>
         </div>
-    </div>
-@endsection
+				<li class="nav-item active">
+					<a href="{{ route('auction.index') }}">
+						<i class="la la-table"></i>
+						<p>Аукцион</p>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="{{ route('processes.index') }}">
+						<i class="la la-keyboard-o"></i>
+						<p>Процессы</p>
+						<span class="badge badge-count">{{ $processesCount }}</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="{{ route('role.index') }}">
+						<i class="la la-th"></i>
+						<p>Роли</p>
+						<span class="badge badge-count">{{ $rolesCount }}</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="{{ route('city.index') }}">
+						<i class="la la-bell"></i>
+						<p>Организации</p>
+						<span class="badge badge-count">{{ $cityManagementCount }}</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="{{ route('user-role.register') }}">
+						<i class="la la-font"></i>
+						<p>Пользователи</p>
+						<span class="badge badge-count">{{ $usersCount }}</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="{{ route('dictionary') }}">
+						<i class="la la-fonticons"></i>
+						<p>Справочник</p>
+						<span class="badge badge-count">{{ $dictionariesCount }}</span>
+					</a>
+				</li>
+				<li class="nav-item ">
+					<a href="{{ route('applications.service') }}">
+						<i class="la la-dashboard"></i>
+						<p>Все услуги</p>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="main-panel">
+		<div class="content">
+			<div class="container-fluid">
+				<h4 class="page-title">Аукцион</h4>
+        @if (session('status'))
+            <div class="alert alert-success" role="alert">
+                {{ session('status') }}
+            </div>
+        @endif
+				<a href="{{route('auction.create')}}" class="btn btn-info">Создать Лот</a><br><br>
+				<div class="card">
+					<!-- <div class="card-header">
+		        <div class="card-title">Table</div>
+		      </div> -->
+					<div class="card-body">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>Номер лота</th>
+									<th>Местоположение земельного участка</th>
+									<th>Целевое назначение земельного участка</th>
+									<th>Площадь земельного участка (га)</th>
+									<th>Дата и время проведения аукциона</th>
+									<th>Статус</th>
+									<th>Дата публикации</th>
+									<th>Действия</th>
+								</tr>
+							</thead>
+							<tbody>
+                @foreach($fields as $field)
+                  <tr class="shadow p-3 mb-5 rounded">
+                      <td>{{$field->lot_number}}</td>
+                      <td>{{$field->address_rus}}</td>
+                      <td>{{$field->purpose}}</td>
+                      <td>{{$field->area}}</td>
+                      <td>{{$field->auction_date_time}}</td>
+                      <td>{{$field->lot_status}}</td>
+                      <td>{{$field->publish_date}}</td>
+                      <td>
 
-@section('scripts')
-    <script src="../assets/js/core/jquery.min.js"></script>
-    <script src="../assets/js/core/popper.min.js"></script>
-    <script src="../assets/js/core/bootstrap.min.js"></script>
-    <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
-    <!--  Google Maps Plugin    -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
-    <!-- Chart JS -->
-    <script src="../assets/js/plugins/chartjs.min.js"></script>
-    <!--  Notifications Plugin    -->
-    <script src="../assets/js/plugins/bootstrap-notify.js"></script>
-    <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
-    <script src="../assets/js/now-ui-dashboard.min.js?v=1.5.0" type="text/javascript"></script><!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
-    <script src="../assets/demo/demo.js"></script>
+                        <a href="{{route('auction.sender', ['id' => $field->id])}}"><i class="fa fa-caret-square-o-right" style="font-size:36px"></i></a>
+                      </td>
+                  </tr>
+                @endforeach
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 @endsection
