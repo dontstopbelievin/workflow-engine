@@ -306,7 +306,6 @@ class ApplicationController extends Controller
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $user = Auth::user();
-
         $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
         $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
         $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
@@ -345,6 +344,7 @@ class ApplicationController extends Controller
         foreach($incomingApplications as $app) {
             $countApp++;
             $applicationTableFields = [];
+            $applicationTableFields["process_id"] = $process->id;
             $app->passed_to_process = 1;
             $app->timestamps = false;
             $app->update();
@@ -402,7 +402,7 @@ class ApplicationController extends Controller
         } else {
             $index = $application->index_main;
             $appRoutes = json_decode($this->getAppRoutes($application->process_id));
-//            dd($appRoutes);
+//            dd($application);
             $nextRole = $appRoutes[$index]; // find next role
             $nextR = Role::where('name', $nextRole)->first(); //find $nextRole in Role table
 //            $notifyUsers = $nextR->users();
@@ -445,8 +445,6 @@ class ApplicationController extends Controller
 //        }
         return Redirect::route('applications.service')->with('status', $status->name);
     }
-
-
 
 
     public function sendToSubRoute(Request $request) {

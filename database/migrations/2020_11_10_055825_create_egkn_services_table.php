@@ -66,7 +66,6 @@ class CreateEgknServicesTable extends Migration
 //            $table->string('doc_number')->nullable();
 //            $table->string('doc_date')->nullable();
 //            $table->string('file_type')->nullable();
-            $table->timestamps();
         });
     }
 
