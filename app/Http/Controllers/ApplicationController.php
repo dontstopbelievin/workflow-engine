@@ -230,8 +230,8 @@ class ApplicationController extends Controller
         $nextRoleId = $nextRole->id;
         $updatedStatus = Status::where('id', $nextRoleId)->first();
         $pos = array_search($nextRole->name, $appRoutes);
-        $statuses = getSeveralStatuses($process, $tableName);
-        dd($statuses);
+//        $statuses = getSeveralStatuses($process, $tableName);
+//        dd($statuses);
         $index = $index + $pos;
         $role = Auth::user()->role;
         $logsArray = $this->getLogs($updatedStatus->id, $table->id, $application->id, $role->id);

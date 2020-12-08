@@ -16,17 +16,21 @@
                     <div class="row">
                         <div class="col-md-6">
                             <form action="{{ route('user-role.update', ['user' => $user]) }}" method="POST">
-                                {{ csrf_field( )}}
+                                @csrf
                                 {{ method_field('PUT') }}
                                 <div class="form-group">
                                     <label>Имя пользователя</label>
-                                    <input type="text" name="username" value="{{ $user->name}}" class="form-control">
+                                    <input type="text" name="username" value="{{ $user->name}}" class="form-control" required>
                                 </div>
                                 <div class="form-group">
-                                    <label>Присвоить роль</label>
+                                    <label>Прикрепить роль</label>
                                     <select name="role_id" class="form-control">
-                                        @foreach($roles as $role)
-                                            <option value="{{$role->id}}">{{$role->name}}</option>
+
+                                        @isset($user->role)
+                                            <option value="{{$user->role->id}}" selected>{{$user->role->name}}</option>
+                                        @endisset
+                                        @foreach($roles as $item)
+                                            <option value="{{$item->id}}">{{$item->name}}</option>
                                         @endforeach
                                     </select>
                                     <button type="submit" class="btn btn-success">ОБНОВИТЬ</button>

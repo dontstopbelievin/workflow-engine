@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 
 class ProcessController extends Controller
 {
@@ -93,17 +94,23 @@ class ProcessController extends Controller
 //        }
         $iterateRoles = $this->getIterateRoles($process);
         $sAllRoles = $this->getAllRoles($process, $parentId,$iterateRoles);
-//        dd($sAllRoles);
+
         return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','sAllRoles', 'organizations', 'nameMainOrg'));
     }
 
     public function update(Request $request, Process $process)
     {
+        $records = $request->all();
+        $validator = Validator::make( $records,[
+            'name' => ['required', 'string', 'max:255'],
+            'deadline' => ['required', 'string', 'max:2', 'min:1'],
+        ]);
 
-        $numberOfDays = intval($request->get('deadline'));
-        $deadline = Carbon::now()->addDays($numberOfDays);
+        if ((intval($request->deadline) === 0) || (intval($request->deadline) === Null)){
+            return Redirect::route('processes.edit', [$process])->with('failure', 'Пожалуйста, введите правильный срок');
+        }
         $process->name = $request->name;
-        $process->deadline = $deadline;
+        $process->deadline = intval($request->deadline);
         $process->update();
         return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был обновлен');
     }
@@ -194,7 +201,7 @@ class ProcessController extends Controller
     public function addRole(Request $request, Process $process)
     {
         if (!isset($request->roles)) {
-            echo 'Пожалуйста, выберите специалистов';
+            return Redirect::route('processes.edit', [$process])->with('failure', 'Пожалуйста, выберите маршрут');
         } else if (sizeof($request->roles) === 1) {
             $role = Role::where('id', intval($request->roles[0]))->first();
             $route = new Route;
@@ -212,11 +219,8 @@ class ProcessController extends Controller
                 $role = Role::where('id', intval($id))->first();
                 $process->roles()->attach($role, ['is_parallel' => $maxParallelNumber + 1]);
             }
-
-
             return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
         }
-
     }
 
     public function addOrganization(Request $request, Process $process)
