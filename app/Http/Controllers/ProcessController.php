@@ -20,14 +20,14 @@ class ProcessController extends Controller
 {
     use dbQueries;
 
-    public function index() {
-
+    public function index()
+    {
         $processes = Process::all();
         return view('process.index', compact('processes'));
     }
 
-    public function view(Process $process) {
-
+    public function view(Process $process)
+    {
         $parentId = $this->getParentRoleId($process->id);
         $tableName = $this->getTableName($process->name);
         $tableColumns = $this->getColumns($tableName);
@@ -40,13 +40,13 @@ class ProcessController extends Controller
         return view('process.view', compact('process','sAllRoles','tableColumns'));
     }
 
-    public function create() {
-
+    public function create()
+    {
         return view('process.create');
     }
 
-    public function store(Request $request) {
-
+    public function store(Request $request)
+    {
         $numberOfDays = intval($request->get('deadline'));
         $deadline = Carbon::now()->addDays($numberOfDays);
 
@@ -63,8 +63,8 @@ class ProcessController extends Controller
         return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был создан');
     }
 
-    public function edit(Process $process) {
-
+    public function edit(Process $process)
+    {
         $accepted = Template::where('id', $process->accepted_template_id)->where('accept_template', 1)->first();
         $rejected = Template::where('id', $process->rejected_template_id)->where('accept_template', 0)->first();
         $columns = $this->getAllDictionaries();
@@ -75,7 +75,6 @@ class ProcessController extends Controller
         $parentId = $this->getParentRoleId($process->id);
         $organizations = CityManagement::all();
         $mainOrg = CityManagement::find($process->main_organization_id);
-//        dd($mainOrg->name);
         $nameMainOrg = '';
         if(isset($mainOrg->name)) {
             $nameMainOrg=$mainOrg->name;
@@ -98,20 +97,24 @@ class ProcessController extends Controller
         return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','sAllRoles', 'organizations', 'nameMainOrg'));
     }
 
-    public function update(Request $request, Process $process) {   
+    public function update(Request $request, Process $process)
+    {
 
         $numberOfDays = intval($request->get('deadline'));
         $deadline = Carbon::now()->addDays($numberOfDays);
         $process->name = $request->name;
-        $process->deadline = $request->deadline;
+        $process->deadline = $deadline;
         $process->update();
         return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был обновлен');
     }
 
-    public function createProcessTable(Request $request, Process $process) {
-
+    public function createProcessTable(Request $request, Process $process)
+    {
         $processName = $process->name;
         $fields = $request->fields;
+        if ($fields === Null) {
+            return Redirect::route('processes.edit', [$process])->with('failure', 'Пожалуйста, выберите поля');
+        }
         $tableName = $this->translateSybmols($processName);
         $tableName = $this->checkForWrongCharacters($tableName);
         if (strlen($tableName) > 60) {
@@ -188,8 +191,8 @@ class ProcessController extends Controller
         return Redirect::route('processes.edit', [$process])->with('status', 'Справочники успешно сохранены');
     }
 
-    public function addRole(Request $request, Process $process) {
-
+    public function addRole(Request $request, Process $process)
+    {
         if (!isset($request->roles)) {
             echo 'Пожалуйста, выберите специалистов';
         } else if (sizeof($request->roles) === 1) {
@@ -216,16 +219,16 @@ class ProcessController extends Controller
 
     }
 
-    public function addOrganization(Request $request, Process $process) {
-
+    public function addOrganization(Request $request, Process $process)
+    {
         $organization = CityManagement::where('name', $request->mainOrganization)->first();
         $process->main_organization_id = $organization->id;
         $process->update();
         return Redirect::route('processes.edit', [$process])->with('status', 'Осносвной Маршрут Выбран успешно');
     }
 
-    public function addSubRoles(Request $request) {
-
+    public function addSubRoles(Request $request)
+    {
         $parentRole = Role::where('name', $request->roleToAdd)->first();
         $process = Process::find($request->processId);
         $subRoutes = $request->subRoles;
@@ -241,15 +244,19 @@ class ProcessController extends Controller
         return 'done';
     }
 
-    public function delete(Process $process) {
-
+    public function delete(Process $process)
+    {
         $tableName = $this->getTableName($process->name);
-        Schema::dropIfExists($tableName);
+        $true = Schema::dropIfExists($tableName);
+        if ($true !== Null) {
+            return Redirect::route('processes.index')->with('failure', 'Не удалось удалить процесс');
+        }
         $process->delete();
         return Redirect::route('processes.index')->with('status', 'Процесс успешно удален');  
     }
 
-    public function logs() {
+    public function logs()
+    {
         $contents = file_get_contents(storage_path('logs/logfile.txt'));
         $result = str_split($contents);
         $logsArr = [];
