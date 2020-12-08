@@ -17,10 +17,10 @@ class CreateRoutesTable extends Migration
             $table->id();
             $table->string('name');
             $table->integer('role_id')->unsigned()->nullable();
-            $table->foreign('role_id')->references('id')->on('roles');
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->timestamps();
             $table->integer('process_id')->unsigned()->nullable();
-            $table->foreign('process_id')->references('id')->on('processes');
+            $table->foreign('process_id')->references('id')->on('processes')->onDelete('cascade');
 
         });
     }
