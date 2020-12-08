@@ -87,7 +87,6 @@ class ApplicationController extends Controller
                 $nextRole = $appRoutes[$index];
                 $multipleOptions = $this->hasMultipleOptions($process, $nextRole);
             }
-
             if (empty($multipleOptions)) {
                 $toMultipleRoles["exists"] = false;
             } else {
@@ -100,7 +99,6 @@ class ApplicationController extends Controller
         $backToMainOrg = false;
         $userRole = Role::find($roleId);
         $appRoutes = json_decode($this->getAppRoutes($process->id));
-//        dd($appRoutes, $application->index_main);
         if (($appRoutes[sizeof($appRoutes)-1] === $userRole->name) && (sizeof($appRoutes) === $application->index_main))  {
             $toCitizen = true; // если заявку подписывает последний специалист в обороте, заявка идет обратно к заявителю
         }
@@ -192,7 +190,6 @@ class ApplicationController extends Controller
             $user = User::where('name', 'Admin')->first();
             $user->has_not_accepted_agreement = false;
             $user->update();
-//            return Redirect::route('applications.service');
         }
 //        return Redirect::route('applications.service');
     }
@@ -210,7 +207,6 @@ class ApplicationController extends Controller
                     array_push($pRolesArr, $pRole);
                 }
             }
-
         }
         return $pRolesArr;
     }
@@ -234,7 +230,8 @@ class ApplicationController extends Controller
         $nextRoleId = $nextRole->id;
         $updatedStatus = Status::where('id', $nextRoleId)->first();
         $pos = array_search($nextRole->name, $appRoutes);
-
+        $statuses = getSeveralStatuses($process, $tableName);
+        dd($statuses);
         $index = $index + $pos;
         $role = Auth::user()->role;
         $logsArray = $this->getLogs($updatedStatus->id, $table->id, $application->id, $role->id);
@@ -402,11 +399,8 @@ class ApplicationController extends Controller
         } else {
             $index = $application->index_main;
             $appRoutes = json_decode($this->getAppRoutes($application->process_id));
-//            dd($application);
             $nextRole = $appRoutes[$index]; // find next role
             $nextR = Role::where('name', $nextRole)->first(); //find $nextRole in Role table
-//            $notifyUsers = $nextR->users();
-//            dd($notifyUsers);
             $idOfNextRole = $nextR->id; // get id of next role
             $index = $index + 1;
             $status = Status::find($idOfNextRole);
@@ -445,7 +439,6 @@ class ApplicationController extends Controller
 //        }
         return Redirect::route('applications.service')->with('status', $status->name);
     }
-
 
     public function sendToSubRoute(Request $request) {
 
@@ -617,6 +610,14 @@ class ApplicationController extends Controller
                 ->where('id', $request->applicationId)
                 ->update(['status_id' => $status->id, 'revision_reason' => $request->revisionReason,'to_revision' => 1, 'index_main' => $index, 'revision_reason_from_spec_id' =>  $user->id, 'revision_reason_to_spec_id' =>  $idOfNextRole] );
         }
+    }
+
+    private function getSeveralStatuses($process, $table) {
+        $statuses = [];
+        array_push($statuses, $process->status);
+        array_push($statuses, $table->status);
+
+        return $statuses;
     }
 
     private function getRoleAfterParallel($process)

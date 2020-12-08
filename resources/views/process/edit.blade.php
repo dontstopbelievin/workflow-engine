@@ -15,13 +15,17 @@
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
                         </div>
+                   @elseif (session('failure'))
+                        <div class="alert alert-warning" role="alert">
+                            {{ session('failure') }}
+                        </div>
                     @endif
                 </div>
                 <div class="card-body">
                     <div class="row justify-content-center align-items-center">
                         <div class="col-md-9">
                         <form action="{{ route('processes.update', ['process' => $process]) }}" method="POST">
-                                {{ csrf_field( )}}
+                                @csrf
                                 {{ method_field('PUT') }}
                                 <div class="form-group">
                                     <label>Наиманование Процесса</label>
