@@ -187,8 +187,11 @@ class ProcessController extends Controller
         return Redirect::route('processes.edit', [$process])->with('status', 'Справочники успешно сохранены');
     }
 
-    public function approveInParallel(Request $request) {
+    public function approveInParallel(Request $request)
+    {
         $allRequest = $request->all();
+        $roleToJoin = $request->roleToJoin;
+//        dd($allRequest);
         $process = Process::find($request->process);
         $setOfParallelRoles = $allRequest["allRoles"];
 //        dd($setOfParallelRoles);
@@ -199,16 +202,17 @@ class ProcessController extends Controller
             $priority = array_shift($set);
             foreach($set as $role) {
                 $r = Role::where('name', $role)->first();
-                $process->roles()->attach($r,['approve_in_parallel'=>$index, 'priority'=>$priority]);
+                $process->roles()->attach($r,['approve_in_parallel'=>$index, 'priority'=>$priority, 'role_to_join' => $roleToJoin]);
             }
-        }dd('done');
+        }
+        dd('done');
 //        $simplifiedSetOfParallelRoles = [];
 //        dd($setOfParallelRoles);
 //        foreach ($setOfParallelRoles as $key => $setOfStraightRoles){
 //            $key = array_shift($setOfStraightRoles);
 //            $simplifiedSetOfParallelRoles[$key] = $setOfStraightRoles;
 //        }
-        dd($simplifiedSetOfParallelRoles);
+//        dd($simplifiedSetOfParallelRoles);
 
     }
 

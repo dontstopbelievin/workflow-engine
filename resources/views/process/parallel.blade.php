@@ -10,6 +10,17 @@
 </head>
 <body>
     <h1>{{$process->name}}</h1>
+    <div>
+        <label for="roleToJoin">Выберите роль, где встречаются параллельные согласования</label>
+        <select name="roleToJoin" id="roleToJoin">
+            @foreach($roles as $role)
+                <option value="{{$role->id}}">{{$role->name}}</option>
+            @endforeach
+        </select>
+        
+    </div>
+    
+    
     @foreach($parallelRoles as $role)
             {{$it = $loop->iteration}}
             <h4>{{$role->name}}</h4>
@@ -65,10 +76,11 @@
         $(document).ready(function() {
             $('#submitButton').click(function(event) {
                 var process = $('#process').val();
+                var roleToJoin = $('#roleToJoin').val();
                 const objectRoles = Object.fromEntries(roles);
                 let base_url = window.location.origin;
                 let url = base_url+'/process/approve-in-parallel';
-                $.post(url, {'allRoles':objectRoles,'process':process,  '_token':$('input[name=_token]').val()}, function(data){
+                $.post(url, {'allRoles':objectRoles,'process':process,'roleToJoin': roleToJoin  ,'_token':$('input[name=_token]').val()}, function(data){
                     console.log('done');
                 });
             });
