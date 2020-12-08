@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Dictionary;
 use App\EgknService;
 use App\User;
 use App\Process;
@@ -164,6 +165,8 @@ class ApplicationController extends Controller
         $subRoles = $this->getSubRoutes($process->id);
         $allRoles = $this->mergeRoles($mainRoles, $subRoles);
 
+        $aRowNameRows = Dictionary::all();
+
         $templateId = $process->accepted_template_id;
         $template = Template::where('id', $templateId)->first();
         $templateName = $template->name;
@@ -180,9 +183,11 @@ class ApplicationController extends Controller
                 $templateTableFields = json_decode(json_encode($templateTableFields), true);
                 $exceptionArray = ["id", "template_id", "process_id", "application_id"];
                 $templateTableFields = $this->filterTemplateFieldsTable($templateTableFields, $exceptionArray);
+
             }
         }
-        return view('application.view', compact('application','toMultipleRoles','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray'));
+        $applicationArrays = json_decode(json_encode($application), true);
+        return view('application.view', compact('application','toMultipleRoles','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray','aRowNameRows','applicationArrays'));
     }
 
     public function acceptAgreement(Request $request) {

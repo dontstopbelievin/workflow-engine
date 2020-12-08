@@ -1,5 +1,3 @@
-
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -40,25 +38,20 @@
                         <div id="applicationInfo" class="tabcontent">
                             <!-- <h4 class="text-center">Информация о заявителе</h4> -->
                             <ul class="list-group" id="list">
+
                                 <li class="list-group-item">Название услуги: {{$process->name}}</li>
-                                @isset($application->name)
-                                    <li class="list-group-item">Наименование заявителя: {{$application->name}}</li>
+                                {{gettype($aRowNameRows)}}
+                                @isset($aRowNameRows)
+                                   @foreach ($aRowNameRows as $aRowNameRow)
+                                        @if (array_key_exists($aRowNameRow->name, $applicationArrays))
+                                        {{--dd($applicationArrays[$aRowNameRow->name], $aRowNameRow->label_name);--}}
+                                           <li class="list-group-item">{{$aRowNameRow->label_name}}: {{$applicationArrays[$aRowNameRow->name]}}</li>
+                                        @endif
+                                   @endforeach
                                 @endisset
-                                @isset($application->surname)
-                                    <li class="list-group-item">Фамилия заявителя: {{$application->surname ?? ''}}</li>
-                                @endisset
-                                @isset($application->email)
-                                    <li class="list-group-item">Электронный адрес заявителя: {{$application->email ?? ''}}</li>
-                                @endisset
-                                @isset($application->address)
-                                    <li class="list-group-item">Адрес: {{$application->address ?? ''}}</li>
-                                @endisset
-                                @isset($application->cadastral_number)
-                                    <li class="list-group-item">Кадастровый номер: {{$application->cadastral_number ?? ''}}</li>
-                                @endisset
-                                @isset($application->attachment)
-                                    <li class="list-group-item">Загруженный документ:  <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></li>
-                                @endisset
+                                {{--@isset($application->attachment)--}}
+                                    {{--<li class="list-group-item">Загруженный документ:  <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></li>--}}
+                                {{--@endisset--}}
                             </ul>
                         </div>
                         
