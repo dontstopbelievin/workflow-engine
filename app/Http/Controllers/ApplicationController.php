@@ -57,7 +57,7 @@ class ApplicationController extends Controller
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $applicationId)->first();
-        $applicationArray = json_decode(json_encode($application), true);
+
         $notInArray = ["id", "process_id", "status_id", "to_revision", "user_id","index_sub_route", "index_main", "reject_reason", "revision_reason" ];
 //        $applicationArray = $this->filterApplicationArray($applicationArray, $notInArray); // not used yet, but surely will
 
@@ -261,19 +261,46 @@ class ApplicationController extends Controller
         $applicationTableFields = array_slice($input, 1, sizeof($input)-1);
         $process = Process::find($request->process_id);
         $routes = $this->getRolesWithoutParent($process->id);
-        $arrRoutes = json_decode(json_encode($routes), true);
-        $startRole = $arrRoutes[0]["name"]; //с какой роли начинается маршрут. Находится для того, чтобы присвоить статус маршруту
-        $role = Role::where('name', $startRole)->first();
-        $status = Status::find($role->id);
-        $tableName = $this->getTableName($process->name);
-        $table = CreatedTable::where('name', $tableName)->first();
-        $user = Auth::user();
+        $parallelRoutesExist = $this->checkIfRoutesInParallel($process->id);
+        if ($parallelRoutesExist) {
+            $parallelRoutes = $this->getSortedParallelRoutes($process->id);
+            $firstRolesOfParallelRoutes = $this->getFirstRoles($parallelRoutes);
+            $statuses = $this->getStatuses($firstRolesOfParallelRoutes);
+            $statusesJson = (json_encode($statuses));
 
-        $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
-        $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
-        $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
-        DB::table('logs')->insert( $logsArray);
-        return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
+        } else {
+            $arrRoutes = json_decode(json_encode($routes), true);
+            $startRole = $arrRoutes[0]["name"]; //с какой роли начинается маршрут. Находится для того, чтобы присвоить статус маршруту
+            $role = Role::where('name', $startRole)->first();
+            $status = Status::find($role->id);
+            $tableName = $this->getTableName($process->name);
+            $table = CreatedTable::where('name', $tableName)->first();
+            $user = Auth::user();
+
+            $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
+            $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
+            $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
+            DB::table('logs')->insert( $logsArray);
+            return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
+        }
+
+    }
+
+    private function getFirstRoles($routesArr) {
+        $firstRolesArr = [];
+        foreach($routesArr as $route) {
+            $firstRole = array_shift($route);
+            array_push($firstRolesArr, $firstRole);
+        }
+        return $firstRolesArr;
+    }
+
+    private function getStatuses($routes) {
+        $statuses = [];
+        foreach($routes as $route) {
+            array_push($statuses, $route["role_id"]);
+        }
+        return $statuses;
     }
 
     public function download($file)
@@ -285,6 +312,8 @@ class ApplicationController extends Controller
             return response()->download($path);
         }
     }
+
+
 
     public function approve(Request $request)
     {

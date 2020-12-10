@@ -82,6 +82,7 @@
                 let url = base_url+'/process/approve-in-parallel';
                 $.post(url, {'allRoles':objectRoles,'process':process,'roleToJoin': roleToJoin  ,'_token':$('input[name=_token]').val()}, function(data){
                     console.log('done');
+                    window.location.href = '/processes-edit/' + process;
                 });
             });
 

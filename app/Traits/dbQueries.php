@@ -19,6 +19,40 @@ trait dbQueries
         return $res;
     }
 
+    private function checkIfRoutesInParallel($processId) {
+        $parallelRoutesExist = DB::table('process_role')
+            ->where('process_id', $processId)
+            ->where('approve_in_parallel', '<>', Null)
+            ->exists();
+        return $parallelRoutesExist;
+    }
+
+    private function getParallelRoutes($processId) {
+        $parallelRoutes = DB::table('process_role')
+            ->where('process_id', $processId)
+            ->where('approve_in_parallel', '<>', Null)
+            ->get();
+
+        return json_decode(json_encode($parallelRoutes), true);
+    }
+
+    private function getSortedParallelRoutes($processId) {
+        $allParallelRoutes = $this->getParallelRoutes($processId);
+//        $tempLevel=0;
+        $newKey=0;
+        foreach ($allParallelRoutes as $key => $val) {
+//            if ($tempLevel==$val['approve_in_parallel']){
+//                $groupArr[$tempLevel][$newKey]=$val;
+//            } else {
+//                $groupArr[$val['approve_in_parallel']][$newKey]=$val;
+//            }
+//            $newKey++;
+            $groupArr[$val['approve_in_parallel']][$newKey]=$val;
+            $newKey++;
+        }
+        return $groupArr;
+    }
+
     public function getParentRoleId($id) {
 
         $parentRoleId = DB::table('process_role')

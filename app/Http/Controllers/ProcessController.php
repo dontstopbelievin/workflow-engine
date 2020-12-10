@@ -148,6 +148,10 @@ class ProcessController extends Controller
             $dbQueryString = "ALTER TABLE $tableName ADD  status_id INT";
             DB::statement($dbQueryString);
         }
+        if (!Schema::hasColumn($tableName, 'statuses')) {
+            $dbQueryString = "ALTER TABLE $tableName ADD  statuses JSON";
+            DB::statement($dbQueryString);
+        }
         if (!Schema::hasColumn($tableName, 'to_revision')) {
             $dbQueryString = "ALTER TABLE $tableName ADD  to_revision BIT";
             DB::statement($dbQueryString);
@@ -194,7 +198,7 @@ class ProcessController extends Controller
 //        dd($allRequest);
         $process = Process::find($request->process);
         $setOfParallelRoles = $allRequest["allRoles"];
-//        dd($setOfParallelRoles);
+
         $index = 0;
         $priority = 0;
         foreach($setOfParallelRoles as $key=>$set) {
@@ -205,20 +209,11 @@ class ProcessController extends Controller
                 $process->roles()->attach($r,['approve_in_parallel'=>$index, 'priority'=>$priority, 'role_to_join' => $roleToJoin]);
             }
         }
-        dd('done');
-//        $simplifiedSetOfParallelRoles = [];
-//        dd($setOfParallelRoles);
-//        foreach ($setOfParallelRoles as $key => $setOfStraightRoles){
-//            $key = array_shift($setOfStraightRoles);
-//            $simplifiedSetOfParallelRoles[$key] = $setOfStraightRoles;
-//        }
-//        dd($simplifiedSetOfParallelRoles);
-
+        $process->roles()->attach($roleToJoin);
     }
 
     public function addRole(Request $request, Process $process) {
-
-
+        
         if ($request->approveType === "parallel") {
             $requestRoles = $request->roles;
             $rolesLen = sizeof($requestRoles);
@@ -251,19 +246,18 @@ class ProcessController extends Controller
             }
             return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
         }
-
     }
 
-    public function addOrganization(Request $request, Process $process) {
-
+    public function addOrganization(Request $request, Process $process)
+    {
         $organization = CityManagement::where('name', $request->mainOrganization)->first();
         $process->main_organization_id = $organization->id;
         $process->update();
         return Redirect::route('processes.edit', [$process])->with('status', 'Осносвной Маршрут Выбран успешно');
     }
 
-    public function addSubRoles(Request $request) {
-
+    public function addSubRoles(Request $request)
+    {
         $parentRole = Role::where('name', $request->roleToAdd)->first();
         $process = Process::find($request->processId);
         $subRoutes = $request->subRoles;
