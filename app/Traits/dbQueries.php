@@ -5,6 +5,7 @@ namespace App\Traits;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use App\Dictionary;
+use App\Status;
 
 trait dbQueries
 {
@@ -120,6 +121,35 @@ trait dbQueries
             exit();
         }
 
+    }
+
+    private function getTableWithMultipleStatuses($table)
+    {
+        $applications = DB::table($table)->where('statuses', '<>', Null)->get()->toArray(); //get collection of StdClass objects
+        $convertedApplications = json_decode(json_encode($applications), true);
+
+        if(Schema::hasTable($table)) {
+            foreach($convertedApplications as &$app) {
+                $statuses = [];
+                $statusIds = json_decode($app["statuses"]);
+                foreach($statusIds as $id) {
+                    $status = Status::find($id)->name;
+                    array_push($statuses, $status);
+                }
+              $app["statuses"] = $statuses;
+            }
+
+            return $convertedApplications;
+
+        } else {
+            echo 'Процесс не был сформирован полностью. Сначала завершите формирование процесса';
+            exit();
+        }
+    }
+
+    private function checkIfAppHasMultipleStatuses($table)
+    {
+        return DB::table($table)->where('statuses', '<>', Null)->exists();
     }
 
     public function getSubRoutes($id) {

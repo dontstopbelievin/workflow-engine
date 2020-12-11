@@ -139,9 +139,9 @@ class ProcessController extends Controller
         if (!Schema::hasColumn($tableName, 'process_id')) {
             $dbQueryString = "ALTER TABLE $tableName ADD  process_id INT";
             DB::statement($dbQueryString);
-            DB::table($tableName)->insert(
-                [ 'process_id' => $process->id ]
-            );
+//            DB::table($tableName)->insert(
+////                [ 'process_id' => $process->id ]
+////            );
         }
 
         if (!Schema::hasColumn($tableName, 'status_id')) {

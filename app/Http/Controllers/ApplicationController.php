@@ -35,18 +35,24 @@ class ApplicationController extends Controller
     public function index(Process $process)
     {
         $tableName = $this->getTableName($process->name);
-        $applications = $this->getTableWithStatuses($tableName);
-        $arrayApps = json_decode(json_encode($applications), true);
-        foreach($arrayApps as &$app) {
-            if ($app["to_revision"] === 1) {
-                $app["status"] = $app["status"] . " на доработку";
-            } else {
-                $app["status"] = $app["status"] . " на согласование";
+        $appHasMultipleStatuses = $this->checkIfAppHasMultipleStatuses($tableName);
+        if ($appHasMultipleStatuses) {
+            $arrayApps = $this->getTableWithMultipleStatuses($tableName);
+
+        } else {
+            $applications = $this->getTableWithStatuses($tableName);
+            $arrayApps = json_decode(json_encode($applications), true);
+
+            foreach($arrayApps as &$app) {
+                if ($app["to_revision"] === 1) {
+                    $app["status"] = $app["status"] . " на доработку";
+                } else {
+                    $app["status"] = $app["status"] . " на согласование";
+                }
             }
         }
+        return view('application.index', compact('arrayApps', 'process'));
 
-        $statuses = [];
-        return view('application.index', compact('arrayApps', 'process','statuses'));
     }
 
     public function view($processId, $applicationId)
@@ -262,27 +268,29 @@ class ApplicationController extends Controller
         $process = Process::find($request->process_id);
         $routes = $this->getRolesWithoutParent($process->id);
         $parallelRoutesExist = $this->checkIfRoutesInParallel($process->id);
+        $user = Auth::user();
+        $tableName = $this->getTableName($process->name);
+        $table = CreatedTable::where('name', $tableName)->first();
         if ($parallelRoutesExist) {
             $parallelRoutes = $this->getSortedParallelRoutes($process->id);
             $firstRolesOfParallelRoutes = $this->getFirstRoles($parallelRoutes);
             $statuses = $this->getStatuses($firstRolesOfParallelRoutes);
             $statusesJson = (json_encode($statuses));
-
+            $modifiedApplicationTableFields = $this->modifyApplicationTableFieldsWithStatuses($applicationTableFields, $statusesJson, $user->id);
         } else {
             $arrRoutes = json_decode(json_encode($routes), true);
             $startRole = $arrRoutes[0]["name"]; //с какой роли начинается маршрут. Находится для того, чтобы присвоить статус маршруту
             $role = Role::where('name', $startRole)->first();
             $status = Status::find($role->id);
-            $tableName = $this->getTableName($process->name);
-            $table = CreatedTable::where('name', $tableName)->first();
-            $user = Auth::user();
 
-            $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
+            $modifiedApplicationTableFields = $this->modifyApplicationTableFieldsWithStatus($applicationTableFields, $status->id, $user->id);
             $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
             $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
             DB::table('logs')->insert( $logsArray);
-            return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
         }
+            $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
+
+            return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
 
     }
 
@@ -619,9 +627,17 @@ class ApplicationController extends Controller
         return $res;
     }
 
-    private function modifyApplicationTableFields($applicationTableFields, $statusId, $userId)
+    private function modifyApplicationTableFieldsWithStatus($applicationTableFields, $statusId, $userId)
     {
         $applicationTableFields["status_id"] = $statusId;
+        $applicationTableFields["user_id"] = $userId;
+        $applicationTableFields["index_main"] = 1;
+        $applicationTableFields["index_sub_route"] = 0;
+        return $applicationTableFields;
+    }
+    private function modifyApplicationTableFieldsWithStatuses($applicationTableFields, $statuses, $userId)
+    {
+        $applicationTableFields["statuses"] = $statuses;
         $applicationTableFields["user_id"] = $userId;
         $applicationTableFields["index_main"] = 1;
         $applicationTableFields["index_sub_route"] = 0;
