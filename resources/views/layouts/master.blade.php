@@ -157,6 +157,7 @@
                                         style="display: none;">
                                         @csrf
                                     </form>
+                                    <a class="dropdown-item" href="{{ route('user.personalArea') }}">Личный Кабинет</a>
                                 </div>
                             </li>
                         </ul>

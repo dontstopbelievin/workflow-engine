@@ -82,6 +82,12 @@ class LoginController extends Controller
 
             $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Успешный вход в систему\r\n";
             file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
+
+            $user->update([
+                'last_login_at' => $user->current_login_at,
+                'current_login_at' => Carbon::now()->toDateTimeString(),
+                'last_login_ip' => $request->getClientIp()
+            ]);
             $processes = Process::all();
 
             if (Auth::user()->name === 'Admin') {
@@ -93,12 +99,16 @@ class LoginController extends Controller
         }
         \Session::put('login_error', 'Your email and password wrong!!');
 
+        $failedUser = User::find($user->id);
         $mytime = Carbon::now()->toDateTimeString();
         $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Не успешный вход в систему\r\n";
         file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
 
+        $failedUser->update([
+            'last_failed_login_at' => Carbon::now()->toDateTimeString(),
+            'last_failed_login_ip' => $request->getClientIp()
+        ]);
         return back();
-
     }
 
     public function logout(Request $request)
