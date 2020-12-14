@@ -17,8 +17,8 @@
                 <div class="collapse" id="settings">
                     <ul class="nav">
                         <li class="nav-item">
-                            <a href="#">
-                                <span class="link-collapse">My Profile</span>
+                            <a href="{{ route('user.personalArea') }}">
+                                <span class="link-collapse">Личный Кабинет</span>
                             </a>
                         </li>
                         <li class="nav-item">
