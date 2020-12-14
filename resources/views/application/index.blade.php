@@ -37,7 +37,7 @@
                                 <tr class="p-3 mb-5 rounded">
                                     <td class="text-center align-middle border"><h5>{{$loop->iteration}}</h5></td>
                                     <td class="text-left align-middle border"><h5>{{$app["name"] ?? '' }}</h5></td>
-                                    @if ($app["statuses"])
+                                    @if($app["statuses"])
                                             <td class="text-left align-middle border">
                                                     @foreach($app["statuses"] as $status)
                                                     <h5><li>{{$status}}</li></h5>
@@ -49,7 +49,6 @@
                                         @else
                                             <td class="text-left align-middle border"><h5>{{$app["status"] ?? ''}}</h5></td>
                                         @endif
-
                                     @endif
                                     <td class="text-center align-middle border">
                                         <button class="rounded-circle bg-white" onclick="window.location='{{route('applications.view', ['process_id' => $process["id"] , 'application_id' => $app["id"]])}}'">

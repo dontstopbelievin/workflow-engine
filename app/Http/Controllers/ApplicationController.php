@@ -34,8 +34,10 @@ class ApplicationController extends Controller
 
     public function index(Process $process)
     {
+
         $tableName = $this->getTableName($process->name);
         $appHasMultipleStatuses = $this->checkIfAppHasMultipleStatuses($tableName);
+//        dd('here');
         if ($appHasMultipleStatuses) {
             $arrayApps = $this->getTableWithMultipleStatuses($tableName);
 
@@ -63,11 +65,13 @@ class ApplicationController extends Controller
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $applicationId)->first();
+        $appHasMultipleStatuses = $application->statuses;
+        $canApprove = false;
 
         $notInArray = ["id", "process_id", "status_id", "to_revision", "user_id","index_sub_route", "index_main", "reject_reason", "revision_reason" ];
 //        $applicationArray = $this->filterApplicationArray($applicationArray, $notInArray); // not used yet, but surely will
 
-        $statusId = $application->status_id;
+
         $user = Auth::user();
         $thisRole = $user->role;
         $subRoutes = $this->getSubRoutes($process->id);
@@ -77,8 +81,21 @@ class ApplicationController extends Controller
         }
         $comments = $this->getComments($application->id, $table->id);
         $roleId = $thisRole->id; //роль действующего юзера
+        if($appHasMultipleStatuses){
+            $statusIds = json_decode($application->statuses);
+            foreach($statusIds as $id) {
+                if ($id === $roleId) {
+                    $canApprove = true;
+                    break;
+                }
+            }
+        } else {
+            $statusId = $application->status_id;
+            $canApprove = $roleId === $statusId;
+        }
+
         $records = $this->getRecords($application->id, $table->id);
-        $canApprove = $roleId === $statusId; //может ли специалист подвисывать услугу
+         //может ли специалист подвисывать услугу
         $isCurrentUserRoleInParallel = $this->checkIfCurrentUserRoleInParallel($process);
         //parallel approve
         $toMultipleRoles["exists"] = false;
@@ -333,21 +350,23 @@ class ApplicationController extends Controller
         for ($i = 0; $i <=3; $i ++) {
             array_shift($requestVal);
         }
+//        dd($requestVal);
         $fieldValues = $requestVal;
-//        dd($fieldValues);
-        foreach($fieldValues as $key=>$val) {
-            if (is_file($val)) {
-                $path = $request->file($key)->store('application-docs','public');
-                $fieldValues[$key] = $path;
+        if ($fieldValues) {
+            foreach($fieldValues as $key=>$val) {
+                if (is_file($val)) {
+                    $path = $request->file($key)->store('application-docs','public');
+                    $fieldValues[$key] = $path;
+                }
             }
         }
-//        dd($fieldValues);
 
         $process = Process::find($request->process_id);
         $tableName = $this->getTableName($process->name);
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
         $table = CreatedTable::where('name', $tableName)->first();
 //        $fieldValues = $request->fieldValues;
+        dd($process->getAttributes());
         $templateId = $process->accepted_template_id;
         $template = Template::where('id', $templateId)->first();
         $templateName = $template->name;
