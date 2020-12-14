@@ -70,7 +70,11 @@ class LoginController extends Controller
 
                 if ($last_session) {
                     if (\Session::getHandler()->destroy($user->session_id)) {
+                        $user = auth()->guard('web')->user();
+                        $mytime = Carbon::now()->toDateTimeString();
 
+                        $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Попытка параллельного входа в систему\r\n";
+                        file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
                     }
                 }
             }
