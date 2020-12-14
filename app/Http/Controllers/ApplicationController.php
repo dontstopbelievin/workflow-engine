@@ -31,6 +31,7 @@ class ApplicationController extends Controller
     {
         $processes = Process::all();
         $modalPopup = User::where('name', 'Admin')->first()->has_not_accepted_agreement;
+        
         return view('application.dashboard', compact('processes', 'modalPopup'));
     }
 
@@ -187,7 +188,7 @@ class ApplicationController extends Controller
 
     public function acceptAgreement(Request $request) {
         if ($request->accepted) {
-            $user = User::where('name', 'Admin')->first();
+            $user = Auth::user();
             $user->has_not_accepted_agreement = false;
             $user->update();
 //            return Redirect::route('applications.service');

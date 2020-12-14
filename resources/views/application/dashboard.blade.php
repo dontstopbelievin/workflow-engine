@@ -94,8 +94,8 @@
                 @endif
                 <div class="card">
                     <!-- <div class="card-header">
-       <div class="card-title">Table</div>
-       </div> -->
+               <div class="card-title">Table</div>
+               </div> -->
                     <div class="card-body">
                         @if ($modalPopup && Auth::user()->name === 'Admin')
                             <div id="acceptModal" class="modal" data-backdrop="static">
@@ -142,19 +142,15 @@
                                                 Сервисов.<br>
                                         </div>
                                         <div class="modal-footer" style="display: flex;justify-content: space-between;">
-                                            {{--<label class="container">Я
-                                                согласен--}}
-                                                {{--<input id="acceptId"
-                                                    type="checkbox">--}}
-                                                {{--<span
-                                                    class="checkmark"></span>--}}
-                                                {{--</label>--}}
-                                            <div class="checkbox pull-left">
-                                                <label><input type="checkbox" id="acceptId" value="">Я согласен</label>
-                                            </div>
+                                            {{--<div class="checkbox pull-left">
+                                                --}}
+                                                {{--<label><input type="checkbox"
+                                                        id="acceptId" value="">Я
+                                                    согласен</label>--}}
+                                                {{--</div>--}}
                                             <div class="pull-right">
-                                                <button type="submit" disabled="disabled" class="btn btn-info btn-lg"
-                                                    id="acceptButton">Отправить</button>
+                                                <button type="submit" class="btn btn-info btn-lg" id="acceptButton">Я
+                                                    согласен</button>
                                             </div>
 
 
@@ -162,6 +158,62 @@
                                     </div>
                                 </div>
                             </div>
+                        @endif
+                        @if (Auth::user()->has_not_accepted_agreement === 1 && Auth::user()->name !== 'Admin')
+                            <div id="acceptModalId" class="modal" data-backdrop="static">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Внимание!</h5>
+
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Ведется логирование вашей учетной записи. Ваши действия записываются в базу
+                                                данных. За любые противоправные действия на Портале, вы несете
+                                                ответственность в соответствии с законодательством Республики Казахстан.
+                                        </div>
+                                        <div class="modal-footer" style="display: flex;justify-content: space-between;">
+                                            {{--<div class="checkbox pull-left">
+                                                --}}
+                                                {{--<label><input type="checkbox"
+                                                        id="acceptId" value="">Я
+                                                    согласен</label>--}}
+                                                {{--</div>--}}
+                                            <div class="pull-right">
+                                                <button type="submit" class="btn btn-info btn-lg" id="acceptModalButton">
+                                                    Я согласен</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        @endif
+                        @if(Auth::user()->has_not_accepted_agreement === 1 && Auth::user()->name !== 'Admin')
+                            <div id="acceptModalId" class="modal" data-backdrop="static">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Внимание!</h5>
+
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Ведется логирование вашей учетной записи. Ваши действия записываются в базу данных. За любые противоправные действия на Портале, вы несете ответственность в соответствии с законодательством Республики Казахстан.
+                                        </div>
+                                        <div class="modal-footer" style="display: flex;justify-content: space-between;">
+                                            {{--<div class="checkbox pull-left">--}}
+                                                {{--<label><input type="checkbox" id="acceptId" value="">Я согласен</label>--}}
+                                            {{--</div>--}}
+                                            <div class="pull-right">
+                                                <button type="submit" class="btn btn-info btn-lg" id="acceptModalButton">Я согласен</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         @endif
                         <table class="table table-hover">
                             <thead>
@@ -202,4 +254,41 @@
             </div>
         </div>
     </div>
+    {{csrf_field()}}
+    <script
+        src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function(){
+            $('input[type="checkbox"]').click(function() {
+                var inputCheck = $('input[type="checkbox"]').prop("checked");
+                if (inputCheck == false) {
+                    $('#acceptButton').prop("disabled","true");
+                } else if(inputCheck == true){
+
+                    $('#acceptButton').removeAttr("disabled");
+                    // $('#acceptButton').prop("disabled","false");
+                };
+            });
+            $("#acceptModal").modal('show');
+            $("#acceptModalId").modal('show');
+
+            $('#acceptButton').click(function(event) {
+
+                $.post('/agreement-accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
+                    $('#acceptModal').modal('hide');
+                });
+            });
+
+            $('#acceptModalButton').click(function(event) {
+
+                $.post('/agreement-accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
+                    $('#acceptModalId').modal('hide');
+                });
+            });
+        });
+    </script>
 @endsection
