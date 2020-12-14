@@ -83,7 +83,7 @@ class LoginController extends Controller
             \DB::table('users')->where('id', $user->id)->update(['session_id' => $new_sessid]);
 
             $error = true;
-            $secret = '6LcCJf4ZAAAAAJRaymXyaNYP7P5jgxIGkyTKGgjb';
+            $secret = '6LcOIv4ZAAAAAPJ6Gj6X_5kG368Ck-YZ0LclzNUI';
 
             if (!empty($_POST['g-recaptcha-response'])) {
                 $out = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . $secret . '&response=' . $_POST['g-recaptcha-response']);
