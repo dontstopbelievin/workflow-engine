@@ -41,15 +41,11 @@
                                             1.1.3. Администратор не обязуется контролировать содержание Материалов и ни при каких обстоятельствах не несет ответственность за соответствие их требованиям законодательства, а также за возможное нарушение прав третьих лиц в связи с размещением Материалов при/или в связи с использованием Сервисов.<br>
                                     </div>
                                     <div class="modal-footer" style="display: flex;justify-content: space-between;">
-                                        {{--<label class="container">Я согласен--}}
-                                            {{--<input id="acceptId" type="checkbox">--}}
-                                            {{--<span class="checkmark"></span>--}}
-                                        {{--</label>--}}
-                                        <div class="checkbox pull-left">
-                                            <label><input type="checkbox" id="acceptId" value="">Я согласен</label>
-                                        </div>
+                                        {{--<div class="checkbox pull-left">--}}
+                                            {{--<label><input type="checkbox" id="acceptId" value="">Я согласен</label>--}}
+                                        {{--</div>--}}
                                         <div class="pull-right">
-                                            <button type="submit" disabled="disabled" class="btn btn-info btn-lg" id="acceptButton">Отправить</button>
+                                            <button type="submit" class="btn btn-info btn-lg" id="acceptButton">Я согласен</button>
                                         </div>
 
 
@@ -58,6 +54,31 @@
                             </div>
                         </div>
                     @endif
+                    @if(Auth::user()->has_not_accepted_agreement === 1 && Auth::user()->name !== 'Admin')
+                            <div id="acceptModalId" class="modal" data-backdrop="static">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Внимание!</h5>
+
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Ведется логирование вашей учетной записи. Ваши действия записываются в базу данных. За любые противоправные действия на Портале, вы несете ответственность в соответствии с законодательством Республики Казахстан.
+                                        </div>
+                                        <div class="modal-footer" style="display: flex;justify-content: space-between;">
+                                            {{--<div class="checkbox pull-left">--}}
+                                                {{--<label><input type="checkbox" id="acceptId" value="">Я согласен</label>--}}
+                                            {{--</div>--}}
+                                            <div class="pull-right">
+                                                <button type="submit" class="btn btn-info btn-lg" id="acceptModalButton">Я согласен</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        @endif
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -118,14 +139,20 @@
                     // $('#acceptButton').prop("disabled","false");
                 };
             });
-
-            console.log('i can not mount this modal');
             $("#acceptModal").modal('show');
+            $("#acceptModalId").modal('show');
 
             $('#acceptButton').click(function(event) {
 
                 $.post('/agreement-accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
                     $('#acceptModal').modal('hide');
+                });
+            });
+
+            $('#acceptModalButton').click(function(event) {
+
+                $.post('/agreement-accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
+                    $('#acceptModalId').modal('hide');
                 });
             });
         });
