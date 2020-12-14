@@ -57,6 +57,7 @@ Route::post('loginwithecp/bar')->name('loginwithecp.store')->uses('EdsSignContro
 Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['password_expired'])->group(function () {
+
         Route::get('services', 'ApplicationController@service')->name('applications.service');
         Route::post('applications/search', 'ApplicationController@search')->name('applications.search');
         Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');
@@ -72,6 +73,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('applications/toCitizen/{application_id}', 'ApplicationController@toCitizen')->name('applications.toCitizen');
         Route::get('download/{file}', 'ApplicationController@download')->name('applications.download');
         Route::post('agreement-accept', 'ApplicationController@acceptAgreement')->name('applications.agreement');
+        Route::get('personal-area', 'UserController@index')->name('user.personalArea');
+        Route::get('user-to-edit/{user}', 'UserController@edit')->name('user.edit');
+        Route::put('user/update/{user}', 'UserController@update')->name('user.update');
     });
     Route::get('password/expired', 'Auth\ExpiredPasswordController@expired')
         ->name('password.expired');
