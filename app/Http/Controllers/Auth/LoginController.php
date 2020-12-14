@@ -35,7 +35,8 @@ class LoginController extends Controller
      */
     // protected $redirectTo = RouteServiceProvider::HOME;
 
-    protected function redirectTo() {
+    protected function redirectTo()
+    {
 
         return 'services';
     }
@@ -65,7 +66,7 @@ class LoginController extends Controller
 
             $new_sessid   = \Session::getId(); //get new session_id after user sign in
 
-            if($user->session_id != '') {
+            if ($user->session_id != '') {
                 $last_session = \Session::getHandler()->read($user->session_id);
 
                 if ($last_session) {
@@ -81,10 +82,25 @@ class LoginController extends Controller
 
             \DB::table('users')->where('id', $user->id)->update(['session_id' => $new_sessid]);
 
+            $error = true;
+            $secret = '6LcOIv4ZAAAAAPJ6Gj6X_5kG368Ck-YZ0LclzNUI';
+
+            if (!empty($_POST['g-recaptcha-response'])) {
+                $out = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . $secret . '&response=' . $_POST['g-recaptcha-response']);
+                $out = json_decode($out);
+                if ($out->success == true) {
+                    $error = false;
+                }
+            }
+
+            if ($error) {
+                echo 'Ошибка заполнения капчи.';
+            }
+
             $user = auth()->guard('web')->user();
             $mytime = Carbon::now()->toDateTimeString();
 
-            $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Успешный вход в систему\r\n";
+            $txt = $user->name . ' ' . $user->email . ' ' . $mytime . ' ' . "Успешный вход в систему\r\n";
             file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
             $processes = Process::all();
 
@@ -98,11 +114,10 @@ class LoginController extends Controller
         \Session::put('login_error', 'Your email and password wrong!!');
 
         $mytime = Carbon::now()->toDateTimeString();
-        $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Не успешный вход в систему\r\n";
+        $txt = $user->name . ' ' . $user->email . ' ' . $mytime . ' ' . "Не успешный вход в систему\r\n";
         file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
 
         return back();
-
     }
 
     public function logout(Request $request)
@@ -111,7 +126,7 @@ class LoginController extends Controller
         $user->has_not_accepted_agreement = true;
         $user->update();
         \Session::flush();
-        \Session::put('success','Вы успешно вышли из системы');
+        \Session::put('success', 'Вы успешно вышли из системы');
         $mytime = Carbon::now()->toDateTimeString();
         $txt = $user->name . ' ' . $user->email . ' ' . $mytime . ' ' . "Успешный выход из системы\r\n";
         file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
