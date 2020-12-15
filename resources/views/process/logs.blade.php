@@ -19,9 +19,13 @@
                 <div class="card-body">
                     <div class="row justify-content-center align-items-center">
                         <div class="col-md-9">
-                            @foreach($logsArr as $arr)
-                                <h6>{{$loop->iteration}} {{$arr}}</h6>
-                            @endforeach
+                            {{--@foreach($logsArr as $arr)--}}
+                                {{--<h6>{{$loop->iteration}} {{$arr}}</h6>--}}
+                            {{--@endforeach--}}
+
+                            @for($i = sizeof($logsArr)-1; $i >= 0; $i-- )
+                                <h6>{{sizeof($logsArr) - $i }}. {{$logsArr[$i]}}</h6>
+                            @endfor
                         </div>
                     </div>
                 </div>
