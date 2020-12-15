@@ -34,7 +34,7 @@
   <div class="wrapper">
     <div class="main-header">
       <div class="logo-header">
-        <a href="/services" class="logo">
+        <a href="{{ route('applications.service') }}" class="logo">
           Электронные услуги
         </a>
         <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,9 +54,7 @@
             <li class="nav-item dropdown">
               <a href="{{ route('login') }}">Авторизация</a>
             </li>
-            @if (Route::has('register'))
-                {{-- <a href="{{ route('register') }}">Зарегистрироваться</a> --}}
-            @endif
+            
             @else
             <li class="nav-item dropdown">
               <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false" data-toggle="dropdown" aria-haspopup="true">
