@@ -221,8 +221,9 @@ class ApplicationController extends Controller
         return in_array($role, $parallelRoles);
     }
 
-    public function multipleApprove(Request $request, $application_id)
+    public function multipleApprove(Request $request)
     {
+//        dd($request->all());
         $process = Process::find($request->process_id);
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
@@ -353,7 +354,7 @@ class ApplicationController extends Controller
 
     public function approve(Request $request)
     {
-//        dd($request->all());
+        dd($request->all());
 //        if ($request->hasFile('scheme_upload')){
 //            $request->file('scheme_upload')->store('application-docs','public');
 //        }

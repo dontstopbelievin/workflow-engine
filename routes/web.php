@@ -69,7 +69,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('applications/revision', 'ApplicationController@revision')->name('applications.revision');
         Route::post('applications/sendToSubRoute', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
         Route::post('applications/backToMainOrg/{application_id}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
-        Route::post('applications/multipleApprove/{application_id}', 'ApplicationController@multipleApprove')->name('applications.multipleApprove');
+        Route::post('applications/multipleApprove', 'ApplicationController@multipleApprove')->name('applications.multipleApprove');
         Route::post('applications/toCitizen/{application_id}', 'ApplicationController@toCitizen')->name('applications.toCitizen');
         Route::get('download/{file}', 'ApplicationController@download')->name('applications.download');
         Route::post('agreement-accept', 'ApplicationController@acceptAgreement')->name('applications.agreement');
