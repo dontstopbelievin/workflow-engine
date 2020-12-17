@@ -464,34 +464,30 @@
                     inputsMap.set(inputId, input.val())
                 }
 
-                    // for (let i = 0; i < $(this)[0].length; i ++) {
-                    //     if ($(this)[0].files === null) {
-                    //         formData.append(this.name, $(this).val());
-                    //     } else {
-                    //         var file = $('input[type=file]')[0].files[0];
-                    //         if(file!==undefined) {
-                    //             formData.append(this.name, file);
-                    //         }
-                    //     }
-                    // }
-
             });
-            console.log(inputsMap);
-            let inputsObj = Object.fromEntries(inputsMap);
+
+            const inputsObj = Object.fromEntries(inputsMap);
+            console.log(inputsObj);
             formData.append('inputsObj',inputsObj);
             formData.append('_token', $('input[name=_token]').val());
+            // formData = JSON.stringify(formData);
+            {{--$.ajax({--}}
+                {{--method: "POST",--}}
+                {{--url: '{{ route('applications.multipleApprove') }}',--}}
+                {{--data: formData,--}}
+                {{--processData: false,--}}
+                {{--contentType: false,--}}
+                {{--success: function(data){--}}
+                    {{--$('#items').load(location.href + ' #items');--}}
+                {{--}--}}
+            {{--});--}}
+            $.post('{{ route('applications.multipleApprove') }}', {'processId': processId,'applicationId': applicationId,'role': role,'inputsObj': inputsObj, '_token':$('input[name=_token]').val()}, function(data){
 
-            $.ajax({
-                method: "POST",
-                url: '{{ route('applications.multipleApprove') }}',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(data){
-                    $('#items').load(location.href + ' #items');
-                }
+                // $('#items').load(location.href + ' #items');
             });
         });
+
+
         $('#commentButton').click(function(event) {
             // event.preventDefault();
             let formData = new FormData();
@@ -524,6 +520,8 @@
                     $('#items').load(location.href + ' #items');
                 }
             });
+
+
 
         });
         $('#sendToSubOrgButton').click(function(event) {
