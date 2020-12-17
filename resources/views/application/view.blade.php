@@ -449,41 +449,51 @@
             let processId = $('#processId').val();
             let applicationId = $('#applicationId').val();
             let role = $('#role').val();
-            let inputs = $('#templateFieldsId :input');
-            formData.append('process_id', processId);
-            formData.append('applicationId', applicationId);
+
             formData.append('role', role);
+            formData.append('processId', processId);
+            formData.append('applicationId', applicationId);
+            formData.append('_token', $('input[name=_token]').val());
+            let inputs = $('#templateFieldsId :input');
             let inputsMap = new Map();
             inputs.each(function(index) {
-                let inputObject = {};
+                // let inputObject = {};
                 let input = $(this); // This is the jquery object of the input, do what you will
                 let inputId = input.attr('id');
-                inputObject[inputId] = input.val()
+                // inputObject[inputId] = input.val();
 
                 if (input.val()) {
-                    inputsMap.set(inputId, input.val())
-                }
 
+                    if (input[0].files === null) {
+                        // inputsMap.set(inputId, input.val());
+                        formData.append(inputId, input.val());
+                    } else {
+                        let file = input[0].files[0];
+                        // inputsMap.set(inputId, file);
+                        formData.append(inputId, file);
+                    }
+                }
             });
 
             const inputsObj = Object.fromEntries(inputsMap);
             console.log(inputsObj);
-            formData.append('inputsObj',inputsObj);
-            formData.append('_token', $('input[name=_token]').val());
-            // formData = JSON.stringify(formData);
-            {{--$.ajax({--}}
-                {{--method: "POST",--}}
-                {{--url: '{{ route('applications.multipleApprove') }}',--}}
-                {{--data: formData,--}}
-                {{--processData: false,--}}
-                {{--contentType: false,--}}
-                {{--success: function(data){--}}
-                    {{--$('#items').load(location.href + ' #items');--}}
-                {{--}--}}
-            {{--});--}}
-            $.post('{{ route('applications.multipleApprove') }}', {'processId': processId,'applicationId': applicationId,'role': role,'inputsObj': inputsObj, '_token':$('input[name=_token]').val()}, function(data){
+            // formData.append('inputsObj' : inputsObj);
 
-                // $('#items').load(location.href + ' #items');
+
+            {{--$.post('{{ route('applications.multipleApprove') }}', {'processId': processId,'applicationId': applicationId,'role': role,'inputsObj': inputsObj, '_token':$('input[name=_token]').val()}, function(data){--}}
+
+                {{--$('#items').load(location.href + ' #items');--}}
+            {{--});--}}
+
+            $.ajax({
+                method: "POST",
+                url: '{{ route('applications.multipleApprove') }}',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data){
+                    $('#items').load(location.href + ' #items');
+                }
             });
         });
 

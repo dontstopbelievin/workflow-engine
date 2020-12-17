@@ -221,16 +221,117 @@ class ApplicationController extends Controller
         return in_array($role, $parallelRoles);
     }
 
-    public function multipleApprove(Request $request)
+
+    public function approve(Request $request)
     {
 //        dd($request->all());
+
+        $requestVal = $request->all();
+        for ($i = 0; $i <=3; $i ++) {
+            array_shift($requestVal);
+        }
+        $fieldValues = $requestVal;
+
+        foreach($fieldValues as $key=>$val) {
+            if (is_file($val)) {
+                $path = $request->file($key)->store('application-docs','public');
+                $fieldValues[$key] = $path;
+            }
+        }
         $process = Process::find($request->process_id);
         $tableName = $this->getTableName($process->name);
+        $application = DB::table($tableName)->where('id', $request->applicationId)->first();
         $table = CreatedTable::where('name', $tableName)->first();
-        $application = DB::table($tableName)->where('id', $application_id)->first();
+        $templateId = $process->accepted_template_id;
+        $template = Template::where('id', $templateId)->first();
+        $templateName = $template->name;
+        $templateTable = $this->getTemplateTableName($templateName);
+        $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
+        $role = Auth::user()->role;
+
+        $isCurrentUserRoleInParallel = $this->checkIfCurrentUserRoleInParallel($process);
+        if ($isCurrentUserRoleInParallel) {
+            $roleAfterParallelWithIndex = $this->getRoleAfterParallel($process);
+            $roleAfterParallel = $roleAfterParallelWithIndex["roleAfterParallel"];
+            $index = $roleAfterParallelWithIndex["index"];
+            $status = Status::find($roleAfterParallel["id"]);
+            $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role["id"]);
+
+        } else {
+            $index = $application->index_main;
+            $appRoutes = json_decode($this->getAppRoutes($application->process_id));
+            $nextRole = $appRoutes[$index]; // find next role
+            $nextR = Role::where('name', $nextRole)->first(); //find $nextRole in Role table
+//            $notifyUsers = $nextR->users();
+//            dd($notifyUsers);
+            $idOfNextRole = $nextR->id; // get id of next role
+            $index = $index + 1;
+            $status = Status::find($idOfNextRole);
+            $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
+        }
+        DB::table('logs')->insert( $logsArray);
+        $this->insertComments($request->comments, $request->applicationId, $table->id);
+        if ($application->to_revision === 0) {
+            DB::table($tableName)
+                ->where('id', $request->applicationId)
+                ->update(['status_id' => $status->id, 'index_main' => $index]);
+        } else {
+            DB::table($tableName)
+                ->where('id', $request->applicationId)
+                ->update(['status_id' => $status->id, 'index_main' => $index,'to_revision' => 0 ]);
+        }
+        $notifyUsers = $role->users;
+//        dd(notifyUsers);
+        foreach($notifyUsers as $notifyUser) {
+            $details = [
+
+                'greeting' => 'Привет' . ', ' . $notifyUser->name,
+
+                'body' => 'Это уведомление о том, что Вы должны согласовать заявку',
+
+                'thanks' => 'Пожалуйста, зайтите на портал и согласуйте услугу',
+
+                'actionText' => 'Workflow Engine',
+//
+                'actionURL' => url('/services'),
+//
+                'order_id' => 101
+
+            ];
+            Notification::send($notifyUser, new ApproveNotification($details));
+        }
+        return Redirect::route('applications.service')->with('status', $status->name);
+    }
+
+    public function multipleApprove(Request $request)
+    {
+        $requestVal = $request->all();
+        $processId = $request->processId;
+        $applicationId = $request->applicationId;
+        $role = $request->role;
+        $fieldValues = array_slice($requestVal, 4);
+        if ($fieldValues) {
+            foreach($fieldValues as $key=>$val) {
+                if (is_file($val)) {
+                    $path = $request->file($key)->store('application-docs','public');
+                    $fieldValues[$key] = $path;
+                }
+            }
+        }
+
+        $process = Process::find($processId);
+        $templateId = $process->accepted_template_id;
+        $template = Template::where('id', $templateId)->first();
+        $templateName = $template->name;
+        $templateTable = $this->getTemplateTableName($templateName);
+        $tableName = $this->getTableName($process->name);
+        $table = CreatedTable::where('name', $tableName)->first();
+        $application = DB::table($tableName)->where('id', $applicationId)->first();
+        $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
+//        dd('inserted');
         $index = $application->index_main;
         $appRoutes = json_decode($this->getAppRoutes($application->process_id));
-        $nextRole = Role::where('id', $request->role)->first();
+        $nextRole = Role::where('id', $role)->first();
         $nextRoleId = $nextRole->id;
         $updatedStatus = Status::where('id', $nextRoleId)->first();
         $pos = array_search($nextRole->name, $appRoutes);
@@ -240,7 +341,7 @@ class ApplicationController extends Controller
         $logsArray = $this->getLogs($updatedStatus->id, $table->id, $application->id, $role->id);
         DB::table('logs')->insert( $logsArray);
         $success = DB::table($tableName)
-            ->where('id', $application_id)
+            ->where('id', $applicationId)
             ->update(['status_id' => $updatedStatus->id, 'index_main' => $index]);
         return Redirect::route('applications.service')->with('status', $updatedStatus->name);
     }
@@ -350,89 +451,6 @@ class ApplicationController extends Controller
         DB::table('logs')->insert( $logsArray);
 
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
-    }
-
-    public function approve(Request $request)
-    {
-        dd($request->all());
-//        if ($request->hasFile('scheme_upload')){
-//            $request->file('scheme_upload')->store('application-docs','public');
-//        }
-        $requestVal = $request->all();
-        for ($i = 0; $i <=3; $i ++) {
-            array_shift($requestVal);
-        }
-        $fieldValues = $requestVal;
-
-        foreach($fieldValues as $key=>$val) {
-            if (is_file($val)) {
-                $path = $request->file($key)->store('application-docs','public');
-                $fieldValues[$key] = $path;
-            }
-        }
-        $process = Process::find($request->process_id);
-        $tableName = $this->getTableName($process->name);
-        $application = DB::table($tableName)->where('id', $request->applicationId)->first();
-        $table = CreatedTable::where('name', $tableName)->first();
-        $templateId = $process->accepted_template_id;
-        $template = Template::where('id', $templateId)->first();
-        $templateName = $template->name;
-        $templateTable = $this->getTemplateTableName($templateName);
-        $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
-        $role = Auth::user()->role;
-
-        $isCurrentUserRoleInParallel = $this->checkIfCurrentUserRoleInParallel($process);
-        if ($isCurrentUserRoleInParallel) {
-            $roleAfterParallelWithIndex = $this->getRoleAfterParallel($process);
-            $roleAfterParallel = $roleAfterParallelWithIndex["roleAfterParallel"];
-            $index = $roleAfterParallelWithIndex["index"];
-            $status = Status::find($roleAfterParallel["id"]);
-            $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role["id"]);
-
-        } else {
-            $index = $application->index_main;
-            $appRoutes = json_decode($this->getAppRoutes($application->process_id));
-            $nextRole = $appRoutes[$index]; // find next role
-            $nextR = Role::where('name', $nextRole)->first(); //find $nextRole in Role table
-//            $notifyUsers = $nextR->users();
-//            dd($notifyUsers);
-            $idOfNextRole = $nextR->id; // get id of next role
-            $index = $index + 1;
-            $status = Status::find($idOfNextRole);
-            $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
-        }
-        DB::table('logs')->insert( $logsArray);
-        $this->insertComments($request->comments, $request->applicationId, $table->id);
-        if ($application->to_revision === 0) {
-            DB::table($tableName)
-                ->where('id', $request->applicationId)
-                ->update(['status_id' => $status->id, 'index_main' => $index]);
-        } else {
-            DB::table($tableName)
-                ->where('id', $request->applicationId)
-                ->update(['status_id' => $status->id, 'index_main' => $index,'to_revision' => 0 ]);
-        }
-        $notifyUsers = $role->users;
-//        dd(notifyUsers);
-        foreach($notifyUsers as $notifyUser) {
-            $details = [
-
-                'greeting' => 'Привет' . ', ' . $notifyUser->name,
-
-                'body' => 'Это уведомление о том, что Вы должны согласовать заявку',
-
-                'thanks' => 'Пожалуйста, зайтите на портал и согласуйте услугу',
-
-                'actionText' => 'Workflow Engine',
-//
-                'actionURL' => url('/services'),
-//
-                'order_id' => 101
-
-            ];
-            Notification::send($notifyUser, new ApproveNotification($details));
-        }
-        return Redirect::route('applications.service')->with('status', $status->name);
     }
 
     public function sendToSubRoute(Request $request)
