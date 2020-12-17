@@ -269,7 +269,7 @@
                                     @isset($templateFields)
                                         <h4 class="card-title text-center" style="margin-top:50px;">Поля Шаблона</h4>
                                         <form id = "templateFieldsId" method="POST" enctype="multipart/form-data">
-                                            <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+                                            {{--<input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">--}}
                                             @foreach($templateFields as $item)
                                                 <div class="form-group row">
                                                     <label for="{{$item->name}}" class="col-md-4 col-form-label text-md-right">{{ __($item->label_name) }}</label>
@@ -321,16 +321,16 @@
                                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
                                         @if($toMultipleRoles["exists"])
                                             <div class="col-md-6">
-                                                <form action="{{ route('applications.multipleApprove', ['application_id' => $application->id]) }}" method="post"">
-                                                    @csrf
+                                                {{--<form action="{{ route('applications.multipleApprove', ['application_id' => $application->id]) }}" method="post"">--}}
+                                                    {{--@csrf--}}
                                                     <select name="role" id="role" class="form-control">
                                                     @foreach($toMultipleRoles["roleOptions"] as $role)
                                                         <option value="{{$role->id}}">{{$role->name}}</option>
                                                     @endforeach
                                                     </select>
-                                                    <input type="hidden" name="process_id" value = {{$process->id}}>
-                                                    <button  class="btn btn-success" type="submit">Согласовать</button>
-                                                </form>
+                                                    {{--<input type="hidden" name="process_id" value = {{$process->id}}>--}}
+                                                    <button  class="btn btn-success" id="multipleApproveButton" type="submit">Согласовать</button>
+                                                {{--</form>--}}
                                             </div>
                                             @else
                                                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
@@ -442,6 +442,62 @@
                 $('#items').load(location.href + ' #items');
             });
         });
+
+        $('#multipleApproveButton').click(function(event) {
+
+            let formData = new FormData();
+            let processId = $('#processId').val();
+            let applicationId = $('#applicationId').val();
+            let role = $('#role').val();
+
+            formData.append('role', role);
+            formData.append('processId', processId);
+            formData.append('applicationId', applicationId);
+            formData.append('_token', $('input[name=_token]').val());
+            let inputs = $('#templateFieldsId :input');
+            let inputsMap = new Map();
+            inputs.each(function(index) {
+                // let inputObject = {};
+                let input = $(this); // This is the jquery object of the input, do what you will
+                let inputId = input.attr('id');
+                // inputObject[inputId] = input.val();
+
+                if (input.val()) {
+
+                    if (input[0].files === null) {
+                        // inputsMap.set(inputId, input.val());
+                        formData.append(inputId, input.val());
+                    } else {
+                        let file = input[0].files[0];
+                        // inputsMap.set(inputId, file);
+                        formData.append(inputId, file);
+                    }
+                }
+            });
+
+            const inputsObj = Object.fromEntries(inputsMap);
+            console.log(inputsObj);
+            // formData.append('inputsObj' : inputsObj);
+
+
+            {{--$.post('{{ route('applications.multipleApprove') }}', {'processId': processId,'applicationId': applicationId,'role': role,'inputsObj': inputsObj, '_token':$('input[name=_token]').val()}, function(data){--}}
+
+                {{--$('#items').load(location.href + ' #items');--}}
+            {{--});--}}
+
+            $.ajax({
+                method: "POST",
+                url: '{{ route('applications.multipleApprove') }}',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(data){
+                    $('#items').load(location.href + ' #items');
+                }
+            });
+        });
+
+
         $('#commentButton').click(function(event) {
             // event.preventDefault();
             let formData = new FormData();
@@ -474,9 +530,9 @@
                     $('#items').load(location.href + ' #items');
                 }
             });
-            // $.post('/applications/approve', {'comments':comments,'fieldValues':formData, 'process_id':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
-            //     $('#items').load(location.href + ' #items');
-            // });
+
+
+
         });
         $('#sendToSubOrgButton').click(function(event) {
             var comments = $('#subOrgComments').val();

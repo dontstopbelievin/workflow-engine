@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\View;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::get('/policy', function () {
@@ -57,7 +57,9 @@ Route::post('loginwithecp/bar')->name('loginwithecp.store')->uses('EdsSignContro
 Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['password_expired'])->group(function () {
+
         Route::get('services', 'ApplicationController@service')->name('applications.service');
+        Route::post('applications/search', 'ApplicationController@search')->name('applications.search');
         Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');
         Route::get('application-view/{process_id}/{application_id}', 'ApplicationController@view')->name('applications.view');
         Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
@@ -67,9 +69,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('applications/revision', 'ApplicationController@revision')->name('applications.revision');
         Route::post('applications/sendToSubRoute', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
         Route::post('applications/backToMainOrg/{application_id}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
-        Route::post('applications/multipleApprove/{application_id}', 'ApplicationController@multipleApprove')->name('applications.multipleApprove');
+        Route::post('applications/multipleApprove', 'ApplicationController@multipleApprove')->name('applications.multipleApprove');
         Route::post('applications/toCitizen/{application_id}', 'ApplicationController@toCitizen')->name('applications.toCitizen');
         Route::get('download/{file}', 'ApplicationController@download')->name('applications.download');
+        Route::post('agreement-accept', 'ApplicationController@acceptAgreement')->name('applications.agreement');
+        Route::get('personal-area', 'UserController@index')->name('user.personalArea');
+        Route::get('user-to-edit/{user}', 'UserController@edit')->name('user.edit');
+        Route::put('user/update/{user}', 'UserController@update')->name('user.update');
     });
     Route::get('password/expired', 'Auth\ExpiredPasswordController@expired')
         ->name('password.expired');
