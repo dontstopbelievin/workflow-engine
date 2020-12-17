@@ -453,7 +453,7 @@
             formData.append('process_id', processId);
             formData.append('applicationId', applicationId);
             formData.append('role', role);
-            let inputsArr = [];
+            let inputsMap = new Map();
             inputs.each(function(index) {
                 let inputObject = {};
                 let input = $(this); // This is the jquery object of the input, do what you will
@@ -461,7 +461,7 @@
                 inputObject[inputId] = input.val()
 
                 if (input.val()) {
-                    inputsArr.push(inputObject)
+                    inputsMap.set(inputId, input.val())
                 }
 
                     // for (let i = 0; i < $(this)[0].length; i ++) {
@@ -476,8 +476,9 @@
                     // }
 
             });
-            console.log(inputsArr);
-            formData.append('inputsArray',inputsArr);
+            console.log(inputsMap);
+            let inputsObj = Object.fromEntries(inputsMap);
+            formData.append('inputsObj',inputsObj);
             formData.append('_token', $('input[name=_token]').val());
 
             $.ajax({
