@@ -20,7 +20,7 @@ class AisGzkGetDataService extends ShepService implements XmlBuilderInterface
     public function buildXml(array $aArguments)
     {
         $aData = array(
-            'RequestUser' => 'gp_vko',
+            'RequestUser' => 'gp_astana',
             'LayerName' => 'UK_05_085'
         );
         $sUnsignedXml = ShepUtil::arrayToXML($aData);

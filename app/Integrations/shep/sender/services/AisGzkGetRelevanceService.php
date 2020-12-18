@@ -20,12 +20,11 @@ class AisGzkGetRelevanceService extends ShepService implements XmlBuilderInterfa
     public function buildXml(array $aArguments)
     {
         $aData = array(
-            'RequestUser' => 'gp_vko',
-            'LayerName' => 'UK_05_085'
+            'RequestUser' => 'gp_astana'
         );
         $sUnsignedXml = ShepUtil::arrayToXML($aData);
         $sRequestXml = ShepXmlUtil::getSoapRequest(self::SERVICE_ID, $sUnsignedXml);
-        $sRequestXml = str_replace('<data>', '<data xmlns:gzk="http://aisgzk.kz/integrations/v2019" xsi:type="gzk:GIDataRequest">', $sRequestXml);
+        $sRequestXml = str_replace('<data>', '<data xmlns:gzk="http://aisgzk.kz/integrations/v2019" xsi:type="gzk:GIRelevanceRequest">', $sRequestXml);
 
         return $sRequestXml;
     }
