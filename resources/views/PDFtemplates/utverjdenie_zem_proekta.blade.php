@@ -1,4 +1,3 @@
-<html>
 <table class="header_table">
     <tr class="header_top">
         <td width="40%">
