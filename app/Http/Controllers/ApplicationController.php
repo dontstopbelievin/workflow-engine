@@ -224,7 +224,6 @@ class ApplicationController extends Controller
 
     public function approve(Request $request)
     {
-//        dd($request->all());
 
         $requestVal = $request->all();
         for ($i = 0; $i <=3; $i ++) {
