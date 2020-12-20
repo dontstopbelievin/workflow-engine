@@ -37,6 +37,8 @@
                             <button class="tablinks" onclick="openTab(event, 'revisionReasonTab')">Причина отправки на доработку</button>
                             <button class="tablinks" onclick="openTab(event, 'rejectReasonTab')">Причина отказа</button>
                         </div>
+
+                        
                         <div id="applicationInfo" class="tabcontent">
                             <!-- <h4 class="text-center">Информация о заявителе</h4> -->
                             <ul class="list-group" id="list">
@@ -524,10 +526,23 @@
                 method: "POST",
                 url: '{{ route('applications.approve') }}',
                 data: formData,
+                xhrFields: {
+                    responseType: 'blob'
+                },
                 processData: false,
                 contentType: false,
-                success: function(data){
-                    $('#items').load(location.href + ' #items');
+                success: function(response){
+                    // console.log(data);
+
+                    var blob = new Blob([response]);
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Sample.pdf";
+                    link.click();
+
+
+                    console.log('tut');
+                    // $('#items').load(location.href + ' #items');
                 }
             });
 

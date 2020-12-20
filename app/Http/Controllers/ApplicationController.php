@@ -10,7 +10,7 @@ use App\CityManagement;
 use App\Comment;
 use App\CreatedTable;
 use App\Template;
-use Mpdf\Mdpf;
+use Mpdf\Mpdf;
 use App\TemplateField;
 use App\Traits\dbQueries;
 use Illuminate\Http\Request;
@@ -22,6 +22,8 @@ use PhpOffice\PhpWord\TemplateProcessor;
 use Illuminate\Support\Facades\DB;
 use Notification;
 use App\Notifications\ApproveNotification;
+use Mpdf\Output\Destination;
+use PDF;
 
 class ApplicationController extends Controller
 {
@@ -186,7 +188,8 @@ class ApplicationController extends Controller
         return view('application.view', compact('application','toMultipleRoles','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray'));
     }
 
-    public function acceptAgreement(Request $request) {
+    public function acceptAgreement(Request $request)
+    {
         if ($request->accepted) {
             $user = Auth::user();
             $user->has_not_accepted_agreement = false;
@@ -245,6 +248,33 @@ class ApplicationController extends Controller
         $template = Template::where('id', $templateId)->first();
         $templateName = $template->name;
         $templateTable = $this->getTemplateTableName($templateName);
+
+
+        // insertion of fields into template
+        $fields = DB::table($templateTable)->select('*')->where('application_id', $request->applicationId)->first();
+        $aFields = json_decode(json_encode($fields), true);
+
+        $updatedFields = [];
+
+        foreach($aFields as $key => $field) {
+
+            if ($key === 'id') {
+                continue;
+            }
+            if ($key === 'template_id') {
+                break;
+            }
+            $updatedFields[$key] = $field;
+        }
+
+//        dd($updatedFields);
+        $variable = '123';
+        $data = array('data' => 123);
+        $pdf = PDF::loadView('PDFtemplates.celevoe_naznachenie', compact('updatedFields', 'variable'));
+        $pdf->save(storage_path().'_filename.pdf');
+        return $pdf->download('customers.pdf');
+        dd('done');
+
         $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
         $role = Auth::user()->role;
 
@@ -280,7 +310,6 @@ class ApplicationController extends Controller
                 ->update(['status_id' => $status->id, 'index_main' => $index,'to_revision' => 0 ]);
         }
         $notifyUsers = $role->users;
-//        dd(notifyUsers);
         foreach($notifyUsers as $notifyUser) {
             $details = [
 
@@ -299,6 +328,10 @@ class ApplicationController extends Controller
             ];
             Notification::send($notifyUser, new ApproveNotification($details));
         }
+
+
+
+
         return Redirect::route('applications.service')->with('status', $status->name);
     }
 
