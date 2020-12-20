@@ -534,15 +534,15 @@
                 success: function(response){
                     // console.log(data);
 
-                    var blob = new Blob([response]);
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = "Sample.pdf";
-                    link.click();
+                    // var blob = new Blob([response]);
+                    // var link = document.createElement('a');
+                    // link.href = window.URL.createObjectURL(blob);
+                    // link.download = "Sample.pdf";
+                    // link.click();
 
 
-                    console.log('tut');
-                    // $('#items').load(location.href + ' #items');
+                    // console.log('tut');
+                    $('#items').load(location.href + ' #items');
                 }
             });
 

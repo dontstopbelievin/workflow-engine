@@ -228,9 +228,9 @@ class ApplicationController extends Controller
 
     public function approve(Request $request)
     {
-
+//        dd($request->all());
         $requestVal = $request->all();
-        for ($i = 0; $i <=3; $i ++) {
+        for ($i = 0; $i <=2; $i ++) {
             array_shift($requestVal);
         }
         $fieldValues = $requestVal;
@@ -250,32 +250,10 @@ class ApplicationController extends Controller
         $templateName = $template->name;
         $templateTable = $this->getTemplateTableName($templateName);
 
-
+//        dd($templateTable);
         // insertion of fields into template
-        $fields = DB::table($templateTable)->select('*')->where('application_id', $request->applicationId)->first();
-        $aFields = json_decode(json_encode($fields), true);
 
-        $updatedFields = [];
-
-        foreach($aFields as $key => $field) {
-
-            if ($key === 'id') {
-                continue;
-            }
-            if ($key === 'template_id') {
-                break;
-            }
-            $updatedFields[$key] = $field;
-        }
-
-//        dd($updatedFields);
-        $variable = '123';
-        $data = array('data' => 123);
-        $pdf = PDF::loadView('PDFtemplates.celevoe_naznachenie', compact('updatedFields', 'variable'));
-        Storage::put('public/pdf/test.pdf', $pdf->output());
-        $pdf->save(storage_path().'_filename.pdf');
-        return $pdf->download('customers.pdf');
-        dd('done');
+//        dd($fieldValues);
 
         $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
         $role = Auth::user()->role;
@@ -559,6 +537,37 @@ class ApplicationController extends Controller
         $template = Template::where('id', $templateId)->first();
         $templateName = $template->name;
         $templateTable = $this->getTemplateTableName($templateName);
+
+        if (Schema::hasTable($templateTable)) {
+        //    dd($request->applicationId);
+            $fields = DB::table($templateTable)->select('*')->where('application_id', $applicationId)->first();
+            // dd($fields);
+            $aFields = json_decode(json_encode($fields), true);
+        //    dd($aFields);
+            $updatedFields = [];
+            if ($aFields !== Null) {
+                foreach($aFields as $key => $field) {
+
+                    if ($key === 'id' || $key === 'template_id' || $key === 'process_id' || $key === 'application_id' || $key === '_token') {
+                        continue;
+                    }
+                   
+                    $updatedFields[$key] = $field;
+                }
+            }
+
+
+    //    dd($updatedFields);
+            $variable = '123';
+            $data = array('data' => 123);
+            $pdf = PDF::loadView('PDFtemplates.celevoe_naznachenie', compact('updatedFields', 'variable'));
+            // Storage::put('public/pdf/test.pdf', $pdf->output());
+//            $pdf->save(storage_path().'_filename.pdf');
+            return $pdf->download($templateTable . '.pdf');
+            dd('done');
+        }
+
+
         if ($fieldValues !== Null) {
             $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
         }

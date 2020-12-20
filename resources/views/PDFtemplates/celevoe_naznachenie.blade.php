@@ -72,8 +72,8 @@
                         акимат города Нур-Султан <b>ПОСТАНОВЛЯЕТ:</b>
                     </div>
                     <p style="text-indent: 5em;">
-                        1. Изменить {{ $updatedFields["applicant_name"] }} целевое назначение земельногоучастка с кадастровым номером
-                        21-{{ $updatedFields["cadastral_number"]}}, площадью {{ $updatedFields["area"] }} га с «Строительство и эксплуатация {{ $variable }}» на
+                        1. Изменить {{ $updatedFields["cadastral_number"] }} целевое назначение земельногоучастка с кадастровым номером
+                        21-{{ $updatedFields["cadastral_number"]}}, площадью {{ $updatedFields["cadastral_number"] }} га с «Строительство и эксплуатация {{ $variable }}» на
                         «Строительство {{ $variable }}», расположенный по адресу: город Нур-Султан,
                         район «{{ $variable }}», ул. {{ $variable }}, участок № {{ $variable }}.
                     </p>
