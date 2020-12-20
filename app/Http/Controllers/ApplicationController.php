@@ -366,7 +366,7 @@ class ApplicationController extends Controller
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
         $table = CreatedTable::where('name', $tableName)->first();
 //        $fieldValues = $request->fieldValues;
-        dd($process->getAttributes());
+//        dd($process->getAttributes());
         $templateId = $process->accepted_template_id;
         $template = Template::where('id', $templateId)->first();
         $templateName = $template->name;
