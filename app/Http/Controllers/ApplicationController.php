@@ -547,24 +547,32 @@ class ApplicationController extends Controller
             $updatedFields = [];
             if ($aFields !== Null) {
                 foreach($aFields as $key => $field) {
-
                     if ($key === 'id' || $key === 'template_id' || $key === 'process_id' || $key === 'application_id' || $key === '_token') {
                         continue;
                     }
-                   
                     $updatedFields[$key] = $field;
                 }
             }
 
 
-    //    dd($updatedFields);
+            $fileName = $this->generateRandomString();
+            $docPath = 'pdf\\'. $fileName . '.pdf';
+
             $variable = '123';
             $data = array('data' => 123);
-            $pdf = PDF::loadView('PDFtemplates.celevoe_naznachenie', compact('updatedFields', 'variable'));
-            // Storage::put('public/pdf/test.pdf', $pdf->output());
-//            $pdf->save(storage_path().'_filename.pdf');
-            return $pdf->download($templateTable . '.pdf');
-            dd('done');
+            $pathToView = $process->template_doc->pdf_path;
+            $storagePathToPDF ='public\\pdf\\' . $fileName . '.pdf';
+            $pdf = PDF::loadView($pathToView, compact('updatedFields', 'variable'));
+            $content = $pdf->output();
+            file_put_contents(storage_path(). '\\app\\' . $storagePathToPDF, $content);
+
+//            dd($pdf->output());
+//            Storage::put( 'public\\images\\test2.pdf', $pdf->output());
+            $affected = DB::table($tableName)
+                ->where('id', $id)
+                ->update(['doc_path' => $docPath]);
+//            return $pdf->download($fileName . '.pdf');
+//            dd('done');
         }
 
 
@@ -592,6 +600,16 @@ class ApplicationController extends Controller
 //        $mpdf->WriteHTML($content);
 //        dd($mpdf->Output());
         return Redirect::route('applications.service')->with('status', $status->name);
+    }
+
+    function generateRandomString($length = 20) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 
     public function reject(Request $request)

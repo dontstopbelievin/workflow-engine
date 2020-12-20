@@ -77,6 +77,10 @@
                                     @endforeach
                                 </ul>
                                 @endisset
+
+                                @isset($application->doc_path)
+                                    <li class="list-group-item">Выходной документ:  <a href="{{asset('storage/' .$application->doc_path)}}" target="_blanc">Просмотр</a></li>
+                                @endisset
                         </div>
                         
                         <div id="logs" class="tabcontent">
