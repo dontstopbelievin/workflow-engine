@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Schema;
 use PhpOffice\PhpWord\TemplateProcessor;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Notification;
 use App\Notifications\ApproveNotification;
 use Mpdf\Output\Destination;
@@ -271,6 +272,7 @@ class ApplicationController extends Controller
         $variable = '123';
         $data = array('data' => 123);
         $pdf = PDF::loadView('PDFtemplates.celevoe_naznachenie', compact('updatedFields', 'variable'));
+        Storage::put('public/pdf/test.pdf', $pdf->output());
         $pdf->save(storage_path().'_filename.pdf');
         return $pdf->download('customers.pdf');
         dd('done');
