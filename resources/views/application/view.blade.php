@@ -61,7 +61,7 @@
                                 @endisset
                             </ul>
                         </div>
-                        
+
                         <div id="specialistFields" class="tabcontent">
                             <!-- <h4 class="text-center">Поля заполненные специалистами</h4> -->
                             @isset($templateTableFields)
@@ -76,7 +76,7 @@
                                 </ul>
                                 @endisset
                         </div>
-                        
+
                         <div id="logs" class="tabcontent">
                             <table class="table" style="background: white;">
                                 <h4 class="text-center" style="margin-top:50px;">Ход согласования</h4>
@@ -140,7 +140,7 @@
                                     @endisset
                                 </tbody>
                             </table>
-                            
+
                         </div>
 
                         <div id="rejectReasonTab" class="tabcontent">
@@ -161,7 +161,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
                             <div class="modal-dialog" role="document">
                                 <!-- Modal content-->
@@ -317,8 +317,12 @@
                                                 @endif
                                     @endif
                                     <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
+                                      @if($buttons[0]->can_reject == 1)
                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
+                                      @endif
+                                      @if($buttons[0]->can_send_to_revision == 1)
                                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
+                                      @endif
                                         @if($toMultipleRoles["exists"])
                                             <div class="col-md-6">
                                                 <form action="{{ route('applications.multipleApprove', ['application_id' => $application->id]) }}" method="post"">
@@ -340,15 +344,15 @@
                                 @endif
                             @endif
                         </div>
-                    </div>  
-                </div>      
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="my-2 text-center">
         <a href="{{ route('applications.index', ['process' => $process]) }}" class="btn btn-info btn-lg my-5">Назад</a>
     </div>
-    
+
 {{csrf_field()}}
 
 <style>

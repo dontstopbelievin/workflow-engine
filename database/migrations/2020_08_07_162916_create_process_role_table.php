@@ -19,6 +19,8 @@ class CreateProcessRoleTable extends Migration
             $table->unsignedBigInteger('role_id');
             $table->string('parent_role_id')->nullable();
             $table->integer('is_parallel')->default(0)->nullable();
+            $table->integer('can_reject')->default(0)->nullable();
+            $table->integer('can_send_to_revision')->default(0)->nullable();
             $table->timestamps();
         });
     }

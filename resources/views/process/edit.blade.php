@@ -60,9 +60,9 @@
                                             <div class="modal-footer">
                                                 <button type="submit" class="btn btn-success">Выбрать</button>
                                                 <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                                            </div>      
+                                            </div>
                                         </form>
-                                    </div>                                          
+                                    </div>
                                 </div>
                             </div>
                             <div class="modal fade" id="routeModal" role="dialog">
@@ -77,9 +77,25 @@
                                             <div class="modal-body">
                                                 @isset($roles)
                                                     @foreach ($roles as $role)
-                                                        <div class="checkbox">
-                                                            <label><input type="checkbox" name="roles[]" value="{{$role->id}}">{{$role->name}}</label>
+                                                        <div class="flex flex-row items-center justify-center">
+                                                            <input type="checkbox" name="roles[]" value="{{$role->id}}" class="" id="participant{{$role->id}}">
+                                                            {{$role->name}}<br>
+                                                            <div id="dropdown">
+                                                              <div class="dropdown-permission{{$role->id}}" id="dropdown-permission{{$role->id}}" style="display:none;">
+                                                                <label> <input type="checkbox" name="reject[]" value="{{$role->id}}" class="mr-2">Отказать</label>
+                                                                <label> <input type="checkbox" name="revision[]" value="{{$role->id}}" class="mr-2">Отправить на доработку</label>
+                                                              </div>
+                                                            </div>
                                                         </div>
+                                                        <script>
+                                                          $("#participant{{$role->id}}").click(function(){
+                                                            if(document.getElementById("dropdown-permission{{$role->id}}").style.display == "none"){
+                                                              document.getElementById("dropdown-permission{{$role->id}}").style.display = "block";
+                                                            }else{
+                                                              document.getElementById("dropdown-permission{{$role->id}}").style.display = "none";
+                                                            }
+                                                          });
+                                                        </script>
                                                     @endforeach
                                                 @endisset
                                             </div>
@@ -131,7 +147,7 @@
                                 @foreach($tableColumns as $column)
                                 <ul class="list-group text-center">
                                     <li class="list-group-item w-50 text-center">{{$column}}</li>
-                                </ul>                                                    
+                                </ul>
                                 @endforeach
                             @endisset
 
@@ -141,9 +157,9 @@
                                 <form action="{{ route('processes.addOrganization', ['process' => $process]) }}" method="POST">
                                     @csrf
                                     <div class="form-group-row">
-                                        <label for="mainOrganization">Выберите Орагнизацию основного маршрута</label>
-                                        <select name="mainOrganization" class="form-control" id="mainOrganization">
-                                            <option selected="true" disabled="disabled">Выберите Ниже</option>
+                                        <label for="mainOrganization">Выберите Оргaнизацию основного маршрута</label>
+                                        <select name="mainOrganization" class="form-control" id="mainOrganization" required>
+                                            <option selected="true" disabled="disabled" value="">Выберите Ниже</option>
                                             @foreach($organizations as $organization)
                                                 <option>{{$organization->name}} </option>
                                             @endforeach
@@ -154,24 +170,6 @@
                             </div>
                             @endisset
                             <button type="button" class="btn btn-light btn-lg my-3" data-toggle="modal" data-target="#routeModal">Выбрать Участников</button>
-                            @isset($roles)
-
-                                <div class="my-4">
-                                    <form action="{{ route('processes.addRole', ['process' => $process]) }}" method="POST">
-                                    @csrf
-                                        <div class="form-group-row">
-                                            <label>Выберите участников процесса</label>
-                                            <select name="role" class="form-control form-control-lg">
-                                                <option selected="true" disabled="disabled">Выберите Ниже</option>
-                                                @foreach($roles as $role)
-                                                    <option>{{$role->name}} </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <button type="submit" class="btn btn-info btn-lg my-2">Выбрать</button>
-                                    </form>
-                                </div>
-                            @endisset
                             <hr>
                             @isset($process->routes)
                                 <div>
@@ -180,15 +178,15 @@
                                     </div>
                                     <div class="border border-light" id="items">
                                         @if(isset($sAllRoles))
-                                        <ul class="list-group"> 
+                                        <ul class="list-group">
                                             @foreach($sAllRoles as $key=>$role)
                                                 <li class="list-group-item my-auto ourItem" data-toggle="modal" data-target="#myModal2">{{$key}}
                                                     <input type="hidden" id="roleName" value = {{$key}}>
                                                     <input type="hidden" id="processId" value = {{$process->id}}>
-                                                    <ul class="list-group">            
+                                                    <ul class="list-group">
                                                     @if (is_array($role))
                                                         @foreach($role as $skey => $sval)
-                                                        <li class="list-group-item">  
+                                                        <li class="list-group-item">
                                                             {{$sval}}
                                                         </li>
                                                         @endforeach
@@ -196,14 +194,14 @@
                                                     </ul>
                                                 </li>
                                             @endforeach
-                                        @else 
+                                        @else
                                             @foreach($process->routes as $route)
                                                 <ul class="list-group">
                                                     <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal2">{{$route->name}}
                                                         <input type="hidden" id="roleName" value = {{$route->name}}>
                                                         <input type="hidden" id="processId" value = {{$process->id}}>
                                                     </li>
-                                                </ul>    
+                                                </ul>
                                             @endforeach
                                         @endif
                                         </ul>
