@@ -545,6 +545,7 @@ class ApplicationController extends Controller
             $aFields = json_decode(json_encode($fields), true);
 
             $updatedFields = [];
+            $updatedFields["date"] = date();
             if ($aFields !== Null) {
                 foreach($aFields as $key => $field) {
                     if ($key === 'id' || $key === 'template_id' || $key === 'process_id' || $key === 'application_id' || $key === '_token') {
@@ -560,17 +561,15 @@ class ApplicationController extends Controller
             $variable = '123';
             $data = array('data' => 123);
             $pathToView = $process->template_doc->pdf_path;
-            $storagePathToPDF ='public\\pdf\\' . $fileName . '.pdf';
+            $storagePathToPDF ='\\app\\public\\final_docs\\' . $fileName . '.pdf';
             $pdf = PDF::loadView($pathToView, compact('updatedFields', 'variable'));
             $content = $pdf->output();
-            file_put_contents(storage_path(). '\\app\\' . $storagePathToPDF, $content);
+            file_put_contents(storage_path(). $storagePathToPDF, $content);
 
             $affected = DB::table($tableName)
                 ->where('id', $id)
                 ->update(['doc_path' => $docPath]);
-
         }
-
 
         if ($fieldValues !== Null) {
             $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
