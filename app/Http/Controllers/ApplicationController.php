@@ -543,7 +543,7 @@ class ApplicationController extends Controller
             $fields = DB::table($templateTable)->select('*')->where('application_id', $applicationId)->first();
             // dd($fields);
             $aFields = json_decode(json_encode($fields), true);
-        //    dd($aFields);
+
             $updatedFields = [];
             if ($aFields !== Null) {
                 foreach($aFields as $key => $field) {
@@ -553,7 +553,6 @@ class ApplicationController extends Controller
                     $updatedFields[$key] = $field;
                 }
             }
-
 
             $fileName = $this->generateRandomString();
             $docPath = 'pdf\\'. $fileName . '.pdf';
@@ -566,13 +565,10 @@ class ApplicationController extends Controller
             $content = $pdf->output();
             file_put_contents(storage_path(). '\\app\\' . $storagePathToPDF, $content);
 
-//            dd($pdf->output());
-//            Storage::put( 'public\\images\\test2.pdf', $pdf->output());
             $affected = DB::table($tableName)
                 ->where('id', $id)
                 ->update(['doc_path' => $docPath]);
-//            return $pdf->download($fileName . '.pdf');
-//            dd('done');
+
         }
 
 

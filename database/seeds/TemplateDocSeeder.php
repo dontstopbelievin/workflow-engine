@@ -14,11 +14,11 @@ class TemplateDocSeeder extends Seeder
         DB::table('template_docs')->insert([
             [
                 'name' => 'Шаблон целевого назначения', 
-                'pdf_path' => 'resources\\views\\PDFtemplates\\celevoe_naznachenie' //1
+                'pdf_path' => 'PDFtemplates\\celevoe_naznachenie' //1
             ],
             [
                 'name' => 'Шаблон изыскательных работ', 
-                'pdf_path' => 'resources\\views\\PDFtemplates\\proektno-izyskatelnyi' //1
+                'pdf_path' => 'PDFtemplates\\proektno-izyskatelnyi' //1
             ],
 
         ]);
