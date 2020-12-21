@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Laravel 8 PDF File Download using JQuery Ajax Request Example</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
@@ -13,6 +13,7 @@
     }
     body{
         background:#f2f2f2;
+        font-family: times;
     }
     .section{
         margin-top:30px;
