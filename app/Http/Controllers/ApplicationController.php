@@ -545,7 +545,7 @@ class ApplicationController extends Controller
             $aFields = json_decode(json_encode($fields), true);
 
             $updatedFields = [];
-            $updatedFields["date"] = date();
+//            $updatedFields["date"] = date();
             if ($aFields !== Null) {
                 foreach($aFields as $key => $field) {
                     if ($key === 'id' || $key === 'template_id' || $key === 'process_id' || $key === 'application_id' || $key === '_token') {
@@ -556,7 +556,7 @@ class ApplicationController extends Controller
             }
 
             $fileName = $this->generateRandomString();
-            $docPath = 'pdf\\'. $fileName . '.pdf';
+            $docPath = 'final_docs\\'. $fileName . '.pdf';
 
             $variable = '123';
             $data = array('data' => 123);
