@@ -25,6 +25,7 @@ use Notification;
 use App\Notifications\ApproveNotification;
 use Mpdf\Output\Destination;
 use PDF;
+use QrCode;
 
 class ApplicationController extends Controller
 {
@@ -560,6 +561,14 @@ class ApplicationController extends Controller
             $todayDate=date('d-m-Y');
             $updatedFields["date"] = $todayDate;
             $updatedFields["id"] = $applicationId;
+            ////just for now
+
+//        $template = 'PDFtemplates.accept' ;
+//        $variable = "Кенжебеков Нуржан Кенжебекович";
+//        $content = view($template, ['variable' => $variable])->render();
+//        $mpdf = new Mpdf();
+//        $mpdf->WriteHTML($content);
+//        dd($mpdf->Output());
 
 
             /// for testing purposes
@@ -571,11 +580,16 @@ class ApplicationController extends Controller
             $updatedFields["street"] = 'Кабанбай батыра';
             $updatedFields["area_number"] = '1146';
             ///
-            $variable = '123';
+            $userName = Auth::user()->name;
+            $roleName = Auth::user()->role->name;
+//            $image = QrCode::size(300)->generate('A basic example of QR code!');
+//            dd($image);
+            $qrcode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($userName));
             $data = array('data' => 123);
             $pathToView = $process->template_doc->pdf_path;
             $storagePathToPDF ='\\app\\public\\final_docs\\' . $fileName . '.pdf';
-            $pdf = PDF::loadView($pathToView, compact('updatedFields', 'variable'));
+            $name = 'Султанхан';
+            $pdf = PDF::loadView($pathToView, compact('updatedFields', 'userName', 'roleName'));
             $content = $pdf->output();
             file_put_contents(storage_path(). $storagePathToPDF, $content);
 
@@ -602,12 +616,6 @@ class ApplicationController extends Controller
             ->where('id', $id)
             ->update(['status_id' => $status->id, 'index_main' => Null]);
 
-//        $template = 'PDFtemplates.accept' ;
-//        $variable = "Кенжебеков Нуржан Кенжебекович";
-//        $content = view($template, ['variable' => $variable])->render();
-//        $mpdf = new Mpdf();
-//        $mpdf->WriteHTML($content);
-//        dd($mpdf->Output());
         return Redirect::route('applications.service')->with('status', $status->name);
     }
 

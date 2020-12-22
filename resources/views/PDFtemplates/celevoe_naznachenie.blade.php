@@ -32,9 +32,7 @@
                             <td style="text-align: right;">
                                 от «{{ $updatedFields["date"] }}» <br />
                             </td>
-                            <td width="50%" style="horizontal-align: right;">
-                                <b>от «{{ $variable }}» {{ $variable }} года<br /></b>
-                            </td>
+
                         </tr>
                     </table>
                 </div>
@@ -50,18 +48,18 @@
                             Республики Казахстан от 23 января 2001 года «О местном государственном управлении и
                             самоуправлении в Республике
                             Казахстан», на основании заключения Земельной комиссии акимата города Нур-Султан от
-                            «{{ $variable }}»
-                            {{ $variable }} года №{{ $variable }},
+                            «{{ $updatedFields["date"] }}»
+                             №{{ $updatedFields["id"] }},
                             акимат города Нур-Султан <b>ПОСТАНОВЛЯЕТ:</b>
                         </p>
                         <p style="text-indent: 2em;">
-                            1. Изменить {{ $updatedFields['cadastral_number'] }} целевое назначение земельногоучастка с
+                            1. Изменить {{ $updatedFields['applicant_name'] }} целевое назначение земельногоучастка с
                             кадастровым номером
                             21-{{ $updatedFields['cadastral_number'] }}, площадью
-                            {{ $updatedFields['cadastral_number'] }} га с «Строительство и эксплуатация {{ $variable }}»
+                            {{ $updatedFields['area'] }} с « {{ $updatedFields['construction_name_before'] }}»
                             на
-                            «Строительство {{ $variable }}», расположенный по адресу: город Нур-Султан,
-                            район «{{ $variable }}», ул. {{ $variable }}, участок № {{ $variable }}.
+                            « {{  $updatedFields['construction_name_after'] }}», расположенный по адресу: город Нур-Султан,
+                            район «{{ $updatedFields['square'] }}», ул. {{ $updatedFields['street'] }}, участок № {{ $updatedFields['area_number'] }}.
                         </p>
                         <p style="text-indent: 2em;">
                             получить акт на право собственности на земельный участок;
@@ -84,6 +82,27 @@
                                 города Нур-Султан</b>
                         </p>
                     </div>
+
+                    <p style="display: none">{{ $role1 = utf8_encode('Алтаев Данияр') }}</p>
+                    <p style="display: none">{{ $role2 = utf8_encode('Жакупова Айгуль Ильясовна') }}</p>
+                    <p style="display: none">{{ $role3 = utf8_encode('Абаев Анзор') }}</p>
+                    <p style="display: none">{{ $role4 = utf8_encode('Жанбыршы Алмас Маликович') }}</p>
+                    <div style="padding: 15px; align-content: center">
+                        <div style="padding: 15px; display: inline">
+                            <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role1)) !!}" height="100">
+                        </div>
+                        <div style="padding: 15px; display: inline">
+                            <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role2)) !!}" height="100">
+                        </div>
+                        <div style="padding: 15px; display: inline">
+                            <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role3)) !!}" height="100">
+                        </div>
+                        <div style="padding: 15px; display: inline">
+                            <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role4)) !!}" height="100">
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
         </div>
