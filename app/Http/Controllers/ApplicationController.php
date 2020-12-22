@@ -557,7 +557,20 @@ class ApplicationController extends Controller
 
             $fileName = $this->generateRandomString();
             $docPath = 'final_docs\\'. $fileName . '.pdf';
+            $todayDate=date('d-m-Y');
+            $updatedFields["date"] = $todayDate;
+            $updatedFields["id"] = $applicationId;
 
+
+            /// for testing purposes
+            $updatedFields["applicant_name"] = 'Аман';
+            $updatedFields["area"] = '114 га';
+            $updatedFields["construction_name_before"] = 'Строительство';
+            $updatedFields["construction_name_after"] = 'Делопроизводство';
+            $updatedFields["square"] = 'Байконур';
+            $updatedFields["street"] = 'Кабанбай батыра';
+            $updatedFields["area_number"] = '1146';
+            ///
             $variable = '123';
             $data = array('data' => 123);
             $pathToView = $process->template_doc->pdf_path;
@@ -569,6 +582,7 @@ class ApplicationController extends Controller
             $affected = DB::table($tableName)
                 ->where('id', $id)
                 ->update(['doc_path' => $docPath]);
+            dd('done');
         }
 
         if ($fieldValues !== Null) {

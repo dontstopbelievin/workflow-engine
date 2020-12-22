@@ -52,11 +52,11 @@
                     <table>
                         <tr class="header_bottom">
                             <td>
-                                № {{ $variable }}<br />
+                                № {{ $updatedFields["id"] }}<br />
                             </td>
                             <td></td>
                             <td style="text-align: right;">
-                                от «{{ $variable }}» {{ $variable }} года<br />
+                                от «{{ $updatedFields["date"] }}» <br />
                             </td>
                             <td style="text-align: left;">
                                 Об изменении целевого
@@ -68,15 +68,14 @@
                     <div>
                         В соответствии со статьей 49-1 Земельного кодекса Республики Казахстан от 20 июня 2003 года, статьей 37 Закона
                         Республики Казахстан от 23 января 2001 года «О местном государственном управлении и самоуправлении в Республике
-                        Казахстан», на основании заключения Земельной комиссии акимата города Нур-Султан от «{{ $variable }}»
-                        {{ $variable }} года №{{ $variable }},
+                        Казахстан», на основании заключения Земельной комиссии акимата города Нур-Султан от «{{ $updatedFields["date"] }}» №{{ $variable }},
                         акимат города Нур-Султан <b>ПОСТАНОВЛЯЕТ:</b>
                     </div>
                     <p style="text-indent: 5em;">
-                        1. Изменить {{ $updatedFields["cadastral_number"] }} целевое назначение земельногоучастка с кадастровым номером
-                        21-{{ $updatedFields["cadastral_number"]}}, площадью {{ $updatedFields["cadastral_number"] }} га с «Строительство и эксплуатация {{ $variable }}» на
-                        «Строительство {{ $variable }}», расположенный по адресу: город Нур-Султан,
-                        район «{{ $variable }}», ул. {{ $variable }}, участок № {{ $variable }}.
+                        1. Изменить {{ $updatedFields["applicant_name"] }} целевое назначение земельногоучастка с кадастровым номером
+                        21-{{ $updatedFields["cadastral_number"]}}, площадью {{ $updatedFields["area"] }} га с « {{ $updatedFields["construction_name_before"] }}» на
+                        «Строительство {{ $updatedFields["construction_name_after"] }}», расположенный по адресу: город Нур-Султан,
+                        район «{{ $updatedFields["square"] }}», ул. {{ $updatedFields["street"] }}, участок № {{ $updatedFields["area_number"] }}.
                     </p>
                     <p style="text-indent: 5em;">
                         получить акт на право собственности на земельный участок;
