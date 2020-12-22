@@ -5,105 +5,128 @@
 @endsection
 
 @section('content')
-{{--{{dd($template)}}--}}
-    {{--<div class="container">--}}
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Поле шаблонов <a href="#" id="addNew" class="pull-right" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></a></h3>
-                </div>
 
-            </div>
-            <div class="card-body">
-                <div class="table-responsive" id="items">
-                    <table class="table">
-                        <thead>
-                        <th>Наименование поля</th>
-                        <th>Тип вводимого</th>
-                        <th>Тип сохраняемого</th>
-                        </thead>
-                        <tbody>
-                        @foreach($oTemplateFields as $item)
-                            <tr>
-                                <td><h4>{{$item["labelName"]}}</h4></td>
-                                <td><h4>{{$item["inputName"]}}</h4></td>
-                                <td><h4>{{$item["insertName"]}}</h4></td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                        </tablе>
-                </div>
-
-            </div>
-
-            <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3 class="modal-title" id="title">Добавить новое поле</h3>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-
-                        </div>
-                        <div class="modal-body">
-                            <input type="hidden" id="id">
-                            <p><input type="text" placeholder="Введите название поля" id="addItem" class="form-control"></p>
-                            <p><input type="text" placeholder="Введите ярлык поля(label name)" id="addLabelName" class="form-control"></p>
-                            <input type="hidden" id="processId" value="1">
-                            <input type="hidden" id="tempId" name="tempId" value="{{$id}}">
-                            @isset($inputTypes)
-                                <label for="inputType">Выберите Тип Вводимого</label>
-                                <select class="form-control" name="inputType" id="inputType">
-                                    <option selected disabled>Выберите Ниже</option>
-                                    @foreach($inputTypes as $type)
-
-                                        <option value="{{$type->name}}">{{$type->name}}</>
-                                    @endforeach
-                                </select>
-                            @endisset
-                            <div id="hidden_div" style="display: none;">
-                                @isset($options)
-                                    @foreach ($options as $option)
-                                        <div class="checkbox">
-                                            <label><input class="get_value" type="checkbox" value="{{$option->name}}">{{$option->name}}</label>
-                                        </div>
-                                    @endforeach
-                                @endisset
-                            </div>
-                            @isset($insertTypes)
-                                <label for="inputType">Выберите Тип Сохранения</label>
-                                <select class="form-control" name="insertType" id="insertType">
-                                    <option selected disabled>Выберите Ниже</option>
-                                    @foreach($insertTypes as $type)
-                                        <option value="{{$type->name}}">{{$type->name}}</option>
-                                    @endforeach
-                                </select>
-                            @endisset
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-warning" id="delete" style="display:none" data-dismiss="modal">Удалить</button>
-                            <button type="button" class="btn btn-primary" id="saveChanges" data-dismiss="modal" style="display:none" >Сохранить изменения</button>
-                            <button type="button" class="btn btn-primary" id="AddButton" data-dismiss="modal">Добавить</button>
-                        </div>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->
-
+<div class="main-panel">
+  <div class="content">
+    <div class="container-fluid">
+      <div class="d-flex justify-content-between">
+        <div class="">
+          <h4 class="page-title">Поле шаблонов </h4>
         </div>
+        <div class="">
+          <button id="addNew" class="btn btn-primary" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i></button>
+        </div>
+      </div>
+      @if (session('status'))
+          <div class="alert alert-success" role="alert">
+              {{ session('status') }}
+          </div>
+      @endif
+      <div class="card">
+        <!-- <div class="card-header">
+          <div class="card-title">Table</div>
+        </div> -->
+        <div class="card-body">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Наименование поля</th>
+                <th>Тип вводимого</th>
+                <th>Тип сохраняемого</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($oTemplateFields as $item)
+                  <tr>
+                      <td>{{$item["labelName"]}}</td>
+                      <td>{{$item["inputName"]}}</td>
+                      <td>{{$item["insertName"]}}</td>
+                  </tr>
+              @endforeach
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <a href="{{route('processes.edit', ['process' => $processId])}}" class="btn btn-primary">Продолжить</a>
     </div>
-    <div>
-        <a href="{{route('processes.edit', ['process' => $processId])}}">Продолжить</a>
-    </div>
+  </div>
+</div>
 
-    <script
-        src="https://code.jquery.com/jquery-3.5.1.min.js"
-        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+        <h6 class="modal-title" id="title">Добавить новое поле</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <input type="hidden" id="id">
+        <div class="form-group">
+          <input type="text" class="form-control" id="addItem" placeholder="Введите название поля">
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" id="addLabelName" placeholder="Введите ярлык поля(label name)">
+        </div>
+        <input type="hidden" id="processId" value="1">
+        <input type="hidden" id="tempId" name="tempId" value="{{$id}}">
+        @isset($inputTypes)
+          <div class="form-group">
+            <label for="inputType">Выберите Тип Вводимого</label>
+            <select class="form-control" name="inputType" id="inputType" data-dropup-auto="false">
+              <option selected disabled>Выберите Ниже</option>
+              @foreach($inputTypes as $type)
+                <option value="{{$type->name}}">{{$type->name}}</>
+              @endforeach
+            </select>
+          </div>
+        @endisset
+        <div id="hidden_div" style="display: none;">
+          @isset($options)
+              @foreach ($options as $option)
+                  <div class="checkbox">
+                      <label><input class="get_value" type="checkbox" value="{{$option->name}}">{{$option->name}}</label>
+                  </div>
+              @endforeach
+          @endisset
+        </div>
+        @isset($insertTypes)
+          <div class="form-group">
+            <label for="insertType">Выберите Тип Сохранения</label>
+            <select class="form-control" id="insertType" name="insertType" data-dropup-auto="false">
+              <option selected disabled>Выберите Ниже</option>
+              @foreach($insertTypes as $type)
+                  <option value="{{$type->name}}">{{$type->name}}</option>
+              @endforeach
+            </select>
+          </div>
+        @endisset
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning" id="delete" style="display:none" data-dismiss="modal">Удалить</button>
+          <button type="button" class="btn btn-primary" id="saveChanges" data-dismiss="modal" style="display:none" >Сохранить изменения</button>
+          <button type="button" class="btn btn-primary" id="AddButton" data-dismiss="modal">Добавить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function() {
+          $(document).on('click', '#addNew', function(event) {
+              $('#title').text('Добавить ');
+              $('#addItem').val("");
+              $('#delete').hide('400');
+              $('#saveChanges').hide('400');
+              $('#AddButton').show('400');
+          });
 
             $(document).on('click', '.ourItem', function(event) {
                 var text = $(this).text();
@@ -118,13 +141,7 @@
                 console.log(text);
             });
 
-            $(document).on('click', '#addNew', function(event) {
-                $('#title').text('Add New Item');
-                $('#addItem').val("");
-                $('#delete').hide('400');
-                $('#saveChanges').hide('400');
-                $('#AddButton').show('400');
-            });
+
             $(document).on('change', '#inputType', function(event) {
                 var input = $(this).val();
                 if (input === 'select') {

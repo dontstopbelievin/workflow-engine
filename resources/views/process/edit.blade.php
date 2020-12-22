@@ -77,29 +77,27 @@
                                             <div class="modal-body">
                                                 @isset($roles)
                                                     @foreach ($roles as $role)
-                                                        <div class="flex flex-row items-center justify-center">
-                                                            <input type="checkbox" name="roles[]" value="{{$role->id}}" class="" id="participant{{$role->id}}">
-                                                            {{$role->name}}<br>
-                                                            <div id="dropdown">
-                                                              <div class="dropdown-permission{{$role->id}}" id="dropdown-permission{{$role->id}}" style="display:none;">
-                                                                <label> <input type="checkbox" name="reject[]" value="{{$role->id}}" class="mr-2">Отказать</label>
-                                                                <label> <input type="checkbox" name="revision[]" value="{{$role->id}}" class="mr-2">Отправить на доработку</label>
-                                                              </div>
-                                                            </div>
+                                                        <div class="checkbox">
+                                                            <label><input type="checkbox" name="roles[]" value="{{$role->id}}">{{$role->name}}</label>
                                                         </div>
-                                                        <script>
-                                                          $("#participant{{$role->id}}").click(function(){
-                                                            if(document.getElementById("dropdown-permission{{$role->id}}").style.display == "none"){
-                                                              document.getElementById("dropdown-permission{{$role->id}}").style.display = "block";
-                                                            }else{
-                                                              document.getElementById("dropdown-permission{{$role->id}}").style.display = "none";
-                                                            }
-                                                          });
-                                                        </script>
                                                     @endforeach
                                                 @endisset
                                             </div>
                                             <div class="modal-footer">
+                                                <div>
+                                                    <input type="radio" id="straight" name="approveType" value="straight"
+                                                           checked>
+                                                    <label for="straight">Прямое</label>
+                                                </div>
+                                                <div>
+                                                    <input type="radio" id="parallel" name="approveType" value="parallel"
+                                                           checked>
+                                                    <label for="parallel">Параллельное</label>
+                                                </div>
+                                                <div>
+                                                    <input type="radio" id="selective" name="approveType" value="selective">
+                                                    <label for="selective">Выборочное</label>
+                                                </div>
                                                 <button type="submit" class="btn btn-success">Выбрать</button>
                                                 <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                                             </div>
@@ -157,9 +155,9 @@
                                 <form action="{{ route('processes.addOrganization', ['process' => $process]) }}" method="POST">
                                     @csrf
                                     <div class="form-group-row">
-                                        <label for="mainOrganization">Выберите Оргaнизацию основного маршрута</label>
-                                        <select name="mainOrganization" class="form-control" id="mainOrganization" required>
-                                            <option selected="true" disabled="disabled" value="">Выберите Ниже</option>
+                                        <label for="mainOrganization">Выберите Орагнизацию основного маршрута</label>
+                                        <select name="mainOrganization" class="form-control" id="mainOrganization">
+                                            <option selected="true" disabled="disabled">Выберите Ниже</option>
                                             @foreach($organizations as $organization)
                                                 <option>{{$organization->name}} </option>
                                             @endforeach
@@ -170,6 +168,24 @@
                             </div>
                             @endisset
                             <button type="button" class="btn btn-light btn-lg my-3" data-toggle="modal" data-target="#routeModal">Выбрать Участников</button>
+                            {{--@isset($roles)--}}
+
+                                {{--<div class="my-4">--}}
+                                    {{--<form action="{{ route('processes.addRole', ['process' => $process]) }}" method="POST">--}}
+                                    {{--@csrf--}}
+                                        {{--<div class="form-group-row">--}}
+                                            {{--<label>Выберите участников процесса</label>--}}
+                                            {{--<select name="role" class="form-control form-control-lg">--}}
+                                                {{--<option selected="true" disabled="disabled">Выберите Ниже</option>--}}
+                                                {{--@foreach($roles as $role)--}}
+                                                    {{--<option>{{$role->name}} </option>--}}
+                                                {{--@endforeach--}}
+                                            {{--</select>--}}
+                                        {{--</div>--}}
+                                        {{--<button type="submit" class="btn btn-info btn-lg my-2">Выбрать</button>--}}
+                                    {{--</form>--}}
+                                {{--</div>--}}
+                            {{--@endisset--}}
                             <hr>
                             @isset($process->routes)
                                 <div>
@@ -264,9 +280,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous"></script>
 <script>
-
     $(document).ready(function() {
-
         $(document).on('click', '.ourItem', function(event) {
             var text = $(this).text();
             text = $.trim(text);
@@ -277,7 +291,6 @@
             var hidden = [];
             hidden = $('#hidden').val();
             console.log(hidden);
-
             for (let i =0; i < hidden.length; i ++)
             console.log(json_decode(hidden[i]));
             var organization = $(this).val();
@@ -288,7 +301,6 @@
                 document.getElementById('hidden_div').style.display = "none";
             }
         });
-
         $('#AddButton').click(function(event) {
             var roleToAdd = $('#modHeader').val();
             var subRoles = [];
@@ -302,14 +314,13 @@
                 }
             });
             console.log(roleToAdd)
-            $.post('/add-sub-roles', {'roleToAdd':roleToAdd,'subRoles':subRoles,'processId':processId, 'subOrg':subOrg,  '_token':$('input[name=_token]').val()}, function(data){
+            $.post('/process/add-sub-roles', {'roleToAdd':roleToAdd,'subRoles':subRoles,'processId':processId, 'subOrg':subOrg,  '_token':$('input[name=_token]').val()}, function(data){
                 var modal =  $('#myModal2');
                 // console.log(data);
                 modal.style.display = 'none';
                 $('#items').load(location.href + ' #items');
             });
         });
-
     });
 </script>
 

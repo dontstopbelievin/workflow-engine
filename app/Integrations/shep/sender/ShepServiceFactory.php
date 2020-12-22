@@ -2,6 +2,8 @@
 
 namespace App\Integrations\shep\sender;
 
+use App\Integrations\shep\sender\services\AisGzkGetDataService;
+use App\Integrations\shep\sender\services\AisGzkGetRelevanceService;
 use App\Integrations\shep\sender\services\EdsTempFilesService;
 use App\Integrations\shep\sender\services\EgknUniversalReceiveOrderService;
 use App\Integrations\shep\sender\services\EgknUniversalReceiveStatusService;
@@ -26,6 +28,10 @@ class ShepServiceFactory
                 return new EdsTempFilesService();
             case 'geoportal_pep_async':
                 return new GeoportalPEPAsyncService();
+            case 'ais_gzk_get_data':
+                return new AisGzkGetDataService();
+            case 'ais_gzk_get_relevance':
+                return new AisGzkGetRelevanceService();
             default:
                 throw new \Exception('Не найден сервис ' . $sServiceName);
         }

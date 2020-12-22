@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\View;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::get('/policy', function () {
@@ -57,6 +57,7 @@ Route::post('loginwithecp/bar')->name('loginwithecp.store')->uses('EdsSignContro
 Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['password_expired'])->group(function () {
+
         Route::get('services', 'ApplicationController@service')->name('applications.service');
         Route::post('applications/search', 'ApplicationController@search')->name('applications.search');
         Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');
@@ -68,10 +69,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('applications/revision', 'ApplicationController@revision')->name('applications.revision');
         Route::post('applications/sendToSubRoute', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
         Route::post('applications/backToMainOrg/{application_id}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
-        Route::post('applications/multipleApprove/{application_id}', 'ApplicationController@multipleApprove')->name('applications.multipleApprove');
+        Route::post('applications/multipleApprove', 'ApplicationController@multipleApprove')->name('applications.multipleApprove');
         Route::post('applications/toCitizen/{application_id}', 'ApplicationController@toCitizen')->name('applications.toCitizen');
         Route::get('download/{file}', 'ApplicationController@download')->name('applications.download');
         Route::post('agreement-accept', 'ApplicationController@acceptAgreement')->name('applications.agreement');
+        Route::get('personal-area', 'UserController@index')->name('user.personalArea');
+        Route::get('user-to-edit/{user}', 'UserController@edit')->name('user.edit');
+        Route::put('user/update/{user}', 'UserController@update')->name('user.update');
     });
     Route::get('password/expired', 'Auth\ExpiredPasswordController@expired')
         ->name('password.expired');
@@ -98,7 +102,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
 
     Route::get('/cities', 'CityManagementController@index')->name('city.index');
     Route::post('/city', 'CityManagementController@create');
-    Route::post('/city/delete', 'CityManagementController@delete');
+    Route::post('/city/delete', 'CityManagementController@delete')->name('city.delete');
     Route::post('/city/update', 'CityManagementController@update');
     Route::get('/city/search', 'CityManagementController@search');
 
@@ -117,7 +121,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::put('role-update/{role}', 'RoleController@update')->name('role.update');
     Route::delete('role-delete/{role}', 'RoleController@delete')->name('role.delete');
     Route::post('roles/search', 'RoleController@search')->name('role.search');
-    
+
     Route::get('routes', 'RouteController@index')->name('route.index');
     Route::get('route/{id}', 'RouteController@view')->name('route.view');
     Route::get('routes/create', 'RouteController@create')->name('route.create');

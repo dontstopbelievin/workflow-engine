@@ -5,7 +5,8 @@
 @endsection
 
 @section('content')
-    <div class="row">
+
+    <div class="main-panel">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
@@ -34,7 +35,7 @@
                                         <input type="file" class="custom-file-input" id="customFile" name="file_input">
                                         <label class="custom-file-label" for="customFile">Выберите Файл</label>
                                     </div>
-                                    
+
                                 </div>
                                 <button type="submit" class="btn btn-success">Отправить</button>
                             </form>

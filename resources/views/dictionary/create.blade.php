@@ -4,8 +4,6 @@
     Создание Полей
 @endsection
 
-
-
 @section('content')
 
     <div class="row">
@@ -36,7 +34,7 @@
                                         <input type="file" name={{$item["name"]}} id = {{$item["name"]}} class="form-control">
                                     @else
                                         <label for="{{$item["name"]}}">{{$item["name"]}}</label>
-                                        <select name="{{$item["name"]}}" id="{{$item["name"]}}" class="form-control">
+                                        <select name="{{$item["name"]}}" id="{{$item["name"]}}" class="form-control" data-dropup-auto="false">
                                             <option selected disabled>Выберите Ниже</option>
                                             @foreach($item["inputName"] as $key=>$val)
                                                 <option>{{$val}}</option>
@@ -55,5 +53,3 @@
         </div>
     </div>
 @endsection
-
-
