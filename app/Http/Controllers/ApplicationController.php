@@ -567,7 +567,7 @@ class ApplicationController extends Controller
             }
 
             $fileName = $this->generateRandomString();
-            $docPath = 'final_docs\\'. $fileName . '.pdf';
+            $docPath = 'final_docs/'. $fileName . '.pdf';
             $todayDate=date('d-m-Y');
             $updatedFields["date"] = $todayDate;
             $updatedFields["id"] = $applicationId;
@@ -597,7 +597,7 @@ class ApplicationController extends Controller
             $qrcode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($userName));
             $data = array('data' => 123);
             $pathToView = $process->template_doc->pdf_path;
-            $storagePathToPDF ='\\app\\public\\final_docs\\' . $fileName . '.pdf';
+            $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
             $name = 'Султанхан';
             $pdf = PDF::loadView($pathToView, compact('updatedFields', 'userName', 'roleName'));
             $content = $pdf->output();
