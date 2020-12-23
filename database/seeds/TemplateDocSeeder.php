@@ -38,19 +38,19 @@ class TemplateDocSeeder extends Seeder
             ],
             [
                 'name' => 'Шаблон постановка в очередь на ЗУ', 
-                'pdf_path' => 'PDFtemplates\\postanovka_poluchenie_zu' //1
+                'pdf_path' => 'postanovka_poluchenie_zu' //1
             ],
             [
                 'name' => 'Шаблон определение делимости', 
-                'pdf_path' => 'PDFtemplates\\delimost_nedilimost' //1
+                'pdf_path' => 'delimost_nedilimost' //1
             ],
             [
                 'name' => 'Шаблон 1 часть приобретение прав на ЗУ', 
-                'pdf_path' => 'PDFtemplates\\1_priobretenie_prav_na_zu' //1
+                'pdf_path' => '1_priobretenie_prav_na_zu' //1
             ],
             [
                 'name' => 'Шаблон 2 часть приобретение прав на ЗУ', 
-                'pdf_path' => 'PDFtemplates\\2_priobretenie_prav_na_zu' //1
+                'pdf_path' => '2_priobretenie_prav_na_zu' //1
             ],
         ]);
     }
