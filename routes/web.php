@@ -102,7 +102,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
 
     Route::get('/cities', 'CityManagementController@index')->name('city.index');
     Route::post('/city', 'CityManagementController@create');
-    Route::post('/city/delete', 'CityManagementController@delete');
+    Route::post('/city/delete', 'CityManagementController@delete')->name('city.delete');
     Route::post('/city/update', 'CityManagementController@update');
     Route::get('/city/search', 'CityManagementController@search');
 
@@ -121,7 +121,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::put('role-update/{role}', 'RoleController@update')->name('role.update');
     Route::delete('role-delete/{role}', 'RoleController@delete')->name('role.delete');
     Route::post('roles/search', 'RoleController@search')->name('role.search');
-    
+
     Route::get('routes', 'RouteController@index')->name('route.index');
     Route::get('route/{id}', 'RouteController@view')->name('route.view');
     Route::get('routes/create', 'RouteController@create')->name('route.create');
@@ -159,6 +159,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::put('processes-update/{process}', 'ProcessController@update')->name('processes.update');
     Route::post('create-process-table/{process}', 'ProcessController@createProcessTable')->name('processes.createProcessTable');
     Route::post('process-add-role/{process}', 'ProcessController@addRole')->name('processes.addRole');
+    Route::post('process-add-doc-templates', 'ProcessController@addDocTemplates')->name('process.addDocTemplates');
     Route::delete('process-delete/{process}', 'ProcessController@delete')->name('processes.delete');
     Route::get('logs', 'ProcessController@logs')->name('logs');
 

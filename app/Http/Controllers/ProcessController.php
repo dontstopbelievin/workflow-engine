@@ -8,6 +8,7 @@ use App\Role;
 use App\Route;
 use App\CityManagement;
 use App\CreatedTable;
+use App\TemplateDoc;
 use App\Traits\dbQueries;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -34,7 +35,7 @@ class ProcessController extends Controller
         $tableColumns = array_slice($tableColumns, 0, -10);
         if ($parentId === 0) {
             return view('process.view', compact('process','tableColumns'));
-        } 
+        }
         $iterateRoles = $this->getIterateRoles($process);
         $sAllRoles = $this->getAllRoles($process, $parentId, $iterateRoles);
         return view('process.view', compact('process','sAllRoles','tableColumns'));
@@ -92,13 +93,16 @@ class ProcessController extends Controller
 //        if ($parentId === 0) {
 //            return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','columns','organizations','nameMainOrg'));
 //        }
+
+        $templateDocs = TemplateDoc::all();
+//        dd($templateDocs);
         $iterateRoles = $this->getIterateRoles($process);
         $sAllRoles = $this->getAllRoles($process, $parentId,$iterateRoles);
 //        dd($sAllRoles);
-        return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','sAllRoles', 'organizations', 'nameMainOrg'));
+        return view('process.edit', compact('templateDocs', 'process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','sAllRoles', 'organizations', 'nameMainOrg'));
     }
 
-    public function update(Request $request, Process $process) {   
+    public function update(Request $request, Process $process) {
 
         $numberOfDays = intval($request->get('deadline'));
         $deadline = Carbon::now()->addDays($numberOfDays);
@@ -165,6 +169,10 @@ class ProcessController extends Controller
             $dbQueryString = "ALTER TABLE $tableName ADD index_main INT";
             DB::statement($dbQueryString);
         }
+        if (!Schema::hasColumn($tableName, 'doc_path')) {
+            $dbQueryString = "ALTER TABLE $tableName ADD doc_path varchar(255)";
+            DB::statement($dbQueryString);
+        }
         if (!Schema::hasColumn($tableName, 'reject_reason')) {
             $dbQueryString = "ALTER TABLE $tableName ADD reject_reason varchar(255)";
             DB::statement($dbQueryString);
@@ -189,40 +197,60 @@ class ProcessController extends Controller
     }
 
     public function addRole(Request $request, Process $process) {
-
-//        dd($request->all());
-        if ($request->approveType === "parallel") {
-            $requestRoles = $request->roles;
-            $rolesLen = sizeof($requestRoles);
-            $parallelRoles = [];
-            foreach($requestRoles as $id) {
-                $role = Role::find($id);
-                array_push($parallelRoles, $role);
-            }
-            $roles = Role::all();
-            return view('process.parallel', compact('parallelRoles', 'process','roles', 'rolesLen'));
-        }
         if (!isset($request->roles)) {
             echo 'Пожалуйста, выберите специалистов';
-        } else if (sizeof($request->roles) === 1) {
+        } else if(sizeof($request->roles) == 1) {
             $role = Role::where('id', intval($request->roles[0]))->first();
             $route = new Route;
             $route->name = $role->name;
             $route->role_id = $role->id;
             $route->process_id = $process->id;
             $route->save();
-            $process->roles()->attach($role);
+            $can_reject = 0;
+            $can_send_to_revision = 0;
+            if(isset($request->reject)){
+              foreach ($request->reject as $id) {
+                if($id == $role->id){
+                  $can_reject = 1;
+                  break;
+                }
+              }
+            }
+            if(isset($request->revision)){
+              foreach ($request->revision as $id) {
+                if($id == $role->id){
+                  $can_send_to_revision = 1;
+                  break;
+                }
+              }
+            }
+            $process->roles()->attach($role, ['can_reject' => $can_reject, 'can_send_to_revision' => $can_send_to_revision]);
             $process->save();
             return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
         } else {
-            $rolesId = $request->roles;
-            $maxParallelNumber = DB::table('process_role')->max('is_parallel');
-            foreach ($rolesId as $id) {
-                $role = Role::where('id', intval($id))->first();
-                $process->roles()->attach($role, ['is_parallel' => $maxParallelNumber + 1]);
-            }
-            return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
-        }
+           $rolesId = $request->roles;
+           $maxParallelNumber = DB::table('process_role')->max('is_parallel');
+           foreach ($rolesId as $id) {
+               $role = Role::where('id', intval($id))->first();
+               $process->roles()->attach($role, ['is_parallel' => $maxParallelNumber + 1]);
+               $process->save();
+           }
+
+           foreach ($request->reject as $id) {
+             $getFromDB = DB::table("process_role")
+                          ->where('process_id', $process->id)
+                          ->where('role_id', $id)
+                          ->update(['can_reject' => 1]);
+           }
+           foreach ($request->revision as $id) {
+             $getFromDB = DB::table("process_role")
+                          ->where('process_id', $process->id)
+                          ->where('role_id', $id)
+                          ->update(['can_send_to_revision' => 1]);
+           }
+
+           return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
+       }
 
     }
 
@@ -232,6 +260,18 @@ class ProcessController extends Controller
         $process->main_organization_id = $organization->id;
         $process->update();
         return Redirect::route('processes.edit', [$process])->with('status', 'Осносвной Маршрут Выбран успешно');
+    }
+
+    public function addDocTemplates(Request $request)
+    {
+        $process = Process::find($request->processId);
+        $process->template_doc_id = $request->docTemplateId;
+        $process->save();
+//        dd($request->all());
+//        $organization = CityManagement::where('name', $request->mainOrganization)->first();
+//        $process->main_organization_id = $organization->id;
+//        $process->update();
+        return Redirect::back()->with('status', 'Осносвной Маршрут Выбран успешно');
     }
 
     public function addSubRoles(Request $request) {
@@ -256,7 +296,7 @@ class ProcessController extends Controller
         $tableName = $this->getTableName($process->name);
         Schema::dropIfExists($tableName);
         $process->delete();
-        return Redirect::route('processes.index')->with('status', 'Процесс успешно удален');  
+        return Redirect::route('processes.index')->with('status', 'Процесс успешно удален');
     }
 
     public function logs() {
@@ -268,7 +308,7 @@ class ProcessController extends Controller
         $len =0;
         if (sizeof($result) == 0) {
             echo "Логов пока нет";
-        } 
+        }
         for ($i = 0; $i < sizeof($result); $i ++) {
             $len++;
             if ($result[$i] === "\r") {

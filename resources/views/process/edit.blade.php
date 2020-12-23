@@ -223,9 +223,30 @@
             <hr>
             <div class="card-title"><h5>Создание Шаблонов</h5></div>
             <hr>
+
+              <div class="row">
+
+                  <form action="{{ route('process.addDocTemplates') }}" method="POST">
+                      @csrf
+                      <div class="form-group">
+
+                          <input type="hidden" name="processId" value = {{$process->id}}>
+                          <label for="docTemplate">Выберите Документ Шаблона</label>
+                          <select name="docTemplateId" id="docTemplate" class="form-control">
+                              @foreach($templateDocs as $doc)
+                                  <option value="{{$doc->id}}">
+                                      {{$doc->name}}
+                                  </option>
+                              @endforeach
+                          </select>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Прикрепить</button>
+                  </form>
+              </div>
             <div class="row">
+
+
                 <div class="col-md-6">
-                    <div class="card-title">Создание Шаблонов</div>
                     @empty($accepted)
                     <form action="{{ route('template.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
@@ -249,6 +270,7 @@
                         @csrf
                         <input type="hidden" name="template_state" value="rejected">
                         <input type="hidden" name="processId" value="{{$process->id}}">
+
                         <div class="form-group">
                             <label for="fieldName">Название шаблона</label>
                             <input type="text" class="form-control" name="name" id="fieldName">
@@ -276,9 +298,7 @@
 <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous"></script>
 <script>
-
     $(document).ready(function() {
-
         $(document).on('click', '.ourItem', function(event) {
             var text = $(this).text();
             text = $.trim(text);
@@ -289,7 +309,6 @@
             var hidden = [];
             hidden = $('#hidden').val();
             console.log(hidden);
-
             for (let i =0; i < hidden.length; i ++)
             console.log(json_decode(hidden[i]));
             var organization = $(this).val();
@@ -300,7 +319,6 @@
                 document.getElementById('hidden_div').style.display = "none";
             }
         });
-
         $('#AddButton').click(function(event) {
             var roleToAdd = $('#modHeader').val();
             var subRoles = [];
@@ -321,7 +339,6 @@
                 $('#items').load(location.href + ' #items');
             });
         });
-
     });
 </script>
 

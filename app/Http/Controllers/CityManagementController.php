@@ -14,7 +14,7 @@ class CityManagementController extends Controller
     }
 
     public function create(Request $request) {
-        
+
         $cityManagement = new CityManagement;
         $cityManagement->name = $request->text;
         $cityManagement->save();

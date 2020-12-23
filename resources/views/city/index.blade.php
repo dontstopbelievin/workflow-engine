@@ -9,14 +9,12 @@
       <div class="main-panel">
 				<div class="content">
 					<div class="container-fluid">
-						<div class="d-flex justify-content-between">
-							<div class="">
+						<div class="d-flex">
 								<h4 class="page-title">Организации</h4>
-							</div>
-							<div class="">
-								<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#AddModal"><i class="fa fa-plus"></i></button>
-							</div>
 						</div>
+            <div class="mb-3">
+              <button type="button" id="addNew" class="btn btn-success" data-toggle="modal" data-target="#AddModal">Добавить организацию</button>
+            </div>
 						<div class="card">
 							<!-- <div class="card-header">
 				        <div class="card-title">Table</div>
@@ -25,17 +23,30 @@
 								<table class="table table-hover">
 			            <thead>
 			              <tr>
-			                <th>#</th>
-			                <th>НАИМЕНОВАНИЕ ОРГАНИЗАЦИИ</th>
+			                <th style="width:7%;">#</th>
+			                <th style="width:80%;">НАИМЕНОВАНИЕ ОРГАНИЗАЦИИ</th>
+                      <th style="width:13%;">Действия</th>
 			              </tr>
 			            </thead>
 			            <tbody>
                     @foreach($cityManagements as $cityManagement)
                       <tr>
                           <td>{{$loop->iteration}}</td>
-                          <td class="ourItem" data-toggle="modal" data-target="#AddModal">
+                          <td>
                               {{$cityManagement->name}}
-                              <input type="hidden" id="itemId" value = {{$cityManagement->id}}>
+                          </td>
+                          <td>
+                            <div class="row">
+                              <button class="ourItem btn btn-link btn-simple-primary" data-original-title="Изменить" data-toggle="modal" data-target="#AddModal">
+                                  <i class="la la-edit"></i>
+                                  <input type="hidden" id="itemId" value = {{$cityManagement->id}}>
+                                  <h6 style="display: none;">{{$cityManagement->name}}</h6>
+                              </button>
+                              <button class="btn btn-link btn-simple-danger" id="delete">
+                                <input type="hidden" id="idDel" value="{{$cityManagement->id}}">
+                                <i class="la la-times"></i>
+                              </button>
+                            </div>
                           </td>
                       </tr>
                     @endforeach
@@ -62,7 +73,6 @@
                 <input type="text" placeholder="Введите название" id="addItem" class="form-control">
               </div>
               <div class="modal-footer">
-                  <button type="button" class="btn btn-warning" id="delete" style="display:none" data-dismiss="modal">Удалить</button>
                   <button type="button" class="btn btn-primary" id="saveChanges" data-dismiss="modal" style="display:none" >Сохранить изменения</button>
                   <button type="button" class="btn btn-primary" id="AddButton" data-dismiss="modal">Добавить</button>
               </div>
@@ -81,17 +91,17 @@
             $('#title').text('Изменить организацию');
             text = $.trim(text);
             $('#addItem').val(text);
-            $('#delete').show('400');
             $('#saveChanges').show('400');
             $('#AddButton').hide('400');
             $('#id').val(id);
+            console.log($('#addItem').val());
+            console.log(id);
             console.log(text);
         });
 
         $(document).on('click', '#addNew', function(event) {
             $('#title').text('Добавить организацию');
             $('#addItem').val("");
-            $('#delete').hide('400');
             $('#saveChanges').hide('400');
             $('#AddButton').show('400');
         });
@@ -109,7 +119,7 @@
         });
 
         $('#delete').click(function(event) {
-            var id = $('#id').val();
+            var id = $('#idDel').val();
             $.post('city/delete', {'id':id, '_token':$('input[name=_token]').val()}, function(data){
                 console.log(data);
                 $('#items').load(location.href + ' #items');

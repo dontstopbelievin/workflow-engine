@@ -10,7 +10,7 @@ use App\CityManagement;
 use App\Comment;
 use App\CreatedTable;
 use App\Template;
-use Mpdf\Mdpf;
+use Mpdf\Mpdf;
 use App\TemplateField;
 use App\Traits\dbQueries;
 use Illuminate\Http\Request;
@@ -20,8 +20,12 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Schema;
 use PhpOffice\PhpWord\TemplateProcessor;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Notification;
 use App\Notifications\ApproveNotification;
+use Mpdf\Output\Destination;
+use PDF;
+use QrCode;
 
 class ApplicationController extends Controller
 {
@@ -31,7 +35,7 @@ class ApplicationController extends Controller
     {
         $processes = Process::all();
         $modalPopup = User::where('name', 'Admin')->first()->has_not_accepted_agreement;
-        
+
         return view('application.dashboard', compact('processes', 'modalPopup'));
     }
 
@@ -154,7 +158,7 @@ class ApplicationController extends Controller
                     $sendToSubRoute["name"] = $subOrg->name;
                 }
             }
-        } 
+        }
 
         if (!$thisRole->city_management_id) {
             echo 'Укажите к какой организации относить роль';
@@ -183,10 +187,20 @@ class ApplicationController extends Controller
                 $templateTableFields = $this->filterTemplateFieldsTable($templateTableFields, $exceptionArray);
             }
         }
-        return view('application.view', compact('application','toMultipleRoles','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray'));
+        // изменения Дильназ
+
+        $buttons = DB::table('process_role')
+                  ->where('process_id', $process->id)
+                  ->where('role_id', $user->role_id)
+                  ->get()
+                  ->toArray();
+        // конец
+
+        return view('application.view', compact('application','toMultipleRoles','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray', 'buttons'));
     }
 
-    public function acceptAgreement(Request $request) {
+    public function acceptAgreement(Request $request)
+    {
         if ($request->accepted) {
             $user = Auth::user();
             $user->has_not_accepted_agreement = false;
@@ -225,9 +239,8 @@ class ApplicationController extends Controller
     public function approve(Request $request)
     {
 //        dd($request->all());
-
         $requestVal = $request->all();
-        for ($i = 0; $i <=3; $i ++) {
+        for ($i = 0; $i <=2; $i ++) {
             array_shift($requestVal);
         }
         $fieldValues = $requestVal;
@@ -239,6 +252,7 @@ class ApplicationController extends Controller
             }
         }
         $process = Process::find($request->process_id);
+   
         $tableName = $this->getTableName($process->name);
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
         $table = CreatedTable::where('name', $tableName)->first();
@@ -246,6 +260,12 @@ class ApplicationController extends Controller
         $template = Template::where('id', $templateId)->first();
         $templateName = $template->name;
         $templateTable = $this->getTemplateTableName($templateName);
+
+//        dd($templateTable);
+        // insertion of fields into template
+
+//        dd($fieldValues);
+
         $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
         $role = Auth::user()->role;
 
@@ -280,26 +300,29 @@ class ApplicationController extends Controller
                 ->where('id', $request->applicationId)
                 ->update(['status_id' => $status->id, 'index_main' => $index,'to_revision' => 0 ]);
         }
-        $notifyUsers = $role->users;
-//        dd(notifyUsers);
-        foreach($notifyUsers as $notifyUser) {
-            $details = [
+//         $notifyUsers = $role->users;
+//         foreach($notifyUsers as $notifyUser) {
+//             $details = [
 
-                'greeting' => 'Привет' . ', ' . $notifyUser->name,
+//                 'greeting' => 'Привет' . ', ' . $notifyUser->name,
 
-                'body' => 'Это уведомление о том, что Вы должны согласовать заявку',
+//                 'body' => 'Это уведомление о том, что Вы должны согласовать заявку',
 
-                'thanks' => 'Пожалуйста, зайтите на портал и согласуйте услугу',
+//                 'thanks' => 'Пожалуйста, зайтите на портал и согласуйте услугу',
 
-                'actionText' => 'Workflow Engine',
-//
-                'actionURL' => url('/services'),
-//
-                'order_id' => 101
+//                 'actionText' => 'Workflow Engine',
+// //
+//                 'actionURL' => url('/services'),
+// //
+//                 'order_id' => 101
 
-            ];
-            Notification::send($notifyUser, new ApproveNotification($details));
-        }
+//             ];
+//             Notification::send($notifyUser, new ApproveNotification($details));
+//         }
+
+
+
+
         return Redirect::route('applications.service')->with('status', $status->name);
     }
 
@@ -383,27 +406,27 @@ class ApplicationController extends Controller
         $role = Role::where('name', $startRole)->first();
         $status = Status::find($role->id);
 
-        $notifyUsers = $role->users;
-//        dd($notifyUsers, $role);
-        foreach($notifyUsers as $notifyUser) {
-//            dd($notifyUser);
-            $details = [
+//         $notifyUsers = $role->users;
+// //        dd($notifyUsers, $role);
+//         foreach($notifyUsers as $notifyUser) {
+// //            dd($notifyUser);
+//             $details = [
 
-                'greeting' => 'Привет' . ', ' . $notifyUser->name,
+//                 'greeting' => 'Привет' . ', ' . $notifyUser->name,
 
-                'body' => 'Это уведомление о том, что Вы должны согласовать заявку',
+//                 'body' => 'Это уведомление о том, что Вы должны согласовать заявку',
 
-                'thanks' => 'Пожалуйста, зайтите на портал и согласуйте услугу',
+//                 'thanks' => 'Пожалуйста, зайтите на портал и согласуйте услугу',
 
-                'actionText' => 'Workflow Engine',
-//
-                'actionURL' => url('/services'),
-//
-                'order_id' => 101
+//                 'actionText' => 'Workflow Engine',
+// //
+//                 'actionURL' => url('/services'),
+// //
+//                 'order_id' => 101
 
-            ];
-            Notification::send($notifyUser, new ApproveNotification($details));
-        }
+//             ];
+//             Notification::send($notifyUser, new ApproveNotification($details));
+//         }
 //        dd($notifyUsers);
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
@@ -525,6 +548,67 @@ class ApplicationController extends Controller
         $template = Template::where('id', $templateId)->first();
         $templateName = $template->name;
         $templateTable = $this->getTemplateTableName($templateName);
+        // dd($process->template_doc);
+        if (Schema::hasTable($templateTable)) {
+        //    dd($request->applicationId);
+            $fields = DB::table($templateTable)->select('*')->where('application_id', $applicationId)->first();
+            // dd($fields);
+            $aFields = json_decode(json_encode($fields), true);
+
+            $updatedFields = [];
+//            $updatedFields["date"] = date();
+            if ($aFields !== Null) {
+                foreach($aFields as $key => $field) {
+                    if ($key === 'id' || $key === 'template_id' || $key === 'process_id' || $key === 'application_id' || $key === '_token') {
+                        continue;
+                    }
+                    $updatedFields[$key] = $field;
+                }
+            }
+
+            $fileName = $this->generateRandomString();
+            $docPath = 'final_docs\\'. $fileName . '.pdf';
+            $todayDate=date('d-m-Y');
+            $updatedFields["date"] = $todayDate;
+            $updatedFields["id"] = $applicationId;
+            ////just for now
+
+//        $template = 'PDFtemplates.accept' ;
+//        $variable = "Кенжебеков Нуржан Кенжебекович";
+//        $content = view($template, ['variable' => $variable])->render();
+//        $mpdf = new Mpdf();
+//        $mpdf->WriteHTML($content);
+//        dd($mpdf->Output());
+
+
+            /// for testing purposes
+            // $updatedFields["applicant_name"] = 'Аман';
+            // $updatedFields["area"] = '114 га';
+            // $updatedFields["construction_name_before"] = 'Строительство';
+            // $updatedFields["construction_name_after"] = 'Делопроизводство';
+            // $updatedFields["square"] = 'Байконур';
+            // $updatedFields["street"] = 'Кабанбай батыра';
+            // $updatedFields["area_number"] = '1146';
+            ///
+            $userName = Auth::user()->name;
+            $roleName = Auth::user()->role->name;
+//            $image = QrCode::size(300)->generate('A basic example of QR code!');
+//            dd($image);
+            $qrcode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($userName));
+            $data = array('data' => 123);
+            $pathToView = $process->template_doc->pdf_path;
+            $storagePathToPDF ='\\app\\public\\final_docs\\' . $fileName . '.pdf';
+            $name = 'Султанхан';
+            $pdf = PDF::loadView($pathToView, compact('updatedFields', 'userName', 'roleName'));
+            $content = $pdf->output();
+            file_put_contents(storage_path(). $storagePathToPDF, $content);
+
+            $affected = DB::table($tableName)
+                ->where('id', $id)
+                ->update(['doc_path' => $docPath]);
+            // dd('done');
+        }
+
         if ($fieldValues !== Null) {
             $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
         }
@@ -542,13 +626,17 @@ class ApplicationController extends Controller
             ->where('id', $id)
             ->update(['status_id' => $status->id, 'index_main' => Null]);
 
-//        $template = 'PDFtemplates.accept' ;
-//        $variable = "Кенжебеков Нуржан Кенжебекович";
-//        $content = view($template, ['variable' => $variable])->render();
-//        $mpdf = new Mpdf();
-//        $mpdf->WriteHTML($content);
-//        dd($mpdf->Output());
         return Redirect::route('applications.service')->with('status', $status->name);
+    }
+
+    function generateRandomString($length = 20) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 
     public function reject(Request $request)

@@ -9,12 +9,15 @@
       <div class="main-panel">
 				<div class="content">
 					<div class="container-fluid">
-						<h4 class="page-title">Зарегистрированные пользователи</h4>
+						<h4 class="page-title">Пользователи</h4>
             @if (session('status'))
                 <div class="alert alert-success" role="alert">
                     {{ session('status') }}
                 </div>
             @endif
+            <div class="mb-3">
+              <button type="button" id="addNew" class="btn btn-success">Добавить пользователя</button>
+            </div>
 						<div class="card">
 							<!-- <div class="card-header">
 				        <div class="card-title">Table</div>

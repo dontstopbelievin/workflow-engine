@@ -10,13 +10,11 @@
 				<div class="content">
 					<div class="container-fluid">
 						<div class="d-flex justify-content-between">
-							<div class="">
-								<h4 class="page-title">Справочник</h4>
-							</div>
-							<div class="">
-								<a href="#" id="addNew" class="btn btn-primary" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i></a>
-							</div>
+							<h4 class="page-title">Справочник</h4>
 						</div>
+            <div class="mb-3">
+              <button type="button" id="addNew" class="btn btn-success" data-toggle="modal" data-target="#myModal">Добавить</button>
+            </div>
 						<div class="card">
 							<!-- <div class="card-header">
 				        <div class="card-title">Table</div>
@@ -25,10 +23,11 @@
 								<table class="table table-hover" id="items">
                   <thead>
                     <tr>
-                      <th>#</th>
-                      <th>НАИМЕНОВАНИЕ УСЛУГИ</th>
-											<th>ТИП ВВОДИМОГО</th>
-											<th>ТИП СОХРАНЯЕМОГО</th>
+                      <th style="width:7%;">#</th>
+                      <th style="width:20%;">НАИМЕНОВАНИЕ УСЛУГИ</th>
+											<th style="width:20%;">ТИП ВВОДИМОГО</th>
+											<th style="width:20%;">ТИП СОХРАНЯЕМОГО</th>
+                      <th style="width:13%;">Действия</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -38,6 +37,16 @@
                           <td>{{$item["labelName"]}}</td>
                           <td>{{$item["inputName"]}}</td>
                           <td>{{$item["insertName"]}}</td>
+                          <td>
+                            <div class="row">
+                              <button class="btn btn-link btn-simple-primary" data-original-title="Изменить" data-toggle="modal" data-target="#">
+                                  <i class="la la-edit"></i>
+                              </button>
+                              <button class="btn btn-link btn-simple-danger">
+                                <i class="la la-times"></i>
+                              </button>
+                            </div>
+                          </td>
                       </tr>
                     @endforeach
                   </tbody>

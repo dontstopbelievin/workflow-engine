@@ -37,6 +37,8 @@
                             <button class="tablinks" onclick="openTab(event, 'revisionReasonTab')">Причина отправки на доработку</button>
                             <button class="tablinks" onclick="openTab(event, 'rejectReasonTab')">Причина отказа</button>
                         </div>
+
+                        
                         <div id="applicationInfo" class="tabcontent">
                             <!-- <h4 class="text-center">Информация о заявителе</h4> -->
                             <ul class="list-group" id="list">
@@ -61,7 +63,7 @@
                                 @endisset
                             </ul>
                         </div>
-                        
+
                         <div id="specialistFields" class="tabcontent">
                             <!-- <h4 class="text-center">Поля заполненные специалистами</h4> -->
                             @isset($templateTableFields)
@@ -75,8 +77,12 @@
                                     @endforeach
                                 </ul>
                                 @endisset
+
+                                @isset($application->doc_path)
+                                    <li class="list-group-item">Выходной документ:  <a href="{{asset('storage/' .$application->doc_path)}}" target="_blanc">Просмотр</a></li>
+                                @endisset
                         </div>
-                        
+
                         <div id="logs" class="tabcontent">
                             <table class="table" style="background: white;">
                                 <h4 class="text-center" style="margin-top:50px;">Ход согласования</h4>
@@ -140,7 +146,7 @@
                                     @endisset
                                 </tbody>
                             </table>
-                            
+
                         </div>
 
                         <div id="rejectReasonTab" class="tabcontent">
@@ -161,7 +167,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
                             <div class="modal-dialog" role="document">
                                 <!-- Modal content-->
@@ -317,8 +323,12 @@
                                                 @endif
                                     @endif
                                     <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
+                                      @if($buttons[0]->can_reject == 1)
                                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
+                                      @endif
+                                      @if($buttons[0]->can_send_to_revision == 1)
                                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
+                                      @endif
                                         @if($toMultipleRoles["exists"])
                                             <div class="col-md-6">
                                                 {{--<form action="{{ route('applications.multipleApprove', ['application_id' => $application->id]) }}" method="post"">--}}
@@ -340,15 +350,15 @@
                                 @endif
                             @endif
                         </div>
-                    </div>  
-                </div>      
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="my-2 text-center">
         <a href="{{ route('applications.index', ['process' => $process]) }}" class="btn btn-info btn-lg my-5">Назад</a>
     </div>
-    
+
 {{csrf_field()}}
 
 <style>
@@ -524,9 +534,22 @@
                 method: "POST",
                 url: '{{ route('applications.approve') }}',
                 data: formData,
+                xhrFields: {
+                    responseType: 'blob'
+                },
                 processData: false,
                 contentType: false,
-                success: function(data){
+                success: function(response){
+                    // console.log(data);
+
+                    // var blob = new Blob([response]);
+                    // var link = document.createElement('a');
+                    // link.href = window.URL.createObjectURL(blob);
+                    // link.download = "Sample.pdf";
+                    // link.click();
+
+
+                    // console.log('tut');
                     $('#items').load(location.href + ' #items');
                 }
             });

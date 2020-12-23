@@ -5,18 +5,25 @@
 @endsection
 
 @section('content')
+
     <div class="main-panel">
-        <div class="row">
-            <div class="col-md-12">
+      <div class="content">
+        <div class="container-fluid">
+          <h4 class="page-title">Личный Кабинет</h4>
+          @if (session('status'))
+              <div class="alert alert-success" role="alert">
+                  {{ session('status') }}
+              </div>
+          @endif
                 <div class="card">
-                    <div class="card-header">
+                    <!-- <div class="card-header">
                         <h3 class="card-title font-weight-bold text-center">Личный Кабинет</h3>
-                        @if (session('status'))
-                            <div class="alert alert-success" role="alert">
-                                {{ session('status') }}
-                            </div>
-                        @endif
                     </div>
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif -->
                     <div class="card-body" id="items">
 
                         <p>Имя: {{$user->name}}</p>
@@ -24,11 +31,11 @@
                         <p>Номер Телефона: {{$user->phone}}</p>
                         <p>Почтовый адрес: {{$user->email}}</p>
 
-                        <a href="{{ route('user.edit', ['user' => $user]) }}">Редактировать данные</a>
+                        <a class="btn btn-info" href="{{ route('user.edit', ['user' => $user]) }}">Редактировать данные</a>
                         <br>
                         <br>
                         @if (Route::has('password.request'))
-                            <a class="flex flex-wrap text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline" href="{{ route('password.request') }}">
+                            <a class="btn btn-default"  class="flex flex-wrap text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline" href="{{ route('password.request') }}">
                                 {{ __('Сменить пароль') }}
                             </a>
                         @endif

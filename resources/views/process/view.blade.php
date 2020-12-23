@@ -5,11 +5,11 @@
 @endsection
 
 @section('content')
-<div class="row">
-        <div class="col-md-12">
-            <div class="card">
+<div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
                 <div class="card-header">
-                    <h3 class="card-title">Процесс {{$process->name}}</h3>
+                    <h3 class="card-title">Процесс "{{$process->name}}"</h3>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}

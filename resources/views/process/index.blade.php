@@ -5,12 +5,11 @@
 @endsection
 
 @section('content')
-
       <div class="main-panel">
 				<div class="content">
 					<div class="container-fluid">
-						<h4 class="page-title">Список Процессов</h4>
-						<a href="{{ route('processes.create') }}" class="btn btn-info">Создать Процесс</a><br><br>
+						<h4 class="page-title">Процессы</h4>
+						<a href="{{ route('processes.create') }}" class="btn btn-info">Добавить процесс</a><br><br>
             @if (session('status'))
                 <div class="alert alert-success" role="alert">
                     {{ session('status') }}
