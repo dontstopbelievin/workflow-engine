@@ -19,7 +19,6 @@
         <div class="col-md-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    {{--<img src="{{ URL::asset('/images/header.jpg') }}" alt="logo" height="200" />--}}
                     <img src="images/header.jpg" alt="logo" height="200" >
                     <table class="header_table">
                         <tr class="header_bottom">
