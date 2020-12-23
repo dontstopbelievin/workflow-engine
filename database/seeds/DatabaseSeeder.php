@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ProcessSeeder::class);
         $this->call(DictionarySeeder::class);
         $this->call(UserSeeder::class);
+        $this->call(TemplateDocSeeder::class);
 
     }
 }

@@ -1,46 +1,66 @@
-<table class="header_table">
-    <tr class="header_top">
-        <td width="40%">
-            <b>«Нұр-Сұлтан қаласының сәулет, қала құрылысы және жер қатынастары
-                басқармасы»</b>
-        </td>
-        <td width="20%" style="vertical-align: top; size: 30px;">
-            <img style="size: 30px;" src="https://pricom.kz/images/2019/03/GERBBB.jpg" alt="logo" />
-        </td>
-        <td width="40%">
-            <b>ММ ГУ «Управление архитектуры, градостроительства и земельных
-                отношений города Нур-Султан»</b>
-        </td>
-    </tr>
-    <tr class="header_bottom">
-        <td></td>
-        <td style="text-align: right;">
-            {{-- ФИО заявителя<br /> --}}
-            г. Нур-Султан, <br />
-            ул. {{ $variable }}<br />
-        </td>
-    </tr>
-</table>
-<p style="text-indent: 5em;">
-    На № {{ $variable }} от {{ $variable }} г.
-</p>
+<!DOCTYPE html>
+<html>
 
-<p style="text-indent: 5em;">
-    Рассмотрев Ваше заявление, касательно постановки на очередь на получение земельного участка, Управление архитектуры,
-    градостроительства и земельных отношений города Нур-Султан, сообщает следующее.
-</p>
-<p style="text-indent: 5em;">
-    В соответствии с Правилами оказания государственной услуги «Постановка на очередь на получение земельного участка»,
-    утвержденными приказом Министерства сельского хозяйства Республики Казахстан от 01.10.2020г. № 301, уведомляем Вас о
-    том, что Ваше заявление поставлено на специальный учет под № {{ $variable }}.
-</p>
-<p style="text-align: left; padding-left: 5em;">
-    Вместе с тем разъясняем, что в соответствии с требованиями действующего законодательства РК, удовлетворение
-    заявлений, взятых на учет, в том числе и для льготной категории граждан, будет только по мере наличия в городе
-    подготовленных площадок для отвода, обеспеченных всеми необходимыми инженерными коммуникациями, в порядке
-    строгой очередности.
-</p>
-<p style="text-align: left; padding-left: 5em;">
-    <b>Заместитель руководителя</b>
-</p>
-<barcode code="{{ implode(' ', [$variable]) }}" type="QR" class="barcode" size="1" error="M" />
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Утверждение землеустроительных проектов по формированию земельных участков</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<style type="text/css">
+    body {
+        font-family: times;
+        font-size: 14px;
+    }
+
+</style>
+
+<body>
+    <div class="container">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    <div class="main-div">
+                        <p style="padding-top: 15px;" width="40%">
+                            Об утверждении <br />
+                            землеустроительного проекта
+                        </p>
+                        <p style="padding-top: 15px; text-indent: 2em;">
+                            В соответствии с Земельным кодексом Республики Казахстан от 20 июня 2003 года, Законом
+                            Республики Казахстан «О государственных услугах» от 15 апреля 2013 года, приказом
+                            исполняющего обязанности Министра национальной экономики Республики Казахстан от 27 марта
+                            2015 года № 272 «Об утверждении стандартов государственных услуг в сфере земельных
+                            отношений, геодезии и картографии», <b>ПРИКАЗЫВАЮ:</b>
+                        </p>
+                        <p style="text-indent: 2em;">
+                            1. Утвердить землеустроительный проект {{ $updatedFields['applicant_name'] }}<!-- наименование заявителя -->
+                            о предоставлении права общей долевой собственности, на земельный участок
+                            площадью {{ $updatedFields['area'] }} га<!-- площадь --> , в том числе доля {{ $updatedFields['area2'] }} <!-- площадь2 --> га (неделимый),
+                            расположенного по адресу: город Нур-Султан, район {{ $updatedFields['square'] }}<!-- район -->, ул.
+                            {{ $updatedFields['street'] }}<!-- проспект -->, д. № {{ $updatedFields['flat_number'] }}<!-- номер дома -->, для эксплуатации участка<!-- наименование объекта -->.
+                        </p>
+                        <p style="text-indent: 2em;">
+                            2. Контроль за исполнением настоящего приказа возложить на заместителя
+                            руководителя Управления архитектуры, градостроительства и земельных
+                            отношений города Нур-Султан Нуркенова Н.Ж.<!-- Заместитель руководителя -->.
+                        </p>
+                        <p style="padding-left: 2em; width: 200px;">
+                            <b>Руководитель местного исполнительного органа</b>
+                        </p>
+                        <p style="display: none">{{ $role3 = utf8_encode('Абаев Анзор') }}</p>
+                        <p style="display: none">{{ $role4 = utf8_encode('Жанбыршы Алмас Маликович') }}</p>
+                        <div style="padding: 15px; align-content: center">
+                            <div style="padding: 15px; display: inline">
+                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role3)) !!}" height="100">
+                            </div>
+                            <div style="padding: 15px; display: inline">
+                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role4)) !!}" height="100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
