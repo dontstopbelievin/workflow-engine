@@ -4,8 +4,6 @@
     Создание Полей
 @endsection
 
-
-
 @section('content')
 
     <div class="row">

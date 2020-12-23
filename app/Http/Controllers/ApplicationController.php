@@ -35,7 +35,7 @@ class ApplicationController extends Controller
     {
         $processes = Process::all();
         $modalPopup = User::where('name', 'Admin')->first()->has_not_accepted_agreement;
-        
+
         return view('application.dashboard', compact('processes', 'modalPopup'));
     }
 
@@ -158,7 +158,7 @@ class ApplicationController extends Controller
                     $sendToSubRoute["name"] = $subOrg->name;
                 }
             }
-        } 
+        }
 
         if (!$thisRole->city_management_id) {
             echo 'Укажите к какой организации относить роль';
@@ -187,7 +187,16 @@ class ApplicationController extends Controller
                 $templateTableFields = $this->filterTemplateFieldsTable($templateTableFields, $exceptionArray);
             }
         }
-        return view('application.view', compact('application','toMultipleRoles','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray'));
+        // изменения Дильназ
+
+        $buttons = DB::table('process_role')
+                  ->where('process_id', $process->id)
+                  ->where('role_id', $user->role_id)
+                  ->get()
+                  ->toArray();
+        // конец
+
+        return view('application.view', compact('application','toMultipleRoles','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray', 'buttons'));
     }
 
     public function acceptAgreement(Request $request)

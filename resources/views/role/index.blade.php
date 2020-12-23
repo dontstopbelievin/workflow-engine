@@ -5,17 +5,16 @@
 @endsection
 
 @section('content')
-
       <div class="main-panel">
 				<div class="content">
 					<div class="container-fluid">
-						<h4 class="page-title">Список ролей</h4>
+						<h4 class="page-title">Роли</h4>
             @if (session('status'))
                 <div class="alert alert-success" role="alert">
                     {{ session('status') }}
                 </div>
             @endif
-						<a href="{{ route('role.create') }}" class="btn btn-info">Создать Роль</a><br><br>
+						<a href="{{ route('role.create') }}" class="btn btn-info">Добавить роль</a><br><br>
 						<div class="card">
 							<!-- <div class="card-header">
 				        <div class="card-title">Table</div>

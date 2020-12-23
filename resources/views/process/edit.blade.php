@@ -298,9 +298,7 @@
 <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous"></script>
 <script>
-
     $(document).ready(function() {
-
         $(document).on('click', '.ourItem', function(event) {
             var text = $(this).text();
             text = $.trim(text);
@@ -311,7 +309,6 @@
             var hidden = [];
             hidden = $('#hidden').val();
             console.log(hidden);
-
             for (let i =0; i < hidden.length; i ++)
             console.log(json_decode(hidden[i]));
             var organization = $(this).val();
@@ -322,7 +319,6 @@
                 document.getElementById('hidden_div').style.display = "none";
             }
         });
-
         $('#AddButton').click(function(event) {
             var roleToAdd = $('#modHeader').val();
             var subRoles = [];
@@ -343,7 +339,6 @@
                 $('#items').load(location.href + ' #items');
             });
         });
-
     });
 </script>
 

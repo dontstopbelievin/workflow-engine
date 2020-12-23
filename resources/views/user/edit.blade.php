@@ -5,9 +5,10 @@
 @endsection
 
 @section('content')
+
     <div class="main-panel">
-        <div class="row">
-            <div class="col-md-12">
+      <div class="content">
+        <div class="container-fluid">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title font-weight-bold text-center">Редактирование Данных</h3>
@@ -29,7 +30,9 @@
                                 <label for="phone">Номер телефона</label>
                                 <input type="text" name="phone" class="form-control" id="phone" value="{{$user->phone}}">
                             </div>
-                            <button type="submit" class="btn btn-primary">Обновить</button>
+                            <div class="form-group">
+                              <button type="submit" class="btn btn-info">Обновить</button>
+                            </div>
                         </form>
                     </div>
                 </div>

@@ -15,7 +15,7 @@
                 {{ session('status') }}
             </div>
         @endif
-				<a href="{{route('auction.create')}}" class="btn btn-info">Создать Лот</a><br><br>
+				<a href="{{route('auction.create')}}" class="btn btn-info">Добавить лот</a><br><br>
 				<div class="card">
 					<!-- <div class="card-header">
 		        <div class="card-title">Table</div>
