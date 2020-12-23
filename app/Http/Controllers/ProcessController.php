@@ -206,8 +206,8 @@ class ProcessController extends Controller
             $route->role_id = $role->id;
             $route->process_id = $process->id;
             $route->save();
-            $can_reject = 0;
-            $can_send_to_revision = 0;
+            $can_reject = 1;
+            $can_send_to_revision = 1;
             if(isset($request->reject)){
               foreach ($request->reject as $id) {
                 if($id == $role->id){
