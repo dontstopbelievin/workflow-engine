@@ -21,7 +21,7 @@
                 <div class="panel-heading">
                     {{-- <img src="{{ URL::asset('/images/header.jpg') }}" alt="logo"
                         height="185" /> --}}
-                    <p style="text-align: center;"><b>Решение № {{ $updatedFields['reshenie_id'] }}</b></p>
+                    <p style="text-align: center;"><b>Решение № {{ $updatedFields['id'] }}</b></p>
                     <p style="text-align: center;"><b>на проведение комплекса работ по
                             постутилизации объектов (сноса строений)
                         </b></p>

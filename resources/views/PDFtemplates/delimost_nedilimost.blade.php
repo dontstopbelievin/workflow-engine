@@ -35,14 +35,14 @@
                 <div class="panel-body">
                     <div class="main-div">
                         <p style="padding-top: 15px; text-indent: 2em;">
-                            Рассмотрев Ваше заявление от {{ $updatedFields['date'] }} года № {{ $updatedFields['id'] }},
+                            Рассмотрев Ваше заявление от {{ $updatedFields['date'] }} № {{ $updatedFields['id'] }},
                             об определении делимости земельного участка, сообщаем следующее.
                         </p>
                         <p style="padding-left: 2em;">
                             Согласно проекта детальной планировки {{ $updatedFields['pdp_name'] }}
                             <!-- ПДП наименование -->, утвержденного
-                            постановлением акимата города от {{ $updatedFields['postanavlenie_date'] }}года №
-                            {{ $updatedFields['postanavlenie_id'] }}, где предусмотрено размещение
+                            постановлением акимата города от {{ $updatedFields['date'] }}  №
+                            {{ $updatedFields['id'] }}, где предусмотрено размещение
                             {{ $updatedFields['object_name'] }}.
                         </p>
                         <p style="text-indent: 2em;">
