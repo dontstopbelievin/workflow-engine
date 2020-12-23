@@ -19,18 +19,18 @@
         <div class="col-md-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <img src="{{ URL::asset('/images/header.jpg') }}" alt="logo" height="185" />
+                    <img src="{{ URL::asset('/images/header.jpg') }}" alt="logo" height="200" />
                     <table class="header_table">
                         <tr class="header_bottom">
                             <td>
-                                Номер: KZ{{ $variable }}<!-- номер документа/заявка -->
+                                Номер: KZ{{ $updatedFields["id"] }}<!-- номер документа/заявка -->
                             </td>
                             <td></td>
                             <td style="text-align: right;">
-                                {{ $variable }}<!-- наименование заявителя --> <br />
+                                {{ $updatedFields["applicant_name"] }}<!-- наименование заявителя --> <br />
                             </td>
                             <td style="text-align: right;">
-                                {{ $variable }}<!-- адрес заявителя -->
+                                {{ $updatedFields["applicant_address"] }}<!-- адрес заявителя -->
                             </td>
                         </tr>
                     </table>
@@ -43,16 +43,34 @@
                         <p style="padding-top: 15px; text-indent: 2em;">
                             ГУ «Управление архитектуры, градостроительства и земельных отношений города Нур -Султан»
                             рассмотрев Ваше заявление
-                            от {{ $variable }}<!-- дата подачи заявления --> года KZ{{ $variable }}<!-- номер документа/заявка --> на согласование эскиза (эскизного проекта),
+                            от {{ $updatedFields["date"] }}<!-- дата подачи заявления --> года KZ{{ $updatedFields["id"] }}<!-- номер документа/заявка --> на согласование эскиза (эскизного проекта),
                             согласовывает эскиз (эскизный проект).
                         </p>
                         <p style="padding-left: 2em;">
-                            Дата согласования: {{ $variable }}<!-- дата согласование -->
+                            Дата согласования: {{ $updatedFields["date"] }}<!-- дата согласование -->
                         </p>
                         <p style="text-indent: 2em;">
-                            Заместитель руководителя: {{ $variable }}<!-- ФИО -->
+                            Заместитель руководителя: Жанбыршы Алмас Маликович<!-- ФИО -->
                         </p>   
-                        <barcode code="{{ implode(' ', [$variable]) }}" type="QR" class="barcode" size="1" error="M" />                     
+                        <p style="display: none">{{ $role1 = utf8_encode('Алтаев Данияр') }}</p>
+                        <p style="display: none">{{ $role2 = utf8_encode('Жакупова Айгуль Ильясовна') }}</p>
+                        <p style="display: none">{{ $role3 = utf8_encode('Абаев Анзор') }}</p>
+                        <p style="display: none">{{ $role4 = utf8_encode('Жанбыршы Алмас Маликович') }}</p>
+                        <div style="padding: 15px; align-content: center">
+                            <div style="padding: 15px; display: inline">
+                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role1)) !!}" height="100">
+                            </div>
+                            <div style="padding: 15px; display: inline">
+                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role2)) !!}" height="100">
+                            </div>
+                            <div style="padding: 15px; display: inline">
+                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role3)) !!}" height="100">
+                            </div>
+                            <div style="padding: 15px; display: inline">
+                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role4)) !!}" height="100">
+                            </div>
+
+                        </div>                
                     </div>
                 </div>
             </div>

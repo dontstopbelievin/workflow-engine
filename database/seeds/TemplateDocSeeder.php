@@ -18,7 +18,7 @@ class TemplateDocSeeder extends Seeder
             ],
             [
                 'name' => 'Шаблон изыскательных работ', 
-                'pdf_path' => 'PDFtemplates\\proektno-izyskatelnyi' //1
+                'pdf_path' => 'PDFtemplates\\proektno_izyskatelnyi' //1
             ],
             [
                 'name' => 'Шаблон утверждение зем проекта', 

@@ -32,11 +32,11 @@
                             отношений, геодезии и картографии», <b>ПРИКАЗЫВАЮ:</b>
                         </p>
                         <p style="text-indent: 2em;">
-                            1. Утвердить землеустроительный проект {{ $variable }}<!-- наименование заявителя -->
+                            1. Утвердить землеустроительный проект {{ $updatedFields['applicant_name'] }}<!-- наименование заявителя -->
                             о предоставлении права общей долевой собственности, на земельный участок
-                            площадью {{ $variable }}<!-- площадь --> , в том числе доля {{ $variable }} <!-- площадь2 --> га (неделимый),
-                            расположенного по адресу: город Нур-Султан, район {{ $variable }}<!-- район -->, пр.
-                            {{ $variable }}<!-- проспект -->, д. № {{ $variable }}<!-- номер дома -->, для эксплуатации {{ $variable }}<!-- наименование объекта -->.
+                            площадью {{ $updatedFields['area'] }} га<!-- площадь --> , в том числе доля {{ $updatedFields['area2'] }} <!-- площадь2 --> га (неделимый),
+                            расположенного по адресу: город Нур-Султан, район {{ $updatedFields['square'] }}<!-- район -->, ул.
+                            {{ $updatedFields['street'] }}<!-- проспект -->, д. № {{ $updatedFields['flat_number'] }}<!-- номер дома -->, для эксплуатации участка<!-- наименование объекта -->.
                         </p>
                         <p style="text-indent: 2em;">
                             2. Контроль за исполнением настоящего приказа возложить на заместителя
@@ -46,7 +46,16 @@
                         <p style="padding-left: 2em; width: 200px;">
                             <b>Руководитель местного исполнительного органа</b>
                         </p>
-                        <barcode code="{{ implode(' ', [$variable]) }}" type="QR" class="barcode" size="1" error="M" />
+                        <p style="display: none">{{ $role3 = utf8_encode('Абаев Анзор') }}</p>
+                        <p style="display: none">{{ $role4 = utf8_encode('Жанбыршы Алмас Маликович') }}</p>
+                        <div style="padding: 15px; align-content: center">
+                            <div style="padding: 15px; display: inline">
+                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role3)) !!}" height="100">
+                            </div>
+                            <div style="padding: 15px; display: inline">
+                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role4)) !!}" height="100">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

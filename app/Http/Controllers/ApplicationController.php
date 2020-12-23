@@ -243,6 +243,7 @@ class ApplicationController extends Controller
             }
         }
         $process = Process::find($request->process_id);
+   
         $tableName = $this->getTableName($process->name);
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
         $table = CreatedTable::where('name', $tableName)->first();
@@ -290,25 +291,25 @@ class ApplicationController extends Controller
                 ->where('id', $request->applicationId)
                 ->update(['status_id' => $status->id, 'index_main' => $index,'to_revision' => 0 ]);
         }
-        $notifyUsers = $role->users;
-        foreach($notifyUsers as $notifyUser) {
-            $details = [
+//         $notifyUsers = $role->users;
+//         foreach($notifyUsers as $notifyUser) {
+//             $details = [
 
-                'greeting' => 'Привет' . ', ' . $notifyUser->name,
+//                 'greeting' => 'Привет' . ', ' . $notifyUser->name,
 
-                'body' => 'Это уведомление о том, что Вы должны согласовать заявку',
+//                 'body' => 'Это уведомление о том, что Вы должны согласовать заявку',
 
-                'thanks' => 'Пожалуйста, зайтите на портал и согласуйте услугу',
+//                 'thanks' => 'Пожалуйста, зайтите на портал и согласуйте услугу',
 
-                'actionText' => 'Workflow Engine',
-//
-                'actionURL' => url('/services'),
-//
-                'order_id' => 101
+//                 'actionText' => 'Workflow Engine',
+// //
+//                 'actionURL' => url('/services'),
+// //
+//                 'order_id' => 101
 
-            ];
-            Notification::send($notifyUser, new ApproveNotification($details));
-        }
+//             ];
+//             Notification::send($notifyUser, new ApproveNotification($details));
+//         }
 
 
 
@@ -396,27 +397,27 @@ class ApplicationController extends Controller
         $role = Role::where('name', $startRole)->first();
         $status = Status::find($role->id);
 
-        $notifyUsers = $role->users;
-//        dd($notifyUsers, $role);
-        foreach($notifyUsers as $notifyUser) {
-//            dd($notifyUser);
-            $details = [
+//         $notifyUsers = $role->users;
+// //        dd($notifyUsers, $role);
+//         foreach($notifyUsers as $notifyUser) {
+// //            dd($notifyUser);
+//             $details = [
 
-                'greeting' => 'Привет' . ', ' . $notifyUser->name,
+//                 'greeting' => 'Привет' . ', ' . $notifyUser->name,
 
-                'body' => 'Это уведомление о том, что Вы должны согласовать заявку',
+//                 'body' => 'Это уведомление о том, что Вы должны согласовать заявку',
 
-                'thanks' => 'Пожалуйста, зайтите на портал и согласуйте услугу',
+//                 'thanks' => 'Пожалуйста, зайтите на портал и согласуйте услугу',
 
-                'actionText' => 'Workflow Engine',
-//
-                'actionURL' => url('/services'),
-//
-                'order_id' => 101
+//                 'actionText' => 'Workflow Engine',
+// //
+//                 'actionURL' => url('/services'),
+// //
+//                 'order_id' => 101
 
-            ];
-            Notification::send($notifyUser, new ApproveNotification($details));
-        }
+//             ];
+//             Notification::send($notifyUser, new ApproveNotification($details));
+//         }
 //        dd($notifyUsers);
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
@@ -538,7 +539,7 @@ class ApplicationController extends Controller
         $template = Template::where('id', $templateId)->first();
         $templateName = $template->name;
         $templateTable = $this->getTemplateTableName($templateName);
-
+        // dd($process->template_doc);
         if (Schema::hasTable($templateTable)) {
         //    dd($request->applicationId);
             $fields = DB::table($templateTable)->select('*')->where('application_id', $applicationId)->first();
@@ -572,13 +573,13 @@ class ApplicationController extends Controller
 
 
             /// for testing purposes
-            $updatedFields["applicant_name"] = 'Аман';
-            $updatedFields["area"] = '114 га';
-            $updatedFields["construction_name_before"] = 'Строительство';
-            $updatedFields["construction_name_after"] = 'Делопроизводство';
-            $updatedFields["square"] = 'Байконур';
-            $updatedFields["street"] = 'Кабанбай батыра';
-            $updatedFields["area_number"] = '1146';
+            // $updatedFields["applicant_name"] = 'Аман';
+            // $updatedFields["area"] = '114 га';
+            // $updatedFields["construction_name_before"] = 'Строительство';
+            // $updatedFields["construction_name_after"] = 'Делопроизводство';
+            // $updatedFields["square"] = 'Байконур';
+            // $updatedFields["street"] = 'Кабанбай батыра';
+            // $updatedFields["area_number"] = '1146';
             ///
             $userName = Auth::user()->name;
             $roleName = Auth::user()->role->name;
@@ -596,7 +597,7 @@ class ApplicationController extends Controller
             $affected = DB::table($tableName)
                 ->where('id', $id)
                 ->update(['doc_path' => $docPath]);
-            dd('done');
+            // dd('done');
         }
 
         if ($fieldValues !== Null) {

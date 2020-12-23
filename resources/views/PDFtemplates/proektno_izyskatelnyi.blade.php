@@ -33,9 +33,6 @@
                             <td style="text-align: right;">
                                 от «{{ $updatedFields['date'] }}» <br />
                             </td>
-                            <td width="50%" style="horizontal-align: right;">
-                                <b>от «{{ $variable }}» {{ $variable }} года<br /></b>
-                            </td>
                         </tr>
                     </table>
                 </div>
@@ -56,11 +53,11 @@
                             Казахстан», акимат города Нур-Султан <b>ПОСТАНОВЛЯЕТ:</b>
                         </p>
                         <p style="text-indent: 2em;">
-                            1. Разрешить «{{ $variable }}<!-- Наименование застройщика -->» (далее - застройщик) в течение «{{ $variable }}<!-- Срок предоставления -->»
+                            1. Разрешить «Алихан<!-- Наименование застройщика -->» (далее - застройщик) в течение «12 месяцев<!-- Срок предоставления -->»
                             проведение:<br />
-                            изыскательских работ на земельном участке площадью {{ $variable }}<!-- Площадь -->, расположенном по
-                            адресу: город Нур-Султан, район «{{ $variable }}<!-- Район -->», улица {{ $variable }}<!-- Улица -->;
-                            проектных работ объекта «{{ $variable }}<!-- Наименование объекта -->» (далее – объект).
+                            изыскательских работ на земельном участке площадью 500 га<!-- Площадь -->, расположенном по
+                            адресу: город Нур-Султан, район «Байконыр<!-- Район -->», улица Богенбай батыра<!-- Улица -->;
+                            проектных работ объекта «Жилой дом<!-- Наименование объекта -->» (далее – объект).
                         </p>
                         <p style="text-indent: 2em;">
                             2. Застройщику:<br />
@@ -100,7 +97,20 @@
                                 и земельных отношений
                                 города Нур-Султан</b>
                         </p>
-                        <barcode code="{{ implode(' ', [$variable]) }}" type="QR" class="barcode" size="1" error="M" />
+                        <p style="display: none">{{ $role2 = utf8_encode('Серикбаев Нурхан Жандосович') }}</p>
+                        <p style="display: none">{{ $role3 = utf8_encode('Сагнаев Арман') }}</p>
+                        <p style="display: none">{{ $role4 = utf8_encode('Аяпова Альбина') }}</p>
+                        <div style="padding: 15px; align-content: center">
+                            <div style="padding: 15px; display: inline">
+                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role2)) !!}" height="100">
+                            </div>
+                            <div style="padding: 15px; display: inline">
+                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role3)) !!}" height="100">
+                            </div>
+                            <div style="padding: 15px; display: inline">
+                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role4)) !!}" height="100">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
