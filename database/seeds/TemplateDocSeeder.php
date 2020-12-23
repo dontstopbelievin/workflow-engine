@@ -20,7 +20,14 @@ class TemplateDocSeeder extends Seeder
                 'name' => 'Шаблон изыскательных работ', 
                 'pdf_path' => 'PDFtemplates\\proektno-izyskatelnyi' //1
             ],
-
+            [
+                'name' => 'Шаблон утверждение зем проекта', 
+                'pdf_path' => 'PDFtemplates\\utverjdenie_zem_proekta' //1
+            ],
+            [
+                'name' => 'Шаблон эскизного проекта', 
+                'pdf_path' => 'PDFtemplates\\sketch' //1
+            ],
         ]);
     }
 }
