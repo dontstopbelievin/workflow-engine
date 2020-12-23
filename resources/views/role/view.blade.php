@@ -5,9 +5,9 @@
 @endsection
 
 @section('content')
-<div class="row">
-        <div class="col-md-12">
-            <div class="card">
+<div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
                 <div class="card-header">
                     <h4 class="card-title">Пользователи с ролью <i>"{{$role->name}}"</i></h4>
                     @if (session('status'))
