@@ -53,7 +53,7 @@
                             1. Предоставить {{ $updatedFields['applicant_name'] }} (далее − собственники) право общей долевой
                             собственности на земельный участок площадью {{ $updatedFields['area'] }} га, из них условная доля
                             {{ $updatedFields['area2'] }} га, для
-                            эксплуатации «{{ $updatedFields['object_name'] }}», кадастровой (оценочной) стоимостью «{{ $updatedFields['cadastral_price'] }}» тенге,
+                            эксплуатации «{{ $updatedFields['object_name'] }}», кадастровой (оценочной) стоимостью «{{ $updatedFields['cadastral_name'] }}» тенге,
                             расположенный по адресу: город Нур-Султан, р-н «{{ $updatedFields['square'] }}», улица {{ $updatedFields['street'] }}, дом
                             {{ $updatedFields['house_number'] }}, кв {{ $updatedFields['flat_number'] }}.
                         </p>
