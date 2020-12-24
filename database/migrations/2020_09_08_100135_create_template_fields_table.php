@@ -20,6 +20,7 @@ class CreateTemplateFieldsTable extends Migration
             $table->foreignId('input_type_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('insert_type_id')->nullable()->constrained()->onDelete('cascade');
 //            $table->foreignId('template_id')->nullable()->constrained()->onDelete('cascade');
+            $table->integer('can_edit_role_id')->default(0)->nullable();
             $table->integer('template_id')->unsigned()->nullable();
             $table->foreign('template_id')->references('id')->on('templates');
             $table->timestamps();

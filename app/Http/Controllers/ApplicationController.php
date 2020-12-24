@@ -55,7 +55,8 @@ class ApplicationController extends Controller
     {
         $process = Process::find($processId);
         $templateId = $process->accepted_template_id;
-         $templateFields= TemplateField::where('template_id', $templateId)->get();
+        $user = Auth::user();
+         $templateFields= TemplateField::where('template_id', $templateId)->where('can_edit_role_id', $user->role_id)->get();
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $applicationId)->first();
@@ -411,7 +412,7 @@ class ApplicationController extends Controller
                 'order_id' => 101
 
             ];
-            Notification::send($notifyUser, new ApproveNotification($details));
+            //Notification::send($notifyUser, new ApproveNotification($details));
         }
 //        dd($notifyUsers);
         $tableName = $this->getTableName($process->name);

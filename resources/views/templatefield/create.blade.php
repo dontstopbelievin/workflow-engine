@@ -103,6 +103,17 @@
             </select>
           </div>
         @endisset
+        @isset($roles)
+          <div class="form-group">
+            <label for="insertType">Выберите специалиста</label>
+            <select class="form-control" id="role" name="role" data-dropup-auto="false" required>
+              <option selected disabled class="w-auto">Выберите Ниже</option>
+              @foreach($roles as $role)
+                  <option value="{{$role->name}}">{{$role->name}}</option>
+              @endforeach
+            </select>
+          </div>
+        @endisset
         <div class="modal-footer">
           <button type="button" class="btn btn-warning" id="delete" style="display:none" data-dismiss="modal">Удалить</button>
           <button type="button" class="btn btn-primary" id="saveChanges" data-dismiss="modal" style="display:none" >Сохранить изменения</button>
@@ -157,6 +168,7 @@
                 var inputItem = $('#inputType').val();
                 var insertItem = $('#insertType').val();
                 var processId = $('#processId').val();
+                var role = $('#role').val();
                 var selectedOptions = [];
                 var id = $('#tempId').val();
                 $('.get_value').each(function(){
@@ -176,7 +188,11 @@
                 if (insertItem === null) {
                     alert('Выберите тип сохранения');
                 }
-                $.post('/template-field-create', {'tempId':id,'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, '_token':$('input[name=_token]').val()}, function(data){
+                if (role === null) {
+                    alert('Выберите специалиста');
+                }
+                console.log(role);
+                $.post('/template-field-create', {'tempId':id,'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, 'role':role, '_token':$('input[name=_token]').val()}, function(data){
                     console.log(data);
                     console.log($('#items').load(location.href + ' #items'));
                     $('#items').load(location.href + ' #items');
