@@ -13,7 +13,7 @@
 							<h4 class="page-title">Справочник</h4>
 						</div>
             <div class="mb-3">
-              <button type="button" id="addNew" class="btn btn-success" data-toggle="modal" data-target="#myModal">Добавить</button>
+              <button type="button" id="addNew" class="btn btn-info" data-toggle="modal" data-target="#myModal">Добавить</button>
             </div>
 						<div class="card">
 							<!-- <div class="card-header">
