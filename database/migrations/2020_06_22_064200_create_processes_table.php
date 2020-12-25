@@ -22,6 +22,8 @@ class CreateProcessesTable extends Migration
             $table->foreign('accepted_template_id')->references('id')->on('templates');
             $table->integer('rejected_template_id')->unsigned()->nullable();
             $table->foreign('rejected_template_id')->references('id')->on('templates');
+            $table->integer('template_doc_id')->unsigned()->nullable();
+            $table->foreign('template_doc_id')->references('id')->on('template_docs');
             $table->integer('main_organization_id')->unsigned()->nullable();
             $table->integer('support_organization_id')->unsigned()->nullable();
             $table->timestamps();

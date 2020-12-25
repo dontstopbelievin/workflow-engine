@@ -91,9 +91,20 @@
             @endif
                   <a href="{{ route('auction.index') }}">
                       <i class="la la-table"></i>
-                      <p>Аукцион</p>
+                      <p>Торги ЕГКН</p>
                   </a>
               </li>
+              @if( request()->segment(1) == 'services' || request()->segment(1) == 'index' || request()->segment(1) == 'applications-create')
+                  <li class="nav-item active">
+              @else
+                  <li class="nav-item">
+              @endif
+                  <a href="{{ route('applications.service') }}">
+                      <i class="la la-dashboard"></i>
+                      <p>Заявки</p>
+                  </a>
+              </li>
+              <hr>
               @if( request()->segment(1) == 'process' ||  request()->segment(1) == 'processes' ||  request()->segment(1) == 'processes-edit' || request()->segment(1) == 'template-field-create'  )
                   <li class="nav-item active">
               @else
@@ -157,16 +168,6 @@
                   <a href="{{ route('logs') }}">
                       <i class="la la-fonticons"></i>
                       <p>Логи сервиса</p>
-                  </a>
-              </li>
-              @if( request()->segment(1) == 'services' || request()->segment(1) == 'index' || request()->segment(1) == 'applications-create')
-                  <li class="nav-item active">
-              @else
-                  <li class="nav-item">
-              @endif
-                  <a href="{{ route('applications.service') }}">
-                      <i class="la la-dashboard"></i>
-                      <p>Все услуги</p>
                   </a>
               </li>
           </ul>

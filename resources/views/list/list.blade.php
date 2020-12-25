@@ -34,7 +34,7 @@
                 <div class="col-lg-6">
                     <input type="text" class="form-control" name="item" id="searchItem" placeholder="Search">
                 </div>
-
+                <img src="images/header.jpg" alt="logo" height="200" />
                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">

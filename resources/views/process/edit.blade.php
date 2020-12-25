@@ -223,9 +223,30 @@
             <hr>
             <div class="card-title"><h5>Создание Шаблонов</h5></div>
             <hr>
+
+              <div class="row">
+
+                  <form action="{{ route('process.addDocTemplates') }}" method="POST">
+                      @csrf
+                      <div class="form-group">
+
+                          <input type="hidden" name="processId" value = {{$process->id}}>
+                          <label for="docTemplate">Выберите Документ Шаблона</label>
+                          <select name="docTemplateId" id="docTemplate" class="form-control">
+                              @foreach($templateDocs as $doc)
+                                  <option value="{{$doc->id}}">
+                                      {{$doc->name}}
+                                  </option>
+                              @endforeach
+                          </select>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Прикрепить</button>
+                  </form>
+              </div>
             <div class="row">
+
+
                 <div class="col-md-6">
-                    <div class="card-title">Создание Шаблонов</div>
                     @empty($accepted)
                     <form action="{{ route('template.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
@@ -249,6 +270,7 @@
                         @csrf
                         <input type="hidden" name="template_state" value="rejected">
                         <input type="hidden" name="processId" value="{{$process->id}}">
+
                         <div class="form-group">
                             <label for="fieldName">Название шаблона</label>
                             <input type="text" class="form-control" name="name" id="fieldName">

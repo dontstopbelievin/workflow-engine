@@ -8,6 +8,7 @@ use App\Role;
 use App\Route;
 use App\CityManagement;
 use App\CreatedTable;
+use App\TemplateDoc;
 use App\Traits\dbQueries;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -92,10 +93,13 @@ class ProcessController extends Controller
 //        if ($parentId === 0) {
 //            return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','columns','organizations','nameMainOrg'));
 //        }
+
+        $templateDocs = TemplateDoc::all();
+//        dd($templateDocs);
         $iterateRoles = $this->getIterateRoles($process);
         $sAllRoles = $this->getAllRoles($process, $parentId,$iterateRoles);
 //        dd($sAllRoles);
-        return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','sAllRoles', 'organizations', 'nameMainOrg'));
+        return view('process.edit', compact('templateDocs', 'process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','sAllRoles', 'organizations', 'nameMainOrg'));
     }
 
     public function update(Request $request, Process $process) {
@@ -165,6 +169,10 @@ class ProcessController extends Controller
             $dbQueryString = "ALTER TABLE $tableName ADD index_main INT";
             DB::statement($dbQueryString);
         }
+        if (!Schema::hasColumn($tableName, 'doc_path')) {
+            $dbQueryString = "ALTER TABLE $tableName ADD doc_path varchar(255)";
+            DB::statement($dbQueryString);
+        }
         if (!Schema::hasColumn($tableName, 'reject_reason')) {
             $dbQueryString = "ALTER TABLE $tableName ADD reject_reason varchar(255)";
             DB::statement($dbQueryString);
@@ -198,8 +206,8 @@ class ProcessController extends Controller
             $route->role_id = $role->id;
             $route->process_id = $process->id;
             $route->save();
-            $can_reject = 0;
-            $can_send_to_revision = 0;
+            $can_reject = 1;
+            $can_send_to_revision = 1;
             if(isset($request->reject)){
               foreach ($request->reject as $id) {
                 if($id == $role->id){
@@ -255,6 +263,18 @@ class ProcessController extends Controller
         $process->main_organization_id = $organization->id;
         $process->update();
         return Redirect::route('processes.edit', [$process])->with('status', 'Осносвной Маршрут Выбран успешно');
+    }
+
+    public function addDocTemplates(Request $request)
+    {
+        $process = Process::find($request->processId);
+        $process->template_doc_id = $request->docTemplateId;
+        $process->save();
+//        dd($request->all());
+//        $organization = CityManagement::where('name', $request->mainOrganization)->first();
+//        $process->main_organization_id = $organization->id;
+//        $process->update();
+        return Redirect::back()->with('status', 'Осносвной Маршрут Выбран успешно');
     }
 
     public function addSubRoles(Request $request) {

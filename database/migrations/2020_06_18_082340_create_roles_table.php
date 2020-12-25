@@ -17,6 +17,7 @@ class CreateRolesTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->foreignId('city_management_id')->nullable()->constrained()->onDelete('cascade');
+            $table->boolean('sign_with_ecp')->default(0);
             $table->timestamps();
         });
     }

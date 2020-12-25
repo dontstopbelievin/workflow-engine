@@ -5,12 +5,10 @@
 @endsection
 
 @section('content')
-
-
       <div class="main-panel">
 				<div class="content">
 					<div class="container-fluid">
-						<h4 class="page-title">Добавить/редактировать аукцион</h4>
+						<h4 class="page-title">Добавить/редактировать лот</h4>
             @if (session('status'))
                 <div class="alert alert-success" role="alert">
                     {{ session('status') }}
@@ -22,7 +20,7 @@
                   <div class="col-md-6">
                     <div class="card">
                       <div class="card-header">
-                        <div class="card-title">Поля для аукциона</div>
+                        <div class="card-title">Поля для лота</div>
                       </div>
                       <div class="card-body">
                         <label style="display:none" for="LotID">Идентификатор лота (id)</label>

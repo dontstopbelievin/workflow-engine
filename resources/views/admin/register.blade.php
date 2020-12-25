@@ -16,7 +16,7 @@
                 </div>
             @endif
             <div class="mb-3">
-              <button type="button" id="addNew" class="btn btn-success">Добавить пользователя</button>
+              <button type="button" id="addNew" class="btn btn-info">Добавить пользователя</button>
             </div>
 						<div class="card">
 							<!-- <div class="card-header">

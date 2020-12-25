@@ -159,6 +159,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::put('processes-update/{process}', 'ProcessController@update')->name('processes.update');
     Route::post('create-process-table/{process}', 'ProcessController@createProcessTable')->name('processes.createProcessTable');
     Route::post('process-add-role/{process}', 'ProcessController@addRole')->name('processes.addRole');
+    Route::post('process-add-doc-templates', 'ProcessController@addDocTemplates')->name('process.addDocTemplates');
     Route::delete('process-delete/{process}', 'ProcessController@delete')->name('processes.delete');
     Route::get('logs', 'ProcessController@logs')->name('logs');
 
