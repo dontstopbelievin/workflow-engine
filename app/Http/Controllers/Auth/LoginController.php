@@ -101,7 +101,7 @@ class LoginController extends Controller
             $user = auth()->guard('web')->user();
             $mytime = Carbon::now()->toDateTimeString();
 
-            $txt = $user->name . ' ' . $user->email . ' ' . $mytime . ' ' . "Успешный вход в систему\r\n";
+            $txt = $mytime . ' ' . $user->name . ' ' . $user->email . ' ' . "Успешный вход в систему\r\n";
             file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
 
             $user->update([
@@ -122,7 +122,7 @@ class LoginController extends Controller
 
         $failedUser = User::find($user->id);
         $mytime = Carbon::now()->toDateTimeString();
-        $txt = $user->name . ' ' . $user->email . ' ' . $mytime . ' ' . "Не успешный вход в систему\r\n";
+        $txt = $mytime . ' ' . $user->name . ' ' . $user->email . ' ' .  "Не успешный вход в систему\r\n";
         file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
 
         $failedUser->update([
@@ -140,7 +140,7 @@ class LoginController extends Controller
         \Session::flush();
         \Session::put('success', 'Вы успешно вышли из системы');
         $mytime = Carbon::now()->toDateTimeString();
-        $txt = $user->name . ' ' . $user->email . ' ' . $mytime . ' ' . "Успешный выход из системы\r\n";
+        $txt = $mytime . ' ' . $user->name . ' ' . $user->email . ' ' . "Успешный выход из системы\r\n";
         file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
 
         return redirect()->to('/login');

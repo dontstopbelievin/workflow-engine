@@ -45,7 +45,7 @@ class DashboardController extends Controller
 
 //        $myfile = fopen("../public/storage/logs/logfile.txt", "a") or die("Unable to open file!");
         $mytime = Carbon::now()->toDateTimeString();
-        $txt = $admin . ' ' . 'поменял роль' . ' ' . $user->name . ' ' . 'с' . ' ' . $roleName . ' ' . 'на' . ' ' . $newRoleName . ' ' .  $mytime . "\r\n" ;
+        $txt = $mytime . ' ' . $admin . ' ' . 'поменял роль' . ' ' . $user->name . ' ' . 'с' . ' ' . $roleName . ' ' . 'на' . ' ' . $newRoleName . ' ' . "\r\n" ;
         file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
 //        fwrite($myfile, $txt);
 //        fclose($myfile);
