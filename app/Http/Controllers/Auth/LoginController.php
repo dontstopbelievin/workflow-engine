@@ -83,20 +83,20 @@ class LoginController extends Controller
             \DB::table('users')->where('id', $user->id)->update(['session_id' => $new_sessid]);
 
 
-//            $error = true;
-//            $secret = '6LcOIv4ZAAAAAPJ6Gj6X_5kG368Ck-YZ0LclzNUI';
-//
-//            if (!empty($_POST['g-recaptcha-response'])) {
-//                $out = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . $secret . '&response=' . $_POST['g-recaptcha-response']);
-//                $out = json_decode($out);
-//                if ($out->success == true) {
-//                    $error = false;
-//                }
-//            }
-//
-//            if ($error) {
-//                echo 'Ошибка заполнения капчи.';
-//            }
+            if(isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response']))
+            {
+                  $secret = '66LcOIv4ZAAAAAPJ6Gj6X_5kG368Ck-YZ0LclzNUI';
+                  $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$_POST['g-recaptcha-response']);
+                  $responseData = json_decode($verifyResponse);
+                  if($responseData->success)
+                  {
+                      $succMsg = 'Успешно';
+                  }
+                  else
+                  {
+                      $errMsg = 'Попробуйте снова';
+                  }
+             }
 
             $user = auth()->guard('web')->user();
             $mytime = Carbon::now()->toDateTimeString();
