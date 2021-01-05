@@ -18,6 +18,30 @@ trait dbQueries
         ->get();
         return $res;
     }
+    private function getButtons($processId, $roleId)
+    {
+        return DB::table('process_role')
+            ->where('process_id', $processId)
+            ->where('role_id', $roleId)
+            ->get()
+            ->toArray();
+    }
+
+    private function updateProcessRoleCanReject($processId, $roleId)
+    {
+        DB::table("process_role")
+            ->where('process_id', $processId)
+            ->where('role_id', $roleId)
+            ->update(['can_reject' => 1]);
+    }
+
+    private function updateProcessRoleToRevision($processId, $roleId)
+    {
+        DB::table("process_role")
+            ->where('process_id', $processId)
+            ->where('role_id', $roleId)
+            ->update(['can_send_to_revision' => 1]);
+    }
 
     public function getParentRoleId($id) {
 

@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use App\Traits\dbQueries;
 use Illuminate\Support\Facades\DB;
 
-class TemplateFieldsController extends Controller
+class TemplateFieldController extends Controller
 {
     use dbQueries;
 

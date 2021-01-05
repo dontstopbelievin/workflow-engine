@@ -238,18 +238,20 @@ class ProcessController extends Controller
 
            if(isset($request->reject)){
              foreach ($request->reject as $id) {
-               $getFromDB = DB::table("process_role")
-                            ->where('process_id', $process->id)
-                            ->where('role_id', $id)
-                            ->update(['can_reject' => 1]);
+                 $this->updateProcessRoleCanReject($process->id, $id);
+//               $getFromDB = DB::table("process_role")
+//                            ->where('process_id', $process->id)
+//                            ->where('role_id', $id)
+//                            ->update(['can_reject' => 1]);
              }
            }
            if(isset($request->revision)){
              foreach ($request->revision as $id) {
-               $getFromDB = DB::table("process_role")
-                            ->where('process_id', $process->id)
-                            ->where('role_id', $id)
-                            ->update(['can_send_to_revision' => 1]);
+                 $this->updateProcessRoleToRevision($process->id, $id);
+//               $getFromDB = DB::table("process_role")
+//                            ->where('process_id', $process->id)
+//                            ->where('role_id', $id)
+//                            ->update(['can_send_to_revision' => 1]);
              }
            }
            return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
@@ -257,8 +259,14 @@ class ProcessController extends Controller
 
     }
 
-    public function addOrganization(Request $request, Process $process) {
 
+
+    public function addOrganization(Request $request, Process $process)
+    {
+        if (!$request->mainOrganization) {
+            echo 'Пожалуйста, выберите организацию';
+            return;
+        }
         $organization = CityManagement::where('name', $request->mainOrganization)->first();
         $process->main_organization_id = $organization->id;
         $process->update();
@@ -269,7 +277,7 @@ class ProcessController extends Controller
     {
         $process = Process::find($request->processId);
         $process->template_doc_id = $request->docTemplateId;
-        $process->save();
+        $process->update();
 //        dd($request->all());
 //        $organization = CityManagement::where('name', $request->mainOrganization)->first();
 //        $process->main_organization_id = $organization->id;
