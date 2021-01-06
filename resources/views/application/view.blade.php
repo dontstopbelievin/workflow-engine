@@ -40,7 +40,6 @@
                             <ul class="list-group" id="list">
 
                                 <li class="list-group-item">Название услуги: {{$process->name}}</li>
-                                {{gettype($aRowNameRows)}}
                                 @isset($aRowNameRows)
                                    @foreach ($aRowNameRows as $aRowNameRow)
                                         @if (array_key_exists($aRowNameRow->name, $applicationArrays))

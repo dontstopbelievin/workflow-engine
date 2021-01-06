@@ -41,7 +41,7 @@
                             @foreach($arrayApps as $app)
                                 <tr class="p-3 mb-5 rounded">
                                     <td class="text-center align-middle border"><h5>{{$loop->iteration}}</h5></td>
-                                    <td class="text-left align-middle border"><h5>{{$app["name"] ?? '' }}</h5></td>
+                                    <td class="text-left align-middle border"><h5>{{$app["name"] ?? $app["first_name"] ?? '' }}</h5></td>
                                     @if($app["status"] === 'Отправлено заявителю на согласование')
                                         <td class="text-left align-middle border"><h5>Отправлено заявителю</h5></td>
                                     @else
