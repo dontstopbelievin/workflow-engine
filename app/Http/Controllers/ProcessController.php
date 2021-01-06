@@ -259,7 +259,7 @@ class ProcessController extends Controller
         $organization = CityManagement::where('name', $request->mainOrganization)->first();
         $process->main_organization_id = $organization->id;
         $process->update();
-        return Redirect::route('processes.edit', [$process])->with('status', 'Осносвной Маршрут Выбран успешно');
+        return Redirect::route('processes.edit', [$process])->with('status', 'Основной маршрут выбран успешно');
     }
 
     public function addDocTemplates(Request $request)
@@ -271,7 +271,7 @@ class ProcessController extends Controller
 //        $organization = CityManagement::where('name', $request->mainOrganization)->first();
 //        $process->main_organization_id = $organization->id;
 //        $process->update();
-        return Redirect::back()->with('status', 'Осносвной Маршрут Выбран успешно');
+        return Redirect::back()->with('status', 'Основной маршрут выбран успешно');
     }
 
     public function addSubRoles(Request $request) {

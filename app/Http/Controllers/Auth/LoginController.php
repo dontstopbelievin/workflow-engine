@@ -118,11 +118,11 @@ class LoginController extends Controller
             }
             return redirect($this->redirectTo());
         }
-        \Session::put('login_error', 'Your email and password wrong!!');
+        \Session::put('login_error', 'Ваша почта или пароль неверно введены!');
 
         $failedUser = User::find($user->id);
         $mytime = Carbon::now()->toDateTimeString();
-        $txt = $mytime . ' ' . $user->name . ' ' . $user->email . ' ' .  "Не успешный вход в систему\r\n";
+        $txt = $mytime . ' ' . $user->name . ' ' . $user->email . ' ' .  "Неудачный вход в систему\r\n";
         file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
 
         $failedUser->update([
