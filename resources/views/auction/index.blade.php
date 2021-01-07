@@ -17,9 +17,6 @@
         @endif
 				<a href="{{route('auction.create')}}" class="btn btn-info">Добавить лот</a><br><br>
 				<div class="card">
-					<!-- <div class="card-header">
-		        <div class="card-title">Table</div>
-		      </div> -->
 					<div class="card-body">
 						<table class="table table-hover">
 							<thead>
@@ -35,21 +32,21 @@
 								</tr>
 							</thead>
 							<tbody>
-                @foreach($fields as $field)
-                  <tr class="shadow p-3 mb-5 rounded">
-                      <td>{{$field->lot_number}}</td>
-                      <td>{{$field->address_rus}}</td>
-                      <td>{{$field->purpose}}</td>
-                      <td>{{$field->area}}</td>
-                      <td>{{$field->auction_date_time}}</td>
-                      <td>{{$field->lot_status}}</td>
-                      <td>{{$field->publish_date}}</td>
-                      <td>
+                                @foreach($fields as $field)
+                                  <tr class="shadow p-3 mb-5 rounded">
+                                      <td>{{$field->lot_number}}</td>
+                                      <td>{{$field->address_rus}}</td>
+                                      <td>{{$field->purpose}}</td>
+                                      <td>{{$field->area}}</td>
+                                      <td>{{$field->auction_date_time}}</td>
+                                      <td>{{$field->lot_status}}</td>
+                                      <td>{{$field->publish_date}}</td>
+                                      <td>
 
-                        <a href="{{route('auction.sender', ['id' => $field->id])}}"><i class="fa fa-caret-square-o-right" style="font-size:36px"></i></a>
-                      </td>
-                  </tr>
-                @endforeach
+                                        <a href="{{route('auction.sender', ['id' => $field->id])}}"><i class="fa fa-caret-square-o-right" style="font-size:36px"></i></a>
+                                      </td>
+                                  </tr>
+                                @endforeach
 							</tbody>
 						</table>
 					</div>

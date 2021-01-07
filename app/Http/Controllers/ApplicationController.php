@@ -18,7 +18,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Schema;
-use PhpOffice\PhpWord\TemplateProcessor;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Notification;
@@ -190,16 +189,13 @@ class ApplicationController extends Controller
             }
         }
         // изменения Дильназ
+        $buttons = $this->getButtons($process->id, $user->role_id);
 
-        $buttons = DB::table('process_role')
-                  ->where('process_id', $process->id)
-                  ->where('role_id', $user->role_id)
-                  ->get()
-                  ->toArray();
         // конец
 
         return view('application.view', compact('application','toMultipleRoles','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray', 'buttons'));
     }
+
 
     public function acceptAgreement(Request $request)
     {
@@ -263,11 +259,6 @@ class ApplicationController extends Controller
         $templateName = $template->name;
         $templateTable = $this->getTemplateTableName($templateName);
 
-//        dd($templateTable);
-        // insertion of fields into template
-
-//        dd($fieldValues);
-
         $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
         $role = Auth::user()->role;
 
@@ -284,8 +275,6 @@ class ApplicationController extends Controller
             $appRoutes = json_decode($this->getAppRoutes($application->process_id));
             $nextRole = $appRoutes[$index]; // find next role
             $nextR = Role::where('name', $nextRole)->first(); //find $nextRole in Role table
-//            $notifyUsers = $nextR->users();
-//            dd($notifyUsers);
             $idOfNextRole = $nextR->id; // get id of next role
             $index = $index + 1;
             $status = Status::find($idOfNextRole);
@@ -322,9 +311,6 @@ class ApplicationController extends Controller
 //             Notification::send($notifyUser, new ApproveNotification($details));
 //         }
 
-
-
-
         return Redirect::route('applications.service')->with('status', $status->name);
     }
 
@@ -353,7 +339,6 @@ class ApplicationController extends Controller
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $applicationId)->first();
         $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
-//        dd('inserted');
         $index = $application->index_main;
         $appRoutes = json_decode($this->getAppRoutes($application->process_id));
         $nextRole = Role::where('id', $role)->first();
@@ -429,11 +414,9 @@ class ApplicationController extends Controller
 //             ];
 //             Notification::send($notifyUser, new ApproveNotification($details));
 //         }
-//        dd($notifyUsers);
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $user = Auth::user();
-//        dd($applicationTableFields);
         $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
         $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
         $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
@@ -469,7 +452,6 @@ class ApplicationController extends Controller
         $applicationTableFields["coordindates"] = $aData["coordindates"];
         $applicationTableFields["goal"] = $aData["goal"];
         $applicationTableFields["area"] = $aData["area"];
-//        dd($aData, $applicationTableFields);
         $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
         $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
         $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
@@ -550,15 +532,11 @@ class ApplicationController extends Controller
         $template = Template::where('id', $templateId)->first();
         $templateName = $template->name;
         $templateTable = $this->getTemplateTableName($templateName);
-        // dd($process->template_doc);
         if (Schema::hasTable($templateTable)) {
-        //    dd($request->applicationId);
             $fields = DB::table($templateTable)->select('*')->where('application_id', $applicationId)->first();
-            // dd($fields);
             $aFields = json_decode(json_encode($fields), true);
 
             $updatedFields = [];
-//            $updatedFields["date"] = date();
             if ($aFields !== Null) {
                 foreach($aFields as $key => $field) {
                     if ($key === 'id' || $key === 'template_id' || $key === 'process_id' || $key === 'application_id' || $key === '_token') {
@@ -575,14 +553,6 @@ class ApplicationController extends Controller
             $updatedFields["id"] = $applicationId;
             ////just for now
 
-//        $template = 'PDFtemplates.accept' ;
-//        $variable = "Кенжебеков Нуржан Кенжебекович";
-//        $content = view($template, ['variable' => $variable])->render();
-//        $mpdf = new Mpdf();
-//        $mpdf->WriteHTML($content);
-//        dd($mpdf->Output());
-
-
             /// for testing purposes
             // $updatedFields["applicant_name"] = 'Аман';
             // $updatedFields["area"] = '114 га';
@@ -594,13 +564,9 @@ class ApplicationController extends Controller
             ///
             $userName = Auth::user()->name;
             $roleName = Auth::user()->role->name;
-//            $image = QrCode::size(300)->generate('A basic example of QR code!');
-//            dd($image);
             $qrcode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($userName));
-            $data = array('data' => 123);
             $pathToView = $process->template_doc->pdf_path;
             $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
-            $name = 'Султанхан';
             $pdf = PDF::loadView($pathToView, compact('updatedFields', 'userName', 'roleName'));
             $content = $pdf->output();
             file_put_contents(storage_path(). $storagePathToPDF, $content);
@@ -608,7 +574,6 @@ class ApplicationController extends Controller
             $affected = DB::table($tableName)
                 ->where('id', $id)
                 ->update(['doc_path' => $docPath]);
-            // dd('done');
         }
 
         if ($fieldValues !== Null) {
@@ -631,7 +596,8 @@ class ApplicationController extends Controller
         return Redirect::route('applications.service')->with('status', $status->name);
     }
 
-    function generateRandomString($length = 20) {
+    function generateRandomString($length = 20)
+    {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
         $randomString = '';
@@ -720,7 +686,6 @@ class ApplicationController extends Controller
         $roleWithIndex = [];
         $allRoles = $process->roles()->get()->toArray();
         $isParallel = false;
-//        $roleAfterParallel = 0;
         $index = 0;
         foreach($allRoles as $role) {
             $index++;
