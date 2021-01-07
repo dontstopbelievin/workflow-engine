@@ -91,7 +91,7 @@
             @endif
                   <a href="{{ route('auction.index') }}">
                       <i class="la la-table"></i>
-                      <p>Торги ЕГКН</p>
+                      <p>ЕГКН</p>
                   </a>
               </li>
               @if( request()->segment(1) == 'services' || request()->segment(1) == 'index' || request()->segment(1) == 'applications-create')

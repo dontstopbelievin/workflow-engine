@@ -77,7 +77,7 @@
                         <form action="{{ route('processes.addRole', ['process' => $process]) }}" method="POST">
                             @csrf
                             <div class="modal-body">
-                                @isset($roles)
+                                <!-- @isset($roles)
                                     @foreach ($roles as $role)
                                     <div class="form-check" style="padding:0px;">
                                       <label class="form-check-label">
@@ -86,7 +86,40 @@
                                       </label>
                                     </div>
                                     @endforeach
-                                @endisset
+                                @endisset -->
+                                @isset($roles)
+                                  @foreach ($roles as $role)
+                                      <div class="pb-0">
+                                        <label class="form-check-label py-0">
+                                          <input type="checkbox" name="roles[]" value="{{$role->id}}" class="form-check-input" id="participant{{$role->id}}">
+                                          <span class="form-check-sign">{{$role->name}}</span>
+                                        </label>
+                                        <div id="dropdown" class="form-check">
+                                          <div class="dropdown-permission{{$role->id}}" id="dropdown-permission{{$role->id}}" style="display:none;">
+                                            <label class="form-check-label">
+                                               <input type="checkbox" name="reject[]" id="reject{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                               <span class="form-check-sign">Отказать</span>
+                                            </label>
+                                            <label class="form-check-label">
+                                               <input type="checkbox" name="revision[]" id="revision{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                               <span class="form-check-sign">Отправить на доработку</span>
+                                            </label>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <script>
+                                        $("#participant{{$role->id}}").click(function(){
+                                          if(document.getElementById("dropdown-permission{{$role->id}}").style.display == "none"){
+                                            document.getElementById("dropdown-permission{{$role->id}}").style.display = "block";
+                                          }else{
+                                            document.getElementById("dropdown-permission{{$role->id}}").style.display = "none";
+                                            document.getElementById("revision{{$role->id}}").checked = false;
+                                            document.getElementById("reject{{$role->id}}").checked = false;
+                                          }
+                                        });
+                                      </script>
+                                  @endforeach
+                              @endisset
                             </div>
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-success">Выбрать</button>

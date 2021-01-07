@@ -74,6 +74,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('download/{file}', 'ApplicationController@download')->name('applications.download');
         Route::post('agreement-accept', 'ApplicationController@acceptAgreement')->name('applications.agreement');
         Route::get('personal-area', 'UserController@index')->name('user.personalArea');
+        Route::get('personal-area/filter', 'UserController@filter')->name('user.filter');
         Route::get('user-to-edit/{user}', 'UserController@edit')->name('user.edit');
         Route::put('user/update/{user}', 'UserController@update')->name('user.update');
     });

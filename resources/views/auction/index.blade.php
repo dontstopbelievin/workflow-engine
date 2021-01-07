@@ -9,7 +9,7 @@
 	<div class="main-panel">
 		<div class="content">
 			<div class="container-fluid">
-				<h4 class="page-title">Торги ЕГКН</h4>
+				<h4 class="page-title">Торги · <a href="#">Прямое предоставление ЗУ</a></h4>
         @if (session('status'))
             <div class="alert alert-success" role="alert">
                 {{ session('status') }}

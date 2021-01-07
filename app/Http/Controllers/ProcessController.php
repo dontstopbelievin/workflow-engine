@@ -193,6 +193,8 @@ class ProcessController extends Controller
             $dbQueryString = "ALTER TABLE $tableName ADD revision_reason_to_spec_id varchar(255)";
             DB::statement($dbQueryString);
         }
+        $dbQueryString = "ALTER TABLE $tableName ADD updated_at TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ";
+        DB::statement($dbQueryString);
         return Redirect::route('processes.edit', [$process])->with('status', 'Справочники успешно сохранены');
     }
 

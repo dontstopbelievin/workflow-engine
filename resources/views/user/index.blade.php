@@ -72,8 +72,29 @@
                             @endif
                         </p>
                         <p>Ip адрес последнего неудачного входа: {{$user->last_failed_login_ip}}</p>
-
-
+                        <hr>
+                        <h5>Фильтровать заявки</h5>
+                        <form class="" action="{{ route('user.filter') }}" method="post" class="">
+                          {{ csrf_field( )}}
+                          {{ method_field('GET') }}
+                          <input type="text" name="id" value="1" style="display:none;">
+                          <div class="form-group">
+                            <label for="days">Выберите срок</label>
+                            <select class="form-control rounded px-3 py-2" name="days">
+                              <option value="10">10 дней</option>
+                              <option value="30">30 дней</option>
+                              <option value="60">60 дней</option>
+                            </select>
+                          </div>
+                          <div class="form-group">
+                            <button type="submit" name="filter" class="btn btn-info">Фильтровать</button>
+                          </div>
+                        </form>
+                        <div class="">
+                          @if(isset($data))
+                            {{ $data }}
+                          @endif
+                        </div>
                     </div>
                 </div>
             </div>
