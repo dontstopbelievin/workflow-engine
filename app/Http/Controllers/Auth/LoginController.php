@@ -103,11 +103,16 @@ class LoginController extends Controller
 
             $txt = $mytime . ' ' . $user->name . ' ' . $user->email . ' ' . "Успешный вход в систему\r\n";
             file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
+            $userType = Null;
 
+            if (Auth::user()->name === 'Admin' || Auth::user()->name === 'Абаев Анзор' || Auth::user()->name === 'Шегенов Ринат') {
+                $userType = 'admin';
+            }
             $user->update([
                 'last_login_at' => $user->current_login_at,
                 'current_login_at' => Carbon::now()->toDateTimeString(),
-                'last_login_ip' => $request->getClientIp()
+                'last_login_ip' => $request->getClientIp(),
+                'usertype' => $userType,
             ]);
             $processes = Process::all();
 
