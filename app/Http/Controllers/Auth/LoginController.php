@@ -74,7 +74,7 @@ class LoginController extends Controller
                         $user = auth()->guard('web')->user();
                         $mytime = Carbon::now()->toDateTimeString();
 
-                        $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Попытка параллельного входа в систему\r\n";
+                        $txt = $mytime . ' ' . $user->name . ' '. $user->email . ' ' . "Попытка параллельного входа в систему\r\n";
                         file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
                     }
                 }
