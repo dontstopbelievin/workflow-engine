@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use App\User;
 use App\Role;
+use App\Log;
 use App\Process;
 use App\Dictionary;
 use DateTime;
@@ -49,8 +50,7 @@ class UserController extends Controller
     public function filter(Request $request){
       $requirement = $request->days;
       $user = Auth::user();
-      $allRequests = DB::table('logs')
-                      ->join('created_tables', 'created_tables.id', '=', 'logs.table_id')
+      $allRequests = Log::join('created_tables', 'created_tables.id', '=', 'logs.table_id')
                       ->where('logs.role_id', '=', $user->role_id)
                       ->get()
                       ->toArray();
@@ -59,11 +59,11 @@ class UserController extends Controller
       $result = array();
       foreach ($allRequests as $data) {
         //dd($data);
-        $record = DB::table($data->name)
-                    ->where($data->name.'.id', '=', $data->application_id)
+        $record = DB::table($data['name'])
+                    ->where($data['name'].'.id', '=', $data['application_id'])
                     ->first();
         //dd($record);
-        $times = $this->getRecords($data->application_id, $data->table_id);
+        $times = $this->getRecords($data['application_id'], $data['table_id']);
 
         $finish = date('Y-m-d H:i:s');
         $start = new DateTime($times[0]["created_at"]);
@@ -71,9 +71,9 @@ class UserController extends Controller
 
         if($duration->days < $requirement){
           $process = Process::where('id', $record->process_id)->first();
-          $record->rejected = $data->rejected;
-          $record->approved = $data->approved;
-          $record->sent_to_revision = $data->sent_to_revision;
+          $record->rejected = $data['rejected'];
+          $record->approved = $data['approved'];
+          $record->sent_to_revision = $data['sent_to_revision'];
           if(!isset($result[$process->name])){
               $result[$process->name] = array($record);
           }else{

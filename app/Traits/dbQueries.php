@@ -5,6 +5,7 @@ namespace App\Traits;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use App\Dictionary;
+use App\Log;
 
 trait dbQueries
 {
@@ -66,7 +67,7 @@ trait dbQueries
         $counter = 0;
         foreach($iterateRoles as $key => $value) {
             $counter++;
-            $sAllRoles[$value->name] = $value->id;   
+            $sAllRoles[$value->name] = $value->id;
             if ($value->id === $parentId) {
                 $sAllRoles[$value->name] = $sTmp;
             }
@@ -272,13 +273,12 @@ trait dbQueries
 
     public function getRecords($applicationId, $tableId) {
 
-        $query = DB::table('logs')
-            ->join('roles', 'logs.role_id', '=', 'roles.id')
-            ->join('statuses', 'logs.status_id', '=', 'statuses.id')
-            ->select( 'statuses.name as name', 'logs.created_at as created_at', 'roles.name as role')
-            ->where('application_id', $applicationId)
-            ->where('table_id', $tableId)
-            ->get()->toArray();
+        $query = Log::join('roles', 'logs.role_id', '=', 'roles.id')
+                      ->join('statuses', 'logs.status_id', '=', 'statuses.id')
+                      ->select( 'statuses.name as name', 'logs.created_at as created_at', 'roles.name as role')
+                      ->where('application_id', $applicationId)
+                      ->where('table_id', $tableId)
+                      ->get()->toArray();
 
         return json_decode(json_encode($query), true);
     }
