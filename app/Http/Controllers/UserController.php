@@ -48,19 +48,21 @@ class UserController extends Controller
 
     public function filter(Request $request){
       $requirement = $request->days;
+      $user = Auth::user();
       $allRequests = DB::table('logs')
                       ->join('created_tables', 'created_tables.id', '=', 'logs.table_id')
-                      ->where('logs.role_id', '=', $request->id)
+                      ->where('logs.role_id', '=', $user->role_id)
                       ->get()
                       ->toArray();
       $finish = date('Y-m-d H:i:s');
       //dd($allRequests);
       $result = array();
       foreach ($allRequests as $data) {
+        //dd($data);
         $record = DB::table($data->name)
                     ->where($data->name.'.id', '=', $data->application_id)
                     ->first();
-
+        //dd($record);
         $times = $this->getRecords($data->application_id, $data->table_id);
 
         $finish = date('Y-m-d H:i:s');
@@ -69,6 +71,9 @@ class UserController extends Controller
 
         if($duration->days < $requirement){
           $process = Process::where('id', $record->process_id)->first();
+          $record->rejected = $data->rejected;
+          $record->approved = $data->approved;
+          $record->sent_to_revision = $data->sent_to_revision;
           if(!isset($result[$process->name])){
               $result[$process->name] = array($record);
           }else{
@@ -83,7 +88,6 @@ class UserController extends Controller
       foreach ($dictionaries as $value) {
         $dictionary[$value['name']] = $value['label_name'];
       }
-      
       $storagePathToPDF ='/app/public/final-docs/10.pdf';
       $pdf = PDF::loadView('filter', compact('requirement','result', 'dictionary')); // data send to PDF file
       $content = $pdf->output();

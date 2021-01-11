@@ -59,6 +59,7 @@
                                       @endif
                                     @endif
                                   @endforeach
+                                  <th>Статус</th>
                                   <th>Дата последнего доступа</th>
                                 </tr>
                               </thead>
@@ -71,6 +72,19 @@
                                       @endif
                                       <td>{{ $value }}</td>
                                     @endforeach
+                                    @if($req->approved == '1')
+                                      <td>Согласовано</td>
+                                    @else
+                                      @if($req->rejected == 1)
+                                        <td>Отказано</td>
+                                      @else
+                                        @if($req->sent_to_revision == 1)
+                                          <td>Отправлено на доработку</td>
+                                        @else
+                                          <td>Отправлено специалистам</td>
+                                        @endif
+                                      @endif
+                                    @endif
                                     <td>{{ date('d.m.Y H:i', strtotime($req->updated_at)) }}</td>
                                   </tr>
                                 @endforeach
