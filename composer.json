@@ -10,10 +10,7 @@
     "require": {
         "php": "^7.2.5",
         "barryvdh/laravel-dompdf": "^0.8.7",
-<<<<<<< HEAD
-=======
         "calcinai/php-imagick": "^0.1.2",
->>>>>>> 8eadbf54277ede69f04f1c3eadf7776c88af143d
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
