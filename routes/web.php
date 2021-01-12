@@ -144,6 +144,12 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::post('auction/store', 'AuctionController@store')->name('auction.store');
     Route::get('auction/send/{id}', 'AuctionController@sendToEgkn')->name('auction.send');
 
+    Route::get('egknservice', 'EgknServiceController@index')->name('egknservice.index');
+    Route::get('egknservice/view', 'EgknServiceController@view')->name('egknservice.view');
+    Route::get('egknservice/load', 'EgknServiceController@load')->name('egknservice.load');
+    Route::get('egknservice/status', 'EgknServiceController@status')->name('egknservice.status');
+    Route::get('egknservice/act', 'EgknServiceController@act')->name('egknservice.act');
+
     Route::get('select-options/create', 'SelectOptionController@create')->name('selectoptions.create');
     Route::post('select-options/store', 'SelectOptionController@store')->name('selectoptions.store');
     Route::post('select-options/delete', 'SelectOptionController@delete')->name('selectoptions.delete');

@@ -94,6 +94,12 @@
                       <p>Торги ЕГКН</p>
                   </a>
               </li>
+                  <li class="nav-item">
+                      <a href="{{ route('egknservice.index') }}">
+                          <i class="la la-table"></i>
+                          <p>Заявки ЕГКН</p>
+                      </a>
+                  </li>
               @if( request()->segment(1) == 'services' || request()->segment(1) == 'index' || request()->segment(1) == 'applications-create')
                   <li class="nav-item active">
               @else

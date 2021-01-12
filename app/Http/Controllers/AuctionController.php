@@ -43,6 +43,7 @@ class AuctionController extends Controller
 //            'ActCost' => ['required', 'file'],
         ]);
         $identificationDocPath = $request->Files->store('templates', 'public');
+        $response = ShepRequestSender::send('eds_temp_files', array());
 //        $legalDocPath = $request->LegalDoc->store('templates', 'public');
 //        $sketchDocPath = $request->SketchProject->store('templates', 'public');
 //        $schemeZuDocPath = $request->SchemeZu->store('templates', 'public');
@@ -77,11 +78,7 @@ class AuctionController extends Controller
         $auction->restrictions_and_burdens_rus = $request->RestrictionsAndBurdensRus;
         $auction->restrictions_and_burdens_kaz = $request->RestrictionsAndBurdensKaz;
 
-        $auction->coordinates_1 = $request->Coordinates1;
-        $auction->coordinates_2 = $request->Coordinates2;
-        $auction->coordinates_3 = $request->Coordinates3;
-        $auction->coordinates_4 = $request->Coordinates4;
-        //        $auction->coordinates = $request->Coordinates;
+        $auction->coordinates = $request->Coordinates;
         $auction->coordinate_system = $request->CoordinateSystem;
 
         $auction->instalment_selling = $request->InstalmentSelling;

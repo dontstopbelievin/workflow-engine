@@ -225,20 +225,8 @@
                       </div>
                       <div class="card-body">
                         <div class="form-group">
-                          <label for="Coordinates1">Координаты 1</label>
-                          <input type="text" class="form-control" name="Coordinates1" id="Coordinates1" >
-                        </div>
-                        <div class="form-group">
-                          <label for="Coordinates2">Координаты 2</label>
-                          <input type="text" class="form-control" name="Coordinates2" id="Coordinates2" >
-                        </div>
-                        <div class="form-group">
-                          <label for="Coordinates3">Координаты 3</label>
-                          <input type="text" class="form-control" name="Coordinates3" id="Coordinates3" >
-                        </div>
-                        <div class="form-group">
-                          <label for="Coordinates4">Координаты 4</label>
-                          <input type="text" class="form-control" name="Coordinates4" id="Coordinates4" >
+                          <label for="Coordinates">Координаты</label>
+                          <input type="text" class="form-control" name="Coordinates" id="Coordinates" >
                         </div>
                         <div class="form-group">
                           <label for="CoordinateSystem">Система координат</label>
