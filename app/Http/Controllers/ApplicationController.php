@@ -293,11 +293,6 @@ class ApplicationController extends Controller
         }
         Log::insert( $logsArray);
 
-        Log::where('role_id', '=', Auth::user()->role_id)
-                         ->where('table_id', '=', $table->id)
-                         ->where('application_id', '=', $application->id)
-                         ->update(['approved' => 1]); // logs для отчетности
-
         $this->insertComments($request->comments, $request->applicationId, $table->id);
         if ($application->to_revision === 0) {
             DB::table($tableName)
@@ -661,10 +656,6 @@ class ApplicationController extends Controller
 
         $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
         Log::insert( $logsArray);
-        Log::where('role_id', Auth::user()->role_id)
-                         ->where('table_id', $table->id)
-                         ->where('application_id', $application->id)
-                         ->update(['rejected' => 1]);// logs для отчетности
 
         if ($application->to_revision === 0) {
             DB::table($tableName)
@@ -716,11 +707,7 @@ class ApplicationController extends Controller
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
         $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
         Log::insert( $logsArray);
-
-        Log::where('role_id', Auth::user()->role_id)
-                         ->where('table_id', $table->id)
-                         ->where('application_id', $application->id)
-                         ->update(['sent_to_revision' => 1]);// logs для отчетности
+        
         if ($index === 0) {
             DB::table($tableName)
                 ->where('id', $request->applicationId)

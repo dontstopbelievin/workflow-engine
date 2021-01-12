@@ -21,9 +21,6 @@ class CreateLogsTable extends Migration
           $table->foreign('table_id')->references('id')->on('created_tables');
           $table->integer('role_id')->unsigned()->nullable();
           $table->foreign('role_id')->references('id')->on('roles');
-          $table->boolean('approved')->default(0);
-          $table->boolean('rejected')->default(0);
-          $table->boolean('sent_to_revision')->default(0);
           $table->unsignedBigInteger('application_id');
           $table->timestamps();
         });

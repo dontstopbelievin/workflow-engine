@@ -35,64 +35,62 @@
 </style>
 
 <body>
-    <div class="container">
+    <div class="container-fluid">
         <div class="col-md-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <img src="images/header.jpg" alt="logo" style="width:100%;">
                 </div>
-                <div class="panel-body" style="margin-top:10px; margin-left:10px;">
+                @if(!isset($result))
+                  <div class="panel-body" style="margin-top:10px; margin-left:10px;">
                     <div class="main-div">
-                        @foreach($result as $processName => $process)
-                          <b>Процесс:</b> {{ $processName }}
-                            <table style="margin-bottom: 15px; margin-top:10px;">
-                              <thead>
-                                <tr>
-                                  @foreach($process[0] as $key => $value)
-                                    @if( $key == 'process_id')
-                                      @break
-                                    @else
-                                      @if($key == 'id')
-                                      <th style="width:7%;">№</th>
-                                      @else
-                                        <th>{{ $dictionary[$key] }}</th>
-                                      @endif
-                                    @endif
-                                  @endforeach
-                                  <th>Статус</th>
-                                  <th>Дата последнего доступа</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                @foreach($process as $req)
-                                  <tr class="shadow p-3 mb-5 rounded">
-                                    @foreach($req as $key => $value)
+                        <b>По этому процессу заявок за последние {{$requirement}} дней не существует! </b>
+                      </div>
+                    </div>
+                @else
+                  <div class="panel-body" style="margin-top:10px; margin-left:10px;">
+                      <div class="main-div">
+                          @foreach($result as $processName => $process)
+                            <b>Процесс:</b> {{ $processName }}
+                              <table style="margin-bottom: 15px; margin-top:10px;">
+                                <thead>
+                                  <tr>
+                                    <th style="width:7%;">№</th>
+                                    @foreach($process[0] as $key => $value)
                                       @if( $key == 'process_id')
                                         @break
-                                      @endif
-                                      <td>{{ $value }}</td>
-                                    @endforeach
-                                    @if($req->approved == '1')
-                                      <td>Согласовано</td>
-                                    @else
-                                      @if($req->rejected == 1)
-                                        <td>Отказано</td>
                                       @else
-                                        @if($req->sent_to_revision == 1)
-                                          <td>Отправлено на доработку</td>
+                                        @if($key == 'id')
+                                        <th>Номер заявки</th>
                                         @else
-                                          <td>Отправлено специалистам</td>
+                                          <th>{{ $dictionary[$key] }}</th>
                                         @endif
                                       @endif
-                                    @endif
-                                    <td>{{ date('d.m.Y H:i', strtotime($req->updated_at)) }}</td>
+                                    @endforeach
+                                    <th>Статус</th>
+                                    <th>Дата создания заявки</th>
                                   </tr>
-                                @endforeach
-                              </tbody>
-                            </table>
-                        @endforeach
-                    </div>
-                </div>
+                                </thead>
+                                <tbody>
+                                  @foreach($process as $num => $req)
+                                    <tr class="shadow p-3 mb-5 rounded">
+                                      <td>{{ $num+1 }}</td>
+                                      @foreach($req as $key => $value)
+                                        @if( $key == 'process_id')
+                                          @break
+                                        @endif
+                                        <td>{{ $value }}</td>
+                                      @endforeach
+                                      <td>{{ $req->status }}</td>
+                                      <td>{{ date('d.m.Y H:i:s', strtotime($req->created_at)) }}</td>
+                                    </tr>
+                                  @endforeach
+                                </tbody>
+                              </table>
+                          @endforeach
+                      </div>
+                  </div>
+                @endif
             </div>
         </div>
     </div>

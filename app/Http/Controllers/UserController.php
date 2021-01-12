@@ -12,6 +12,7 @@ use App\Role;
 use App\Log;
 use App\Process;
 use App\Dictionary;
+use App\CreatedTable;
 use DateTime;
 use PDF;
 use Response;
@@ -24,7 +25,11 @@ class UserController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return view('user.index', compact('user'));
+        $processes = DB::table('process_role')->join('processes', 'processes.id', '=', 'process_role.process_id')
+                                              ->select('process_id', 'name')
+                                              ->where('role_id', $user->role_id)
+                                              ->get()->toArray();
+        return view('user.index', compact('user', 'processes'));
     }
 
     public function edit(User $user)
@@ -49,39 +54,42 @@ class UserController extends Controller
 
     public function filter(Request $request){
       $requirement = $request->days;
+      $process_id = $request->process;
+      if($process_id == null){
+        return Redirect::back()->with('error', 'Выберите процесс и повторите попытку');
+      }
+
       $user = Auth::user();
-      $allRequests = Log::join('created_tables', 'created_tables.id', '=', 'logs.table_id')
-                      ->where('logs.role_id', '=', $user->role_id)
-                      ->get()
-                      ->toArray();
+      $tableName = $this->getTableName($process_id);
+
+      $tableId = CreatedTable::select('id')->where('name', $tableName)->first()->toArray();
+
+      $allRequests = DB::table($tableName)
+                        ->select($tableName.'.*', 'statuses.name as status', 'logs.created_at')
+                        ->join('logs', 'logs.application_id', '=', $tableName.'.id')
+                        ->where('logs.role_id', '1')->where('logs.table_id', $tableId['id'])
+                        ->join('statuses', 'statuses.id', '=', $tableName.'.status_id')
+                        ->where($tableName.'.name', '!=', 'NULL')->get()->toArray();
+
       $finish = date('Y-m-d H:i:s');
       //dd($allRequests);
       $result = array();
-      foreach ($allRequests as $data) {
-        //dd($data);
-        $record = DB::table($data['name'])
-                    ->where($data['name'].'.id', '=', $data['application_id'])
-                    ->first();
+      foreach ($allRequests as $record) {
         //dd($record);
-        $times = $this->getRecords($data['application_id'], $data['table_id']);
-
         $finish = date('Y-m-d H:i:s');
-        $start = new DateTime($times[0]["created_at"]);
+        $start = new DateTime($record->updated_at);
         $duration = $start->diff(new DateTime($finish));
 
         if($duration->days < $requirement){
-          $process = Process::where('id', $record->process_id)->first();
-          $record->rejected = $data['rejected'];
-          $record->approved = $data['approved'];
-          $record->sent_to_revision = $data['sent_to_revision'];
-          if(!isset($result[$process->name])){
-              $result[$process->name] = array($record);
+          if(!isset($result[$process_id])){
+              $result[$process_id] = array($record);
           }else{
-              array_push($result[$process->name], $record);
+              array_push($result[$process_id], $record);
           }
 
         }
       }
+      //dd($result);
       // generation of PDF file and return
       $dictionaries = Dictionary::select('name', 'label_name')->where('input_type_id', '1')->get()->toArray();
       $dictionary = array();

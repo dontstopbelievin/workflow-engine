@@ -15,6 +15,11 @@
                   {{ session('status') }}
               </div>
           @endif
+          @if (session('error'))
+              <div class="alert alert-danger" role="alert">
+                  {{ session('error') }}
+              </div>
+          @endif
                 <div class="card">
                     <!-- <div class="card-header">
                         <h3 class="card-title font-weight-bold text-center">Личный Кабинет</h3>
@@ -87,14 +92,18 @@
                             </select>
                           </div>
                           <div class="form-group">
+                            <label for="days">Выберите процесс</label>
+                            <select class="form-control rounded px-3 py-2" name="process" required>
+                              <option value="no" disabled selected>-</option>
+                              @foreach($processes as $process)
+                                <option value="{{$process->name}}">{{$process->name}}</option>
+                              @endforeach
+                            </select>
+                          </div>
+                          <div class="form-group">
                             <button type="submit" name="filter" class="btn btn-info">Фильтровать</button>
                           </div>
                         </form>
-                        <div class="">
-                          @if(isset($data))
-                            {{ $data }}
-                          @endif
-                        </div>
                     </div>
                 </div>
             </div>
