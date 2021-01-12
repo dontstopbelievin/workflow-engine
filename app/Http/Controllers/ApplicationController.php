@@ -447,17 +447,30 @@ class ApplicationController extends Controller
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $user = Auth::user();
+        $incomingApplications = EgknService::where('passed_to_process', 0)->get();
+        if (!count($incomingApplications)) {
+            return Redirect::route('applications.service')->with('status', 'Новых заявок не обнаружено');
+        }
+        $countApp = 0; // считаем количество заявок
+        foreach($incomingApplications as $app) {
+            $countApp++;
+            $applicationTableFields = [];
+            $applicationTableFields["process_id"] = $process->id;
+            $app->passed_to_process = 1;
+            $app->timestamps = false;
+            $app->update();
+            $attrOfIncApp = $app->getAttributes();
+            array_shift($attrOfIncApp);
+            foreach ($attrOfIncApp as $key => $value) {
+                $applicationTableFields[$key] = $value;
+            };
+            $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
+            $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
+            $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
+            DB::table('logs')->insert( $logsArray);
+        }
 
-        $aData = ["coordindates" => "5645226",   "goal" => "123213213", "area" => "34123453", "processId" => $process->id];
-        $applicationTableFields["coordindates"] = $aData["coordindates"];
-        $applicationTableFields["goal"] = $aData["goal"];
-        $applicationTableFields["area"] = $aData["area"];
-        $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
-        $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
-        $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
-        DB::table('logs')->insert( $logsArray);
-
-        return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
+        return Redirect::route('applications.service')->with('status', 'Заявки Успешно созданы (' . $countApp . ')');
     }
 
     public function sendToSubRoute(Request $request)

@@ -18,6 +18,11 @@
           @endif
           @if (Auth::user()->role->name === 'Заявитель')
             <a href="{{ route('applications.create', ['process' => $process]) }}" class="btn btn-info mb-3">Создать Заявку</a>
+            <form action="{{ route('applications.search')}}" method="POST">
+                @csrf
+                <input type="hidden" name="processId" value="{{$process->id}}">
+                <button type="submit">Обновить</button>
+            </form>
           @endif
           <div class="card">
             <div class="card-body">
