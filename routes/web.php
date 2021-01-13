@@ -42,6 +42,8 @@ Route::get('/loginwithecp', function () {
 
 Auth::routes();
 
+Route::get('/test', 'IntegrationController@test')->middleware('guest');
+
 Route::get('/integrations/{type}', 'IntegrationController@index')->middleware('guest');
 Route::post('/integrations/shep/receiver', 'IntegrationController@receive')->middleware('guest');
 Route::post('/integrations/shep/sync-request-receiver', 'IntegrationController@sync')->middleware('guest');

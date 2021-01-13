@@ -27,6 +27,13 @@ class IntegrationController extends Controller
         exit;
     }
 
+    public function test()
+    {
+        $response = array();
+        $response = ShepRequestSender::send('egkn_receive_status', $_GET);
+        return view('test')->with('data', $response);
+    }
+
     public function receive(Request $request)
     {
         ServiceRequestRouter::route($request);
