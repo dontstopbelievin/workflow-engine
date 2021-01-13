@@ -27,15 +27,15 @@
   <link rel="stylesheet" href="../assets/css/demo.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="../assets/js/core/jquery.3.2.1.min.js"></script>
+  <script src="../assets/js/core/jquery.3.2.1.min.js"></script>  
   <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
   <div class="wrapper">
     <div class="main-header">
-      <div class="logo-header">
+      <div class="logo-header flex-row">
         <a href="{{ route('applications.service') }}" class="logo">
-          Электронные услуги
+          Электронные услуги          
         </a>
         <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -46,7 +46,7 @@
       <nav class="navbar navbar-header navbar-expand-lg">
         <div class="container-fluid">
 
-          <a href="/policy" class="navbar-left navbar-form nav-search mr-md-3">
+          <a href="/policy" class="navbar-left navbar-form nav-search mr-md-3 w-50">
                 Правила информационной безопасности
           </a>
           <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
@@ -58,9 +58,10 @@
 
             @else
             <li class="nav-item dropdown">
-              <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false" data-toggle="dropdown" aria-haspopup="true">
+              <a class="dropdown-toggle profile-pic float-right" data-toggle="dropdown" href="#" aria-expanded="false" data-toggle="dropdown" aria-haspopup="true">
                 <span>{{ Auth::user()->name }}</span>
               </a>
+                <small class="d-flex flex-column w-50 float-right">({{ Auth::user()->role->name }})</small>
               <ul class="dropdown-menu dropdown-user">
                 <li> <a class="dropdown-item" href="{{ route('user.personalArea') }}">Мои данные</a> </li>
                 <li> <a class="dropdown-item" href="{{ route('user.edit', ['user' => Auth::user()]) }}">Редактировать данные</a> </li>

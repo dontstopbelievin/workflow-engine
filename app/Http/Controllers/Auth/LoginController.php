@@ -85,7 +85,7 @@ class LoginController extends Controller
 
             if(isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response']))
             {
-                  $secret = '66LcOIv4ZAAAAAPJ6Gj6X_5kG368Ck-YZ0LclzNUI';
+                  $secret = '6LcOIv4ZAAAAAPJ6Gj6X_5kG368Ck-YZ0LclzNUI';
                   $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$_POST['g-recaptcha-response']);
                   $responseData = json_decode($verifyResponse);
                   if($responseData->success)
