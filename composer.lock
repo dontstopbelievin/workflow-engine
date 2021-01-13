@@ -4,11 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
-    "content-hash": "1bbd0982a1ba8a01678ae5b2581849a3",
-=======
     "content-hash": "5c71b5e575c06f53523fcedc405a58b2",
->>>>>>> 8eadbf54277ede69f04f1c3eadf7776c88af143d
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -214,8 +210,6 @@
             "time": "2020-08-18T23:57:15+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "calcinai/php-imagick",
             "version": "v0.1.2",
             "source": {
@@ -252,7 +246,6 @@
             "time": "2016-12-22T15:09:47+00:00"
         },
         {
->>>>>>> 8eadbf54277ede69f04f1c3eadf7776c88af143d
             "name": "dasprid/enum",
             "version": "1.0.3",
             "source": {
@@ -3594,11 +3587,7 @@
         },
         {
             "name": "setasign/fpdi",
-<<<<<<< HEAD
-            "version": "v2.3.4",
-=======
             "version": "v2.3.5",
->>>>>>> 8eadbf54277ede69f04f1c3eadf7776c88af143d
             "source": {
                 "type": "git",
                 "url": "https://github.com/Setasign/FPDI.git",
@@ -6216,11 +6205,7 @@
                 "fixtures"
             ],
             "abandoned": true,
-<<<<<<< HEAD
-            "time": "2019-12-12T13:22:17+00:00"
-=======
             "time": "2020-12-11T09:56:16+00:00"
->>>>>>> 8eadbf54277ede69f04f1c3eadf7776c88af143d
         },
         {
             "name": "hamcrest/hamcrest-php",
