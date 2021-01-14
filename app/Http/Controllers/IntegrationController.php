@@ -30,8 +30,8 @@ class IntegrationController extends Controller
     public function test()
     {
         $response = array();
-        $response[] = ShepRequestSender::send('egkn_receive_status', $_GET);
-        $response[] = ShepRequestSender::send('egkn_receive_order', $_GET);
+        $response['egkn_receive_status'] = ShepRequestSender::send('egkn_receive_status', $_GET);
+        $response['egkn_receive_order'] = ShepRequestSender::send('egkn_receive_order', $_GET);
         return view('test')->with('data', $response);
     }
 
