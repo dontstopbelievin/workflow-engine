@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Integrations\shep\sender\ShepRequestSender;
 use App\Integrations\shep\receiver\ServiceRequestRouter;
-use Illuminate\Support\Facades\Storage;
 
 class IntegrationController extends Controller
 {
@@ -30,8 +29,6 @@ class IntegrationController extends Controller
 
     public function test()
     {
-        Storage::disk('local')->put('/tmp/random_name', 'i am ma ngdo');
-        return;
         $response = array();
         $response['egkn_receive_status'] = ShepRequestSender::send('egkn_receive_status', $_GET);
         $response['egkn_receive_order'] = ShepRequestSender::send('egkn_receive_order', $_GET);
