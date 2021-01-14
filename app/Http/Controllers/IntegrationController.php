@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Integrations\shep\sender\ShepRequestSender;
 use App\Integrations\shep\receiver\ServiceRequestRouter;
+use Illuminate\Support\Facades\Storage;
 
 class IntegrationController extends Controller
 {
