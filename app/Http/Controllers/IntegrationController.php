@@ -38,7 +38,7 @@ class IntegrationController extends Controller
         $data = [];
         $data['correlationId'] = '-1';
         $data['messageType'] = '-1';
-        $data['data'] = '-1';
+        $data['data'] = [];
         $response['geoportal_pep_async'] = ShepRequestSender::send('geoportal_pep_async', $data);
         $response['ais_gzk_get_data'] = ShepRequestSender::send('ais_gzk_get_data', $_GET);
         $response['ais_gzk_get_relevance'] = ShepRequestSender::send('ais_gzk_get_relevance', $_GET);
