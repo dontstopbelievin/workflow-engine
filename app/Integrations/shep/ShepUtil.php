@@ -190,9 +190,9 @@ class ShepUtil
             app_path('Integrations/shep/cert/company_key_gost.p12'),
             'Aa123456'
         ));
-        Storage::disk('local')->delete($sFilePath);
+        // Storage::disk('local')->delete($sFilePath);
         $sXml = Storage::disk('local')->get($sFilePath . '_sign');
-        Storage::disk('local')->delete($sFilePath . '_sign');
+        // Storage::disk('local')->delete($sFilePath . '_sign');
         return $sXml;
     }
 
