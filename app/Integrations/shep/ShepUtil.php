@@ -183,7 +183,7 @@ class ShepUtil
     {
         $sFilePath = 'tmp/' . Uuid::generateV4();
         if(trim($sXml) == ''){
-            $sXml = 'empty doc';
+            $sXml = '<request>Empty request</request>';
         }
         Storage::disk('local')->put($sFilePath, $sXml);
         exec(sprintf(
