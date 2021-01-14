@@ -182,6 +182,9 @@ class ShepUtil
     public static function signXmlJar($sXml)
     {
         $sFilePath = 'tmp/' . Uuid::generateV4();
+        if(trim($sXml) == ''){
+            $sXml = 'empty doc';
+        }
         Storage::disk('local')->put($sFilePath, $sXml);
         exec(sprintf(
             'java -jar -Dfile.encoding=UTF-8 %s/XmlSigner.jar %s %s %s',
