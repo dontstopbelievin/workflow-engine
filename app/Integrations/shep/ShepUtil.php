@@ -107,7 +107,8 @@ class ShepUtil
                 file_put_contents(sprintf('%s/file_out_%s.request', $sFolder, $sProcessId), $sPostData);
                 file_put_contents(sprintf('%s/file_out_%s.response', $sFolder, $sProcessId), $sResult);
             }
-            echo json_encode(array('status' => 0, 'data' => 'shep internal error: http-' . $iHttpCode .' '. json_encode($sResult, JSON_UNESCAPED_UNICODE)));
+            echo json_encode(array('status' => 0, 'data' => 'shep internal error: http-' . $iHttpCode,
+                'response' => json_encode(curl_error($oCurl), JSON_UNESCAPED_UNICODE)));
         }
         curl_close($oCurl);
     }
