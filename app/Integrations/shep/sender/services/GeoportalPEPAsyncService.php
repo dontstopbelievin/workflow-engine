@@ -16,7 +16,7 @@ class GeoportalPEPAsyncService extends ShepService implements XmlBuilderInterfac
         parent::__construct(self::SERVICE_TYPE, $sShepUrl);
     }
 
-    public function buildXml(array $aPreparedData)
+    public function buildXml($aPreparedData)
     {
         if (!isset($aPreparedData['correlationId'])) {
             throw new \Exception('CorrelationId is not set');
