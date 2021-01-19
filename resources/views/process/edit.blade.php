@@ -117,7 +117,9 @@
                                     @isset($columns)
                                         @foreach ($roles as $role)
                                             <div class="checkbox">
-                                                <label><input class="get_value" type="checkbox" name="subRoles[]" value="{{$role->name}}">{{$role->name}}</label>
+                                                <label class="form-check-label"><input class="get_value" type="checkbox" name="subRoles[]" value="{{$role->name}}">
+                                                  <span class="form-check-sign">{{$role->name}}</span>
+                                                </label>
                                             </div>
                                         @endforeach
                                     @endisset
