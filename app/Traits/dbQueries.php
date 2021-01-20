@@ -5,6 +5,7 @@ namespace App\Traits;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use App\Dictionary;
+use App\Log;
 
 trait dbQueries
 {
@@ -17,6 +18,30 @@ trait dbQueries
         ->where('process_role.parent_role_id',Null)
         ->get();
         return $res;
+    }
+    private function getButtons($processId, $roleId)
+    {
+        return DB::table('process_role')
+            ->where('process_id', $processId)
+            ->where('role_id', $roleId)
+            ->get()
+            ->toArray();
+    }
+
+    private function updateProcessRoleCanReject($processId, $roleId)
+    {
+        DB::table("process_role")
+            ->where('process_id', $processId)
+            ->where('role_id', $roleId)
+            ->update(['can_reject' => 1]);
+    }
+
+    private function updateProcessRoleToRevision($processId, $roleId)
+    {
+        DB::table("process_role")
+            ->where('process_id', $processId)
+            ->where('role_id', $roleId)
+            ->update(['can_send_to_revision' => 1]);
     }
 
     public function getParentRoleId($id) {
@@ -42,7 +67,7 @@ trait dbQueries
         $counter = 0;
         foreach($iterateRoles as $key => $value) {
             $counter++;
-            $sAllRoles[$value->name] = $value->id;   
+            $sAllRoles[$value->name] = $value->id;
             if ($value->id === $parentId) {
                 $sAllRoles[$value->name] = $sTmp;
             }
@@ -248,13 +273,12 @@ trait dbQueries
 
     public function getRecords($applicationId, $tableId) {
 
-        $query = DB::table('logs')
-            ->join('roles', 'logs.role_id', '=', 'roles.id')
-            ->join('statuses', 'logs.status_id', '=', 'statuses.id')
-            ->select( 'statuses.name as name', 'logs.created_at as created_at', 'roles.name as role')
-            ->where('application_id', $applicationId)
-            ->where('table_id', $tableId)
-            ->get()->toArray();
+        $query = Log::join('roles', 'logs.role_id', '=', 'roles.id')
+                      ->join('statuses', 'logs.status_id', '=', 'statuses.id')
+                      ->select( 'statuses.name as name', 'logs.created_at as created_at', 'roles.name as role')
+                      ->where('application_id', $applicationId)
+                      ->where('table_id', $tableId)
+                      ->get()->toArray();
 
         return json_decode(json_encode($query), true);
     }

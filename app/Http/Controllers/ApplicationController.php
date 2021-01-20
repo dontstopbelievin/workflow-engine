@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Process;
 use App\Role;
+use App\Log;
 use App\Status;
 use App\CityManagement;
 use App\Comment;
@@ -253,7 +254,6 @@ class ApplicationController extends Controller
             }
         }
         $process = Process::find($request->process_id);
-   
         $tableName = $this->getTableName($process->name);
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
         $table = CreatedTable::where('name', $tableName)->first();
@@ -290,7 +290,8 @@ class ApplicationController extends Controller
             $status = Status::find($idOfNextRole);
             $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
         }
-        DB::table('logs')->insert( $logsArray);
+        Log::insert( $logsArray);
+
         $this->insertComments($request->comments, $request->applicationId, $table->id);
         if ($application->to_revision === 0) {
             DB::table($tableName)
@@ -363,7 +364,7 @@ class ApplicationController extends Controller
         $index = $index + $pos;
         $role = Auth::user()->role;
         $logsArray = $this->getLogs($updatedStatus->id, $table->id, $application->id, $role->id);
-        DB::table('logs')->insert( $logsArray);
+        Log::insert( $logsArray);
         $success = DB::table($tableName)
             ->where('id', $applicationId)
             ->update(['status_id' => $updatedStatus->id, 'index_main' => $index]);
@@ -436,7 +437,7 @@ class ApplicationController extends Controller
         $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
         $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
         $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
-        DB::table('logs')->insert( $logsArray);
+        Log::insert( $logsArray);
 
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
     }
@@ -472,7 +473,7 @@ class ApplicationController extends Controller
         $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
         $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
         $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
-        DB::table('logs')->insert( $logsArray);
+        Log::insert( $logsArray);
 
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
     }
@@ -501,7 +502,7 @@ class ApplicationController extends Controller
         $templateTable = $this->getTemplateTableName($templateName);
         $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
         $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
-        DB::table('logs')->insert( $logsArray);
+        Log::insert( $logsArray);
 
         if ($application->to_revision === 0) {
             DB::table($tableName)
@@ -529,7 +530,7 @@ class ApplicationController extends Controller
         $role = $user->role;
 
         $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
-        DB::table('logs')->insert( $logsArray);
+        Log::insert( $logsArray);
 
         DB::table($tableName)
             ->where('id', $id)
@@ -550,6 +551,10 @@ class ApplicationController extends Controller
         $templateName = $template->name;
         $templateTable = $this->getTemplateTableName($templateName);
         // dd($process->template_doc);
+<<<<<<< HEAD
+=======
+
+>>>>>>> newDesign
         if (Schema::hasTable($templateTable)) {
         //    dd($request->applicationId);
             $fields = DB::table($templateTable)->select('*')->where('application_id', $applicationId)->first();
@@ -622,7 +627,7 @@ class ApplicationController extends Controller
         $user = Auth::user();
         $role = $user->role;
         $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
-        DB::table('logs')->insert( $logsArray);
+        Log::insert( $logsArray);
         $affected = DB::table($tableName)
             ->where('id', $id)
             ->update(['status_id' => $status->id, 'index_main' => Null]);
@@ -650,8 +655,10 @@ class ApplicationController extends Controller
         $status = Status::find($statusCount-1); //$statuscount-1 - индекс статуса отправлено заявителю с отказом
         $user = Auth::user();
         $role = $user->role;
+
         $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
-        DB::table('logs')->insert( $logsArray);
+        Log::insert( $logsArray);
+
         if ($application->to_revision === 0) {
             DB::table($tableName)
                 ->where('id', $request->applicationId)
@@ -701,8 +708,8 @@ class ApplicationController extends Controller
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
         $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
-
-        DB::table('logs')->insert( $logsArray);
+        Log::insert( $logsArray);
+        
         if ($index === 0) {
             DB::table($tableName)
                 ->where('id', $request->applicationId)

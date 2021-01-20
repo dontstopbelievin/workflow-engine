@@ -76,6 +76,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('download/{file}', 'ApplicationController@download')->name('applications.download');
         Route::post('agreement-accept', 'ApplicationController@acceptAgreement')->name('applications.agreement');
         Route::get('personal-area', 'UserController@index')->name('user.personalArea');
+        Route::get('personal-area/filter', 'UserController@filter')->name('user.filter');
         Route::get('user-to-edit/{user}', 'UserController@edit')->name('user.edit');
         Route::put('user/update/{user}', 'UserController@update')->name('user.update');
     });
@@ -138,8 +139,8 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('template-edit/{template}', 'TemplateController@edit')->name('template.edit');
     Route::post('template-update/{id}', 'TemplateController@update')->name('template.update');
     Route::post('template-delete/{id}', 'TemplateController@delete')->name('template.delete');
-    Route::get('template-field-create/{template}', 'TemplateFieldsController@create')->name('templatefield.create');
-    Route::post('template-field-create', 'TemplateFieldsController@store')->name('templatefield.store');
+    Route::get('template-field-create/{template}', 'TemplateFieldController@create')->name('templatefield.create');
+    Route::post('template-field-create', 'TemplateFieldController@store')->name('templatefield.store');
 
     Route::get('auction', 'AuctionController@index')->name('auction.index');
     Route::get('auction/create', 'AuctionController@create')->name('auction.create');

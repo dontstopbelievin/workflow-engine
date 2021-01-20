@@ -9,7 +9,7 @@
     <div class="main-panel">
         <div class="content">
             <div class="container-fluid">
-                <h4 class="page-title">Все услуги</h4>
+                <h4 class="page-title">Заявки</h4>
                 @if (session('status'))
                     <div class="alert alert-success" role="alert">
                         {{ session('status') }}

@@ -193,6 +193,8 @@ class ProcessController extends Controller
             $dbQueryString = "ALTER TABLE $tableName ADD revision_reason_to_spec_id varchar(255)";
             DB::statement($dbQueryString);
         }
+        $dbQueryString = "ALTER TABLE $tableName ADD updated_at TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ";
+        DB::statement($dbQueryString);
         return Redirect::route('processes.edit', [$process])->with('status', 'Справочники успешно сохранены');
     }
 
@@ -236,26 +238,37 @@ class ProcessController extends Controller
                $process->save();
            }
 
-           foreach ($request->reject as $id) {
-             $getFromDB = DB::table("process_role")
-                          ->where('process_id', $process->id)
-                          ->where('role_id', $id)
-                          ->update(['can_reject' => 1]);
+           if(isset($request->reject)){
+             foreach ($request->reject as $id) {
+                 $this->updateProcessRoleCanReject($process->id, $id);
+//               $getFromDB = DB::table("process_role")
+//                            ->where('process_id', $process->id)
+//                            ->where('role_id', $id)
+//                            ->update(['can_reject' => 1]);
+             }
            }
-           foreach ($request->revision as $id) {
-             $getFromDB = DB::table("process_role")
-                          ->where('process_id', $process->id)
-                          ->where('role_id', $id)
-                          ->update(['can_send_to_revision' => 1]);
+           if(isset($request->revision)){
+             foreach ($request->revision as $id) {
+                 $this->updateProcessRoleToRevision($process->id, $id);
+//               $getFromDB = DB::table("process_role")
+//                            ->where('process_id', $process->id)
+//                            ->where('role_id', $id)
+//                            ->update(['can_send_to_revision' => 1]);
+             }
            }
-
            return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
        }
 
     }
 
-    public function addOrganization(Request $request, Process $process) {
 
+
+    public function addOrganization(Request $request, Process $process)
+    {
+        if (!$request->mainOrganization) {
+            echo 'Пожалуйста, выберите организацию';
+            return;
+        }
         $organization = CityManagement::where('name', $request->mainOrganization)->first();
         $process->main_organization_id = $organization->id;
         $process->update();
@@ -272,6 +285,18 @@ class ProcessController extends Controller
 //        $process->main_organization_id = $organization->id;
 //        $process->update();
         return Redirect::back()->with('status', 'Основной маршрут выбран успешно');
+    }
+
+    public function addDocTemplates(Request $request)
+    {
+        $process = Process::find($request->processId);
+        $process->template_doc_id = $request->docTemplateId;
+        $process->update();
+//        dd($request->all());
+//        $organization = CityManagement::where('name', $request->mainOrganization)->first();
+//        $process->main_organization_id = $organization->id;
+//        $process->update();
+        return Redirect::back()->with('status', 'Осносвной Маршрут Выбран успешно');
     }
 
     public function addSubRoles(Request $request) {
