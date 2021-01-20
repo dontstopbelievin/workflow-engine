@@ -13,7 +13,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function(event) { 
+        document.addEventListener("DOMContentLoaded", function(event) {
         document.getElementById("mybutton").click();
         });
     </script>
@@ -43,7 +43,7 @@
                             <button class="tablinks" onclick="openTab(event, 'rejectReasonTab')">Причина отказа</button>
                         </div>
 
-                        
+
                         <div id="applicationInfo" class="tabcontent">
                             <!-- <h4 class="text-center">Информация о заявителе</h4> -->
                             <ul class="list-group" id="list">
@@ -277,7 +277,7 @@
                         </div>
                         <div id="items">
                             @if($canApprove)
-                                    @isset($templateFields)
+                                    @if (isset($templateFields) && $rejectReasonArray['rejectReason'] == null)
                                         <h4 class="card-title text-center" style="margin-top:50px;">Поля Шаблона</h4>
                                         <form id = "templateFieldsId" method="POST" enctype="multipart/form-data">
                                             {{--<input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">--}}
@@ -296,7 +296,7 @@
                                                 </div>
                                             @endforeach
                                         </form>
-                                    @endisset
+                                    @endif
                                 @if($toCitizen)
                                     <form action="{{ route('applications.toCitizen', ['application_id' => $application->id]) }}" method="post">
                                         @csrf
@@ -335,21 +335,27 @@
                                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
                                       @endif
                                         @if($toMultipleRoles["exists"])
-                                            <div class="col-md-6">
-                                                {{--<form action="{{ route('applications.multipleApprove', ['application_id' => $application->id]) }}" method="post"">--}}
-                                                    {{--@csrf--}}
-                                                    <select name="role" id="role" class="form-control">
-                                                    @foreach($toMultipleRoles["roleOptions"] as $role)
-                                                        <option value="{{$role->id}}">{{$role->name}}</option>
-                                                    @endforeach
-                                                    </select>
-                                                    {{--<input type="hidden" name="process_id" value = {{$process->id}}>--}}
-                                                    <button  class="btn btn-success" id="multipleApproveButton" type="submit">Согласовать</button>
-                                                {{--</form>--}}
-                                            </div>
-                                            @else
-                                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
-                                            @endif
+                                          <div class="col-md-6">
+                                              {{--<form action="{{ route('applications.multipleApprove', ['application_id' => $application->id]) }}" method="post">--}}
+                                                  {{--@csrf--}}
+                                                  <select name="role" id="role" class="form-control">
+                                                  @foreach($toMultipleRoles["roleOptions"] as $role)
+                                                      <option value="{{$role->id}}">{{$role->name}}</option>
+                                                  @endforeach
+                                                  </select>
+                                                  {{--<input type="hidden" name="process_id" value = {{$process->id}}>--}}
+                                                  <button  class="btn btn-success" id="multipleApproveButton" type="submit">Согласовать</button>
+                                              {{--</form>--}}
+                                          </div>
+                                        @else
+                                          @if($rejectReasonArray['rejectReason'] == null)
+                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
+                                          @else
+                                            <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
+                                            <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
+                                            <button class="btn btn-danger" data-dismiss="modal" id="approveReject">Согласовать отказ</button>
+                                          @endif
+                                        @endif
 
                                     </div>
                                 @endif
@@ -448,6 +454,16 @@
                 $('#items').load(location.href + ' #items');
             });
         });
+
+        $('#approveReject').click(function(event) {
+            var processId = $('#processId').val();
+            var applicationId = $('#applicationId').val();
+            console.log(processId, applicationId)
+            $.post('/applications/approveReject', {'processId':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
+                $('#items').load(location.href + ' #items');
+            });
+        });
+
         $('#revisionButton').click(function(event) {
             let revisionReason = $('#revisionReason').val();
             var roleToRevise = $( "#roleToRevise option:selected" ).text();
@@ -516,11 +532,11 @@
         $('#commentButton').click(function(event) {
             // event.preventDefault();
             let formData = new FormData();
-            let comments = $('#comments').val();
+            //let comments = $('#comments').val();
             let processId = $('#processId').val();
             let applicationId = $('#applicationId').val();
             let inputs = $('#templateFieldsId :input');
-            formData.append('comments', comments)
+            //formData.append('comments', comments)
             formData.append('process_id', processId)
             formData.append('applicationId', applicationId)
             inputs.each(function() {
