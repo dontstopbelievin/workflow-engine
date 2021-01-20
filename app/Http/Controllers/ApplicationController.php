@@ -311,15 +311,15 @@ class ApplicationController extends Controller
         $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
         $role = Auth::user()->role;
 
-        // $isCurrentUserRoleInParallel = $this->checkIfCurrentUserRoleInParallel($process);
-        // if ($isCurrentUserRoleInParallel) {
-        //     $roleAfterParallelWithIndex = $this->getRoleAfterParallel($process);
-        //     $roleAfterParallel = $roleAfterParallelWithIndex["roleAfterParallel"];
-        //     $index = $roleAfterParallelWithIndex["index"];
-        //     $status = Status::find($roleAfterParallel["id"]);
-        //     $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role["id"]);
-        //
-        // } else {
+        $isCurrentUserRoleInParallel = $this->checkIfCurrentUserRoleInParallel($process);
+        if ($isCurrentUserRoleInParallel) {
+            $roleAfterParallelWithIndex = $this->getRoleAfterParallel($process);
+            $roleAfterParallel = $roleAfterParallelWithIndex["roleAfterParallel"];
+            $index = $roleAfterParallelWithIndex["index"];
+            $status = Status::find($roleAfterParallel["id"]);
+            $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role["id"]);
+
+        } else {
             $index = $application->index_main;
             $appRoutes = json_decode($this->getAppRoutes($application->process_id));
             $nextRole = $appRoutes[$index]; // find next role
@@ -329,7 +329,7 @@ class ApplicationController extends Controller
             $index = $index + 1;
             $status = Status::find($idOfNextRole);
             $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
-        //}
+        }
         DB::table('logs')->insert( $logsArray);
         $this->insertComments($request->comments, $request->applicationId, $table->id);
         if ($application->to_revision === 0) {
