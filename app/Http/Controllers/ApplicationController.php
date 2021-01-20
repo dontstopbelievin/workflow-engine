@@ -551,10 +551,6 @@ class ApplicationController extends Controller
         $templateName = $template->name;
         $templateTable = $this->getTemplateTableName($templateName);
         // dd($process->template_doc);
-<<<<<<< HEAD
-=======
-
->>>>>>> newDesign
         if (Schema::hasTable($templateTable)) {
         //    dd($request->applicationId);
             $fields = DB::table($templateTable)->select('*')->where('application_id', $applicationId)->first();
