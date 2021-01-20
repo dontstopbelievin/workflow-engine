@@ -72,8 +72,8 @@ class ProcessController extends Controller
             $roles = Role::where('name' ,'<>', 'Заявитель')->get();
             $tableName = $this->getTableName($process->name);
             $tableColumns = $this->getColumns($tableName);
-            $tableColumns = array_slice($tableColumns, 0, -11);//??
-            $parentId = $this->getParentRoleId($process->id);//?? 1 role out of 3
+            $tableColumns = array_slice($tableColumns, 0, -11);
+            $parentId = $this->getParentRoleId($process->id);
             $organizations = CityManagement::all();
             $mainOrg = CityManagement::find($process->main_organization_id);
             $nameMainOrg = '';
@@ -91,8 +91,8 @@ class ProcessController extends Controller
 
     public function update(Request $request, Process $process) {
 
-        $numberOfDays = intval($request->get('deadline'));
-        $deadline = Carbon::now()->addDays($numberOfDays);
+        // $numberOfDays = intval($request->get('deadline'));
+        // $deadline = Carbon::now()->addDays($numberOfDays);
         $process->name = $request->name;
         $process->deadline = $request->deadline;
         $process->update();

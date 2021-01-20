@@ -19,6 +19,7 @@
       <div class="card">
         <div class="card-body">
           <div class="col-md-12">
+            <h5>О процессе:</h5>
             <form action="{{ route('processes.update', ['process' => $process]) }}" method="POST">
               {{ csrf_field( )}}
               {{ method_field('PUT') }}
@@ -37,7 +38,7 @@
             </form>
             <hr>
 
-                    <!-- Modal -->
+            <!-- Modal -->
             <div class="modal fade" id="myModal" role="dialog">
                 <div class="modal-dialog">
                 <!-- Modal content-->
@@ -46,7 +47,7 @@
                             <span class="modal-title">Список Полей</span>
                         </div>
                         <form action="{{ route('processes.createProcessTable', ['process' => $process]) }}" method="POST">
-                        @csrf
+                          @csrf
                             <div class="modal-body">
                                 @isset($columns)
                                     @foreach ($columns as $column)
@@ -133,8 +134,9 @@
                     </div>
                 </div>
             </div>
+            <h5>Создать таблицу:</h5>
             <button type="button" class="btn btn-outline-info mx-2" data-toggle="modal" data-target="#myModal">Выбрать Поля</button>
-            @isset($tableColumns)
+            <!--@isset($tableColumns)
               <div class="card-header">
                 <div class="card-title">Поля процесса:</div>
               </div>
@@ -144,11 +146,9 @@
                     <li class="list-group-item w-50 text-center">{{$column}}</li>
                 </ul>
                 @endforeach
-            @endisset
+            @endisset-->
             <hr>
-            <div class="card-header">
-              <div class="card-title"><h5>Создание маршрутов</h5></div>
-            </div>
+            <h5>Создание маршрутов:</h5>
             @isset($organizations)
             <div class="my-4">
                 <form action="{{ route('processes.addOrganization', ['process' => $process]) }}" method="POST">
