@@ -65,47 +65,34 @@ class ProcessController extends Controller
     }
 
     public function edit(Process $process) {
-
-        $accepted = Template::where('id', $process->accepted_template_id)->where('accept_template', 1)->first();
-        $rejected = Template::where('id', $process->rejected_template_id)->where('accept_template', 0)->first();
-        $columns = $this->getAllDictionaries();
-        $roles = Role::where('name' ,'<>', 'Заявитель')->get();
-        $tableName = $this->getTableName($process->name);
-        $tableColumns = $this->getColumns($tableName);
-        $tableColumns = array_slice($tableColumns, 0, -10);
-        $parentId = $this->getParentRoleId($process->id);
-        $organizations = CityManagement::all();
-        $mainOrg = CityManagement::find($process->main_organization_id);
-//        dd($mainOrg->name);
-        $nameMainOrg = '';
-        if(isset($mainOrg->name)) {
-            $nameMainOrg=$mainOrg->name;
+        try {
+            $accepted = Template::where('id', $process->accepted_template_id)->where('accept_template', 1)->first();
+            $rejected = Template::where('id', $process->rejected_template_id)->where('accept_template', 0)->first();
+            $columns = $this->getAllDictionaries();
+            $roles = Role::where('name' ,'<>', 'Заявитель')->get();
+            $tableName = $this->getTableName($process->name);
+            $tableColumns = $this->getColumns($tableName);
+            $tableColumns = array_slice($tableColumns, 0, -11);
+            $parentId = $this->getParentRoleId($process->id);
+            $organizations = CityManagement::all();
+            $mainOrg = CityManagement::find($process->main_organization_id);
+            $nameMainOrg = '';
+            if(isset($mainOrg->name)) {
+                $nameMainOrg=$mainOrg->name;
+            }
+            $templateDocs = TemplateDoc::all();
+            $iterateRoles = $this->getIterateRoles($process);
+            $sAllRoles = $this->getAllRoles($process, $parentId, $iterateRoles);
+            return view('process.edit', compact('templateDocs', 'process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','sAllRoles', 'organizations', 'nameMainOrg'));
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
         }
-
-//        if (empty($mainOrg)) {
-//            return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles', 'organizations', 'nameMainOrg'));
-//        }
-//        $nameMainOrg = $mainOrg->name;
-//        if (empty($organizations)) {
-//            echo 'Добавьте организации';
-//            return;
-//        }
-//        if ($parentId === 0) {
-//            return view('process.edit', compact('process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','columns','organizations','nameMainOrg'));
-//        }
-
-        $templateDocs = TemplateDoc::all();
-//        dd($templateDocs);
-        $iterateRoles = $this->getIterateRoles($process);
-        $sAllRoles = $this->getAllRoles($process, $parentId,$iterateRoles);
-//        dd($sAllRoles);
-        return view('process.edit', compact('templateDocs', 'process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','sAllRoles', 'organizations', 'nameMainOrg'));
     }
 
     public function update(Request $request, Process $process) {
 
-        $numberOfDays = intval($request->get('deadline'));
-        $deadline = Carbon::now()->addDays($numberOfDays);
+        // $numberOfDays = intval($request->get('deadline'));
+        // $deadline = Carbon::now()->addDays($numberOfDays);
         $process->name = $request->name;
         $process->deadline = $request->deadline;
         $process->update();
