@@ -287,18 +287,6 @@ class ProcessController extends Controller
         return Redirect::back()->with('status', 'Основной маршрут выбран успешно');
     }
 
-    public function addDocTemplates(Request $request)
-    {
-        $process = Process::find($request->processId);
-        $process->template_doc_id = $request->docTemplateId;
-        $process->update();
-//        dd($request->all());
-//        $organization = CityManagement::where('name', $request->mainOrganization)->first();
-//        $process->main_organization_id = $organization->id;
-//        $process->update();
-        return Redirect::back()->with('status', 'Осносвной Маршрут Выбран успешно');
-    }
-
     public function addSubRoles(Request $request) {
 
         $parentRole = Role::where('name', $request->roleToAdd)->first();
