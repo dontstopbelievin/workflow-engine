@@ -550,6 +550,7 @@ class ApplicationController extends Controller
         $template = Template::where('id', $templateId)->first();
         $templateName = $template->name;
         $templateTable = $this->getTemplateTableName($templateName);
+        // dd($templateTable);
         // dd($process->template_doc);
         if (Schema::hasTable($templateTable)) {
         //    dd($request->applicationId);
@@ -584,12 +585,15 @@ class ApplicationController extends Controller
 
 
             /// for testing purposes
-            // $updatedFields["applicant_name"] = 'Аман';
-            // $updatedFields["area"] = '114 га';
+            $updatedFields["applicant_name"] = 'Аман';
+            $updatedFields["area"] = '114 га';
+            $updatedFields["square"] = 'Байконур';
+            $updatedFields["street"] = 'Кабанбай батыра';
+            $updatedFields["duration"] = '12';
+            $updatedFields["object_name"] = 'object_name';
+
             // $updatedFields["construction_name_before"] = 'Строительство';
             // $updatedFields["construction_name_after"] = 'Делопроизводство';
-            // $updatedFields["square"] = 'Байконур';
-            // $updatedFields["street"] = 'Кабанбай батыра';
             // $updatedFields["area_number"] = '1146';
             ///
             $userName = Auth::user()->name;
@@ -597,14 +601,22 @@ class ApplicationController extends Controller
 //            $image = QrCode::size(300)->generate('A basic example of QR code!');
 //            dd($image);
             $qrcode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($userName));
-            $data = array('data' => 123);
             $pathToView = $process->template_doc->pdf_path;
+            // dd($pathToView);
             $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
-            $name = 'Султанхан';
+            // return view($process->template_doc->pdf_path)->with('updatedFields', $updatedFields);
+            // $mpdf = new Mpdf();
+            // $content = view($pathToView, ['updatedFields' => $updatedFields])->render();
+            // $mpdf->WriteHTML($content);
+            // return view('pdf_viewer')->with('my_pdf', base64_encode($mpdf->Output('', Destination::STRING_RETURN)));
             $pdf = PDF::loadView($pathToView, compact('updatedFields', 'userName', 'roleName'));
             $content = $pdf->output();
-            file_put_contents(storage_path(). $storagePathToPDF, $content);
-
+            // dd(base64_encode($content));
+            // return $pdf->download('invoice.pdf');
+            // return view('pdf_viewer')->with('my_pdf', $content);
+            // dd($content);
+            // file_put_contents(storage_path(). $storagePathToPDF, $content);
+            // return $tableName;
             $affected = DB::table($tableName)
                 ->where('id', $id)
                 ->update(['doc_path' => $docPath]);
@@ -620,8 +632,7 @@ class ApplicationController extends Controller
         $status = Status::find($statusCount);
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $id)->first();
-        $user = Auth::user();
-        $role = $user->role;
+        $role = Auth::user()->role;
         $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
         Log::insert( $logsArray);
         $affected = DB::table($tableName)

@@ -267,10 +267,6 @@ class ProcessController extends Controller
         $process = Process::find($request->processId);
         $process->template_doc_id = $request->docTemplateId;
         $process->save();
-//        dd($request->all());
-//        $organization = CityManagement::where('name', $request->mainOrganization)->first();
-//        $process->main_organization_id = $organization->id;
-//        $process->update();
         return Redirect::back()->with('status', 'Основной маршрут выбран успешно');
     }
 
