@@ -126,7 +126,7 @@ class AuctionController extends Controller
     }
 
     public function sendToEgkn(Request $request)
-    {        
+    {
         try {
 //            $auction = Auction::find($request->id);
 //            $response = ShepRequestSender::send('geoportal_egkn_receive_layer', $auction->getDataForEgkn());

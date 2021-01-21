@@ -42,6 +42,8 @@ Route::get('/loginwithecp', function () {
 
 Auth::routes();
 
+Route::get('/test', 'IntegrationController@test')->middleware('guest');
+Route::get('/test2', function(){return 'asdf';})->middleware('guest');
 Route::get('/integrations/{type}', 'IntegrationController@index')->middleware('guest');
 Route::post('/integrations/shep/receiver', 'IntegrationController@receive')->middleware('guest');
 Route::post('/integrations/shep/sync-request-receiver', 'IntegrationController@sync')->middleware('guest');
@@ -66,6 +68,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('applications/store', 'ApplicationController@store')->name('applications.store');
         Route::post('applications/approve', 'ApplicationController@approve')->name('applications.approve');
         Route::post('applications/reject', 'ApplicationController@reject')->name('applications.reject');
+        Route::post('applications/approveReject', 'ApplicationController@approveReject')->name('applications.approveReject');
         Route::post('applications/revision', 'ApplicationController@revision')->name('applications.revision');
         Route::post('applications/sendToSubRoute', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
         Route::post('applications/backToMainOrg/{application_id}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');

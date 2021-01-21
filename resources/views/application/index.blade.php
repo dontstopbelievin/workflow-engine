@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    
+
 
     <div class="main-panel">
   		<div class="content">
@@ -36,7 +36,7 @@
                           <tr>
                               <td>{{$loop->iteration}}</td>
                               <td>{{$app["name"] ?? '' }}</td>
-                              @if($app["status"] === 'Отправлено заявителю на согласование')
+                              @if($app["status"] === 'Отправлено заявителю на согласование' || $app["status"] === 'Отправлено заявителю на согласование отказа')
                                   <td>Отправлено заявителю</td>
                               @else
                                   <td>{{$app["status"] ?? ''}}</td>
@@ -59,15 +59,3 @@
           </div>
         </div>
 @endsection
-
-<!-- @section('scripts')
-<script src="../assets/js/core/jquery.min.js"></script>
-  <script src="../assets/js/core/popper.min.js"></script>
-  <script src="../assets/js/core/bootstrap.min.js"></script>
-  <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
-  <script src="../assets/js/plugins/chartjs.min.js"></script>
-  <script src="../assets/js/plugins/bootstrap-notify.js"></script>
-  <script src="../assets/js/now-ui-dashboard.min.js?v=1.5.0" type="text/javascript"></script>
-  <script src="../assets/demo/demo.js"></script>
-@endsection -->

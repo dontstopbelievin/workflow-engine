@@ -27,15 +27,15 @@
   <link rel="stylesheet" href="../assets/css/demo.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="../assets/js/core/jquery.3.2.1.min.js"></script>
+  <script src="../assets/js/core/jquery.3.2.1.min.js"></script>  
   <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
   <div class="wrapper">
     <div class="main-header">
-      <div class="logo-header">
+      <div class="logo-header flex-row">
         <a href="{{ route('applications.service') }}" class="logo">
-          Электронные услуги
+          Электронные услуги          
         </a>
         <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -46,7 +46,7 @@
       <nav class="navbar navbar-header navbar-expand-lg">
         <div class="container-fluid">
 
-          <a href="/policy" class="navbar-left navbar-form nav-search mr-md-3">
+          <a href="/policy" class="navbar-left navbar-form nav-search mr-md-3 w-50">
                 Правила информационной безопасности
           </a>
           <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
@@ -58,9 +58,10 @@
 
             @else
             <li class="nav-item dropdown">
-              <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false" data-toggle="dropdown" aria-haspopup="true">
+              <a class="dropdown-toggle profile-pic float-right" data-toggle="dropdown" href="#" aria-expanded="false" data-toggle="dropdown" aria-haspopup="true">
                 <span>{{ Auth::user()->name }}</span>
               </a>
+                <small class="d-flex flex-column w-50 float-right">({{ Auth::user()->role->name }})</small>
               <ul class="dropdown-menu dropdown-user">
                 <li> <a class="dropdown-item" href="{{ route('user.personalArea') }}">Мои данные</a> </li>
                 <li> <a class="dropdown-item" href="{{ route('user.edit', ['user' => Auth::user()]) }}">Редактировать данные</a> </li>
@@ -82,96 +83,98 @@
       </nav>
     </div>
     <div class="sidebar">
-      <div class="scrollbar-inner sidebar-wrapper">
-          <ul class="nav">
-            @if( request()->segment(1) == 'auction' )
-                <li class="nav-item active">
-            @else
-                <li class="nav-item">
-            @endif
-                  <a href="{{ route('auction.index') }}">
-                      <i class="la la-table"></i>
-                      <p>ЕГКН</p>
-                  </a>
-              </li>
-              @if( request()->segment(1) == 'services' || request()->segment(1) == 'index' || request()->segment(1) == 'applications-create')
-                  <li class="nav-item active">
-              @else
-                  <li class="nav-item">
-              @endif
-                  <a href="{{ route('applications.service') }}">
-                      <i class="la la-dashboard"></i>
-                      <p>Заявки</p>
-                  </a>
-              </li>
-              <hr>
-              @if( request()->segment(1) == 'process' ||  request()->segment(1) == 'processes' ||  request()->segment(1) == 'processes-edit' || request()->segment(1) == 'template-field-create'  )
-                  <li class="nav-item active">
-              @else
-                  <li class="nav-item">
-              @endif
-                  <a href="{{ route('processes.index') }}">
-                      <i class="la la-keyboard-o"></i>
-                      <p>Процессы</p>
-                      <span class="badge badge-count">{{ $processesCount }}</span>
-                  </a>
-              </li>
-              @if( request()->segment(1) == 'roles' || request()->segment(1) == 'role-edit' )
-                  <li class="nav-item active">
-              @else
-                  <li class="nav-item">
-              @endif
-                  <a href="{{ route('role.index') }}">
-                      <i class="la la-th"></i>
-                      <p>Роли</p>
-                      <span class="badge badge-count">{{ $rolesCount }}</span>
-                  </a>
-              </li>
-              @if( request()->segment(1) == 'cities'  )
-                  <li class="nav-item active">
-              @else
-                  <li class="nav-item">
-              @endif
-                  <a href="{{ route('city.index') }}">
-                      <i class="la la-bell"></i>
-                      <p>Организации</p>
-                      <span class="badge badge-count">{{ $cityManagementCount }}</span>
-                  </a>
-              </li>
-              @if( request()->segment(1) == 'role-register' || request()->segment(1) == 'user-edit'  )
-                  <li class="nav-item active">
-              @else
-                  <li class="nav-item">
-              @endif
-                  <a href="{{ route('user-role.register') }}">
-                      <i class="la la-font"></i>
-                      <p>Пользователи</p>
-                      <span class="badge badge-count">{{ $usersCount }}</span>
-                  </a>
-              </li>
-              @if( request()->segment(1) == 'dictionary')
-                  <li class="nav-item active">
-              @else
-                  <li class="nav-item">
-              @endif
-                  <a href="{{ route('dictionary') }}">
-                      <i class="la la-fonticons"></i>
-                      <p>Справочник</p>
-                      <span class="badge badge-count">{{ $dictionariesCount }}</span>
-                  </a>
-              </li>
-              @if( request()->segment(1) == 'logs' )
-                  <li class="nav-item active">
-              @else
-                  <li class="nav-item">
-              @endif
-                  <a href="{{ route('logs') }}">
-                      <i class="la la-fonticons"></i>
-                      <p>Логи сервиса</p>
-                  </a>
-              </li>
-          </ul>
-      </div>
+        <div class="scrollbar-inner sidebar-wrapper">
+            <ul class="nav">
+                @if( Auth::user()->usertype === 'admin')
+                    @if( request()->segment(1) == 'auction' )
+                        <li class="nav-item active">
+                    @else
+                        <li class="nav-item">
+                    @endif
+                        <a href="{{ route('auction.index') }}">
+                            <i class="la la-table"></i>
+                            <p>Аукцион</p>
+                        </a>
+                    </li>
+                    @if( request()->segment(1) == 'process' ||  request()->segment(1) == 'processes' ||  request()->segment(1) == 'processes-edit' || request()->segment(1) == 'template-field-create'  )
+                        <li class="nav-item active">
+                    @else
+                        <li class="nav-item">
+                    @endif
+                        <a href="{{ route('processes.index') }}">
+                            <i class="la la-keyboard-o"></i>
+                            <p>Процессы</p>
+                            <span class="badge badge-count">{{ $processesCount }}</span>
+                        </a>
+                    </li>
+                    @if( request()->segment(1) == 'roles' || request()->segment(1) == 'role-edit' )
+                        <li class="nav-item active">
+                    @else
+                        <li class="nav-item">
+                    @endif
+                        <a href="{{ route('role.index') }}">
+                            <i class="la la-th"></i>
+                            <p>Роли</p>
+                            <span class="badge badge-count">{{ $rolesCount }}</span>
+                        </a>
+                    </li>
+                    @if( request()->segment(1) == 'cities'  )
+                        <li class="nav-item active">
+                    @else
+                        <li class="nav-item">
+                    @endif
+                        <a href="{{ route('city.index') }}">
+                            <i class="la la-bell"></i>
+                            <p>Организации</p>
+                            <span class="badge badge-count">{{ $cityManagementCount }}</span>
+                        </a>
+                    </li>
+                    @if( request()->segment(1) == 'role-register' || request()->segment(1) == 'user-edit'  )
+                        <li class="nav-item active">
+                    @else
+                        <li class="nav-item">
+                    @endif
+                        <a href="{{ route('user-role.register') }}">
+                            <i class="la la-font"></i>
+                            <p>Пользователи</p>
+                            <span class="badge badge-count">{{ $usersCount }}</span>
+                        </a>
+                    </li>
+                    @if( request()->segment(1) == 'dictionary')
+                        <li class="nav-item active">
+                    @else
+                        <li class="nav-item">
+                    @endif
+                        <a href="{{ route('dictionary') }}">
+                            <i class="la la-fonticons"></i>
+                            <p>Справочник</p>
+                            <span class="badge badge-count">{{ $dictionariesCount }}</span>
+                        </a>
+                    </li>
+                    @if( request()->segment(1) == 'logs' )
+                        <li class="nav-item active">
+                    @else
+                        <li class="nav-item">
+                    @endif
+                        <a href="{{ route('logs') }}">
+                            <i class="la la-fonticons"></i>
+                            <p>Логи сервиса</p>
+                        </a>
+                    </li>
+                @endif
+                
+                @if( request()->segment(1) == 'services' || request()->segment(1) == 'index' || request()->segment(1) == 'applications-create')
+                    <li class="nav-item active">
+                @else
+                    <li class="nav-item">
+                @endif
+                    <a href="{{ route('applications.service') }}">
+                        <i class="la la-dashboard"></i>
+                        <p>Все услуги</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
         @yield('content')
       </div>

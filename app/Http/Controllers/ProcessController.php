@@ -241,19 +241,11 @@ class ProcessController extends Controller
            if(isset($request->reject)){
              foreach ($request->reject as $id) {
                  $this->updateProcessRoleCanReject($process->id, $id);
-//               $getFromDB = DB::table("process_role")
-//                            ->where('process_id', $process->id)
-//                            ->where('role_id', $id)
-//                            ->update(['can_reject' => 1]);
              }
            }
            if(isset($request->revision)){
              foreach ($request->revision as $id) {
                  $this->updateProcessRoleToRevision($process->id, $id);
-//               $getFromDB = DB::table("process_role")
-//                            ->where('process_id', $process->id)
-//                            ->where('role_id', $id)
-//                            ->update(['can_send_to_revision' => 1]);
              }
            }
            return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
@@ -272,19 +264,15 @@ class ProcessController extends Controller
         $organization = CityManagement::where('name', $request->mainOrganization)->first();
         $process->main_organization_id = $organization->id;
         $process->update();
-        return Redirect::route('processes.edit', [$process])->with('status', 'Осносвной Маршрут Выбран успешно');
+        return Redirect::route('processes.edit', [$process])->with('status', 'Основной маршрут выбран успешно');
     }
 
     public function addDocTemplates(Request $request)
     {
         $process = Process::find($request->processId);
         $process->template_doc_id = $request->docTemplateId;
-        $process->update();
-//        dd($request->all());
-//        $organization = CityManagement::where('name', $request->mainOrganization)->first();
-//        $process->main_organization_id = $organization->id;
-//        $process->update();
-        return Redirect::back()->with('status', 'Осносвной Маршрут Выбран успешно');
+        $process->save();
+        return Redirect::back()->with('status', 'Основной маршрут выбран успешно');
     }
 
     public function addSubRoles(Request $request) {

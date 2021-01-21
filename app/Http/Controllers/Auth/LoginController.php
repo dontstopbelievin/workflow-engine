@@ -74,7 +74,7 @@ class LoginController extends Controller
                         $user = auth()->guard('web')->user();
                         $mytime = Carbon::now()->toDateTimeString();
 
-                        $txt = $user->name . ' '. $user->email . ' ' . $mytime . ' ' . "Попытка параллельного входа в систему\r\n";
+                        $txt = $mytime . ' ' . $user->name . ' '. $user->email . ' ' . "Попытка параллельного входа в систему\r\n";
                         file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
                     }
                 }
@@ -83,31 +83,36 @@ class LoginController extends Controller
             \DB::table('users')->where('id', $user->id)->update(['session_id' => $new_sessid]);
 
 
-//            $error = true;
-//            $secret = '6LcOIv4ZAAAAAPJ6Gj6X_5kG368Ck-YZ0LclzNUI';
-//
-//            if (!empty($_POST['g-recaptcha-response'])) {
-//                $out = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . $secret . '&response=' . $_POST['g-recaptcha-response']);
-//                $out = json_decode($out);
-//                if ($out->success == true) {
-//                    $error = false;
-//                }
-//            }
-//
-//            if ($error) {
-//                echo 'Ошибка заполнения капчи.';
-//            }
+            if(isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response']))
+            {
+                  $secret = '6LcOIv4ZAAAAAPJ6Gj6X_5kG368Ck-YZ0LclzNUI';
+                  $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$_POST['g-recaptcha-response']);
+                  $responseData = json_decode($verifyResponse);
+                  if($responseData->success)
+                  {
+                      $succMsg = 'Успешно';
+                  }
+                  else
+                  {
+                      $errMsg = 'Попробуйте снова';
+                  }
+             }
 
             $user = auth()->guard('web')->user();
             $mytime = Carbon::now()->toDateTimeString();
 
-            $txt = $user->name . ' ' . $user->email . ' ' . $mytime . ' ' . "Успешный вход в систему\r\n";
+            $txt = $mytime . ' ' . $user->name . ' ' . $user->email . ' ' . "Успешный вход в систему\r\n";
             file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
+            $userType = Null;
 
+            if (Auth::user()->name === 'Admin' || Auth::user()->name === 'Абаев Анзор' || Auth::user()->name === 'Шегенов Ринат') {
+                $userType = 'admin';
+            }
             $user->update([
                 'last_login_at' => $user->current_login_at,
                 'current_login_at' => Carbon::now()->toDateTimeString(),
-                'last_login_ip' => $request->getClientIp()
+                'last_login_ip' => $request->getClientIp(),
+                'usertype' => $userType,
             ]);
             $processes = Process::all();
 
@@ -118,11 +123,11 @@ class LoginController extends Controller
             }
             return redirect($this->redirectTo());
         }
-        \Session::put('login_error', 'Your email and password wrong!!');
+        \Session::put('login_error', 'Ваша почта или пароль неверно введены!');
 
         $failedUser = User::find($user->id);
         $mytime = Carbon::now()->toDateTimeString();
-        $txt = $user->name . ' ' . $user->email . ' ' . $mytime . ' ' . "Не успешный вход в систему\r\n";
+        $txt = $mytime . ' ' . $user->name . ' ' . $user->email . ' ' .  "Неудачный вход в систему\r\n";
         file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
 
         $failedUser->update([
@@ -140,7 +145,7 @@ class LoginController extends Controller
         \Session::flush();
         \Session::put('success', 'Вы успешно вышли из системы');
         $mytime = Carbon::now()->toDateTimeString();
-        $txt = $user->name . ' ' . $user->email . ' ' . $mytime . ' ' . "Успешный выход из системы\r\n";
+        $txt = $mytime . ' ' . $user->name . ' ' . $user->email . ' ' . "Успешный выход из системы\r\n";
         file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
 
         return redirect()->to('/login');

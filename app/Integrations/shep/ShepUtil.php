@@ -107,7 +107,8 @@ class ShepUtil
                 file_put_contents(sprintf('%s/file_out_%s.request', $sFolder, $sProcessId), $sPostData);
                 file_put_contents(sprintf('%s/file_out_%s.response', $sFolder, $sProcessId), $sResult);
             }
-            echo json_encode(array('status' => 0, 'data' => 'shep internal error: http-' . $iHttpCode));
+            echo json_encode(array('status' => 0, 'data' => 'shep internal error: http-' . $iHttpCode,
+                'response' => json_encode($sResult, JSON_UNESCAPED_UNICODE)));
         }
         curl_close($oCurl);
     }
@@ -182,6 +183,9 @@ class ShepUtil
     public static function signXmlJar($sXml)
     {
         $sFilePath = 'tmp/' . Uuid::generateV4();
+        if(trim($sXml) == ''){
+            $sXml = '<request>Empty request</request>';
+        }
         Storage::disk('local')->put($sFilePath, $sXml);
         exec(sprintf(
             'java -jar -Dfile.encoding=UTF-8 %s/XmlSigner.jar %s %s %s',
