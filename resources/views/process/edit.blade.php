@@ -237,12 +237,19 @@
             <hr style="height:1px;border-width:0; background-color:black;">
             <div class="card-title"><h5>Создание шаблонов:</h5></div>
               <div>
+                <div>
+                  @foreach($templateDocs as $template)
+                    @if($template->id == $process->template_doc_id)
+                      <b>Прикрепленный шаблон:</b> {{$template->name}}
+                      @break
+                    @endif
+                  @endforeach
+                </div>
                 <form action="{{ route('process.addDocTemplates') }}" method="POST">
                     @csrf
                     <div class="form-group">
-
                         <input type="hidden" name="processId" value = {{$process->id}}>
-                        <label for="docTemplate">Выберите Документ Шаблона</label>
+                        <label for="docTemplate">Выберите другой документ шаблона:</label>
                         <select name="docTemplateId" id="docTemplate" class="form-control">
                             @foreach($templateDocs as $doc)
                                 <option value="{{$doc->id}}">

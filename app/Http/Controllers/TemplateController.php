@@ -11,6 +11,7 @@ use App\SelectOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use App\Traits\dbQueries;
+use Illuminate\Support\Facades\DB;
 
 class TemplateController extends Controller
 {
@@ -30,7 +31,7 @@ class TemplateController extends Controller
 
     public function store(Request $request) {
         try {
-            DB::transaction(function () {
+            DB::transaction(function () use($request){
                 $templateState = $request->template_state === "accepted";
                 $request->validate([
                     'name' => 'required',

@@ -276,7 +276,6 @@ class ApplicationController extends Controller
               ->where('id', $request->applicationId)
               ->update(['status_id' => $status->id, 'index_main' => $index,'to_revision' => 0 ]);
       }
-
     }
 
     public function approve(Request $request)
@@ -314,11 +313,14 @@ class ApplicationController extends Controller
         $isCurrentUserRoleInParallel = $this->checkIfCurrentUserRoleInParallel($process);
         if ($isCurrentUserRoleInParallel) {
             $roleAfterParallelWithIndex = $this->getRoleAfterParallel($process);
-            $roleAfterParallel = $roleAfterParallelWithIndex["roleAfterParallel"];
-            $index = $roleAfterParallelWithIndex["index"];
-            $status = Status::find($roleAfterParallel["id"]);
-            $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role["id"]);
-
+            if(isset($roleAfterParallelWithIndex)){
+                $roleAfterParallel = $roleAfterParallelWithIndex["roleAfterParallel"];
+                $index = $roleAfterParallelWithIndex["index"];
+                $status = Status::find($roleAfterParallel["id"]);
+                $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role["id"]);
+            }else{
+                //check if all accept then send to citizen
+            }
         } else {
             $index = $application->index_main;
             $appRoutes = json_decode($this->getAppRoutes($application->process_id));
@@ -361,10 +363,6 @@ class ApplicationController extends Controller
 //             ];
 //             Notification::send($notifyUser, new ApproveNotification($details));
 //         }
-
-
-
-
         return Redirect::route('applications.service')->with('status', $status->name);
     }
 
@@ -784,7 +782,7 @@ class ApplicationController extends Controller
         $isParallel = false;
 //        $roleAfterParallel = 0;
         $index = 0;
-        //dd($allRoles);
+        // dd($allRoles);
         foreach($allRoles as $role) {
             $index++;
             if ($isParallel && $role["pivot"]["is_parallel"] === 0) {
