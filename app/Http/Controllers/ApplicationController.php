@@ -45,12 +45,15 @@ class ApplicationController extends Controller
         $tableName = $this->getTableName($process->name);
         $applications = $this->getTableWithStatuses($tableName);
         $arrayApps = json_decode(json_encode($applications), true);
+
         foreach($arrayApps as &$app) {
-            if ($app["to_revision"] === 1) {
-                $app["status"] = $app["status"] . " на доработку";
-            } else {
-                $app["status"] = $app["status"] . " на согласование";
-            }
+          if ($app["to_revision"] === 1) {
+              $app["status"] = $app["status"] . " на доработку";
+          } else if($app["reject_reason"] != null) {
+              $app["status"] = $app["status"] . " на согласование отказа";
+          }else{
+            $app["status"] = $app["status"] . " на согласование";
+          }
         }
         $statuses = [];
         return view('application.index', compact('arrayApps', 'process','statuses'));
@@ -65,7 +68,7 @@ class ApplicationController extends Controller
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $applicationId)->first();
         $applicationArray = json_decode(json_encode($application), true);
-        $notInArray = ["id", "process_id", "status_id", "to_revision", "user_id","index_sub_route", "index_main", "reject_reason", "revision_reason" ];
+        $notInArray = ["id", "process_id", "status_id", "to_revision", "user_id","index_sub_route", "index_main", "revision_reason" ];
 //        $applicationArray = $this->filterApplicationArray($applicationArray, $notInArray); // not used yet, but surely will
 
         $statusId = $application->status_id;
@@ -196,8 +199,13 @@ class ApplicationController extends Controller
                   ->where('role_id', $user->role_id)
                   ->get()
                   ->toArray();
-        // конец
 
+        if(isset($buttons[0]) && $rejectReasonArray['rejectReason'] != null){
+          $buttons[0]->can_reject = 0;
+        }
+
+        // конец
+        //dd($rejectReasonArray);
         return view('application.view', compact('application','toMultipleRoles','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray', 'buttons'));
     }
 
@@ -236,7 +244,40 @@ class ApplicationController extends Controller
         $role = Auth::user()->role->name;
         return in_array($role, $parallelRoles);
     }
+    public function approveReject(Request $request){
 
+      $process = Process::find($request->processId);
+      $tableName = $this->getTableName($process->name);
+      $application = DB::table($tableName)->where('id', $request->applicationId)->first();
+      $table = CreatedTable::where('name', $tableName)->first();
+
+      $index = $application->index_main;
+      $appRoutes = json_decode($this->getAppRoutes($application->process_id));
+      //dd($appRoutes);
+      $nextRole = $appRoutes[$index]; // find next role
+
+      $nextR = Role::where('name', $nextRole)->first(); //find $nextRole in Role table
+      $idOfNextRole = $nextR->id; // get id of next role
+      $index = $index + 1;
+      $status = Status::find($idOfNextRole);
+      //dd($status);
+      $user = Auth::user();
+      $role = $user->role;
+      $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
+
+      DB::table('logs')->insert( $logsArray);
+      $this->insertComments($request->comments, $request->applicationId, $table->id);
+      if ($application->to_revision === 0) {
+          DB::table($tableName)
+              ->where('id', $request->applicationId)
+              ->update(['status_id' => $status->id, 'index_main' => $index]);
+      } else {
+          DB::table($tableName)
+              ->where('id', $request->applicationId)
+              ->update(['status_id' => $status->id, 'index_main' => $index,'to_revision' => 0 ]);
+      }
+
+    }
 
     public function approve(Request $request)
     {
@@ -284,7 +325,6 @@ class ApplicationController extends Controller
             $nextRole = $appRoutes[$index]; // find next role
             $nextR = Role::where('name', $nextRole)->first(); //find $nextRole in Role table
 //            $notifyUsers = $nextR->users();
-//            dd($notifyUsers);
             $idOfNextRole = $nextR->id; // get id of next role
             $index = $index + 1;
             $status = Status::find($idOfNextRole);
@@ -658,22 +698,31 @@ class ApplicationController extends Controller
         $tableName = $this->getTableName($process->name);
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
         $table = CreatedTable::where('name', $tableName)->first();
-        $statusCount = count(Status::all());
-        $status = Status::find($statusCount-1); //$statuscount-1 - индекс статуса отправлено заявителю с отказом
+
+        $index = $application->index_main;
+        $appRoutes = json_decode($this->getAppRoutes($application->process_id));
+        $nextRole = $appRoutes[$index]; // find next role
+        $nextR = Role::where('name', $nextRole)->first(); //find $nextRole in Role table
+        $idOfNextRole = $nextR->id; // get id of next role
+        $index = $index + 1;
+        $status = Status::find($idOfNextRole);
+
         $user = Auth::user();
+        //dd($user);
         $role = $user->role;
 
         $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
+
         Log::insert( $logsArray);
 
         if ($application->to_revision === 0) {
             DB::table($tableName)
                 ->where('id', $request->applicationId)
-                ->update(['status_id' => $status->id, 'reject_reason' => $request->rejectReason, 'reject_reason_from_spec_id' => $user->id]);
+                ->update(['status_id' => $status->id, 'index_main' => $index, 'reject_reason' => $request->rejectReason, 'reject_reason_from_spec_id' => $user->role_id]);
         } else {
             DB::table($tableName)
                 ->where('id', $request->applicationId)
-                ->update(['status_id' => $status->id, 'reject_reason' => $request->rejectReason, 'to_revision' => 0, 'reject_reason_from_spec_id' => $user->id]);
+                ->update(['status_id' => $status->id, 'index_main' => $index, 'reject_reason' => $request->rejectReason, 'to_revision' => 0, 'reject_reason_from_spec_id' => $user->role_id]);
         }
     }
 
@@ -720,11 +769,11 @@ class ApplicationController extends Controller
         if ($index === 0) {
             DB::table($tableName)
                 ->where('id', $request->applicationId)
-                ->update(['status_id' => $status->id, 'revision_reason' => $request->revisionReason,'to_revision' => 1,'index_sub_route' => $indexSubRoute, 'revision_reason_from_spec_id' =>  $user->id, 'revision_reason_to_spec_id' =>  $idOfNextRole] );
+                ->update(['status_id' => $status->id, 'revision_reason' => $request->revisionReason,'to_revision' => 1,'index_sub_route' => $indexSubRoute, 'revision_reason_from_spec_id' =>  $user->role_id, 'revision_reason_to_spec_id' =>  $idOfNextRole] );
         } else {
             DB::table($tableName)
                 ->where('id', $request->applicationId)
-                ->update(['status_id' => $status->id, 'revision_reason' => $request->revisionReason,'to_revision' => 1, 'index_main' => $index, 'revision_reason_from_spec_id' =>  $user->id, 'revision_reason_to_spec_id' =>  $idOfNextRole] );
+                ->update(['status_id' => $status->id, 'revision_reason' => $request->revisionReason,'to_revision' => 1, 'index_main' => $index, 'revision_reason_from_spec_id' =>  $user->role_id, 'revision_reason_to_spec_id' =>  $idOfNextRole] );
         }
     }
 
@@ -735,6 +784,7 @@ class ApplicationController extends Controller
         $isParallel = false;
 //        $roleAfterParallel = 0;
         $index = 0;
+        //dd($allRoles);
         foreach($allRoles as $role) {
             $index++;
             if ($isParallel && $role["pivot"]["is_parallel"] === 0) {
