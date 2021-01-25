@@ -20,7 +20,7 @@
         <div class="panel-heading">
             {{-- <img src="{{ URL::asset('/images/header.jpg') }}" alt="logo"
                 height="185" /> --}}
-            <p style="text-align: center;"><b>Выписка из постановления акимата города
+            <p style="text-align: center;"><b>Выписка из постановления акимата города қазақ
                     Нур-Султан</b></p>
             <hr style="height:1px;border-width:0; background-color:#008cff;">
             <table class="header_table">

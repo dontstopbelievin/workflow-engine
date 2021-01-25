@@ -302,11 +302,7 @@ class ApplicationController extends Controller
         $templateName = $template->name;
         $templateTable = $this->getTemplateTableName($templateName);
 
-//        dd($templateTable);
         // insertion of fields into template
-
-//        dd($fieldValues);
-
         $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
         $role = Auth::user()->role;
 
@@ -588,16 +584,11 @@ class ApplicationController extends Controller
         $template = Template::where('id', $templateId)->first();
         $templateName = $template->name;
         $templateTable = $this->getTemplateTableName($templateName);
-        // dd($templateTable);
-        // dd($process->template_doc);
         if (Schema::hasTable($templateTable)) {
-        //    dd($request->applicationId);
             $fields = DB::table($templateTable)->select('*')->where('application_id', $applicationId)->first();
-            // dd($fields);
             $aFields = json_decode(json_encode($fields), true);
 
             $updatedFields = [];
-//            $updatedFields["date"] = date();
             if ($aFields !== Null) {
                 foreach($aFields as $key => $field) {
                     if ($key === 'id' || $key === 'template_id' || $key === 'process_id' || $key === 'application_id' || $key === '_token') {
@@ -612,17 +603,7 @@ class ApplicationController extends Controller
             $todayDate=date('d-m-Y');
             $updatedFields["date"] = $todayDate;
             $updatedFields["id"] = $applicationId;
-            ////just for now
 
-//        $template = 'PDFtemplates.accept' ;
-//        $variable = "Кенжебеков Нуржан Кенжебекович";
-//        $content = view($template, ['variable' => $variable])->render();
-//        $mpdf = new Mpdf();
-//        $mpdf->WriteHTML($content);
-//        dd($mpdf->Output());
-
-
-            /// for testing purposes
             $updatedFields["applicant_name"] = 'Аман';
             $updatedFields["area"] = '114 га';
             $updatedFields["square"] = 'Байконур';
@@ -633,26 +614,16 @@ class ApplicationController extends Controller
             // $updatedFields["construction_name_before"] = 'Строительство';
             // $updatedFields["construction_name_after"] = 'Делопроизводство';
             // $updatedFields["area_number"] = '1146';
-            ///
             $userName = Auth::user()->name;
             $roleName = Auth::user()->role->name;
-//            $image = QrCode::size(300)->generate('A basic example of QR code!');
-//            dd($image);
             $qrcode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($userName));
             $pathToView = $process->template_doc->pdf_path;
-            // dd($pathToView);
             $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
-            // return view($process->template_doc->pdf_path)->with('updatedFields', $updatedFields);
-            // $mpdf = new Mpdf();
-            // $content = view($pathToView, ['updatedFields' => $updatedFields])->render();
-            // $mpdf->WriteHTML($content);
-            // return view('pdf_viewer')->with('my_pdf', base64_encode($mpdf->Output('', Destination::STRING_RETURN)));
             $pdf = PDF::loadView($pathToView, compact('updatedFields', 'userName', 'roleName'));
             $content = $pdf->output();
             // dd(base64_encode($content));
             // return $pdf->download('invoice.pdf');
             // return view('pdf_viewer')->with('my_pdf', $content);
-            // dd($content);
             // file_put_contents(storage_path(). $storagePathToPDF, $content);
             // return $tableName;
             $affected = DB::table($tableName)
