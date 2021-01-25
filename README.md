@@ -1,79 +1,54 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
-
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
-
-## About Laravel
-
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [OP.GG](https://op.gg)
-- [云软科技](http://www.yunruan.ltd/)
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. Начало работы:
+    Найдите место на вашем компьютере, где вы хотите сохранить проект. В выбранной папке необходимо клонировать репозиторий git clone {ссылка на репозиторий} Чтобы получить ссылку на репо, просто зайдите на страницу github и нажмите зеленую кнопку «клонировать или скачать» с правой стороны. Откроется URL-адрес, который вы замените в приведенном выше фрагменте (ссылка на репозиторий).<br/>
+    Вам нужно будет находиться внутри файла проекта, чтобы ввести все остальные команды в этом руководстве. Поэтому не забудьте набрать cd projectName, чтобы переместить рабочее местоположение вашего терминала в файл проекта, который мы только что создали. (Конечно, в приведенной выше команде замените «projectName» на имя папки, созданной на предыдущем шаге).<br/>
+2. Бэкенд:
+    composer install Когда мы запускаем composer, он проверяет файл composer.json, который передается в репозиторий github, и перечисляет все пакеты composer (PHP), которые требуются вашему репо. Поскольку эти пакеты постоянно меняются, исходный код обычно не передается на github, но вместо этого мы позволяем composer обрабатывать эти обновления. Поэтому, чтобы установить весь этот исходный код, мы запускаем composer с помощью следующей команды.<br/>
+    Создайте базу данных на локальном сервере<br/>
+    cp .env.example .env Это создаст копию файла .env.example в вашем проекте и назовет копию просто .env. Укажите DB_DATABASE={Название_Вашей_БД}<br/>
+    php artisan migrate - Для миграции БД<br/>
+    php artisan db:seed - После завершения миграции и создания структуры базы данных вы можете заполнить базу данных (что означает добавление в нее фиктивных данных).<br/>
+php artisan passport:install - генерирует ключи<br/>
+<br/>
+3. Бэкэнд написан на php (Laravel), фронтенд на JavaScript(Jquery), БД - mysql<br/>
+<br/>
+4. Описание Моделей:<br/>
+    Auction - модель для работы с Аукционом<br/>
+    CityManagement - модель всех организаций(ГорАрхитектура, Управление, Нао и тд)<br/>
+    Comment - Модель для работы с комментариями специалиств<br/>
+    CreatedTable - Модель для работы с динамически созданными таблицами заявок<br/>
+    Dictionary - модель для работы со справочниками (поля заявителей)<br/>
+    InputType - в каком формате будут html:input у заявителя<br/>
+    InserType - как поля заполненные заявителем будут сохранены в базе<br/>
+    Log - модель для работы с ходом согласования<br/>
+    Process - модель для работы с процессами<br/>
+    Role - модель для работы со специалистами<br/>
+    Route - модель для работы с маршрутами<br/>
+    SelectOption - модель для работы в вариантами для dropdown select  у заявителя<br/>
+    Status - модель для работы со статусами<br/>
+    Template - модель для работы с полями, которые заполняют специалисты<br/>
+    TemplateField - модель для работы с выходными шаблонами<br/>
+    User - модель для работы с данными пользователя<br/>
+<br/>
+4. Создание процессов
+<br/>
+    Процессы на движке создаются динамически и сохраняются в модельку processes. К процессу сразу же подвязываются шаблоны отказа и одобрения, согласующие специалисты, основная и второстепенная организации, и поля, которые будет заполнять заявитель. Согласующие специалисты связываются процессом через таблицу process_role (отношение многие ко многим между молелями Process and Role).По умолчаниию, у согласующих специалистов есть только одна кнопка - согласовать. Однако, при необходимости можно добавить кнопки отправить на доработку и отказать. При создании процесса, после выбора полей заявителя, динамичеси создается таблица(wf_+process_name), где будут храниться все заявки по данному процессу. После создания шаблона согласования, создаются поля, которые заполняют специалисты (TemplateField) при согласовании заявки. Там же есть возможность привязать поле к конкретному специалисту (только он сможет видеть и заполнять данное поле). 
+<br/>
+5. Создание динамических таблиц процесса <br/>
+<br/>
+    Как уже было сказано ранее, при создании процесса, после выбора полей заявителя, динамичеси создается таблица(wf_+process_name), где будут храниться все заявки по данному процессу. У динамически созданных таблиц, помимо полей заявителя, есть поля:<br/>
+    1) process_id - идентивикационный номер процесса<br/>
+    2) status_id - идентивикационный номер статуса заявки<br/>
+    3) to_revision - была ли заявка отравлена на доработку<br/>
+    4) revision_reason - причина отправки на доработку<br/>
+    5) revision_reason_from_spec_id - кто отправил на доработку<br/>
+    6) revision_reason_to_spec_id - кому отправили на доработку<br/>
+    7) reject_reason_to_spec_id - кому отказал<br/>
+    8) user_id - идентивикационный номер заявителя<br/>
+    9) index_main - индекс, указывающий, у кого сейчас заявка<br/>
+    10) doc_path - путь к выходному шаблону процесса<br/><br/>
+6. Создание таблиц для хранения полей щаблона<br/>
+    При создании шаблона согласования, динамически создается таблица wf_tt + tableName, где помимо полей шаблона, также есть столбцы:
+    1) template_id - идентивикационный номер динамически созданных в пункте 5 <br/>
+    2) process_id - идентивикационный номер процесса <br/>
+    3) aplication_id - идентивикационный номер заявки <br/>
+    
