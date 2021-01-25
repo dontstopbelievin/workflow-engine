@@ -763,7 +763,7 @@ class ApplicationController extends Controller
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
         $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
         Log::insert( $logsArray);
-        
+
         if ($index === 0) {
             DB::table($tableName)
                 ->where('id', $request->applicationId)

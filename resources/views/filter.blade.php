@@ -57,7 +57,7 @@
                                   <tr>
                                     <th style="width:7%;">№</th>
                                     @foreach($process[0] as $key => $value)
-                                      @if( $key == 'process_id')
+                                      @if( $key == 'status')
                                         @break
                                       @else
                                         @if($key == 'id')
@@ -76,7 +76,7 @@
                                     <tr class="shadow p-3 mb-5 rounded">
                                       <td>{{ $num+1 }}</td>
                                       @foreach($req as $key => $value)
-                                        @if( $key == 'process_id')
+                                        @if( $key == 'status')
                                           @break
                                         @endif
                                         <td>{{ $value }}</td>
