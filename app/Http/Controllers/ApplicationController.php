@@ -603,7 +603,6 @@ class ApplicationController extends Controller
             $todayDate=date('d-m-Y');
             $updatedFields["date"] = $todayDate;
             $updatedFields["id"] = $applicationId;
-
             $updatedFields["applicant_name"] = 'Аман';
             $updatedFields["area"] = '114 га';
             $updatedFields["square"] = 'Байконур';
@@ -614,16 +613,11 @@ class ApplicationController extends Controller
             $updatedFields["construction_name_before"] = '1146';
             $updatedFields["construction_name_after"] = '1146';
             $updatedFields["area_number"] = '1146';
-            
-            
-            
-
-            // $updatedFields["construction_name_before"] = 'Строительство';
-            // $updatedFields["construction_name_after"] = 'Делопроизводство';
-            // $updatedFields["area_number"] = '1146';
+            $updatedFields["construction_name_before"] = 'Строительство';
+            $updatedFields["construction_name_after"] = 'Делопроизводство';
+            $updatedFields["area_number"] = '1146';
             $userName = Auth::user()->name;
             $roleName = Auth::user()->role->name;
-            // $qrcode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($userName));
             $pathToView = $process->template_doc->pdf_path;
             $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
 
@@ -631,14 +625,7 @@ class ApplicationController extends Controller
             $mpdf = new Mpdf();
             $mpdf->WriteHTML($content);
             $mpdf->Output(storage_path(). $storagePathToPDF, \Mpdf\Output\Destination::FILE);
-            // $pdf = PDF::loadView($pathToView, compact('updatedFields', 'userName', 'roleName'));
-            // $content = $pdf->output();
-            // dd(base64_encode($content));
-            // return $pdf->download('invoice.pdf');
             // return view('pdf_viewer')->with('my_pdf', $content);
-            // return storage_path();
-            // file_put_contents(storage_path(). $storagePathToPDF, $content);
-            // return $tableName;
             $affected = DB::table($tableName)
                 ->where('id', $id)
                 ->update(['doc_path' => $docPath]);
