@@ -5,11 +5,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Приобретение прав на земельные участки, которые находятся в государственной собственности, не требующее
         проведения торгов (конкурсов, аукционов) 2 часть</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <style type="text/css">
     body {
-        font-family: times;
+        font-family: Times New Roman;
         font-size: 14px;
     }
 
@@ -85,30 +84,9 @@
                         <p style="display: none">{{ $role3 = utf8_encode('Сагнаев Арман') }}</p>
                         <p style="display: none">{{ $role4 = utf8_encode('Аяпова Альбина') }}</p>
                         <div style="padding: 15px; align-content: center">
-                            <div style="padding: 15px; display: inline">
-                                <img src="data:image/png;base64, {!!  base64_encode(
-                                    QrCode::format('svg')
-                                        ->size(200)
-                                        ->errorCorrection('H')
-                                        ->generate($role2),
-                                ) !!}" height="100">
-                            </div>
-                            <div style="padding: 15px; display: inline">
-                                <img src="data:image/png;base64, {!!  base64_encode(
-                                    QrCode::format('svg')
-                                        ->size(200)
-                                        ->errorCorrection('H')
-                                        ->generate($role3),
-                                ) !!}" height="100">
-                            </div>
-                            <div style="padding: 15px; display: inline">
-                                <img src="data:image/png;base64, {!!  base64_encode(
-                                    QrCode::format('svg')
-                                        ->size(200)
-                                        ->errorCorrection('H')
-                                        ->generate($role4),
-                                ) !!}" height="100">
-                            </div>
+                            <barcode code="{{ implode(' ', [$role2]) }}" type="QR" class="barcode" size="1" error="M" />
+                            <barcode code="{{ implode(' ', [$role3]) }}" type="QR" class="barcode" size="1" error="M" />
+                            <barcode code="{{ implode(' ', [$role4]) }}" type="QR" class="barcode" size="1" error="M" />
                         </div>
                     </div>
                 </div>

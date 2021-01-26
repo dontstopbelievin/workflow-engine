@@ -623,16 +623,21 @@ class ApplicationController extends Controller
             // $updatedFields["area_number"] = '1146';
             $userName = Auth::user()->name;
             $roleName = Auth::user()->role->name;
-            $qrcode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($userName));
+            // $qrcode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($userName));
             $pathToView = $process->template_doc->pdf_path;
             $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
-            $pdf = PDF::loadView($pathToView, compact('updatedFields', 'userName', 'roleName'));
-            $content = $pdf->output();
+
+            $content = view($pathToView, compact('updatedFields', 'userName', 'roleName'))->render();
+            $mpdf = new Mpdf();
+            $mpdf->WriteHTML($content);
+            $mpdf->Output(storage_path(). $storagePathToPDF, \Mpdf\Output\Destination::FILE);
+            // $pdf = PDF::loadView($pathToView, compact('updatedFields', 'userName', 'roleName'));
+            // $content = $pdf->output();
             // dd(base64_encode($content));
             // return $pdf->download('invoice.pdf');
             // return view('pdf_viewer')->with('my_pdf', $content);
             // return storage_path();
-            file_put_contents(storage_path(). $storagePathToPDF, $content);
+            // file_put_contents(storage_path(). $storagePathToPDF, $content);
             // return $tableName;
             $affected = DB::table($tableName)
                 ->where('id', $id)

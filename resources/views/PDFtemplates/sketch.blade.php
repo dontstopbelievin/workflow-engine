@@ -4,11 +4,10 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Согласование эскиза (эскизного проекта)</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <style type="text/css">
     body {
-        font-family: times;
+        font-family: Times New Roman;
         font-size: 14px;
     }
 
@@ -58,19 +57,10 @@
                         <p style="display: none">{{ $role3 = utf8_encode('Абаев Анзор') }}</p>
                         <p style="display: none">{{ $role4 = utf8_encode('Жанбыршы Алмас Маликович') }}</p>
                         <div style="padding: 15px; align-content: center">
-                            <div style="padding: 15px; display: inline">
-                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role1)) !!}" height="100">
-                            </div>
-                            <div style="padding: 15px; display: inline">
-                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role2)) !!}" height="100">
-                            </div>
-                            <div style="padding: 15px; display: inline">
-                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role3)) !!}" height="100">
-                            </div>
-                            <div style="padding: 15px; display: inline">
-                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($role4)) !!}" height="100">
-                            </div>
-
+                            <barcode code="{{ implode(' ', [$role3]) }}" type="QR" class="barcode" size="1" error="M" />
+                            <barcode code="{{ implode(' ', [$role3]) }}" type="QR" class="barcode" size="1" error="M" />
+                            <barcode code="{{ implode(' ', [$role3]) }}" type="QR" class="barcode" size="1" error="M" />
+                            <barcode code="{{ implode(' ', [$role3]) }}" type="QR" class="barcode" size="1" error="M" />
                         </div>                
                     </div>
                 </div>

@@ -5,11 +5,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Приобретение прав на земельные участки, которые находятся в государственной собственности, не требующее
         проведения торгов (конкурсов, аукционов) 1 часть</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <style type="text/css">
     body {
-        font-family: times;
+        font-family: Times New Roman;
         font-size: 14px;
     }
 
