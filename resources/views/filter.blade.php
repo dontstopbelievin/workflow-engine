@@ -3,9 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Согласование заявок за срок в {{ $requirement }} дней</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-</head>
-<style type="text/css">
+    <style type="text/css">
     @font-face {
           font-family: "DejaVu Sans";
           font-style: normal;
@@ -33,7 +31,7 @@
       padding: 8px;
     }
 </style>
-
+</head>
 <body>
     <div class="container-fluid">
         <div class="col-md-12">

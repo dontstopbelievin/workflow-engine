@@ -15,6 +15,8 @@ use App\Dictionary;
 use App\CreatedTable;
 use DateTime;
 use PDF;
+use Mpdf\Mpdf;
+use Mpdf\Output\Destination;
 use Response;
 use App\Traits\dbQueries;
 
@@ -110,11 +112,13 @@ class UserController extends Controller
         $dictionary[$value['name']] = $value['label_name'];
       }
       $result[$process_id] = $this->deleteUnnecessary($result[$process_id], ['process_id', 'status_id', 'user_id', 'index_sub_route', 'index_main', 'doc_path', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at']);
-      //dd($result);
+
       $storagePathToPDF ='/app/public/final_docs/10.pdf';
-      $pdf = PDF::loadView('filter', compact('requirement','result', 'dictionary')); // data send to PDF file
-      $content = $pdf->output();
-      file_put_contents(storage_path(). $storagePathToPDF, $content);
+      $content = view('filter', compact('requirement','result', 'dictionary'))->render();
+      $mpdf = new Mpdf();
+      $mpdf->WriteHTML($content);
+      $mpdf->Output(storage_path(). $storagePathToPDF, \Mpdf\Output\Destination::FILE);
+
       $path = storage_path($storagePathToPDF);
       return Response::make(file_get_contents($path), 200, [
           'Content-Type' => 'application/pdf',
