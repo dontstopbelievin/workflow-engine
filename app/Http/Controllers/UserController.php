@@ -96,7 +96,7 @@ class UserController extends Controller
       foreach ($dictionaries as $value) {
         $dictionary[$value['name']] = $value['label_name'];
       }
-      $storagePathToPDF ='/app/public/final-docs/10.pdf';
+      $storagePathToPDF ='/app/public/final_docs/10.pdf';
       $pdf = PDF::loadView('filter', compact('requirement','result', 'dictionary')); // data send to PDF file
       $content = $pdf->output();
       file_put_contents(storage_path(). $storagePathToPDF, $content);

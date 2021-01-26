@@ -610,6 +610,13 @@ class ApplicationController extends Controller
             $updatedFields["street"] = 'Кабанбай батыра';
             $updatedFields["duration"] = '12';
             $updatedFields["object_name"] = 'object_name';
+            $updatedFields["cadastral_number"] = '1146';
+            $updatedFields["construction_name_before"] = '1146';
+            $updatedFields["construction_name_after"] = '1146';
+            $updatedFields["area_number"] = '1146';
+            
+            
+            
 
             // $updatedFields["construction_name_before"] = 'Строительство';
             // $updatedFields["construction_name_after"] = 'Делопроизводство';
@@ -624,7 +631,8 @@ class ApplicationController extends Controller
             // dd(base64_encode($content));
             // return $pdf->download('invoice.pdf');
             // return view('pdf_viewer')->with('my_pdf', $content);
-            // file_put_contents(storage_path(). $storagePathToPDF, $content);
+            // return storage_path();
+            file_put_contents(storage_path(). $storagePathToPDF, $content);
             // return $tableName;
             $affected = DB::table($tableName)
                 ->where('id', $id)
