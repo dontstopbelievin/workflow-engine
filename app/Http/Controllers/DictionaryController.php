@@ -23,7 +23,7 @@ class DictionaryController extends Controller
         $dictionaries = $this->getAllDictionaries();
         return view('dictionary.index',compact('inputTypes','insertTypes','dictionaries','options'));
     }
-    
+
     public function create(Request $request) {
 
         $fieldName = $request->fieldName;
@@ -59,7 +59,7 @@ class DictionaryController extends Controller
 
         $dic = Dictionary::where('name', $fieldName)->first();
         $dicId = $dic->id; // айди поля, которое только что сохранили
-        
+
         if ($request->has('selectedOptions')) {
             foreach($selectOptions as $key=>$value) {
             $optn = SelectOption::where('name', $value)->first();

@@ -52,6 +52,18 @@ class UserController extends Controller
         return Redirect::route('user.personalArea')->with('status', 'Данные успешно обновлены');
     }
 
+    public function deleteUnnecessary($result, $delete) {
+      foreach ($result as $key => $process) {
+        if(isset($process->attachment)){
+          unset($process->attachment);
+        }
+        foreach ($delete as $column) {
+          unset($process->$column);
+        }
+      }
+      return $result;
+    }
+
     public function filter(Request $request){
       $requirement = $request->days;
       $process_id = $request->process;
@@ -86,16 +98,19 @@ class UserController extends Controller
           }else{
               array_push($result[$process_id], $record);
           }
-
         }
       }
-      //dd($result);
       // generation of PDF file and return
-      $dictionaries = Dictionary::select('name', 'label_name')->where('input_type_id', '1')->get()->toArray();
+      $dictionaries = Dictionary::select('dictionaries.name', 'dictionaries.label_name')
+                      ->join('input_types', 'dictionaries.input_type_id', '=', 'input_types.id')
+                      ->where('input_types.name', '!=','file')
+                      ->get()->toArray();
       $dictionary = array();
       foreach ($dictionaries as $value) {
         $dictionary[$value['name']] = $value['label_name'];
       }
+      $result[$process_id] = $this->deleteUnnecessary($result[$process_id], ['process_id', 'status_id', 'user_id', 'index_sub_route', 'index_main', 'doc_path', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at']);
+      //dd($result);
       $storagePathToPDF ='/app/public/final_docs/10.pdf';
       $pdf = PDF::loadView('filter', compact('requirement','result', 'dictionary')); // data send to PDF file
       $content = $pdf->output();
@@ -107,5 +122,7 @@ class UserController extends Controller
       ]);
 
     }
+
+
 
 }

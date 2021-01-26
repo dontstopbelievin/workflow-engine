@@ -182,7 +182,7 @@
             @endisset-->
             <hr style="height:1px;border-width:0; background-color:black;">
             <h5>Создание маршрута:</h5>
-            <h6>Организцаия - {{ $nameMainOrg ?? ''}}</h6>
+            <h6>Организация - {{ $nameMainOrg ?? ''}}</h6>
             @isset($organizations)
               <form action="{{ route('processes.addOrganization', ['process' => $process]) }}" method="POST">
                   @csrf
