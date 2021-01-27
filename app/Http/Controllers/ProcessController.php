@@ -32,7 +32,7 @@ class ProcessController extends Controller
         $parentId = $this->getParentRoleId($process->id);
         $tableName = $this->getTableName($process->name);
         $tableColumns = $this->getColumns($tableName);
-        $tableColumns = array_slice($tableColumns, 0, -10);
+        $tableColumns = array_slice($tableColumns, 0, -12);
         if ($parentId === 0) {
             return view('process.view', compact('process','tableColumns'));
         }
@@ -72,7 +72,7 @@ class ProcessController extends Controller
             $roles = Role::where('name' ,'<>', 'Заявитель')->get();
             $tableName = $this->getTableName($process->name);
             $tableColumns = $this->getColumns($tableName);
-            $tableColumns = array_slice($tableColumns, 0, -11);
+            $tableColumns = array_slice($tableColumns, 0, -12);
             $parentId = $this->getParentRoleId($process->id);
             $organizations = CityManagement::all();
             $mainOrg = CityManagement::find($process->main_organization_id);
@@ -90,9 +90,6 @@ class ProcessController extends Controller
     }
 
     public function update(Request $request, Process $process) {
-
-        // $numberOfDays = intval($request->get('deadline'));
-        // $deadline = Carbon::now()->addDays($numberOfDays);
         $process->name = $request->name;
         $process->deadline = $request->deadline;
         $process->update();
@@ -100,89 +97,96 @@ class ProcessController extends Controller
     }
 
     public function createProcessTable(Request $request, Process $process) {
-
-        $processName = $process->name;
-        $fields = $request->fields;
-        $tableName = $this->translateSybmols($processName);
-        $tableName = $this->checkForWrongCharacters($tableName);
-        if (strlen($tableName) > 60) {
-            $tableName = $this->truncateTableName($tableName); // если количество символов больше 64, то необходимо укоротить длину названия до 64
-        }
-        $tableName = $this->modifyTableName($tableName);
-        $table = new CreatedTable();
-        $table->name = $tableName;
-        $table->save();
-        if (!Schema::hasTable($tableName)) {
-            $dbQueryString = "CREATE TABLE $tableName (id INT PRIMARY KEY AUTO_INCREMENT)";
-            DB::statement($dbQueryString);
-        }
-        foreach($fields as $fieldName) {
-            if($this->isRussian($fieldName)) {
-                $fieldName = $this->translateSybmols($fieldName);
-            } ;
-            $fieldName = $this->checkForWrongCharacters($fieldName);
-            if (Schema::hasColumn($tableName, $fieldName)) {
-                continue;
-            } else {
-                $dbQueryString = "ALTER TABLE $tableName ADD COLUMN $fieldName varchar(255)";
+        try {
+            // return $request->fields;
+            DB::beginTransaction();
+            $processName = $process->name;
+            $fields = $request->fields;
+            $tableName = $this->translateSybmols($processName);
+            $tableName = $this->checkForWrongCharacters($tableName);
+            if (strlen($tableName) > 60) {
+                $tableName = $this->truncateTableName($tableName); // если количество символов больше 64, то необходимо укоротить длину названия до 64
+            }
+            $tableName = $this->modifyTableName($tableName);
+            $table = new CreatedTable();
+            $table->name = $tableName;
+            $table->save();
+            if (!Schema::hasTable($tableName)) {
+                $dbQueryString = "CREATE TABLE $tableName (id INT PRIMARY KEY AUTO_INCREMENT)";
                 DB::statement($dbQueryString);
             }
-        }
-        if (!Schema::hasColumn($tableName, 'process_id')) {
-            $dbQueryString = "ALTER TABLE $tableName ADD  process_id INT";
-            DB::statement($dbQueryString);
-            DB::table($tableName)->insert(
-                [ 'process_id' => $process->id ]
-            );
-        }
+            foreach($fields as $fieldName) {
+                if($this->isRussian($fieldName)) {
+                    $fieldName = $this->translateSybmols($fieldName);
+                } ;
+                $fieldName = $this->checkForWrongCharacters($fieldName);
+                if (Schema::hasColumn($tableName, $fieldName)) {
+                    continue;
+                } else {
+                    $dbQueryString = "ALTER TABLE $tableName ADD COLUMN $fieldName varchar(255)";
+                    DB::statement($dbQueryString);
+                }
+            }
+            if (!Schema::hasColumn($tableName, 'process_id')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD  process_id INT";
+                DB::statement($dbQueryString);
+                DB::table($tableName)->insert(
+                    [ 'process_id' => $process->id ]
+                );
+            }
 
-        if (!Schema::hasColumn($tableName, 'status_id')) {
-            $dbQueryString = "ALTER TABLE $tableName ADD  status_id INT";
+            if (!Schema::hasColumn($tableName, 'status_id')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD  status_id INT";
+                DB::statement($dbQueryString);
+            }
+            if (!Schema::hasColumn($tableName, 'to_revision')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD  to_revision BIT";
+                DB::statement($dbQueryString);
+            }
+            if (!Schema::hasColumn($tableName, 'user_id')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD  user_id INT";
+                DB::statement($dbQueryString);
+            }
+            if (!Schema::hasColumn($tableName, 'index_sub_route')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD  index_sub_route INT";
+                DB::statement($dbQueryString);
+            }
+            if (!Schema::hasColumn($tableName, 'index_main')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD index_main INT";
+                DB::statement($dbQueryString);
+            }
+            if (!Schema::hasColumn($tableName, 'doc_path')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD doc_path varchar(255)";
+                DB::statement($dbQueryString);
+            }
+            if (!Schema::hasColumn($tableName, 'reject_reason')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD reject_reason varchar(255)";
+                DB::statement($dbQueryString);
+            }
+            if (!Schema::hasColumn($tableName, 'reject_reason_from_spec_id')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD reject_reason_from_spec_id varchar(255)";
+                DB::statement($dbQueryString);
+            }
+            if (!Schema::hasColumn($tableName, 'revision_reason')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD revision_reason varchar(255)";
+                DB::statement($dbQueryString);
+            }
+            if (!Schema::hasColumn($tableName, 'revision_reason_from_spec_id')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD revision_reason_from_spec_id varchar(255)";
+                DB::statement($dbQueryString);
+            }
+            if (!Schema::hasColumn($tableName, 'revision_reason_to_spec_id')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD revision_reason_to_spec_id varchar(255)";
+                DB::statement($dbQueryString);
+            }
+            $dbQueryString = "ALTER TABLE $tableName ADD updated_at TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ";
             DB::statement($dbQueryString);
+            DB::commit();
+            return Redirect::route('processes.edit', [$process])->with('status', 'Таблица успешно создана');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => $e->getMessage()], 500);
         }
-        if (!Schema::hasColumn($tableName, 'to_revision')) {
-            $dbQueryString = "ALTER TABLE $tableName ADD  to_revision BIT";
-            DB::statement($dbQueryString);
-        }
-        if (!Schema::hasColumn($tableName, 'user_id')) {
-            $dbQueryString = "ALTER TABLE $tableName ADD  user_id INT";
-            DB::statement($dbQueryString);
-        }
-        if (!Schema::hasColumn($tableName, 'index_sub_route')) {
-            $dbQueryString = "ALTER TABLE $tableName ADD  index_sub_route INT";
-            DB::statement($dbQueryString);
-        }
-        if (!Schema::hasColumn($tableName, 'index_main')) {
-            $dbQueryString = "ALTER TABLE $tableName ADD index_main INT";
-            DB::statement($dbQueryString);
-        }
-        if (!Schema::hasColumn($tableName, 'doc_path')) {
-            $dbQueryString = "ALTER TABLE $tableName ADD doc_path varchar(255)";
-            DB::statement($dbQueryString);
-        }
-        if (!Schema::hasColumn($tableName, 'reject_reason')) {
-            $dbQueryString = "ALTER TABLE $tableName ADD reject_reason varchar(255)";
-            DB::statement($dbQueryString);
-        }
-        if (!Schema::hasColumn($tableName, 'reject_reason_from_spec_id')) {
-            $dbQueryString = "ALTER TABLE $tableName ADD reject_reason_from_spec_id varchar(255)";
-            DB::statement($dbQueryString);
-        }
-        if (!Schema::hasColumn($tableName, 'revision_reason')) {
-            $dbQueryString = "ALTER TABLE $tableName ADD revision_reason varchar(255)";
-            DB::statement($dbQueryString);
-        }
-        if (!Schema::hasColumn($tableName, 'revision_reason_from_spec_id')) {
-            $dbQueryString = "ALTER TABLE $tableName ADD revision_reason_from_spec_id varchar(255)";
-            DB::statement($dbQueryString);
-        }
-        if (!Schema::hasColumn($tableName, 'revision_reason_to_spec_id')) {
-            $dbQueryString = "ALTER TABLE $tableName ADD revision_reason_to_spec_id varchar(255)";
-            DB::statement($dbQueryString);
-        }
-        $dbQueryString = "ALTER TABLE $tableName ADD updated_at TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ";
-        DB::statement($dbQueryString);
-        return Redirect::route('processes.edit', [$process])->with('status', 'Справочники успешно сохранены');
     }
 
     public function addRole(Request $request, Process $process) {
