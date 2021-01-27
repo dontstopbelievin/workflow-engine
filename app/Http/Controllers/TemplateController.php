@@ -30,7 +30,7 @@ class TemplateController extends Controller
 
     public function store(Request $request) {
         try {
-            DB::beginTransaction();
+           DB::beginTransaction();
             $templateState = $request->template_state === "accepted";
             $request->validate([
                 'name' => 'required',
@@ -49,11 +49,10 @@ class TemplateController extends Controller
             } else if ($request->template_state === "rejected") {
                 $process->update(['rejected_template_id' => $template->id]);
                 DB::commit();
-                return Redirect::back();
+                return Redirect::back()->with('status','Шаблон отказа успешно создан');
             }
-            DB::rollBack();
             return response()->json(['message' => 'template not found'], 500);
-        } catch (Exception $e) {
+        } catch (Exception $e){
             DB::rollBack();
             return response()->json(['message' => $e->getMessage()], 500);
         }

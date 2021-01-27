@@ -163,9 +163,9 @@ trait dbQueries
         return preg_match('/[A-Za-z]/u', $text);
     }
 
-    public function getColumns($tableName) {
+    public function getColumns($tableName, $columns) {
         $tableColumns = Schema::getColumnListing($tableName);
-        return $this->filterArray($tableColumns);
+        return $this->filterArray($tableColumns, $columns);
     }
 
     public function getTableName($table) {
@@ -187,14 +187,20 @@ trait dbQueries
         return $array;
     }
 
-    public function filterArray($array) {
+    public function filterArray($array, $columns) {
         $result = [];
-        foreach($array as $item) {
-            if (($item != "id") && ($item != "process_id")) {
-                array_push($result, $item);
+        $i = 0;
+        $size = sizeof($array);
+        while ($i < $size) {
+          foreach($columns as $column){
+            if($array[$i] == $column){
+              unset($array[$i]);
+              break;
             }
+          }
+          $i++;
         }
-        return $result;
+        return $array;
 
     }
 
