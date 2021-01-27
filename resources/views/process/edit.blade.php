@@ -140,7 +140,7 @@
                             @csrf
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <label>Выберите Орагнизацию дополнительного маршрута</label>
+                                    <label>Выберите Организацию дополнительного маршрута</label>
                                     <select name="supportOrganization" id="subOrg" class="subOrg" data-dropup-auto="false">
                                         @foreach($organizations as $organization)
                                             <option>{{$organization->name}} </option>
