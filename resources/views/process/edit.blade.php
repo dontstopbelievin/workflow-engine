@@ -140,7 +140,7 @@
                             @csrf
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <label>Выберите Орагнизацию дополнительного маршрута</label>
+                                    <label>Выберите Организацию дополнительного маршрута</label>
                                     <select name="supportOrganization" id="subOrg" class="subOrg" data-dropup-auto="false">
                                         @foreach($organizations as $organization)
                                             <option>{{$organization->name}} </option>
@@ -169,7 +169,7 @@
             </div>
             <h5>Создать таблицу:</h5>
             <button type="button" class="btn btn-outline-info mx-2" data-toggle="modal" data-target="#myModal">Выбрать Поля</button>
-            <!--@isset($tableColumns)
+            @isset($tableColumns)
               <div class="card-header">
                 <div class="card-title">Поля процесса:</div>
               </div>
@@ -179,7 +179,7 @@
                     <li class="list-group-item w-50 text-center">{{$column}}</li>
                 </ul>
                 @endforeach
-            @endisset-->
+            @endisset
             <hr style="height:1px;border-width:0; background-color:black;">
             <h5>Создание маршрута:</h5>
             <h6>Организация - {{ $nameMainOrg ?? ''}}</h6>

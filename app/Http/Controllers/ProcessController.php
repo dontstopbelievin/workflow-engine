@@ -71,8 +71,9 @@ class ProcessController extends Controller
             $columns = $this->getAllDictionaries();
             $roles = Role::where('name' ,'<>', 'Заявитель')->get();
             $tableName = $this->getTableName($process->name);
-            $tableColumns = $this->getColumns($tableName);
-            $tableColumns = array_slice($tableColumns, 0, -11);
+            $notInclude = ['id', 'process_id', 'status_id', 'user_id', 'index_sub_route', 'index_main', 'doc_path', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at'];
+            $tableColumns = $this->getColumns($tableName, $notInclude);
+            // $tableColumns = array_slice($tableColumns, 0, -11);
             $parentId = $this->getParentRoleId($process->id);
             $organizations = CityManagement::all();
             $mainOrg = CityManagement::find($process->main_organization_id);
@@ -80,6 +81,7 @@ class ProcessController extends Controller
             if(isset($mainOrg->name)) {
                 $nameMainOrg=$mainOrg->name;
             }
+            //dd($columns);
             $templateDocs = TemplateDoc::all();
             $iterateRoles = $this->getIterateRoles($process);
             $sAllRoles = $this->getAllRoles($process, $parentId, $iterateRoles);
@@ -180,8 +182,11 @@ class ProcessController extends Controller
             $dbQueryString = "ALTER TABLE $tableName ADD revision_reason_to_spec_id varchar(255)";
             DB::statement($dbQueryString);
         }
-        $dbQueryString = "ALTER TABLE $tableName ADD updated_at TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ";
-        DB::statement($dbQueryString);
+        if(!Schema::hasColumn($tableName, 'updated_at')){
+          $dbQueryString = "ALTER TABLE $tableName ADD updated_at TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ";
+          DB::statement($dbQueryString);
+        }
+
         return Redirect::route('processes.edit', [$process])->with('status', 'Справочники успешно сохранены');
     }
 

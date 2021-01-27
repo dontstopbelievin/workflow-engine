@@ -31,28 +31,30 @@ class TemplateController extends Controller
 
     public function store(Request $request) {
         try {
-            DB::transaction(function () use($request){
-                $templateState = $request->template_state === "accepted";
-                $request->validate([
-                    'name' => 'required',
-                    'template_state' => 'required',
-                ]);
-                $template = new Template([
-                    'name' => $request->name,
-                    'accept_template' => $templateState,
-                ]);
-                $template->save();
-                $process = Process::find($request->processId);
-                if ($request->template_state === "accepted") {
-                    $process->update(['accepted_template_id' => $template->id]);
-                    return Redirect::route('templatefield.create', [$template])->with('status','Шаблон успешно создан');
-                } else if ($request->template_state === "rejected") {
-                    $process->update(['rejected_template_id' => $template->id]);
-                    return Redirect::back();
-                }
-                return response()->json(['message' => 'template not found'], 500);
-            });
+           DB::beginTransaction();
+              $templateState = $request->template_state === "accepted";
+              $request->validate([
+                  'name' => 'required',
+                  'template_state' => 'required',
+              ]);
+              $template = new Template([
+                  'name' => $request->name,
+                  'accept_template' => $templateState,
+              ]);
+              $template->save();
+              $process = Process::find($request->processId);
+              if ($request->template_state === "accepted") {
+                  $process->update(['accepted_template_id' => $template->id]);
+                  DB::commit();
+                  return Redirect::route('templatefield.create', [$template])->with('status','Шаблон успешно создан');
+              } else if ($request->template_state === "rejected") {
+                  $process->update(['rejected_template_id' => $template->id]);
+                  DB::commit();
+                  return Redirect::back()->with('status','Шаблон отказа успешно создан');
+              }
+              return response()->json(['message' => 'template not found'], 500);
         } catch (Exception $e) {
+            DB::rollBack();
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
