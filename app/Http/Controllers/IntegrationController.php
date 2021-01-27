@@ -8,13 +8,13 @@ use App\Integrations\shep\receiver\ServiceRequestRouter;
 
 class IntegrationController extends Controller
 {
-    public function index($type, Request $request)
+    public function index($type)
     {
         $response = array();
         switch ($type) {
             case 'shep':
-                if (isset($request['service'])) {
-                    $response = ShepRequestSender::send($request['service'], $request['data']);
+                if (isset($_GET['service'])) {
+                    $response = ShepRequestSender::send($_GET['service'], $_GET);
                 } else {
                     echo 'no service found';
                 }
