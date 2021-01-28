@@ -283,7 +283,10 @@
               </form>
               @endempty
               @isset($accepted)
-                  <p><u>{{$accepted->name}}</u></p>
+                  <p>
+                    <u>{{$accepted->name}}</u>
+                    <a href="{{ route('templatefield.create', [$accepted]) }}" class="btn btn-outline-danger btn-xs">Редактировать</a>
+                  </p>
               @endisset
               <div class="card-title" style="margin-top: 10px;">Шаблон отказa</div>
               @empty($rejected)
@@ -300,7 +303,10 @@
               </form>
               @endempty
               @isset($rejected)
-                   <p><u>{{$rejected->name}}</u></p>
+                   <p>
+                      <u>{{$rejected->name}}</u>
+                      <a href="{{ route('templatefield.create', [$rejected]) }}" class="btn btn-outline-danger btn-xs">Редактировать</a>
+                   </p>
               @endisset
             </div>
           </div>

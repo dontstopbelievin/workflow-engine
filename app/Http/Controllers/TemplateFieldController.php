@@ -12,6 +12,7 @@ use App\Role;
 use Illuminate\Http\Request;
 use App\Traits\dbQueries;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class TemplateFieldController extends Controller
 {
@@ -36,7 +37,6 @@ class TemplateFieldController extends Controller
     }
 
     public function store(Request $request) {
-
         $inputItem = InputType::where('name', $request->inputItem)->first();
         $insertItem = InsertType::where('name', $request->insertItem)->first();
         $role = Role::where('name', $request->role)->first();
@@ -48,5 +48,6 @@ class TemplateFieldController extends Controller
         $templateField->template_id = $request->tempId;
         $templateField->can_edit_role_id = $role->id;
         $templateField->save();
+        return response()->json(['success' => true], 200);
     }
 }

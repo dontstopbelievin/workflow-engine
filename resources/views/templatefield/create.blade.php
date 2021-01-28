@@ -193,7 +193,11 @@
                 }
                 console.log(role);
                 $.post('/template-field-create', {'tempId':id,'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, 'role':role, '_token':$('input[name=_token]').val()}, function(data){
-                    console.log(data);
+                   if ( data['success'] ) 
+                     {
+                         location.reload();
+                     } 
+                    console.log('data:'+data);
                     console.log($('#items').load(location.href + ' #items'));
                     $('#items').load(location.href + ' #items');
                 });
