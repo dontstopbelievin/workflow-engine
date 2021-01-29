@@ -408,7 +408,8 @@ class ApplicationController extends Controller
     public function create(Process $process)
     {
         $tableName = $this->getTableName($process->name);
-        $tableColumns = $this->getColumns($tableName);
+        $notInclude = ['id', 'process_id', 'status_id', 'user_id', 'index_sub_route', 'index_main', 'doc_path', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at'];
+        $tableColumns = $this->getColumns($tableName, $notInclude);
         $originalTableColumns = $this->getOriginalColumns($tableColumns);
         $dictionaries = $this->getAllDictionaries();
         $res = [];

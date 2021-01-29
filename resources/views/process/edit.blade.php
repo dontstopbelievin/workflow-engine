@@ -19,6 +19,7 @@
       <div class="card">
         <div class="card-body">
           <div class="col-md-12">
+            <a href="{{ route('processes.index') }}" class="btn btn-outline-danger" style="margin-bottom: 20px;">Назад</a>
             <h5>О процессе:</h5>
             <form action="{{ route('processes.update', ['process' => $process]) }}" method="POST">
               {{ csrf_field( )}}
@@ -32,8 +33,7 @@
                 <input type="text" name="deadline" value="{{ $process->deadline}}" class="form-control">
               </div>
               <div class="form-group-row">
-                  <button button type="submit" class="btn btn-primary mx-2">Обновить</button>
-                  <a href="{{ route('processes.index') }}" class="btn btn-outline-danger">Отмена</a>
+                  <button button type="submit" class="btn btn-primary mx-2">Изменить</button>
               </div>
             </form>
             <hr style="height:1px;border-width:0; background-color:black;">
@@ -61,7 +61,7 @@
                                 @endisset
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-success">Выбрать</button>
+                                <button type="submit" class="btn btn-success">Создать</button>
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                             </div>
                         </form>
@@ -238,9 +238,10 @@
             <div class="card-title"><h5>Создание шаблонов:</h5></div>
               <div>
                 <div>
+                  <b>Прикрепленный шаблон:</b>
                   @foreach($templateDocs as $template)
                     @if($template->id == $process->template_doc_id)
-                      <b>Прикрепленный шаблон:</b> {{$template->name}}
+                       {{$template->name}}
                       @break
                     @endif
                   @endforeach
@@ -252,9 +253,15 @@
                         <label for="docTemplate">Выберите другой документ шаблона:</label>
                         <select name="docTemplateId" id="docTemplate" class="form-control">
                             @foreach($templateDocs as $doc)
+                              @if($process->template_doc_id == $doc->id)
+                                <option selected value="{{$doc->id}}">
+                                    {{$doc->name}}
+                                </option>
+                              @else
                                 <option value="{{$doc->id}}">
                                     {{$doc->name}}
                                 </option>
+                              @endif
                             @endforeach
                         </select>
                     </div>
@@ -276,7 +283,10 @@
               </form>
               @endempty
               @isset($accepted)
-                  <p><u>{{$accepted->name}}</u></p>
+                  <p>
+                    <u>{{$accepted->name}}</u>
+                    <a href="{{ route('templatefield.create', [$accepted]) }}" class="btn btn-outline-danger btn-xs">Редактировать</a>
+                  </p>
               @endisset
               <div class="card-title" style="margin-top: 10px;">Шаблон отказa</div>
               @empty($rejected)
@@ -293,7 +303,10 @@
               </form>
               @endempty
               @isset($rejected)
-                   <p><u>{{$rejected->name}}</u></p>
+                   <p>
+                      <u>{{$rejected->name}}</u>
+                      <a href="{{ route('templatefield.create', [$rejected]) }}" class="btn btn-outline-danger btn-xs">Редактировать</a>
+                   </p>
               @endisset
             </div>
           </div>

@@ -30,12 +30,13 @@ class TemplateController extends Controller
 
     public function store(Request $request) {
         try {
-           DB::beginTransaction();
-            $templateState = $request->template_state === "accepted";
+            DB::beginTransaction();
             $request->validate([
                 'name' => 'required',
                 'template_state' => 'required',
             ]);
+            $templateState = $request->template_state === "accepted";
+            // delete old one?
             $template = new Template([
                 'name' => $request->name,
                 'accept_template' => $templateState,
