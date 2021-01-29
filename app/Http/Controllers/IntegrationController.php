@@ -48,7 +48,6 @@ class IntegrationController extends Controller
 
     public function receive(Request $request)
     {
-        return $request;
         ServiceRequestRouter::route($request);
     }
 
