@@ -187,7 +187,7 @@ class ApplicationController extends Controller
                     ->where('application_id', $application->id)
                     ->where('template_id', $templateId)
                     ->get()->toArray();
-                $templateTableFields = json_decode(json_encode($templateTableFields), true);
+                $templateTableFields = json_decode($templateTableFields, true);
                 $exceptionArray = ["id", "template_id", "process_id", "application_id"];
                 $templateTableFields = $this->filterTemplateFieldsTable($templateTableFields, $exceptionArray);
             }
@@ -434,14 +434,14 @@ class ApplicationController extends Controller
         if ($request->hasFile('attachment')) {
             $input["attachment"] = $request->file('attachment')->store('applicant-attachments','public');
         }
-
-        $applicationTableFields = array_slice($input, 1, sizeof($input)-1);
+        $applicationTableFields = $input;
+        if(isset($applicationTableFields['_token'])){
+            unset($applicationTableFields['_token']);
+        }
         $process = Process::find($request->process_id);
         $routes = $this->getRolesWithoutParent($process->id);
-        $arrRoutes = json_decode(json_encode($routes), true);
-        $startRole = $arrRoutes[0]["name"]; //с какой роли начинается маршрут. Находится для того, чтобы присвоить статус маршруту
-        $role = Role::where('name', $startRole)->first();
-        $status = Status::find($role->id);
+        $arrRoutes = json_decode($routes, true);
+        $status = Status::find($arrRoutes[0]["id"]);
 
 //         $notifyUsers = $role->users;
 // //        dd($notifyUsers, $role);
@@ -470,9 +470,9 @@ class ApplicationController extends Controller
         $user = Auth::user();
 //        dd($applicationTableFields);
         $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
-        $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
-        $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
-        Log::insert( $logsArray);
+        $applicationId = DB::table($tableName)->insertGetId($modifiedApplicationTableFields);
+        $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $arrRoutes[0]["id"]); // получить историю хода согласования
+        Log::insert($logsArray);
 
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
     }
@@ -491,10 +491,8 @@ class ApplicationController extends Controller
     {
         $process = Process::find($request->processId);
         $routes = $this->getRolesWithoutParent($process->id);
-        $arrRoutes = json_decode(json_encode($routes), true);
-        $startRole = $arrRoutes[0]["name"]; //с какой роли начинается маршрут. Находится для того, чтобы присвоить статус маршруту
-        $role = Role::where('name', $startRole)->first();
-        $status = Status::find($role->id);
+        $arrRoutes = json_decode($routes, true);
+        $status = Status::find($arrRoutes[0]["id"]);
 
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
@@ -507,8 +505,8 @@ class ApplicationController extends Controller
 //        dd($aData, $applicationTableFields);
         $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
         $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
-        $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
-        Log::insert( $logsArray);
+        $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $arrRoutes[0]["id"]); // получить историю хода согласования
+        Log::insert($logsArray);
 
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
     }
