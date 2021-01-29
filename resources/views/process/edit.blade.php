@@ -191,7 +191,7 @@
                       <select name="mainOrganization" class="form-control" id="mainOrganization" data-dropup-auto="false">
                           <option selected="true" disabled="disabled">Выберите организацию</option>
                           @foreach($organizations as $organization)
-                              <option>{{$organization->name}} </option>
+                              <option value={{$organization->id}}>{{$organization->name}} </option>
                           @endforeach
                       </select>
                   </div>

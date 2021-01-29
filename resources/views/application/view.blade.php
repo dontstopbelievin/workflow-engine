@@ -280,18 +280,20 @@
                                         <form id = "templateFieldsId" method="POST" enctype="multipart/form-data">
                                             {{--<input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">--}}
                                             @foreach($templateFields as $item)
-                                                <div class="form-group row">
-                                                    <label for="{{$item->name}}" class="col-md-4 col-form-label text-md-right">{{ __($item->label_name) }}</label>
-                                                    @if($item->input_type_id === 1)
-                                                        <div class="col-md-6">
-                                                            <input type="text" class="form-control" id="{{$item->name}}"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
-                                                        </div>
-                                                    @elseif($item->input_type_id === 2)
-                                                        <div class="col-md-6">
-                                                            <input type="file" class="form-control" id="{{$item->name}}"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
-                                                        </div>
-                                                    @endif
-                                                </div>
+                                                @if(Auth::user()->role->id == $item->can_edit_role_id)
+                                                    <div class="form-group row">
+                                                        <label for="{{$item->name}}" class="col-md-4 col-form-label text-md-right">{{ __($item->label_name) }}</label>
+                                                        @if($item->input_type_id === 1)
+                                                            <div class="col-md-6">
+                                                                <input type="text" class="form-control" id="{{$item->name}}"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
+                                                            </div>
+                                                        @elseif($item->input_type_id === 2)
+                                                            <div class="col-md-6">
+                                                                <input type="file" class="form-control" id="{{$item->name}}"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @endif
                                             @endforeach
                                         </form>
                                     @endif

@@ -200,7 +200,7 @@ class ProcessController extends Controller
             $route->role_id = $role->id;
             $route->process_id = $process->id;
             $route->save();
-            $can_reject = 1;
+            $can_reject = 1;// why 1 by default
             $can_send_to_revision = 1;
             if(isset($request->reject)){
               foreach ($request->reject as $id) {
@@ -229,7 +229,6 @@ class ProcessController extends Controller
                $process->roles()->attach($role, ['is_parallel' => $maxParallelNumber + 1]);
                $process->save();
            }
-
            if(isset($request->reject)){
              foreach ($request->reject as $id) {
                  $this->updateProcessRoleCanReject($process->id, $id);
@@ -242,10 +241,7 @@ class ProcessController extends Controller
            }
            return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
        }
-
     }
-
-
 
     public function addOrganization(Request $request, Process $process)
     {
@@ -253,8 +249,7 @@ class ProcessController extends Controller
             echo 'Пожалуйста, выберите организацию';
             return;
         }
-        $organization = CityManagement::where('name', $request->mainOrganization)->first();
-        $process->main_organization_id = $organization->id;
+        $process->main_organization_id = $request->mainOrganization;
         $process->update();
         return Redirect::route('processes.edit', [$process])->with('status', 'Основной маршрут выбран успешно');
     }

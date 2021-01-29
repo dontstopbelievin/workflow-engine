@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class CityManagementSeeder extends Seeder
+class Organizations extends Seeder
 {
     /**
      * Run the database seeds.

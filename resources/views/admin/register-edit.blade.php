@@ -23,13 +23,17 @@
   									<label for="lotNumber">Присвоить роль</label>
                     <select name="role_id" class="form-control" data-dropup-auto="false">
                         @foreach($roles as $role)
+                          @if($role->id == Auth::user()->role->id)
+                            <option selected value="{{$role->id}}">{{$role->name}}</option>
+                          @else
                             <option value="{{$role->id}}">{{$role->name}}</option>
+                          @endif
                         @endforeach
                     </select>
   								</div>
   							</div>
   							<div class="card-action">
-                  <button type="submit" class="btn btn-success">Обновить</button>
+                  <button type="submit" class="btn btn-success">Изменить</button>
                   <a href="{{ route('user-role.register') }}" class="btn btn-danger">Отмена</a>
   							</div>
               </form>

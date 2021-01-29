@@ -27,6 +27,6 @@ class CreateCityManagementsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('city_management');
+        Schema::dropIfExists('city_managements');
     }
 }

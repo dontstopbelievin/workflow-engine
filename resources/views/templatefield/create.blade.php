@@ -33,6 +33,7 @@
                 <th>Наименование поля</th>
                 <th>Тип вводимого</th>
                 <th>Тип сохраняемого</th>
+                <th>Специалист</th>
               </tr>
             </thead>
             <tbody>
@@ -41,6 +42,7 @@
                       <td>{{$item["labelName"]}}</td>
                       <td>{{$item["inputName"]}}</td>
                       <td>{{$item["insertName"]}}</td>
+                      <td>{{$item["can_edit"]}}</td>
                   </tr>
               @endforeach
             </tbody>
