@@ -14,7 +14,7 @@ class CreateDictionariesTable extends Migration
     public function up()
     {
         Schema::create('dictionaries', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('name');
             $table->string('label_name');
             $table->foreignId('input_type_id')->nullable()->constrained()->onDelete('cascade');

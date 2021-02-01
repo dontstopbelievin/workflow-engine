@@ -5,41 +5,59 @@
 @endsection
 
 @section('content')
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h1>Изменение данных пользователя</h1>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <form action="{{ route('user-role.update', ['user' => $user]) }}" method="POST">
+                                @csrf
+                                {{ method_field('PUT') }}
+                                <div class="form-group">
+                                    <label>Имя пользователя</label>
+                                    <input type="text" name="username" value="{{ $user->name}}" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Прикрепить роль</label>
+                                    <select name="role_id" class="form-control">
 
-      <div class="main-panel">
-				<div class="content">
-					<div class="container-fluid">
-						<h4 class="page-title">Изменение данных пользователя</h4>
-						<div class="card">
-              <form action="{{ route('user-role.update', ['user' => $user]) }}" method="POST">
-                {{ csrf_field( )}}
-                {{ method_field('PUT') }}
-  							<div class="card-body">
-  								<div class="form-group">
-  									<label for="lotNumber">Имя пользователя</label>
-                    <input type="text" name="username" value="{{ $user->name}}" class="form-control">
-  								</div>
-  								<div class="form-group">
-  									<label for="lotNumber">Присвоить роль</label>
-                    <select name="role_id" class="form-control" data-dropup-auto="false">
-                        @foreach($roles as $role)
-                          @if($role->id == Auth::user()->role->id)
-                            <option selected value="{{$role->id}}">{{$role->name}}</option>
-                          @else
-                            <option value="{{$role->id}}">{{$role->name}}</option>
-                          @endif
-                        @endforeach
-                    </select>
-  								</div>
-  							</div>
-  							<div class="card-action">
-                  <button type="submit" class="btn btn-success">Изменить</button>
-                  <a href="{{ route('user-role.register') }}" class="btn btn-danger">Отмена</a>
-  							</div>
-              </form>
-						</div>
-					</div>
-				</div>
-			</div>
+                                        @isset($user->role)
+                                            <option value="{{$user->role->id}}" selected>{{$user->role->name}}</option>
+                                        @endisset
+                                        @foreach($roles as $item)
+                                            <option value="{{$item->id}}">{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    <button type="submit" class="btn btn-success">Изменить</button>
+                                    <a href="{{ route('user-role.register') }}" class="btn btn-danger">Отмена</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
 
+@section('scripts')
+<script src="../assets/js/core/jquery.min.js"></script>
+  <script src="../assets/js/core/popper.min.js"></script>
+  <script src="../assets/js/core/bootstrap.min.js"></script>
+  <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+  <!--  Google Maps Plugin    -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+  <!-- Chart JS -->
+  <script src="../assets/js/plugins/chartjs.min.js"></script>
+  <!--  Notifications Plugin    -->
+  <script src="../assets/js/plugins/bootstrap-notify.js"></script>
+  <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="../assets/js/now-ui-dashboard.min.js?v=1.5.0" type="text/javascript"></script><!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
+  <script src="../assets/demo/demo.js"></script>
 @endsection

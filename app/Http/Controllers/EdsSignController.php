@@ -18,7 +18,7 @@ class EdsSignController extends Controller
         preg_match('|<ds\:X509Certificate[^>]*?>(.*?)</ds\:X509Certificate>|si', $data, $x509Info);
         $replacedXml = str_replace("\r\n", '', $x509Info[1]);
 
-        $oNca = new PhpNCANode\NCANodeClient('http://192.168.10.25:14579'); //95.59.124.162 когда локально
+        $oNca = new PhpNCANode\NCANodeClient('http://95.59.124.162:14579'); //95.59.124.162 когда локально
         $oPkcs12Info = $oNca->x509Info($replacedXml);
 
         if ($oPkcs12Info->isLegalFix() === true) {
@@ -29,12 +29,10 @@ class EdsSignController extends Controller
                     $aUser = User::where('iin', $sIin)->first();
                 } else if (isset($aCertRaws['subject']['bin'])) {
                     $sBin = $aCertRaws['subject']['bin'];
-                    $aUser = User::where('bin', $sBin)->first();
+                    $aUser = User::whereW('bin', $sBin)->first();
                 }
                 if (isset($aUser)) {
-//                    dd($aUser);
-                  Auth::login($aUser);
-//                  dd('helloworld');
+                    Auth::login($aUser);
                     return Redirect::route('applications.service');
                 } else {
                     return response(['message'=>'Пользователь не существует в системе! Обратитесь администратору!'], 409);

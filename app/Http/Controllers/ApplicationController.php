@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Dictionary;
+use App\EgknService;
 use App\User;
 use App\Process;
 use App\Role;
@@ -95,7 +97,6 @@ class ApplicationController extends Controller
                 $nextRole = $appRoutes[$index];
                 $multipleOptions = $this->hasMultipleOptions($process, $nextRole);
             }
-
             if (empty($multipleOptions)) {
                 $toMultipleRoles["exists"] = false;
             } else {
@@ -108,8 +109,7 @@ class ApplicationController extends Controller
         $backToMainOrg = false;
         $userRole = Role::find($roleId);
         $appRoutes = $this->getAppRoutes($process->id);
-        $indexMain = $application->index_main;
-        if ($appRoutes[sizeof($appRoutes)-1]['name'] === $userRole->name && $indexMain !== 1) { // add i && ndex != 1
+        if (($appRoutes[sizeof($appRoutes)-1]['name'] === $userRole->name) && (sizeof($appRoutes) === $application->index_main)) {
             $toCitizen = true; // если заявку подписывает последний специалист в обороте, заявка идет обратно к заявителю
         }
         if (!empty($subRoutes)) {
@@ -174,6 +174,8 @@ class ApplicationController extends Controller
         $subRoles = $this->getSubRoutes($process->id);
         $allRoles = $this->mergeRoles($mainRoles, $subRoles);
 
+        $aRowNameRows = Dictionary::all();
+
         $templateId = $process->accepted_template_id;
         $template = Template::where('id', $templateId)->first();
         $templateName = $template->name;
@@ -190,6 +192,7 @@ class ApplicationController extends Controller
                 $templateTableFields = json_decode($templateTableFields, true);
                 $exceptionArray = ["id", "template_id", "process_id", "application_id"];
                 $templateTableFields = $this->filterTemplateFieldsTable($templateTableFields, $exceptionArray);
+
             }
         }
         // изменения Дильназ
@@ -206,7 +209,9 @@ class ApplicationController extends Controller
 
         // конец
         //dd($rejectReasonArray);
-        return view('application.view', compact('application','toMultipleRoles','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray', 'buttons'));
+
+        $applicationArrays = json_decode(json_encode($application), true);
+        return view('application.view', compact('application','toMultipleRoles','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','sendToSubRoute', 'backToMainOrg','allRoles','comments','records','revisionReasonArray','rejectReasonArray', 'buttons', 'aRowNameRows','applicationArrays'));
     }
 
     public function acceptAgreement(Request $request)
@@ -215,7 +220,6 @@ class ApplicationController extends Controller
             $user = Auth::user();
             $user->has_not_accepted_agreement = false;
             $user->update();
-//            return Redirect::route('applications.service');
         }
 //        return Redirect::route('applications.service');
     }
@@ -233,7 +237,6 @@ class ApplicationController extends Controller
                     array_push($pRolesArr, $pRole);
                 }
             }
-
         }
         return $pRolesArr;
     }
@@ -383,7 +386,6 @@ class ApplicationController extends Controller
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $applicationId)->first();
         $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
-//        dd('inserted');
         $index = $application->index_main;
         $appRoutes = json_decode($this->getAppRoutes($application->process_id));
         $nextRole = Role::where('id', $role)->first();
@@ -395,7 +397,6 @@ class ApplicationController extends Controller
                 $pos = $i;
                 break;
         }
-
         $index = $index + $pos;
         $role = Auth::user()->role;
         $logsArray = $this->getLogs($updatedStatus->id, $table->id, $application->id, $role->id);
@@ -466,10 +467,10 @@ class ApplicationController extends Controller
 //             Notification::send($notifyUser, new ApproveNotification($details));
 //         }
 //        dd($notifyUsers);
+
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $user = Auth::user();
-//        dd($applicationTableFields);
         $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
         $applicationId = DB::table($tableName)->insertGetId($modifiedApplicationTableFields);
         $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $arrRoutes[0]["id"]); // получить историю хода согласования
@@ -494,22 +495,41 @@ class ApplicationController extends Controller
         $routes = $this->getRolesWithoutParent($process->id);
         $arrRoutes = json_decode($routes, true);
         $status = Status::find($arrRoutes[0]["id"]);
-
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $user = Auth::user();
-
-        $aData = ["coordindates" => "5645226",   "goal" => "123213213", "area" => "34123453", "processId" => $process->id];
-        $applicationTableFields["coordindates"] = $aData["coordindates"];
-        $applicationTableFields["goal"] = $aData["goal"];
-        $applicationTableFields["area"] = $aData["area"];
+        // $aData = ["coordindates" => "5645226",   "goal" => "123213213", "area" => "34123453", "processId" => $process->id];
+        // $applicationTableFields["coordindates"] = $aData["coordindates"];
+        // $applicationTableFields["goal"] = $aData["goal"];
+        // $applicationTableFields["area"] = $aData["area"];
 //        dd($aData, $applicationTableFields);
-        $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
-        $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
-        $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $arrRoutes[0]["id"]); // получить историю хода согласования
-        Log::insert($logsArray);
+        // $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
+        // $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
+        // $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $arrRoutes[0]["id"]); // получить историю хода согласования
+        $incomingApplications = EgknService::where('passed_to_process', 0)->get();
+        if (!count($incomingApplications)) {
+            return Redirect::route('applications.service')->with('status', 'Новых заявок не обнаружено');
+        }
+        $countApp = 0; // считаем количество заявок
+        foreach($incomingApplications as $app) {
+            $countApp++;
+            $applicationTableFields = [];
+            $applicationTableFields["process_id"] = $process->id;
+            $app->passed_to_process = 1;
+            $app->timestamps = false;
+            $app->update();
+            $attrOfIncApp = $app->getAttributes();
+            array_shift($attrOfIncApp);
+            foreach ($attrOfIncApp as $key => $value) {
+                $applicationTableFields[$key] = $value;
+            };
+            $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
+            $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
+            $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
+            Log::insert($logsArray);
+        }
 
-        return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
+        return Redirect::route('applications.service')->with('status', 'Заявки Успешно созданы (' . $countApp . ')');
     }
 
     public function sendToSubRoute(Request $request)
@@ -747,12 +767,20 @@ class ApplicationController extends Controller
         }
     }
 
+    private function getSeveralStatuses($process, $table) {
+        $statuses = [];
+        array_push($statuses, $process->status);
+        array_push($statuses, $table->status);
+
+        return $statuses;
+    }
+
     private function getRoleAfterParallel($process)
     {
         $roleWithIndex = [];
         $allRoles = $process->roles()->get()->toArray();
         $isParallel = false;
-//        $roleAfterParallel = 0;
+        $roleAfterParallel = 0;
         $index = 0;
         // dd($allRoles);
         foreach($allRoles as $role) {
@@ -890,8 +918,7 @@ class ApplicationController extends Controller
         return $templateTable;
     }
 
-    private function getAllDictionariesWithOptions($dictionariesWithOptions)
-    {
+    private function getAllDictionariesWithOptions($dictionariesWithOptions) {
         $arrayToFront = [];
         foreach($dictionariesWithOptions as $item) {
             $replaced = str_replace(' ', '_', $item["name"]);

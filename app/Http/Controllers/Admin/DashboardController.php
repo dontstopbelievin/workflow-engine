@@ -11,26 +11,29 @@ use Illuminate\Support\Carbon;
 
 class DashboardController extends Controller
 {   
-    public function index() {
-
+    public function index()
+    {
       return view('admin.dashboard');
     }
 
-    public function registered() {
-      
+    public function registered()
+    {
         $users = User::all();
         return view('admin.register')->with('users', $users);
     }
 
-    public function registeredit(User $user) {
-
-      $roles = Role::all();
+    public function registeredit(User $user)
+    {
+        if(isset($user->role)) {
+            $roles = Role::all()->whereNotIn('id', [$user->role->id]);
+        } else {
+            $roles = Role::all();
+        }
       return view('admin.register-edit', compact('user', 'roles'));
     }
 
     public function registerupdate(Request $request, User $user)
     {
-//        dd($user);
         $admin = Auth::user()->name;
         $roleName = '';
         if ($user->role) {
@@ -38,10 +41,9 @@ class DashboardController extends Controller
         }
 
         $newRoleName = Role::find($request->role_id)->name;
-      $user->name = $request->username;
-      $user->role_id = $request->role_id;
-      $user->update();
-//      dd($user);
+          $user->name = $request->username;
+          $user->role_id = $request->role_id;
+          $user->update();
 
 //        $myfile = fopen("../public/storage/logs/logfile.txt", "a") or die("Unable to open file!");
         $mytime = Carbon::now()->toDateTimeString();
@@ -52,8 +54,8 @@ class DashboardController extends Controller
       return Redirect::route('user-role.register')->with('status','Данные пользователя изменены');
    }
 
-    public function registerdelete(User $user) {
-
+    public function registerdelete(User $user)
+    {
        $user->delete();
        return Redirect::route('user-role.register')->with('status','Пользователь удален');
     }

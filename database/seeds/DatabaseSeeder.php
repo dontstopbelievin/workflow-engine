@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(StatusSeeder::class);
         $this->call(SelectOptionSeeder::class);
         $this->call(ProcessSeeder::class);
+        $this->call(EgknServiceSeeder::class);
         $this->call(DictionarySeeder::class);
         $this->call(UserSeeder::class);
         $this->call(TemplateDocSeeder::class);

@@ -5,14 +5,21 @@
 @endsection
 
 @section('content')
-      <div class="main-panel">
-				<div class="content">
-					<div class="container-fluid">
-						<h4 class="page-title">Процессы</h4>
-						<a href="{{ route('processes.create') }}" class="btn btn-info">Добавить процесс</a><br><br>
-            @if (session('status'))
-                <div class="alert alert-success" role="alert">
-                    {{ session('status') }}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card bg-white">
+                <div class="card-header">
+                    <h3 class="card-title font-weight-bold text-center">Список Процессов </h3>
+                    <a href="{{ route('processes.create') }}" class="btn btn-info">Добавить процесс</a><br><br>
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                        @elseif (session('failure'))
+                        <div class="alert alert-warning" role="alert">
+                            {{ session('failure') }}
+                        </div>
+                    @endif
                 </div>
             @endif
 						<div class="card">

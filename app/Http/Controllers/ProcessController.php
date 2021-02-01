@@ -16,19 +16,20 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 
 class ProcessController extends Controller
 {
     use dbQueries;
 
-    public function index() {
-
+    public function index()
+    {
         $processes = Process::all();
         return view('process.index', compact('processes'));
     }
 
-    public function view(Process $process) {
-
+    public function view(Process $process)
+    {
         $parentId = $this->getParentRoleId($process->id);
         $tableName = $this->getTableName($process->name);
         $notInclude = ['id', 'process_id', 'status_id', 'user_id', 'index_sub_route', 'index_main', 'doc_path', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at'];
@@ -41,13 +42,13 @@ class ProcessController extends Controller
         return view('process.view', compact('process','sAllRoles','tableColumns'));
     }
 
-    public function create() {
-
+    public function create()
+    {
         return view('process.create');
     }
 
-    public function store(Request $request) {
-
+    public function store(Request $request)
+    {
         $numberOfDays = intval($request->get('deadline'));
         $deadline = Carbon::now()->addDays($numberOfDays);
 
@@ -63,6 +64,7 @@ class ProcessController extends Controller
         $process->save();
         return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был создан');
     }
+
 
     public function edit(Process $process) {
         try {
@@ -90,9 +92,19 @@ class ProcessController extends Controller
         }
     }
 
-    public function update(Request $request, Process $process) {
+    public function update(Request $request, Process $process)
+    {
+        $records = $request->all();
+        $validator = Validator::make( $records,[
+            'name' => ['required', 'string', 'max:255'],
+            'deadline' => ['required', 'string', 'max:2', 'min:1'],
+        ]);
+
+        if ((intval($request->deadline) === 0) || (intval($request->deadline) === Null)){
+            return Redirect::route('processes.edit', [$process])->with('failure', 'Пожалуйста, введите правильный срок');
+        }
         $process->name = $request->name;
-        $process->deadline = $request->deadline;
+        $process->deadline = intval($request->deadline);
         $process->update();
         return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был обновлен');
     }
@@ -103,6 +115,9 @@ class ProcessController extends Controller
             DB::beginTransaction();
             $processName = $process->name;
             $fields = $request->fields;
+            if ($fields === Null) {
+                return Redirect::route('processes.edit', [$process])->with('failure', 'Пожалуйста, выберите поля');
+            }
             $tableName = $this->translateSybmols($processName);
             $tableName = $this->checkForWrongCharacters($tableName);
             if (strlen($tableName) > 60) {
@@ -190,10 +205,12 @@ class ProcessController extends Controller
         }
     }
 
-    public function addRole(Request $request, Process $process) {
+
+    public function addRole(Request $request, Process $process)
+    {
         if (!isset($request->roles)) {
-            echo 'Пожалуйста, выберите специалистов';
-        } else if(sizeof($request->roles) == 1) {
+            return Redirect::route('processes.edit', [$process])->with('failure', 'Пожалуйста, выберите маршрут');
+        } else if (sizeof($request->roles) === 1) {
             $role = Role::where('id', intval($request->roles[0]))->first();
             $route = new Route;
             $route->name = $role->name;
@@ -262,8 +279,8 @@ class ProcessController extends Controller
         return Redirect::back()->with('status', 'Основной маршрут выбран успешно');
     }
 
-    public function addSubRoles(Request $request) {
-
+    public function addSubRoles(Request $request)
+    {
         $parentRole = Role::where('name', $request->roleToAdd)->first();
         $process = Process::find($request->processId);
         $subRoutes = $request->subRoles;
@@ -279,15 +296,19 @@ class ProcessController extends Controller
         return 'done';
     }
 
-    public function delete(Process $process) {
-
+    public function delete(Process $process)
+    {
         $tableName = $this->getTableName($process->name);
-        Schema::dropIfExists($tableName);
+        $true = Schema::dropIfExists($tableName);
+        if ($true !== Null) {
+            return Redirect::route('processes.index')->with('failure', 'Не удалось удалить процесс');
+        }
         $process->delete();
         return Redirect::route('processes.index')->with('status', 'Процесс успешно удален');
     }
 
-    public function logs() {
+    public function logs()
+    {
         $contents = file_get_contents(storage_path('logs/logfile.txt'));
         $result = str_split($contents);
         $logsArr = [];
