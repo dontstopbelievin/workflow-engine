@@ -10,26 +10,26 @@ use Illuminate\Support\Facades\Redirect;
 
 class RoleController extends Controller
 {   
-    public function index() {
-
+    public function index()
+    {
         $roles = Role::all();
         $time = Carbon::now();
         return view('role.index', compact('roles', 'time'));
     }
 
-    public function view(Role $role) {
-
+    public function view(Role $role)
+    {
         return view('role.view', compact('role'));
     }
  
-    public function create() {
-
+    public function create()
+    {
         $cityManagements = CityManagement::all();
         return view('role.create', compact('cityManagements'));
     }
 
-    public function store(Request $request) {
-
+    public function store(Request $request)
+    {
         $request->validate([
             'name'=>'required',
             'city_management_id' => 'required',
@@ -41,8 +41,9 @@ class RoleController extends Controller
         return Redirect::route('role.index')->with('status', 'Роль успешно создана');
     }
 
-    public function edit(Role $role) {
-        if(isset($role->cityManagement->id)) {
+    public function edit(Role $role)
+    {
+        if(isset($role->cityManagement)) {
             $cityManagements = CityManagement::all()->whereNotIn('id', [$role->cityManagement->id]);
         } else {
             $cityManagements = CityManagement::all();
@@ -51,8 +52,8 @@ class RoleController extends Controller
         return view('role.edit', compact('role','cityManagements'));
     }
 
-    public function update(Request $request, Role $role) {
-
+    public function update(Request $request, Role $role)
+    {
         $request->validate([
             'name'=>'required',
             'city_management_id' => 'required',
@@ -63,15 +64,15 @@ class RoleController extends Controller
         return Redirect::route('role.index')->with('status','Роль успешно обновлена');
     }
 
-    public function delete(Role $role) {
-
+    public function delete(Role $role)
+    {
         $role->users()->delete();
         $role->delete();
         return Redirect::route('role.index')->with('status','Роль успешно удалена');
     }
 
-    public function search(Request $request) {
-
+    public function search(Request $request)
+    {
         $q = $request->q;
         $searchRoles = Role::search($q)->get();
         dd($searchRoles);

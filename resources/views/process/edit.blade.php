@@ -15,6 +15,10 @@
           <div class="alert alert-success" role="alert">
               {{ session('status') }}
           </div>
+      @elseif (session('failure'))
+          <div class="alert alert-warning" role="alert">
+              {{ session('failure') }}
+          </div>
       @endif
       <div class="card">
         <div class="card-body">

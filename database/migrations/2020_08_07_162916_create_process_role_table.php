@@ -15,8 +15,10 @@ class CreateProcessRoleTable extends Migration
     {
         Schema::create('process_role', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedBigInteger('process_id');
-            $table->unsignedBigInteger('role_id');
+            $table->integer('process_id')->unsigned()->nullable();
+            $table->foreign('process_id')->references('id')->on('processes')->onDelete('cascade');
+            $table->integer('role_id')->unsigned()->nullable();
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->string('parent_role_id')->nullable();
             $table->integer('is_parallel')->default(0)->nullable();
             $table->integer('can_reject')->default(0)->nullable();

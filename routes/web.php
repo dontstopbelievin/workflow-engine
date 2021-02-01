@@ -49,12 +49,18 @@ Route::post('/integrations/shep/receiver', 'IntegrationController@receive')->mid
 Route::post('/integrations/shep/sync-request-receiver', 'IntegrationController@sync')->middleware('guest');
 Route::post('/integrations/shep/async-request-receiver', 'IntegrationController@async')->middleware('guest');
 
-Route::get('/integrations/{shep}','EdsSignController@example')->middleware('guest');
-Route::post('/integrations/shep','EdsSignController@receive')->middleware('guest');
+//Route::get('/integrations/{shep}','EdsSignController@example')->middleware('guest');
+//Route::post('/integrations/shep','EdsSignController@receive')->middleware('guest');
 
+Route::get('/dataformater','AuctionController@dataFormater')->middleware('guest');
+
+
+Route::post('soap', 'XMLController@index')->middleware('guest');
+
+Route::post('loginwithecp/bar')->name('loginwithecp.store')->uses('EdsSignController@loginByCert')->middleware('guest');
+Route::group(['middleware' => ['admin', 'auth']], function () {
 Route::get('send', 'HomeController@sendNotification');
-//Route::post('soap', 'XMLController@index')->middleware('guest');
-
+});
 Route::post('loginwithecp/bar')->name('loginwithecp.store')->uses('EdsSignController@loginByCert')->middleware('guest');
 Route::middleware(['auth'])->group(function () {
 
@@ -86,6 +92,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('password/post_expired', 'Auth\ExpiredPasswordController@postExpired')
         ->name('password.post_expired');
 
+    Route::get('services', 'ApplicationController@service')->name('applications.service');
+    Route::post('applications/search', 'ApplicationController@search')->name('applications.search');
+    Route::get('index/{process}', 'ApplicationController@index')->name('applications.index');
+    Route::get('application-view/{process_id}/{application_id}', 'ApplicationController@view')->name('applications.view');
+    Route::get('applications-create/{process}', 'ApplicationController@create')->name('applications.create');
+    Route::post('applications/store', 'ApplicationController@store')->name('applications.store');
+    Route::post('applications/approve', 'ApplicationController@approve')->name('applications.approve');
+    Route::post('applications/reject', 'ApplicationController@reject')->name('applications.reject');
+    Route::post('applications/revision', 'ApplicationController@revision')->name('applications.revision');
+    Route::post('applications/sendToSubRoute', 'ApplicationController@sendToSubRoute')->name('applications.sendToSubRoute');
+    Route::post('applications/backToMainOrg/{application_id}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
 });
 
 
@@ -93,22 +110,22 @@ Route::middleware(['auth'])->group(function () {
 
 Route::group(['middleware' => ['admin', 'auth']], function () {
 
-    Route::get('/dictionary', 'DictionaryController@index')->name('dictionary');
-    Route::post('/dictionary/create', 'DictionaryController@create')->name('dictionary.create');
-    Route::get('/dictionary/createFields', 'DictionaryController@createFields')->name('dictionary.createFields');
-    Route::post('/dictionary/saveToTable', 'DictionaryController@saveToTable')->name('dictionary.saveToTable');
+    Route::get('dictionary', 'DictionaryController@index')->name('dictionary');
+    Route::post('dictionary/create', 'DictionaryController@create')->name('dictionary.create');
+    Route::get('dictionary/createFields', 'DictionaryController@createFields')->name('dictionary.createFields');
+    Route::post('dictionary/saveToTable', 'DictionaryController@saveToTable')->name('dictionary.saveToTable');
 
-    Route::get('/list', 'ListController@index');
-    Route::post('/list', 'ListController@create');
-    Route::post('/list/delete', 'ListController@delete');
-    Route::post('/list/update', 'ListController@update');
-    Route::get('/list/search', 'ListController@search');
+    Route::get('list', 'ListController@index');
+    Route::post('list', 'ListController@create');
+    Route::post('list/delete', 'ListController@delete');
+    Route::post('list/update', 'ListController@update');
+    Route::get('list/search', 'ListController@search');
 
-    Route::get('/cities', 'CityManagementController@index')->name('city.index');
-    Route::post('/city', 'CityManagementController@create');
-    Route::post('/city/delete', 'CityManagementController@delete')->name('city.delete');
-    Route::post('/city/update', 'CityManagementController@update');
-    Route::get('/city/search', 'CityManagementController@search');
+    Route::get('cities', 'CityManagementController@index')->name('city.index');
+    Route::post('city', 'CityManagementController@create');
+    Route::post('city/delete', 'CityManagementController@delete');
+    Route::post('city/update', 'CityManagementController@update');
+    Route::get('city/search', 'CityManagementController@search');
 
     Route::get('dashboard', 'Admin\DashboardController@index')->name('dashboard.index');
 
@@ -145,8 +162,15 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
 
     Route::get('auction', 'AuctionController@index')->name('auction.index');
     Route::get('auction/create', 'AuctionController@create')->name('auction.create');
+    Route::get('auction/view', 'AuctionController@view')->name('auction.view');
     Route::post('auction/store', 'AuctionController@store')->name('auction.store');
     Route::get('auction/send/{id}', 'AuctionController@sendToEgkn')->name('auction.send');
+
+    Route::get('egknservice', 'EgknServiceController@index')->name('egknservice.index');
+    Route::get('egknservice/view', 'EgknServiceController@view')->name('egknservice.view');
+    Route::get('egknservice/load', 'EgknServiceController@load')->name('egknservice.load');
+    Route::get('egknservice/status', 'EgknServiceController@status')->name('egknservice.status');
+    Route::get('egknservice/act', 'EgknServiceController@act')->name('egknservice.act');
 
     Route::get('select-options/create', 'SelectOptionController@create')->name('selectoptions.create');
     Route::post('select-options/store', 'SelectOptionController@store')->name('selectoptions.store');

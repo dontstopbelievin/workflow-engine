@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSelectOptionsTable extends Migration
+class CreatePurposeDictionariesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateSelectOptionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('select_options', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
+        Schema::create('purpose_dictionaries', function (Blueprint $table) {
+            $table->id();
+            $table->bigInteger('purpose_id')->unsigned()->nullable();
+            $table->string('name_rus')->nullable();
+            $table->string('name_kaz')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ class CreateSelectOptionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('select_options');
+        Schema::dropIfExists('purpose_dictionaries');
     }
 }

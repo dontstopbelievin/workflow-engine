@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSelectOptionsTable extends Migration
+class CreateLandDivisibilityDictionariesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class CreateSelectOptionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('select_options', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
+        Schema::create('land_divisibility_dictionaries', function (Blueprint $table) {
+            $table->id();
+            $table->string('land_divisibility_code')->nullable();
+            $table->string('name_rus')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ class CreateSelectOptionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('select_options');
+        Schema::dropIfExists('land_divisibility_dictionaries');
     }
 }

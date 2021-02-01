@@ -81,83 +81,56 @@
           </ul>
         </div>
       </nav>
-    </div>
-    <div class="sidebar">
-        <div class="scrollbar-inner sidebar-wrapper">
-            <ul class="nav">
-                @if( Auth::user()->usertype === 'admin')
-                    @if( request()->segment(1) == 'auction' )
-                        <li class="nav-item active">
-                    @else
-                        <li class="nav-item">
-                    @endif
-                        <a href="{{ route('auction.index') }}">
-                            <i class="la la-table"></i>
-                            <p>Аукцион</p>
-                        </a>
-                    </li>
-                    @if( request()->segment(1) == 'process' ||  request()->segment(1) == 'processes' ||  request()->segment(1) == 'processes-edit' || request()->segment(1) == 'template-field-create'  )
-                        <li class="nav-item active">
-                    @else
-                        <li class="nav-item">
-                    @endif
+      </div>
+      <div class="sidebar-wrapper" id="sidebar-wrapper">
+          <ul class="nav">
+              @if (auth()->check())
+                  @if (auth()->user()->isAdmin())
+                      <li class="{{ 'dashboard' == request()->path() ? 'active' : '' }}">
+                          <a href="{{ route('auction.index') }}">
+                              <i class="now-ui-icons tech_tv"></i>
+                              <p>Аукцион</p>
+                          </a>
+                      </li>
+                      <li class="{{'dashboard' == request()->path() ? 'active' : ''}}"> 
+                          <a href="{{ route('egknservice.index') }}"> 
+                              <i class="now-ui-icons tech_tv"></i> 
+                              <p>Поступившие заявки</p> 
+                          </a> 
+                      </li>
+                    <li class="{{ 'process' == request()->path() ? 'active' : '' }}">
                         <a href="{{ route('processes.index') }}">
-                            <i class="la la-keyboard-o"></i>
-                            <p>Процессы</p>
-                            <span class="badge badge-count">{{ $processesCount }}</span>
+                            <i class="now-ui-icons media-2_sound-wave"></i>
+                            <p>Процессы | {{ $processesCount }}</p>
                         </a>
                     </li>
-                    @if( request()->segment(1) == 'roles' || request()->segment(1) == 'role-edit' )
-                        <li class="nav-item active">
-                    @else
-                        <li class="nav-item">
-                    @endif
+                    <li class="{{ 'roles2' == request()->path() ? 'active' : '' }}">
                         <a href="{{ route('role.index') }}">
-                            <i class="la la-th"></i>
-                            <p>Роли</p>
-                            <span class="badge badge-count">{{ $rolesCount }}</span>
+                            <i class="now-ui-icons users_circle-08"></i>
+                            <p>Роли | {{ $rolesCount }}</p>
                         </a>
                     </li>
-                    @if( request()->segment(1) == 'cities'  )
-                        <li class="nav-item active">
-                    @else
-                        <li class="nav-item">
-                    @endif
+                    <li class="{{ 'cityManagements' == request()->path() ? 'active' : '' }}">
                         <a href="{{ route('city.index') }}">
-                            <i class="la la-bell"></i>
-                            <p>Организации</p>
-                            <span class="badge badge-count">{{ $cityManagementCount }}</span>
+                            <i class="now-ui-icons business_bank"></i>
+                            <p>Организации | {{ $cityManagementCount }}</p>
                         </a>
                     </li>
-                    @if( request()->segment(1) == 'role-register' || request()->segment(1) == 'user-edit'  )
-                        <li class="nav-item active">
-                    @else
-                        <li class="nav-item">
-                    @endif
+                    <li class="{{ 'role-register' == request()->path() ? 'active' : '' }}">
                         <a href="{{ route('user-role.register') }}">
-                            <i class="la la-font"></i>
-                            <p>Пользователи</p>
-                            <span class="badge badge-count">{{ $usersCount }}</span>
+                            <i class="now-ui-icons users_single-02"></i>
+                            <p>Пользователи | {{ $usersCount }}</p>
                         </a>
                     </li>
-                    @if( request()->segment(1) == 'dictionary')
-                        <li class="nav-item active">
-                    @else
-                        <li class="nav-item">
-                    @endif
+                    <li class="{{ 'dictionary' == request()->path() ? 'active' : '' }}">
                         <a href="{{ route('dictionary') }}">
-                            <i class="la la-fonticons"></i>
-                            <p>Справочник</p>
-                            <span class="badge badge-count">{{ $dictionariesCount }}</span>
+                            <i class="now-ui-icons users_single-02"></i>
+                            <p>Справочник | {{ $dictionariesCount }}</p>
                         </a>
                     </li>
-                    @if( request()->segment(1) == 'logs' )
-                        <li class="nav-item active">
-                    @else
-                        <li class="nav-item">
-                    @endif
+                    <li class="{{ 'logs' == request()->path() ? 'active' : '' }}">
                         <a href="{{ route('logs') }}">
-                            <i class="la la-fonticons"></i>
+                            <i class="now-ui-icons users_single-02"></i>
                             <p>Логи сервиса</p>
                         </a>
                     </li>
@@ -175,9 +148,7 @@
                 </li>
             </ul>
         </div>
-    </div>
         @yield('content')
-      </div>
   </div>
   @yield('scripts')
   <script src="../assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>

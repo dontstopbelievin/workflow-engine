@@ -15,8 +15,12 @@ class CreateDictionarySelectOptionTable extends Migration
     {
         Schema::create('dictionary_select_option', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('dictionary_id');
-            $table->unsignedBigInteger('select_option_id');
+            $table->integer('dictionary_id')->unsigned()->nullable();
+            $table->foreign('dictionary_id')->references('id')->on('dictionaries');
+            $table->integer('select_option_id')->unsigned()->nullable();
+            $table->foreign('select_option_id')->references('id')->on('select_options');
+//            $table->unsignedBigInteger('dictionary_id');
+//            $table->unsignedBigInteger('select_option_id');
             $table->timestamps();
         });
     }
