@@ -102,7 +102,7 @@
                                         <tr>
                                             <td>{{$record["name"]}}</td>
                                             <td>{{$record["role"]}}</td>
-                                            <td>{{$record["created_at"]}}</td>
+                                            <td>{{Carbon\Carbon::parse($record["created_at"])->format('d-m-Y h:i:s A')}}</td>
                                         </tr>
                                     @endforeach
                                 @endisset
@@ -303,7 +303,7 @@
                                         <input type="hidden" name="process_id" value = {{$process->id}}>
                                         <input type="hidden" name="application_id" value = {{$application->id}}>
                                         <div style="text-align: center">
-                                            <button class="btn btn-danger" style="margin-bottom: 30px;" type="submit">Отправить заявителю</button>
+                                            <button class="btn btn-danger" style="margin-top: 30px;margin-bottom: 30px;" type="submit">Отправить заявителю</button>
                                         </div>
                                     </form>
                                 @elseif($backToMainOrg)
@@ -450,7 +450,7 @@
             var applicationId = $('#applicationId').val();
             console.log(rejectReason, processId, applicationId)
             $.post('/applications/reject', {'rejectReason':rejectReason,'processId':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
-
+                console.log('reject: '+data);
                 $('#items').load(location.href + ' #items');
             });
         });

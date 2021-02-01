@@ -86,18 +86,11 @@ trait dbQueries
 
         $routes = DB::table('roles')
             ->join('process_role', 'roles.id','=', 'process_role.role_id')
-            ->select('name')
+            ->select('roles.id', 'roles.name')
             ->where('process_role.process_id', '=', $id)
             ->where('parent_role_id', null)
-            ->get()->toArray();
-        $array = json_decode(json_encode($routes), true);
-        $res = array();
-        foreach($array as  $arr) {
-            foreach($arr as $key => $value) {
-                array_push($res, $value);
-            }
-        }
-        return json_encode($res);
+            ->get();
+        return json_decode($routes, true);
     }
     private function getTableWithStatuses($table) {
 

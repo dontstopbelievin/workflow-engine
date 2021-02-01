@@ -87,10 +87,10 @@ class ApplicationController extends Controller
         //parallel approve
         $toMultipleRoles["exists"] = false;
         if ($canApprove && !$isCurrentUserRoleInParallel) { // if not in parallel
-            $appRoutes = json_decode($this->getAppRoutes($application->process_id));
+            $appRoutes = $this->getAppRoutes($application->process_id);
             $index = $application->index_main;
-
             $multipleOptions = [];
+
             if (isset($appRoutes[$index])) {
                 $nextRole = $appRoutes[$index];
                 $multipleOptions = $this->hasMultipleOptions($process, $nextRole);
@@ -107,9 +107,9 @@ class ApplicationController extends Controller
         $toCitizen = false;
         $backToMainOrg = false;
         $userRole = Role::find($roleId);
-        $appRoutes = json_decode($this->getAppRoutes($process->id));
+        $appRoutes = $this->getAppRoutes($process->id);
         $indexMain = $application->index_main;
-        if ($appRoutes[sizeof($appRoutes)-1] === $userRole->name && $indexMain !== 1) { // add i && ndex != 1
+        if ($appRoutes[sizeof($appRoutes)-1]['name'] === $userRole->name && $indexMain !== 1) { // add i && ndex != 1
             $toCitizen = true; // если заявку подписывает последний специалист в обороте, заявка идет обратно к заявителю
         }
         if (!empty($subRoutes)) {
@@ -223,7 +223,7 @@ class ApplicationController extends Controller
     private function hasMultipleOptions($process, $role)
     {
         $parallelRoles = $process->roles()->where('is_parallel', '<>', 0)->get();
-        $parallelRole = $parallelRoles->where('name', $role)->first();
+        $parallelRole = $parallelRoles->where('id', $role['id'])->first();
         $pRolesArr = [];
         if (isset($parallelRole->pivot->is_parallel)) {
             $isParallelInt = $parallelRole->pivot->is_parallel;
@@ -244,6 +244,7 @@ class ApplicationController extends Controller
         $role = Auth::user()->role->name;
         return in_array($role, $parallelRoles);
     }
+
     public function approveReject(Request $request){
 
       $process = Process::find($request->processId);
@@ -252,14 +253,11 @@ class ApplicationController extends Controller
       $table = CreatedTable::where('name', $tableName)->first();
 
       $index = $application->index_main;
-      $appRoutes = json_decode($this->getAppRoutes($application->process_id));
+      $appRoutes = $this->getAppRoutes($application->process_id);
       //dd($appRoutes);
-      $nextRole = $appRoutes[$index]; // find next role
-
-      $nextR = Role::where('name', $nextRole)->first(); //find $nextRole in Role table
-      $idOfNextRole = $nextR->id; // get id of next role
+      $nextRoleId = $appRoutes[$index]['id']; // find next role
       $index = $index + 1;
-      $status = Status::find($idOfNextRole);
+      $status = Status::find($nextRoleId);
       //dd($status);
       $user = Auth::user();
       $role = $user->role;
@@ -319,13 +317,11 @@ class ApplicationController extends Controller
             }
         } else {
             $index = $application->index_main;
-            $appRoutes = json_decode($this->getAppRoutes($application->process_id));
-            $nextRole = $appRoutes[$index]; // find next role
-            $nextR = Role::where('name', $nextRole)->first(); //find $nextRole in Role table
+            $appRoutes = $this->getAppRoutes($application->process_id);
+            $nextRoleId = $appRoutes[$index]['id']; // find next role id
 //            $notifyUsers = $nextR->users();
-            $idOfNextRole = $nextR->id; // get id of next role
             $index = $index + 1;
-            $status = Status::find($idOfNextRole);
+            $status = Status::find($nextRoleId);
             $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
         }
         Log::insert( $logsArray);
@@ -393,7 +389,12 @@ class ApplicationController extends Controller
         $nextRole = Role::where('id', $role)->first();
         $nextRoleId = $nextRole->id;
         $updatedStatus = Status::where('id', $nextRoleId)->first();
-        $pos = array_search($nextRole->name, $appRoutes);
+        $pos = 0;
+        for($i = 0; $i < sizeof($appRoutes); $i++){
+            if($nextRole->name == $appRoutes['name'])
+                $pos = $i;
+                break;
+        }
 
         $index = $index + $pos;
         $role = Auth::user()->role;
@@ -662,35 +663,36 @@ class ApplicationController extends Controller
 
     public function reject(Request $request)
     {
-        $process = Process::find($request->processId);
-        $tableName = $this->getTableName($process->name);
-        $application = DB::table($tableName)->where('id', $request->applicationId)->first();
-        $table = CreatedTable::where('name', $tableName)->first();
+        try {
+            DB::beginTransaction();
+            $process = Process::find($request->processId);
+            $tableName = $this->getTableName($process->name);
+            $application = DB::table($tableName)->where('id', $request->applicationId)->first();
+            $table = CreatedTable::where('name', $tableName)->first();
 
-        $index = $application->index_main;
-        $appRoutes = json_decode($this->getAppRoutes($application->process_id));
-        $nextRole = $appRoutes[$index]; // find next role
-        $nextR = Role::where('name', $nextRole)->first(); //find $nextRole in Role table
-        $idOfNextRole = $nextR->id; // get id of next role
-        $index = $index + 1;
-        $status = Status::find($idOfNextRole);
+            $index = $application->index_main;
+            $appRoutes = $this->getAppRoutes($application->process_id);
+            $nextRoleId = $appRoutes[$index]['id']; // find next role id
+            $index = $index + 1;
+            $status = Status::find($nextRoleId);
 
-        $user = Auth::user();
-        //dd($user);
-        $role = $user->role;
+            $user = Auth::user();
+            $logsArray = $this->getLogs($status->id, $table->id, $application->id, $user->role_id);
+            Log::insert( $logsArray);
 
-        $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
-
-        Log::insert( $logsArray);
-
-        if ($application->to_revision === 0) {
-            DB::table($tableName)
-                ->where('id', $request->applicationId)
-                ->update(['status_id' => $status->id, 'index_main' => $index, 'reject_reason' => $request->rejectReason, 'reject_reason_from_spec_id' => $user->role_id]);
-        } else {
-            DB::table($tableName)
-                ->where('id', $request->applicationId)
-                ->update(['status_id' => $status->id, 'index_main' => $index, 'reject_reason' => $request->rejectReason, 'to_revision' => 0, 'reject_reason_from_spec_id' => $user->role_id]);
+            if ($application->to_revision === 0) {
+                DB::table($tableName)
+                    ->where('id', $request->applicationId)
+                    ->update(['status_id' => $status->id, 'index_main' => $index, 'reject_reason' => $request->rejectReason, 'reject_reason_from_spec_id' => $user->role_id]);
+            } else {
+                DB::table($tableName)
+                    ->where('id', $request->applicationId)
+                    ->update(['status_id' => $status->id, 'index_main' => $index, 'reject_reason' => $request->rejectReason, 'to_revision' => 0, 'reject_reason_from_spec_id' => $user->role_id]);
+            }
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 
