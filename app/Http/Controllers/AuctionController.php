@@ -19,18 +19,21 @@ class AuctionController extends Controller
 {
     use dbQueries;
 
-    public function index() {
+    public function index()
+    {
 
         $fields = Auction::all();
         return view('auction.index', compact('fields'));
     }
 
-    public function view(Request $request) {
+    public function view(Request $request)
+    {
         $aAuctionRaws = $this->getAuctionRaws($request->id);
         return view('auction.view', compact('aAuctionRaws'));
     }
 
-    public function create() {
+    public function create()
+    {
         $aLandCategory = LandCategoryDictionary::all();
         $aRightType = RightTypeDictionary::all();
         $aTarget = TargetDictionary::all();
@@ -39,7 +42,8 @@ class AuctionController extends Controller
         return view('auction.create', compact('aLandCategory','aRightType','aTarget','aPurpose','aLandDivisibility'));
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
 
         $request->validate([
 //            'IIN' => 'required',

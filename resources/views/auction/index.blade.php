@@ -5,11 +5,10 @@
 @endsection
 
 @section('content')
-
-	<div class="main-panel">
-		<div class="content">
-			<div class="container-fluid">
-				<h4 class="page-title">Торги · <a href="#">Прямое предоставление ЗУ</a></h4>
+    <div class="main-panel">
+    	<div class="content">
+    		<div class="container-fluid">
+    			<h4 class="page-title">Торги · <a href="#">Прямое предоставление ЗУ</a></h4>
                 @if (session('status'))
                     <div class="alert alert-success" role="alert">
                         {{ session('status') }}
@@ -59,7 +58,23 @@
                     </div>
                     <a href="{{route('auction.create')}}"  class="btn btn-info btn-lg my-5">Создать Лот</a>
                 </div>
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('scripts')
+    <script src="../assets/js/core/jquery.min.js"></script>
+    <script src="../assets/js/core/popper.min.js"></script>
+    <script src="../assets/js/core/bootstrap.min.js"></script>
+    <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+    <!--  Google Maps Plugin    -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+    <!-- Chart JS -->
+    <script src="../assets/js/plugins/chartjs.min.js"></script>
+    <!--  Notifications Plugin    -->
+    <script src="../assets/js/plugins/bootstrap-notify.js"></script>
+    <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="../assets/js/now-ui-dashboard.min.js?v=1.5.0" type="text/javascript"></script><!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
+    <script src="../assets/demo/demo.js"></script>
 @endsection
