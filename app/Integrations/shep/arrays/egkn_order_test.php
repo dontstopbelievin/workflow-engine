@@ -21,7 +21,7 @@ $aData = [
                         'Attacment' => [
                             'CodeType' => 'ZKR4',
                             'FileName' => 'Акт выбора ЗУ',
-                            'FileId' => '00000000-0000-f17d-4748-d493c6001948',
+                            'FileId' => '00000000-0000-f1a8-ba4b-0b78748e605b',
                             'DocNumber' => '123',
                             'DocDate' => '2021-01-29+06:00'
                         ],
@@ -30,7 +30,7 @@ $aData = [
                         'Attacment' => [
                             'CodeType' => 'ZKR5',
                             'FileName' => 'Ситуационная схема',
-                            'FileId' => '00000000-0000-f17d-4748-d493c6001948',
+                            'FileId' => '00000000-0000-f1a8-ba4b-0b78748e605b',
                             'DocNumber' => '111',
                             'DocDate' => '2021-01-29+06:00'
                         ],
