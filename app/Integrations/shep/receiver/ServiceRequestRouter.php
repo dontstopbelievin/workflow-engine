@@ -14,10 +14,16 @@ class ServiceRequestRouter
     {
         try {
             $sXml = $request->getContent();
-            Storage::disk('local')->put('async_responses/' . time(), $sXml);
+            $sFileName = time();
             $aResponseData = ShepUtil::getSoapBody($sXml);
             preg_match('/(<serviceId[^>]*>)(.*?)(<\/serviceId>)/', $sXml, $aServiceIdMatches);
             $sServiceId = $aServiceIdMatches[2];
+            if (count($sServiceId) > 0) {
+                $sFolder = $sServiceId;
+            } else {
+                $sFolder = 'Unknown';
+            }
+            Storage::disk('local')->put('received/' . $sFolder . '/' . $sFileName . '.xml', $sXml);
             switch ($sServiceId) {
                 case 'EgknGeoportalActualization':
                     $oShepServiceStrategy = new EgknGeoportalActualizationStrategy($aResponseData);
@@ -29,8 +35,10 @@ class ServiceRequestRouter
                     throw new \SoapFault('Server', 'No service found');
             }
             $sUnsignedResponse = (new ShepServiceExecutor($oShepServiceStrategy))->execute();
+            $sSignedResponse = ShepUtil::signXml($sUnsignedResponse);
+            Storage::disk('local')->put('responses/'. $sFolder . '/' . $sFileName . '.xml', $sSignedResponse);
             header('Content-Type: application/soap+xml; charset=utf-8');
-            echo ShepUtil::signXml($sUnsignedResponse);
+            echo $sSignedResponse;
             exit;
         } catch (\Exception $e) {
             logger($e->getMessage());
