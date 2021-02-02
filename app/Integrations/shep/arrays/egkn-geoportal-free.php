@@ -1,88 +1,110 @@
 <?php
 
-$data = [
+$aData = [
     'Request' => [
-        'Auction' => [
-            'LotID' => '',
-            'EgknID' => '',
-            'StatusZU' => '', // "free" - свободный ЗУ; "auction" - аукцион/торги
-            'LotNumber' => '',
-            'LotStatus' => '', //"1" - Предстоящий; "2" - Несостоявшийся; "3" - Состоявшийся
-            'Target' => [
-                'ID' => '',
-                'NameRus' => '',
-                'NameKaz' => ''
-            ],
-            'Purpose' => [
-                'ID' => '',
-                'NameRus' => '',
-                'NameKaz' => ''
-            ],
-            'RightType' => [
-                'ID' => '',
-                'NameRus' => '',
-                'NameKaz' => ''
-            ],
-            'RentConditionsRus' => '',
-            'RentConditionsKaz' => '',
-            'Area' => '',
-            'CadastreCost' => '',
-            'StartCost' => '',
-            'TaxCost' => '',
-            'ParticipationCost' => '',
-            'AuctionMethod' => '', //"1" - английский; "2" - голландский
-            'AuctionDate' => '',
-            'AuctionPlaceRus' => '',
-            'AuctionPlaceKaz' => '',
-            'RequestAddressRus' => '',
-            'RequestAddressKaz' => '',
-            'CommentRus' => '',
-            'CommentKaz' => '',
-            'Seller' => [
-                'IINBIN' => '',
-                'NameRus' => '',
-                'NameKaz' => ''
-            ],
-            'Customer' => [
-                'IINBIN' => '',
-                'NameRus' => '',
-                'NameKaz' => ''
-            ],
-            'AddressRus' => '',
-            'AddressKaz' => '',
-            'PublishDate' => '',
-            'Files' => [
-                'FileName' => '', //with extension
-                'FileData' => ''
-            ],
-            'Coordinates' => '',
-            'CoordinateSystem' => '',
-            'AteID' => '',
-            'TechConditions' => [
-                'ElektrPower' => '',
-                'ElektrFaza1' => '',
-                'ElektrFaza3' => '',
-                'WaterPower' => '',
-                'WaterHoz' => '',
-                'WaterProduction' => '',
-                'SeweragePower' => '',
-                'SewerageFecal' => '',
-                'SewerageProduction' => '',
-                'SewerageClean' => '',
-                'HeatPower' => '',
-                'HeatFiring' => '',
-                'HeatVentilation' => '',
-                'HeatHotWater' => '',
-                'StormWater' => '',
-                'Telekom' => '',
-                'GasPower' => '',
-                'GasOnCooking' => '',
-                'GasHeating' => '',
-                'GasVentilation' => '',
-                'GasConditioning' => '',
-                'GasHotWater' => ''
+        'BusinessData' => [
+            'LayerCode' => 'FREE_LAND',
+            'Auction' => [
+                'LotID' => '2404_777',
+                'EgknID' => '',
+                'StatusZU' => 'auction', // "free" - свободный ЗУ; "auction" - аукцион/торги
+                'LotNumber' => '14',
+                'LotStatus' => '1', //"1" - Предстоящий; "2" - Несостоявшийся; "3" - Состоявшийся
+                'Target' => [
+                    'ID' => '7020100100',
+                    'NameRus' => 'Индивидуальный жилой дом',
+                    'NameKaz' => 'Жеке тұрғын үй'
+                ],
+                'Purpose' => [
+                    'ID' => '37',
+                    'NameRus' => 'строительство',
+                    'NameKaz' => 'құрылыс салу'
+                ],
+                'RightType' => [
+                    'ID' => '10',
+                    'NameRus' => 'временное возмездное долгосрочное землепользование',
+                    'NameKaz' => 'временное возмездное долгосрочное землепользование (каз.яз.)'
+                ],
+                'LandDivisibility' => [
+                    'ID' => 'divis_y',
+                    'NameRus' => 'Частная собственность',
+                    'NameKaz' => 'Уақытша (ұзақ уақыт) жерді пайдалану құқығы'
+                ],
+                'LandCategory' => [
+                    'ID' => 'landcat_znp',
+                    'NameRus' => 'Земли населенных пунктов',
+                    'NameKaz' => 'Елді мекендердің жерлері'
+                ],
+                'RentConditionsRus' => 'Право аренды сроком на 3 года',
+                'RentConditionsKaz' => 'Право аренды сроком на 3 года (каз.яз.)',
+                'RentLease' => '2022-07-30',
+                'Area' => '0.98',
+                'CadastreCost' => '4850000.0',
+                'StartCost' => '291000.0',
+                'TaxCost' => '101300.0',
+                'ParticipationCost' => '115450.0',
+                'AuctionMethod' => '1', //"1" - английский; "2" - голландский
+                'AuctionDateTime' => '2021-02-20T12:00:00.000+06:00',
+                'AuctionPlaceRus' => 'Акимат города Нур-Султан',
+                'AuctionPlaceKaz' => 'Нур-Султан қаласының әкімдігі',
+                'RequestAddressRus' => 'Мангилик ел, 10', //адрес приема заявок
+                'RequestAddressKaz' => 'Мангилик ел, 10',
+                'CommentRus' => 'Акт согласован',
+                'CommentKaz' => 'Акт согласован (каз.яз.)',
+                'Seller' => [ //Продавец
+                    'IINBIN' => '020340002753',
+                    'IsFl' => false,
+                    'NameRus' => 'ГУ АППАРАТ АКИМА ГОРОДА НУР-СУЛТАН',
+                    'NameKaz' => 'ГУ АППАРАТ АКИМА ГОРОДА НУР-СУЛТАН (каз.яз.)'
+                ],
+//                'Customer' => [
+//                    'IINBIN' => '',
+//                    'NameRus' => '',
+//                    'NameKaz' => ''
+//                ],
+                'AddressRus' => 'г. Нур-Султан, мкр. Юго-Восток', //Месторасположение ЗУ
+                'AddressKaz' => 'г. Нур-Султан, мкр. Юго-Восток (каз.яз.)',
+                'PublishDate' => '2020-12-20', //Дата и время публикации в СМИ
+                'Files' => [
+                    'FileName' => 'test.pdf', //with extension
+                    'FileId' => '00000000-0000-f1a8-ba4b-0b78748e605b',
+                    'DocNumber' => '123',
+                    'DocDate' => '2021-01-29'
+                ],
+                'Coordinates' => 'MULTIPOLYGON(((674486.83 5667708.71,674456.65 5667778.87,674513.55 5667807.03,674547.45 5667737.74,674486.83 5667708.71)))',
+                'CoordinateSystem' => '32642', //Система координат  WGS84 UTM 42N EPSG:32642
+                'AteID' => '107193',
+                'NoteRus' => 'примечание рус',
+                'NoteKaz' => 'примечание каз',
+                'RestrictionsAndBurdensRus' => '', //Ограничения и обременения при наличии кроме ТУ
+                'RestrictionsAndBurdensKaz' => '',
+                'InstalmentSelling' => '1', //Продажа в рассрочку?: "1" - Да; "2" - Нет.
+                'InstallmentPeriod' => '12', //Срок рассрочки, мес
+                'TechConditions' => [
+                    'ElektrPower' => '25', //Выделяемая мощность (лимит) (кВт)
+                    'ElektrFaza1' => '111', //Характер нагрузки: Однофазная (кВт)
+                    'ElektrFaza3' => '333', //Характер нагрузки: Трехфазная (кВт)
+                    'WaterPower' => '444', //Общая потребность в воде (лимит) (м3/час)
+                    'WaterHoz' => '5555', //На хозпитьевые нужды (м3/час)
+                    'WaterProduction' => '66', //На производственные нужды (м3/час)
+                    'SeweragePower' => '777', //Общее количество сточных вод (м3/час)
+                    'SewerageFecal' => '88', //Фекальных (м3/час)
+                    'SewerageProduction' => '999', //Производственно-загрязненных (м3/час)
+                    'SewerageClean' => '1010', //Условно-чистых сбрасываемых на городскую канализацию (м3/час)
+                    'HeatPower' => '11', //Общая тепловая нагрузка (лимит) (Гкал/час)
+                    'HeatFiring' => '12', //Отопление (Гкал/час)
+                    'HeatVentilation' => '1313', //Вентиляция (Гкал/час)
+                    'HeatHotWater' => '14140', //Горячее водоснабжение (Гкал/час)
+                    'StormWater' => 'Есть', //Ливневая канализация
+                    'Telekom' => 'Есть', //Телефонизация
+                    'GasPower' => '1515', //Общая потребность (лимит) (м3/час)
+                    'GasOnCooking' => '1616', //На приготовление пищи (м3/час)
+                    'GasHeating' => '171', //Отопление
+                    'GasVentilation' => '1818', //Вентиляция (м3/час)
+                    'GasConditioning' => '19', //Кондиционирование (м3/час)
+                    'GasHotWater' => '2020' //Горячее водоснабжение при газификации многоэтажных домов (м3/час)
+                ]
             ]
         ]
-    ],
-    'Signature' => true
+    ]
 ];

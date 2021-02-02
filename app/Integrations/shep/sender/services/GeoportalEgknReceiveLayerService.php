@@ -18,7 +18,8 @@ class GeoportalEgknReceiveLayerService extends ShepService implements XmlBuilder
 
     public function buildXml(array $aPreparedData)
     {
-        $sUnsignedXml = ShepUtil::arrayToXML($aPreparedData);
+        include_once app_path('Integrations/shep/arrays/egkn-geoportal-free.php');
+        $sUnsignedXml = ShepUtil::arrayToXML($aData);
         $sUnsignedXml = str_replace('<', '<tns:', $sUnsignedXml);
         $sUnsignedXml = str_replace('<tns:/', '</tns:', $sUnsignedXml);
         $sUnsignedXml = str_replace('<tns:Request>', '<tns:Request xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns="http://newshep.geoportal.free.gbdrn.tamur.kz" xsi:schemaLocation="http://newshep.geoportal.free.gbdrn.tamur.kz EgknGeoportalFree.xsd ">', $sUnsignedXml);
