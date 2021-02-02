@@ -62,7 +62,8 @@ class EgknServiceController extends Controller
     }
 
 
-    private function getAllDictionariesWithOptions($dictionariesWithOptions) {
+    private function getAllDictionariesWithOptions($dictionariesWithOptions)
+    {
         $arrayToFront = [];
         foreach($dictionariesWithOptions as $item) {
             $replaced = str_replace(' ', '_', $item["name"]);

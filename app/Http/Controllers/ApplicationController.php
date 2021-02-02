@@ -498,6 +498,7 @@ class ApplicationController extends Controller
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $user = Auth::user();
+
         // $aData = ["coordindates" => "5645226",   "goal" => "123213213", "area" => "34123453", "processId" => $process->id];
         // $applicationTableFields["coordindates"] = $aData["coordindates"];
         // $applicationTableFields["goal"] = $aData["goal"];
@@ -506,6 +507,7 @@ class ApplicationController extends Controller
         // $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
         // $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
         // $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $arrRoutes[0]["id"]); // получить историю хода согласования
+
         $incomingApplications = EgknService::where('passed_to_process', 0)->get();
         if (!count($incomingApplications)) {
             return Redirect::route('applications.service')->with('status', 'Новых заявок не обнаружено');

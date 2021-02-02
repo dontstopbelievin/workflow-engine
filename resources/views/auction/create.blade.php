@@ -5,15 +5,17 @@
 @endsection
 
 @section('content')
-      <div class="main-panel">
-				<div class="content">
-					<div class="container-fluid">
-						<h4 class="page-title">Добавить/редактировать лот</h4>
-            @if (session('status'))
-                <div class="alert alert-success" role="alert">
-                    {{ session('status') }}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Добавить/редактировать аукцион</h4>
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
                 </div>
-            @endif
                 <div class="card-body">
                     <div class="row">
                         <div>
@@ -297,10 +299,10 @@
                                     <button type="submit" class="btn btn-success">Сохранить</button>
                                 </div>
                             </form>
-                  </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-					</div>
-				</div>
-			</div>
+            </div>
+        </div>
+    </div>
 @endsection

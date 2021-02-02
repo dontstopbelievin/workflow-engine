@@ -19,18 +19,21 @@ class AuctionController extends Controller
 {
     use dbQueries;
 
-    public function index() {
+    public function index()
+    {
 
         $fields = Auction::all();
         return view('auction.index', compact('fields'));
     }
 
-    public function view(Request $request) {
+    public function view(Request $request)
+    {
         $aAuctionRaws = $this->getAuctionRaws($request->id);
         return view('auction.view', compact('aAuctionRaws'));
     }
 
-    public function create() {
+    public function create()
+    {
         $aLandCategory = LandCategoryDictionary::all();
         $aRightType = RightTypeDictionary::all();
         $aTarget = TargetDictionary::all();
@@ -39,7 +42,8 @@ class AuctionController extends Controller
         return view('auction.create', compact('aLandCategory','aRightType','aTarget','aPurpose','aLandDivisibility'));
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
 
         $request->validate([
 //            'IIN' => 'required',
@@ -57,7 +61,10 @@ class AuctionController extends Controller
 //            'SchemeZu' => ['required', 'file'],// max size of 5 mb
 //            'ActCost' => ['required', 'file'],
         ]);
-//        $identificationDocPath = $request->Files->store('templates', 'public');
+
+        $identificationDocPath = $request->Files->store('templates', 'public');
+        //$response = ShepRequestSender::send('eds_temp_files', array());
+
 //        $legalDocPath = $request->LegalDoc->store('templates', 'public');
 //        $sketchDocPath = $request->SketchProject->store('templates', 'public');
 //        $schemeZuDocPath = $request->SchemeZu->store('templates', 'public');
@@ -92,7 +99,11 @@ class AuctionController extends Controller
         $auction->restrictions_and_burdens_rus = $request->RestrictionsAndBurdensRus;
         $auction->restrictions_and_burdens_kaz = $request->RestrictionsAndBurdensKaz;
 
+<<<<<<< HEAD
         $auction->coordinates = 'MULTIPOLYGON((('.$request->Coordinates.')))';
+=======
+        $auction->coordinates = $request->Coordinates;
+>>>>>>> develop
         $auction->coordinate_system = $request->CoordinateSystem;
 
         $auction->instalment_selling = $request->InstalmentSelling;
