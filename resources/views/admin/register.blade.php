@@ -1,11 +1,10 @@
-  @extends('layouts.master')
+@extends('layouts.master')
 
 @section('title')
     Зарегистрированные пользователи
 @endsection
 
 @section('content')
-
       <div class="main-panel">
 				<div class="content">
 					<div class="container-fluid">

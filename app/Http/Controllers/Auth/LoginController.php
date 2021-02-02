@@ -59,6 +59,12 @@ class LoginController extends Controller
             'email' => 'required',
             'password' => 'required',
         ]);
+        if (method_exists($this, 'hasTooManyLoginAttempts') &&
+            $this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
+        }
 
         $user = \DB::table('users')->where('email', $request->input('email'))->first();
 

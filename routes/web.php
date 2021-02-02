@@ -158,6 +158,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('template-edit/{template}', 'TemplateController@edit')->name('template.edit');
     Route::post('template-update/{id}', 'TemplateController@update')->name('template.update');
     Route::post('template-delete/{id}', 'TemplateController@delete')->name('template.delete');
+
     Route::get('template-field-create/{template}', 'TemplateFieldController@create')->name('templatefield.create');
     Route::post('template-field-create', 'TemplateFieldController@store')->name('templatefield.store');
 
@@ -178,19 +179,21 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::post('select-options/delete', 'SelectOptionController@delete')->name('selectoptions.delete');
     Route::post('select-options/update', 'SelectOptionController@update')->name('selectoptions.update');
 
-    Route::get('processes', 'ProcessController@index')->name('processes.index');
-    Route::get('processes/{process}', 'ProcessController@view')->name('processes.view');
+    Route::get('process', 'ProcessController@index')->name('processes.index');
+    Route::get('process/{process}', 'ProcessController@view')->name('processes.view');
     Route::get('process/create', 'ProcessController@create')->name('processes.create');
-    Route::post('processes/store', 'ProcessController@store')->name('processes.store');
-    Route::post('add-sub-roles', 'ProcessController@addSubRoles')->name('processes.addSubRoles');
-    Route::post('add-organization/{process}', 'ProcessController@addOrganization')->name('processes.addOrganization');
+    Route::post('process/store', 'ProcessController@store')->name('processes.store');
+    Route::post('process/add-sub-roles', 'ProcessController@addSubRoles')->name('processes.addSubRoles');
+    Route::post('process/add-organization/{process}', 'ProcessController@addOrganization')->name('processes.addOrganization');
     Route::get('processes-edit/{process}', 'ProcessController@edit')->name('processes.edit');
     Route::put('processes-update/{process}', 'ProcessController@update')->name('processes.update');
     Route::post('create-process-table/{process}', 'ProcessController@createProcessTable')->name('processes.createProcessTable');
     Route::post('process-add-role/{process}', 'ProcessController@addRole')->name('processes.addRole');
+
     Route::post('process-add-doc-templates', 'ProcessController@addDocTemplates')->name('process.addDocTemplates');
+    Route::post('process/approve-in-parallel', 'ProcessController@approveInParallel')->name('processes.approveParallel');
     Route::delete('process-delete/{process}', 'ProcessController@delete')->name('processes.delete');
-    Route::get('logs', 'ProcessController@logs')->name('logs');
+
 
     View::composer(['*'], function($view) {
         $usersCount = count(User::active()->get());

@@ -48,16 +48,20 @@
                                   </button>
                               </form>
                             </div>
-                          </td>
-                      </tr>
-                    @endforeach
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+                            <div class="modal-body">
+                                <input type="hidden" id="id">
+                                <p><input type="text" placeholder="Write item here" id="addItem" class="form-control"></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-warning" id="delete" style="display:none" data-dismiss="modal">Delete</button>
+                                <button type="button" class="btn btn-primary" id="saveChanges" data-dismiss="modal" style="display:none" >Save changes</button>
+                                <button type="button" class="btn btn-primary" id="AddButton" data-dismiss="modal">Add Item</button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+            </div>
+        </div>
 @endsection
 
 @section('scripts')

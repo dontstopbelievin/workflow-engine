@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use App\Dictionary;
 use App\Log;
+use App\Status;
 
 trait dbQueries
 {
@@ -43,6 +44,40 @@ trait dbQueries
             ->where('process_id', $processId)
             ->where('role_id', $roleId)
             ->update(['can_send_to_revision' => 1]);
+    }
+
+    private function checkIfRoutesInParallel($processId) {
+        $parallelRoutesExist = DB::table('process_role')
+            ->where('process_id', $processId)
+            ->where('approve_in_parallel', '<>', Null)
+            ->exists();
+        return $parallelRoutesExist;
+    }
+
+    private function getParallelRoutes($processId) {
+        $parallelRoutes = DB::table('process_role')
+            ->where('process_id', $processId)
+            ->where('approve_in_parallel', '<>', Null)
+            ->get();
+
+        return json_decode(json_encode($parallelRoutes), true);
+    }
+
+    private function getSortedParallelRoutes($processId) {
+        $allParallelRoutes = $this->getParallelRoutes($processId);
+//        $tempLevel=0;
+        $newKey=0;
+        foreach ($allParallelRoutes as $key => $val) {
+//            if ($tempLevel==$val['approve_in_parallel']){
+//                $groupArr[$tempLevel][$newKey]=$val;
+//            } else {
+//                $groupArr[$val['approve_in_parallel']][$newKey]=$val;
+//            }
+//            $newKey++;
+            $groupArr[$val['approve_in_parallel']][$newKey]=$val;
+            $newKey++;
+        }
+        return $groupArr;
     }
 
     public function getParentRoleId($id) {
@@ -104,6 +139,35 @@ trait dbQueries
             exit();
         }
 
+    }
+
+    private function getTableWithMultipleStatuses($table)
+    {
+        $applications = DB::table($table)->where('statuses', '<>', Null)->get()->toArray(); //get collection of StdClass objects
+        $convertedApplications = json_decode(json_encode($applications), true);
+
+        if(Schema::hasTable($table)) {
+            foreach($convertedApplications as &$app) {
+                $statuses = [];
+                $statusIds = json_decode($app["statuses"]);
+                foreach($statusIds as $id) {
+                    $status = Status::find($id)->name;
+                    array_push($statuses, $status);
+                }
+              $app["statuses"] = $statuses;
+            }
+
+            return $convertedApplications;
+
+        } else {
+            echo 'Процесс не был сформирован полностью. Сначала завершите формирование процесса';
+            exit();
+        }
+    }
+
+    private function checkIfAppHasMultipleStatuses($table)
+    {
+        return DB::table($table)->where('statuses', '<>', Null)->exists();
     }
 
     public function getSubRoutes($id) {

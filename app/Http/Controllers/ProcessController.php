@@ -13,7 +13,6 @@ use App\Traits\dbQueries;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
@@ -146,13 +145,15 @@ class ProcessController extends Controller
             if (!Schema::hasColumn($tableName, 'process_id')) {
                 $dbQueryString = "ALTER TABLE $tableName ADD  process_id INT";
                 DB::statement($dbQueryString);
-                DB::table($tableName)->insert(
-                    [ 'process_id' => $process->id ]
-                );
+                DB::table($tableName)->insert(['process_id' => $process->id ]);
             }
 
             if (!Schema::hasColumn($tableName, 'status_id')) {
                 $dbQueryString = "ALTER TABLE $tableName ADD  status_id INT";
+                DB::statement($dbQueryString);
+            }
+            if (!Schema::hasColumn($tableName, 'statuses')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD  statuses JSON";
                 DB::statement($dbQueryString);
             }
             if (!Schema::hasColumn($tableName, 'to_revision')) {
@@ -207,9 +208,40 @@ class ProcessController extends Controller
         }
     }
 
-
-    public function addRole(Request $request, Process $process)
+    public function approveInParallel(Request $request)
     {
+        $allRequest = $request->all();
+        $roleToJoin = $request->roleToJoin;
+//        dd($allRequest);
+        $process = Process::find($request->process);
+        $setOfParallelRoles = $allRequest["allRoles"];
+
+        $index = 0;
+        $priority = 0;
+        foreach($setOfParallelRoles as $key=>$set) {
+            $index++;
+            $priority = array_shift($set);
+            foreach($set as $role) {
+                $r = Role::where('name', $role)->first();
+                $process->roles()->attach($r,['approve_in_parallel'=>$index, 'priority'=>$priority, 'role_to_join' => $roleToJoin]);
+            }
+        }
+        $process->roles()->attach($roleToJoin);
+    }
+
+    public function addRole(Request $request, Process $process) {
+        
+        if ($request->approveType === "parallel") {
+            $requestRoles = $request->roles;
+            $rolesLen = sizeof($requestRoles);
+            $parallelRoles = [];
+            foreach($requestRoles as $id) {
+                $role = Role::find($id);
+                array_push($parallelRoles, $role);
+            }
+            $roles = Role::all();
+            return view('process.parallel', compact('parallelRoles', 'process','roles', 'rolesLen'));
+        }
         if (!isset($request->roles)) {
             return Redirect::route('processes.edit', [$process])->with('failure', 'Пожалуйста, выберите маршрут');
         } else if (sizeof($request->roles) === 1) {

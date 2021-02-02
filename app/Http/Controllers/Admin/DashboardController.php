@@ -34,21 +34,20 @@ class DashboardController extends Controller
 
     public function registerupdate(Request $request, User $user)
     {
-        $admin = Auth::user()->name;
-        $roleName = '';
-        if ($user->role) {
-            $roleName = $user->role->name;
-        }
+      $admin = Auth::user()->name;
+      $roleName = '';
+      if ($user->role) {
+          $roleName = $user->role->name;
+      }
 
-        $newRoleName = Role::find($request->role_id)->name;
-          $user->name = $request->username;
-          $user->role_id = $request->role_id;
-          $user->update();
+      $newRoleName = Role::find($request->role_id)->name;
+        $user->name = $request->username;
+        $user->role_id = $request->role_id;
+        $user->update();
 
-//        $myfile = fopen("../public/storage/logs/logfile.txt", "a") or die("Unable to open file!");
-        $mytime = Carbon::now()->toDateTimeString();
-        $txt = $mytime . ' ' . $admin . ' ' . 'поменял роль' . ' ' . $user->name . ' ' . 'с' . ' ' . $roleName . ' ' . 'на' . ' ' . $newRoleName . ' ' . "\r\n" ;
-        file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
+      $mytime = Carbon::now()->toDateTimeString();
+      $txt = $mytime . ' ' . $admin . ' ' . 'поменял роль' . ' ' . $user->name . ' ' . 'с' . ' ' . $roleName . ' ' . 'на' . ' ' . $newRoleName . ' ' . "\r\n" ;
+      file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
 //        fwrite($myfile, $txt);
 //        fclose($myfile);
       return Redirect::route('user-role.register')->with('status','Данные пользователя изменены');

@@ -7,26 +7,26 @@
 @section('content')
 
       <div class="main-panel">
-				<div class="content">
-					<div class="container-fluid">
-						<div class="d-flex justify-content-between">
-							<h4 class="page-title">Справочник</h4>
-						</div>
+                <div class="content">
+                    <div class="container-fluid">
+                        <div class="d-flex justify-content-between">
+                            <h4 class="page-title">Справочник</h4>
+                        </div>
             <div class="mb-3">
               <button type="button" id="addNew" class="btn btn-info" data-toggle="modal" data-target="#myModal">Добавить</button>
             </div>
-						<div class="card">
-							<!-- <div class="card-header">
-				        <div class="card-title">Table</div>
-				      </div> -->
-							<div class="card-body">
-								<table class="table table-hover" id="items">
+                        <div class="card">
+                            <!-- <div class="card-header">
+                        <div class="card-title">Table</div>
+                      </div> -->
+                            <div class="card-body">
+                                <table class="table table-hover" id="items">
                   <thead>
                     <tr>
                       <th style="width:7%;">#</th>
                       <th style="width:20%;">НАИМЕНОВАНИЕ УСЛУГИ</th>
-											<th style="width:20%;">ТИП ВВОДИМОГО</th>
-											<th style="width:20%;">ТИП СОХРАНЯЕМОГО</th>
+                                            <th style="width:20%;">ТИП ВВОДИМОГО</th>
+                                            <th style="width:20%;">ТИП СОХРАНЯЕМОГО</th>
                       <th style="width:13%;">Действия</th>
                     </tr>
                   </thead>
@@ -53,29 +53,29 @@
                 </table>
               </div>
             </div>
-					</div>
-				</div>
-			</div>
+                    </div>
+                </div>
+            </div>
 
 
 
       <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
-    		<div class="modal-dialog modal-dialog-centered" role="document">
-    			<div class="modal-content">
-    				<div class="modal-header bg-primary">
-    					<h6 class="modal-title" id="title">Добавить справочник</h6>
-    					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    						<span aria-hidden="true">&times;</span>
-    					</button>
-    				</div>
-    				<div class="modal-body text-center">
-    					<input type="hidden" id="id">
-  						<div class="form-group">
-  							<input type="text" class="form-control" id="addItem" placeholder="Введите название поля">
-  						</div>
-  						<div class="form-group">
-  							<input type="text" class="form-control" id="addLabelName" placeholder="Введите ярлык поля(label name)">
-  						</div>
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary">
+                        <h6 class="modal-title" id="title">Добавить справочник</h6>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <input type="hidden" id="id">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="addItem" placeholder="Введите название поля">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="addLabelName" placeholder="Введите ярлык поля(label name)">
+                        </div>
               <input type="hidden" id="processId" value="1">
               @isset($inputTypes)
                 <div class="form-group">
@@ -113,10 +113,10 @@
                   <button type="button" class="btn btn-primary" id="saveChanges" data-dismiss="modal" style="display:none" >Сохранить изменения</button>
                   <button type="button" class="btn btn-primary" id="AddButton" data-dismiss="modal">Добавить</button>
               </div>
-    				</div>
-    			</div>
-    		</div>
-    	</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     {{csrf_field()}}
 

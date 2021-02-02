@@ -34,7 +34,7 @@
                                         <input type="file" name={{$item["name"]}} id = {{$item["name"]}} class="form-control">
                                     @else
                                         <label for="{{$item["name"]}}">{{$item["name"]}}</label>
-                                        <select name="{{$item["name"]}}" id="{{$item["name"]}}" class="form-control" data-dropup-auto="false">
+                                        <select name="{{$item["name"]}}" id="{{$item["name"]}}" class="form-control">
                                             <option selected disabled>Выберите Ниже</option>
                                             @foreach($item["inputName"] as $key=>$val)
                                                 <option>{{$val}}</option>
@@ -53,3 +53,5 @@
         </div>
     </div>
 @endsection
+
+
