@@ -23,22 +23,27 @@ class RoleSeeder extends Seeder
             [
                 'city_management_id' => 1,
                 'name' => 'Специалист Айкала', // 2
+                'sign_with_ecp' => 0,
             ],
             [
                 'city_management_id' => 1,
                 'name' => 'Специалист Акимата', // 3
+                'sign_with_ecp' => 0,
             ],
             [
                 'city_management_id' => 1,
                 'name' => 'Канцелярия Акимата', // 4
+                'sign_with_ecp' => 0,
             ],
             [
                 'city_management_id' => 1,
                 'name' => 'Гос Правовой отдел акимата', // 5
+                'sign_with_ecp' => 0,
             ],
             [
                 'city_management_id' => 1,
                 'name' => 'Заместитель акима', // 6
+                'sign_with_ecp' => 0,
             ],
             [
                 'city_management_id' => 1,
