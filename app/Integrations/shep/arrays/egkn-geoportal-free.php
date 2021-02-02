@@ -31,7 +31,9 @@ $aData = [
                     'NameKaz' => 'Уақытша (ұзақ уақыт) жерді пайдалану құқығы'
                 ],
                 'LandCategory' => [
-                    'code' => 'landcat_znp'
+                    'ID' => 'landcat_znp',
+                    'NameRus' => 'Земли населенных пунктов',
+                    'NameKaz' => 'Елді мекендердің жерлері'
                 ],
                 'RentConditionsRus' => 'Право аренды сроком на 3 года',
                 'RentConditionsKaz' => 'Право аренды сроком на 3 года (каз.яз.)',
