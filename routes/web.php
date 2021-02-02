@@ -87,6 +87,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('user-to-edit/{user}', 'UserController@edit')->name('user.edit');
         Route::put('user/update/{user}', 'UserController@update')->name('user.update');
     });
+
     Route::get('password/expired', 'Auth\ExpiredPasswordController@expired')
         ->name('password.expired');
     Route::post('password/post_expired', 'Auth\ExpiredPasswordController@postExpired')
