@@ -1,6 +1,6 @@
 <?php
 
-$data = [
+$aData = [
     'Request' => [
         'BusinessData' => [
             'LayerCode' => 'FREE_LAND',
