@@ -18,7 +18,7 @@ class ServiceRequestRouter
             $aResponseData = ShepUtil::getSoapBody($sXml);
             preg_match('/(<serviceId[^>]*>)(.*?)(<\/serviceId>)/', $sXml, $aServiceIdMatches);
             $sServiceId = $aServiceIdMatches[2];
-            if (count($sServiceId) > 0) {
+            if ($sServiceId) {
                 $sFolder = $sServiceId;
             } else {
                 $sFolder = 'Unknown';
