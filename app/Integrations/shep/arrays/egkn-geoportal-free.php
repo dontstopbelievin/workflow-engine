@@ -61,8 +61,10 @@ $aData = [
                 'AddressKaz' => 'г. Нур-Султан, мкр. Юго-Восток (каз.яз.)',
                 'PublishDate' => '2020-12-20', //Дата и время публикации в СМИ
                 'Files' => [
-                    'FileName' => '', //with extension
-                    'FileData' => ''
+                    'FileName' => 'test.pdf', //with extension
+                    'FileId' => '00000000-0000-f1a8-ba4b-0b78748e605b',
+                    'DocNumber' => '123',
+                    'DocDate' => '2021-01-29'
                 ],
                 'Coordinates' => 'MULTIPOLYGON(((674486.83 5667708.71,674456.65 5667778.87,674513.55 5667807.03,674547.45 5667737.74,674486.83 5667708.71)))',
                 'CoordinateSystem' => '32642', //Система координат  WGS84 UTM 42N EPSG:32642
@@ -99,6 +101,5 @@ $aData = [
                 ]
             ]
         ]
-    ],
-    'Signature' => true
+    ]
 ];
