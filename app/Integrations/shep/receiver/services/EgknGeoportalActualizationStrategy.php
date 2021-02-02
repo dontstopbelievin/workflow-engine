@@ -22,7 +22,7 @@ class EgknGeoportalActualizationStrategy implements ShepServiceStrategyInterface
         $aResponse = array(
             'Response' => array(
                 'BusinessData' => array(
-                    'result' => array(
+                    'Result' => array(
                         'ResultCode' => '310',
                         'ResultMessageRu' => 'Успешно выполнено'
                     )
