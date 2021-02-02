@@ -1,12 +1,10 @@
 @extends('layouts.master')
 
 @section('title')
-   Редактирование процесса
+    Редактирование процесса
 @endsection
 
 @section('content')
-
-
 <div class="main-panel">
   <div class="content">
     <div class="container-fluid">
@@ -68,7 +66,7 @@
                                 <button type="submit" class="btn btn-success">Создать</button>
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                             </div>
-                        </form>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -159,10 +157,50 @@
                                                   <span class="form-check-sign">{{$role->name}}</span>
                                                 </label>
                                             </div>
-                                        @endforeach
-                                    @endisset
+                                            <form action="{{ route('processes.createProcessTable', ['process' => $process]) }}" method="POST">
+                                                @csrf
+                                                <div class="modal-body">
+                                                    @isset($columns)
+                                                        @foreach ($columns as $column)
+                                                            <div class="form-check" style="padding:0px;">
+                                                                <label class="form-check-label">
+                                                                    <input class="form-check-input" type="checkbox" name="fields[]" value="{{$column["name"]}}">
+                                                                    <span class="form-check-sign">{{$column["labelName"]}}</span>
+                                                                </label>
+                                                            </div>
+                                                        @endforeach
+                                                    @endisset
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-success">Выбрать</button>
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
-
+                                <div class="modal fade" id="routeModal" role="dialog">
+                                    <div class="modal-dialog">
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Список Ролей</h4>
+                                            </div>
+                                            <form action="{{ route('processes.addRole', ['process' => $process]) }}" method="POST">
+                                                @csrf
+                                                <div class="modal-body">
+                                                    @isset($roles)
+                                                        @foreach ($roles as $role)
+                                                            {{--<div class="flex flex-row items-center justify-center">--}}
+                                                                {{--<input type="checkbox" name="roles[]" value="{{$role->id}}" class="" id="participant{{$role->id}}">--}}
+                                                                {{--{{$role->name}}<br>--}}
+                                                                {{--<div id="dropdown">--}}
+                                                                    {{--<div class="dropdown-permission{{$role->id}}" id="dropdown-permission{{$role->id}}" style="display:none;">--}}
+                                                                        {{--<label> <input type="checkbox" name="reject[]" value="{{$role->id}}" class="mr-2">Отказать</label>--}}
+                                                                        {{--<label> <input type="checkbox" name="revision[]" value="{{$role->id}}" class="mr-2">Отправить на доработку</label>--}}
+                                                                    {{--</div>--}}
+                                                                {{--</div>--}}
+                                                            {{--</div>--}}
                             </div>
                             <div class="modal-footer">
                                 <button  type="submit" id="AddButton" class="btn btn-success">Добавить Подмаршрут</button>
@@ -313,12 +351,16 @@
                    </p>
               @endisset
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-</div>
+    {{csrf_field()}}
+    <script
+        src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous"></script>
+    <script>
 
 {{csrf_field()}}
 <script
@@ -361,16 +403,30 @@
                     subRoles.push($(this).val());
                 }
             });
-            console.log(roleToAdd)
-            $.post('/add-sub-roles', {'roleToAdd':roleToAdd,'subRoles':subRoles,'processId':processId, 'subOrg':subOrg,  '_token':$('input[name=_token]').val()}, function(data){
-                var modal =  $('#myModal2');
-                // console.log(data);
-                modal.style.display = 'none';
-                $('#items').load(location.href + ' #items');
+
+            $('#AddButton').click(function(event) {
+                var roleToAdd = $('#modHeader').val();
+                var subRoles = [];
+                var processId = $('#processId').val();
+                var subOrg;
+                var subOrg = $('#subOrg option:selected').val();
+                $('.get_value').each(function(){
+                    if($(this).is(":checked"))
+                    {
+                        subRoles.push($(this).val());
+                    }
+                });
+                console.log(roleToAdd)
+                $.post('/add-sub-roles', {'roleToAdd':roleToAdd,'subRoles':subRoles,'processId':processId, 'subOrg':subOrg,  '_token':$('input[name=_token]').val()}, function(data){
+                    var modal =  $('#myModal2');
+                    // console.log(data);
+                    modal.style.display = 'none';
+                    $('#items').load(location.href + ' #items');
+                });
             });
+
         });
-    });
-</script>
+    </script>
 
 
 @endsection

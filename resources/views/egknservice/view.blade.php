@@ -5,27 +5,26 @@
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title font-weight-bold text-center">Заявка № {{$aFields[0]['request_number']}}</h3>
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-                    @if ($aFields[0]['egkn_status'] == 'Заявка создана')
-                        <a href="{{route('egknservice.status', ['id' => $aFields[0]['id']])}}">Зарегистрировать</a>
-                    @else
-                        <a href="{{route('egknservice.act', ['id' => $aFields[0]['id']])}}">Создать акт выбора</a>
-                    @endif
+    <div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
+                <h4 class="page-title">Заявка № {{$aFields[0]['request_number']}}</h4>
+                @if (session('status'))
+                    <div class="alert alert-success" role="alert">
+                        {{ session('status') }}
+                    </div>
+                @endif
+                @if ($aFields[0]['egkn_status'] == 'Заявка создана')
+                    <a href="{{route('egknservice.status', ['id' => $aFields[0]['id']])}}">Зарегистрировать</a>
+                @else
+                    <a href="{{route('egknservice.act', ['id' => $aFields[0]['id']])}}">Создать акт выбора</a>
+                @endif
                 </div>
                 <div class="card-body">
                     <div class="row">
                         {{--@php dd($aFields); @endphp--}}
                         @isset($aFields)
-                            <div class="col-xs-6" style="width: 400px">
+                            <div class="row-cols-1" style="width: 400px">
                                 <h4>Заявление</h4>
 
                                 <br> <label for="surname">Фамилия заявителя: </label>
@@ -91,7 +90,7 @@
                                 <br> <label for="gazification">Газ: </label>
                                 {{$aFields[0]['gazification']}}
                             </div>
-                            <div class="col-xs-6">
+                            <div class="row-cols-1">
                                 <h4>Карта</h4>
                                 <div style="width: 600px; height: 400px">@include('auction.map')</div>
                                 <br> <label for="coordinates">Координаты: </label>

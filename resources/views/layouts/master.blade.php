@@ -95,12 +95,12 @@
                       <p>Аукцион</p>
                   </a>
               </li>
-                  <li class="nav-item">
-                      <a href="{{ route('egknservice.index') }}">
-                          <i class="la la-table"></i>
-                          <p>Поступившие заявки</p>
-                      </a>
-                  </li>
+              <li class="nav-item">
+                  <a href="{{ route('egknservice.index') }}">
+                      <i class="la la-table"></i>
+                      <p>Поступившие заявки</p>
+                  </a>
+              </li>
               @if( request()->segment(1) == 'process' ||  request()->segment(1) == 'processes' ||  request()->segment(1) == 'processes-edit' || request()->segment(1) == 'template-field-create'  )
                   <li class="nav-item active">
               @else
