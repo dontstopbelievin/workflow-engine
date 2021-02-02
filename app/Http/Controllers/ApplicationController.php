@@ -21,7 +21,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Schema;
-use Mpdf\Mpdf;
 use PhpOffice\PhpWord\TemplateProcessor;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -502,7 +501,7 @@ class ApplicationController extends Controller
         } else {
             $arrRoutes = json_decode($routes, true);
             $status = Status::find($arrRoutes[0]["id"]);
-            $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
+            $modifiedApplicationTableFields = $this->modifyApplicationTableFieldsWithStatus($applicationTableFields, $status->id, $user->id);
             $applicationId = DB::table($tableName)->insertGetId($modifiedApplicationTableFields);
             $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $arrRoutes[0]["id"]); // получить историю хода согласования
             Log::insert($logsArray);
@@ -574,7 +573,7 @@ class ApplicationController extends Controller
             foreach ($attrOfIncApp as $key => $value) {
                 $applicationTableFields[$key] = $value;
             };
-            $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
+            $modifiedApplicationTableFields = $this->modifyApplicationTableFieldsWithStatus($applicationTableFields, $status->id, $user->id);
             $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
             $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
             Log::insert($logsArray);

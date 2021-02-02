@@ -58,10 +58,8 @@ Route::get('/dataformater','AuctionController@dataFormater')->middleware('guest'
 Route::post('soap', 'XMLController@index')->middleware('guest');
 
 Route::post('loginwithecp/bar')->name('loginwithecp.store')->uses('EdsSignController@loginByCert')->middleware('guest');
-Route::group(['middleware' => ['admin', 'auth']], function () {
-Route::get('send', 'HomeController@sendNotification');
-});
 Route::post('loginwithecp/bar')->name('loginwithecp.store')->uses('EdsSignController@loginByCert')->middleware('guest');
+
 Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['password_expired'])->group(function () {
@@ -106,10 +104,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('applications/backToMainOrg/{application_id}', 'ApplicationController@backToMainOrg')->name('applications.backToMainOrg');
 });
 
-
-
-
 Route::group(['middleware' => ['admin', 'auth']], function () {
+    Route::get('send', 'HomeController@sendNotification');
 
     Route::get('dictionary', 'DictionaryController@index')->name('dictionary');
     Route::post('dictionary/create', 'DictionaryController@create')->name('dictionary.create');
@@ -180,8 +176,8 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::post('select-options/update', 'SelectOptionController@update')->name('selectoptions.update');
 
     Route::get('process', 'ProcessController@index')->name('processes.index');
-    Route::get('process/{process}', 'ProcessController@view')->name('processes.view');
     Route::get('process/create', 'ProcessController@create')->name('processes.create');
+    Route::get('process/{process}', 'ProcessController@view')->name('processes.view');
     Route::post('process/store', 'ProcessController@store')->name('processes.store');
     Route::post('process/add-sub-roles', 'ProcessController@addSubRoles')->name('processes.addSubRoles');
     Route::post('process/add-organization/{process}', 'ProcessController@addOrganization')->name('processes.addOrganization');
@@ -194,6 +190,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::post('process/approve-in-parallel', 'ProcessController@approveInParallel')->name('processes.approveParallel');
     Route::delete('process-delete/{process}', 'ProcessController@delete')->name('processes.delete');
 
+    Route::get('logs', 'ProcessController@logs')->name('logs');
 
     View::composer(['*'], function($view) {
         $usersCount = count(User::active()->get());

@@ -29,12 +29,16 @@
                                       <input type="text" class="form-control" name="name" placeholder="Введите название роли">
                                       <small id="emailHelp" class="form-text text-muted">Убедитесь, что вводимой Вами роли нет в списке ролей</small>
                                   </div>
-                                  <select name="city_management_id" class="form-control">
-                                      @foreach($cityManagements as $item)
-                                          <option value="{{$item->id}}">{{$item->name}}</option>
-                                      @endforeach
-                                  </select>
-                                  <button type="submit" class="btn btn-success">Создать</button>
+                                  <div class="form-group">
+                                    <select name="city_management_id" class="form-control">
+                                        @foreach($cityManagements as $item)
+                                            <option value="{{$item->id}}">{{$item->name}}</option>
+                                        @endforeach
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <button type="submit" class="btn btn-success">Создать</button>
+                                  </div>
                               </form>
                           </div>
                       </div>

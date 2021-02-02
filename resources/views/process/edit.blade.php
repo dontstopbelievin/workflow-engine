@@ -150,114 +150,14 @@
                                                   <span class="form-check-sign">{{$role->name}}</span>
                                                 </label>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="submit" class="btn btn-success">Выбрать</button>
-                                                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                                            </div>      
-                                        </form>
-                                    </div>                                          
+                                        @endforeach
+                                    @endisset
                                 </div>
-                            </div>
-                            <div class="modal fade" id="routeModal" role="dialog">
-                                <div class="modal-dialog">
-                                    <!-- Modal content-->
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title">Список Ролей</h4>
-                                        </div>
-                                        <form action="{{ route('processes.addRole', ['process' => $process]) }}" method="POST">
-                                            @csrf
-                                            <div class="modal-body">
-                                                @isset($roles)
-                                                    @foreach ($roles as $role)
-                                                        <div class="checkbox">
-                                                            <label><input type="checkbox" name="roles[]" value="{{$role->id}}">{{$role->name}}</label>
-                                                        </div>
-                                                    @endforeach
-                                                @endisset
-                                            </div>
-                                            <div class="modal-footer">
-                                                <div>
-                                                    <input type="radio" id="straight" name="approveType" value="straight"
-                                                           checked>
-                                                    <label for="straight">Прямое</label>
-                                                </div>
-                                                <div>
-                                                    <input type="radio" id="parallel" name="approveType" value="parallel"
-                                                           checked>
-                                                    <label for="parallel">Параллельное</label>
-                                                </div>
-                                                <div>
-                                                    <input type="radio" id="selective" name="approveType" value="selective">
-                                                    <label for="selective">Выборочное</label>
-                                                </div>
-                                                <button type="submit" class="btn btn-success">Выбрать</button>
-                                                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal fade" id="myModal2" role="dialog">
-                                <div class="modal-dialog">
-                                    <!-- Modal content-->
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title">Добавить Подмаршрут к <input type="text" id="modHeader"></h4>
-                                        </div>
-                                            @csrf
-                                            <div class="modal-body">
-                                                <div class="form-group">
-                                                    <label>Выберите Орагнизацию дополнительного маршрута</label>
-                                                    <select name="supportOrganization" id="subOrg" class="subOrg">
-                                                        @foreach($organizations as $organization)
-                                                            <option>{{$organization->name}} </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="form-group">
-                                                    @isset($columns)
-                                                        @foreach ($roles as $role)
-                                                            <div class="checkbox">
-                                                                <label><input class="get_value" type="checkbox" name="subRoles[]" value="{{$role->name}}">{{$role->name}}</label>
-                                                            </div>
-                                                        @endforeach
-                                                    @endisset
-                                                </div>
 
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button  type="submit" id="AddButton" class="btn btn-success">Добавить Подмаршрут</button>
-                                                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                                            </div>
-                                    </div>
-                                </div>
                             </div>
-                            @isset($tableColumns)
-                            <h4 class="font-weight-bold text-left">Поля процесса:</h4>
-                                @foreach($tableColumns as $column)
-                                <ul class="list-group text-center">
-                                    <li class="list-group-item w-50 text-center">{{$column}}</li>
-                                </ul>                                                    
-                                @endforeach
-                            @endisset
-
-                            <h3 class="font-weight-bold text-center">Создание маршрутов</h3>
-                            @isset($organizations)
-                            <div class="my-4">
-                                <form action="{{ route('processes.addOrganization', ['process' => $process]) }}" method="POST">
-                                    @csrf
-                                    <div class="form-group-row">
-                                        <label for="mainOrganization">Выберите Орагнизацию основного маршрута</label>
-                                        <select name="mainOrganization" class="form-control" id="mainOrganization">
-                                            <option selected="true" disabled="disabled">Выберите Ниже</option>
-                                            @foreach($organizations as $organization)
-                                                <option>{{$organization->name}} </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <button type="submit" class="btn btn-info btn-lg my-2">Выбрать</button>
-                                </form>
+                            <div class="modal-footer">
+                                <button  type="submit" id="AddButton" class="btn btn-success">Добавить Подмаршрут</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                             </div>
                     </div>
                 </div>
@@ -446,7 +346,7 @@
                       subRoles.push($(this).val());
                   }
               });
-              $.post('/add-sub-roles', {'roleToAdd':roleToAdd,'subRoles':subRoles,'processId':processId, 'subOrg':subOrg,  '_token':$('input[name=_token]').val()}, function(data){
+              $.post(document.location.origin+'/process/add-sub-roles', {'roleToAdd':roleToAdd,'subRoles':subRoles,'processId':processId, 'subOrg':subOrg,  '_token':$('input[name=_token]').val()}, function(data){
                   $('#myModal2').modal('hide');
                   // location.reload();
                   $('#items').load(location.href + ' #items');

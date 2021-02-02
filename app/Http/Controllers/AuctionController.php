@@ -364,7 +364,7 @@ class AuctionController extends Controller
                         ]
                 ]
             ]
-        );
+        ];
     }
 
     //    public function dataFormater()

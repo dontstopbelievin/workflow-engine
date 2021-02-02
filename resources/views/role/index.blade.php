@@ -6,30 +6,30 @@
 
 @section('content')
       <div class="main-panel">
-				<div class="content">
-					<div class="container-fluid">
-						<h4 class="page-title">Роли</h4>
+                <div class="content">
+                    <div class="container-fluid">
+                        <h4 class="page-title">Роли</h4>
             @if (session('status'))
                 <div class="alert alert-success" role="alert">
                     {{ session('status') }}
                 </div>
             @endif
-						<a href="{{ route('role.create') }}" class="btn btn-info">Добавить роль</a><br><br>
-						<div class="card">
-							<!-- <div class="card-header">
-				        <div class="card-title">Table</div>
-				      </div> -->
-							<div class="card-body">
-								<table class="table table-hover">
-									<thead>
-										<tr>
-											<th style="width:7%;">№</th>
-											<th style="width:60%;">ИМЯ</th>
-											<th style="width:20%;">УПРАВЛЕНИЕ</th>
-											<th style="width:13%;">ДЕЙСТВИЯ</th>
-										</tr>
-									</thead>
-									<tbody>
+                        <a href="{{ route('role.create') }}" class="btn btn-info">Добавить роль</a><br><br>
+                        <div class="card">
+                            <!-- <div class="card-header">
+                        <div class="card-title">Table</div>
+                      </div> -->
+                            <div class="card-body">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:7%;">№</th>
+                                            <th style="width:60%;">ИМЯ</th>
+                                            <th style="width:20%;">УПРАВЛЕНИЕ</th>
+                                            <th style="width:13%;">ДЕЙСТВИЯ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                     @foreach($roles as $role)
                       <tr>
                           <td><a href="{{ route('role.view', ['role' => $role]) }}">{{$loop->iteration}}</a></td>
@@ -48,20 +48,16 @@
                                   </button>
                               </form>
                             </div>
-                            <div class="modal-body">
-                                <input type="hidden" id="id">
-                                <p><input type="text" placeholder="Write item here" id="addItem" class="form-control"></p>
+                          </td>
+                      </tr>
+                    @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-warning" id="delete" style="display:none" data-dismiss="modal">Delete</button>
-                                <button type="button" class="btn btn-primary" id="saveChanges" data-dismiss="modal" style="display:none" >Save changes</button>
-                                <button type="button" class="btn btn-primary" id="AddButton" data-dismiss="modal">Add Item</button>
-                            </div>
-                        </div><!-- /.modal-content -->
-                    </div><!-- /.modal-dialog -->
-                </div><!-- /.modal -->
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
 @endsection
 
 @section('scripts')
