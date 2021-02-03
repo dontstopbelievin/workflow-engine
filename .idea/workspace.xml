@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="ade0dd1d-d276-4255-a875-9797a6031e7d" name="Default Changelist" comment="shep integration: geoportal egkn receive layer">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/vendor/asm89/stack-cors/" />
     <ignored path="$PROJECT_DIR$/vendor/brick/math/" />
@@ -125,7 +127,7 @@
         <entry file="file://$PROJECT_DIR$/app/Integrations/shep/arrays/egkn-geoportal-free.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1188">
-              <caret line="54" column="47" lean-forward="true" selection-start-line="54" selection-start-column="47" selection-end-line="54" selection-end-column="47" />
+              <caret line="54" column="47" selection-start-line="54" selection-start-column="47" selection-end-line="54" selection-end-column="47" />
             </state>
           </provider>
         </entry>
@@ -133,8 +135,8 @@
       <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="242">
-              <caret line="11" column="14" selection-start-line="11" selection-start-column="14" selection-end-line="11" selection-end-column="14" />
+            <state relative-caret-position="264">
+              <caret line="12" column="6" lean-forward="true" selection-start-line="12" selection-start-column="6" selection-end-line="12" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -466,7 +468,7 @@
       <workItem from="1612162088187" duration="709000" />
       <workItem from="1612176573782" duration="2614000" />
       <workItem from="1612240719938" duration="14544000" />
-      <workItem from="1612329661898" duration="5346000" />
+      <workItem from="1612329661898" duration="5476000" />
     </task>
     <task id="LOCAL-00001" summary="shep integration">
       <created>1602146275569</created>
@@ -762,17 +764,24 @@
       <option name="project" value="LOCAL" />
       <updated>1612337752431</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary=".idea folder">
+      <created>1612340888508</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1612340888508</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="431905000" />
+    <option name="totallyTimeSpent" value="432035000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="2248" y="198" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="2" visible="true" weight="0.2153518" />
+      <window_info content_ui="combo" id="Project" order="2" visible="true" weight="0.2153518" />
       <window_info anchor="bottom" id="TODO" order="12" />
       <window_info anchor="bottom" id="Docker" order="5" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="3" sideWeight="0.5010281" side_tool="true" weight="0.550838" />
@@ -781,7 +790,7 @@
       <window_info anchor="bottom" id="Run" order="8" />
       <window_info anchor="bottom" id="Version Control" order="4" weight="0.3273743" />
       <window_info id="Structure" order="3" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="1" sideWeight="0.4989719" weight="0.55307263" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="1" sideWeight="0.4989719" visible="true" weight="0.55307263" />
       <window_info anchor="bottom" id="Debug" order="9" weight="0.4" />
       <window_info id="Favorites" order="0" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="3" weight="0.25" />
@@ -853,7 +862,8 @@
     <MESSAGE value="shep integration: egkn geoportal actualization bug" />
     <MESSAGE value="shep integration: bug" />
     <MESSAGE value="shep integration: geoportal egkn receive layer" />
-    <option name="LAST_COMMIT_MESSAGE" value="shep integration: geoportal egkn receive layer" />
+    <MESSAGE value=".idea folder" />
+    <option name="LAST_COMMIT_MESSAGE" value=".idea folder" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1196,14 +1206,14 @@
     <entry file="file://$PROJECT_DIR$/app/Integrations/shep/arrays/egkn-geoportal-free.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1188">
-          <caret line="54" column="47" lean-forward="true" selection-start-line="54" selection-start-column="47" selection-end-line="54" selection-end-column="47" />
+          <caret line="54" column="47" selection-start-line="54" selection-start-column="47" selection-end-line="54" selection-end-column="47" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="11" column="14" selection-start-line="11" selection-start-column="14" selection-end-line="11" selection-end-column="14" />
+        <state relative-caret-position="264">
+          <caret line="12" column="6" lean-forward="true" selection-start-line="12" selection-start-column="6" selection-end-line="12" selection-end-column="6" />
         </state>
       </provider>
     </entry>
