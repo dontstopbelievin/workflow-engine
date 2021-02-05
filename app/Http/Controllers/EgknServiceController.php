@@ -44,13 +44,12 @@ class EgknServiceController extends Controller
         $process = Process::find(17);
         $tableName = $this->getTableName($process->name);
         $tableColumns = $this->getColumns($tableName);
-        $originalTableColumns = $this->getOriginalColumns($tableColumns);
         $dictionaries = $this->getAllDictionaries();
         $res = [];
 
         foreach($dictionaries as $item) {
-            foreach($originalTableColumns as $column) {
-                if($item["name"] === $column) {
+            foreach($tableColumns as $column) {
+                if($item->name === $column) {
                     array_push($res, $item);
                 }
             }
