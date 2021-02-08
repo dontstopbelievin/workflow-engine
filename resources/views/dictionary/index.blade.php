@@ -34,9 +34,9 @@
                     @foreach($dictionaries as $item)
                       <tr>
                           <td>{{$loop->iteration}}</td>
-                          <td>{{$item["labelName"]}}</td>
-                          <td>{{$item["inputName"]}}</td>
-                          <td>{{$item["insertName"]}}</td>
+                          <td>{{$item->labelName}}</td>
+                          <td>{{$item->inputName}}</td>
+                          <td>{{$item->insertName}}</td>
                           <td>
                             <div class="row">
                               <button class="btn btn-link btn-simple-primary" data-original-title="Изменить" data-toggle="modal" data-target="#">

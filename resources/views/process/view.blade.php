@@ -21,7 +21,6 @@
                         <ul class="list-group" id="list">
                             <li class="list-group-item">Название процесса: {{$process->name}}</li>
                             <li class="list-group-item">Длительность обработки заявки: {{$process->deadline}}</li>
-                            <li class="list-group-item">Дэдлайн процесса: {{$process->deadline_until}}</li>
 
                             <li class="list-group-item">Шаблон одобрения: {{$process->accepted_template->name}}</li>
                             @if($process->rejected_template)

@@ -27,7 +27,7 @@
           <div class="card-title">Table</div>
         </div> -->
         <div class="card-body">
-          <table class="table table-hover">
+          <table class="table table-hover" id="items">
             <thead>
               <tr>
                 <th>Наименование поля</th>
@@ -193,21 +193,16 @@
                 if (role === null) {
                     alert('Выберите специалиста');
                 }
-                console.log(role);
-                $.post('/template-field-create', {'tempId':id,'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, 'role':role, '_token':$('input[name=_token]').val()}, function(data){
-                   if ( data['success'] ) 
-                     {
-                         location.reload();
-                     } 
+
+                $.post('/template-field-create', {'tempId':id,'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, 'role':role, '_token':"{{csrf_token()}}"}, function(data){
                     console.log('data:'+data);
-                    console.log($('#items').load(location.href + ' #items'));
                     $('#items').load(location.href + ' #items');
                 });
             });
 
             $('#delete').click(function(event) {
                 var id = $('#id').val();
-                $.post('list/delete', {'id':id, '_token':$('input[name=_token]').val()}, function(data){
+                $.post('list/delete', {'id':id, '_token':"{{csrf_token()}}"}, function(data){
                     console.log(data);
                     $('#items').load(location.href + ' #items');
                 });
@@ -215,7 +210,7 @@
             $('#saveChanges').click(function(event) {
                 var id = $('#id').val();
                 var value = $('#addItem').val();
-                $.post('list/update ', {'id':id, 'value':value,'_token':$('input[name=_token]').val()}, function(data){
+                $.post('list/update ', {'id':id, 'value':value,'_token':"{{csrf_token()}}"}, function(data){
                     console.log(data);
                     $('#items').load(location.href + ' #items');
                 });
