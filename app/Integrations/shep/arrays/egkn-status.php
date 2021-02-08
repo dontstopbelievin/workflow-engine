@@ -20,7 +20,7 @@ $aData = [
             'Attacment' => [
                 'CodeType' => 'ZKR4',
                 'FileName' => 'Акт выбора ЗУ',
-                'FileId' => '00000000-0000-f1a8-ba4b-0b78748e605b',
+                'FileId' => '00000000-0000-f514-90ac-e8ed8ffdb41a',
                 'DocNumber' => '123',
                 'DocDate' => '2021-01-29+06:00'
             ],
