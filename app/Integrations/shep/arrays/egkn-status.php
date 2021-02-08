@@ -12,10 +12,10 @@ $aData = [
         ],
         'BusinessData' => [
             'CodeStatus' => [
-                'ResultCode' => '45',
-                'ResultMessageRu' => 'Акт согласован рус',
-                'ResultMessageKz' => 'Акт согласован каз',
-                'ResultMessageEn' => 'Акт согласован англ'
+                'ResultCode' => '40',
+                'ResultMessageRu' => 'Акт не согласован рус',
+                'ResultMessageKz' => 'Акт не согласован каз',
+                'ResultMessageEn' => 'Акт не согласован англ'
             ],
             'Attacment' => [
                 'CodeType' => 'ZKR4',
