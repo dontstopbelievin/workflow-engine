@@ -40,7 +40,9 @@ $aData = [
 //                    'CadastrCaseNum' => '',
                     'Coordinates' => 'MULTIPOLYGON(((674486.83 5667708.71,674456.65 5667778.87,674513.55 5667807.03,674547.45 5667737.74,674486.83 5667708.71)))',
                     'AddressData' => [
-                        'AteCode' => '107193',
+                        'Ate' => [
+                            'AteCode' => '107193'
+                        ],
 //                        'Toponim' => [
 //                            'ToponimCode' => '',
 //                            'ToponimTypeCode' => '',
