@@ -17,7 +17,7 @@ $aData = [
                 'ResultMessageKz' => 'Акт согласован каз',
                 'ResultMessageEn' => 'Акт согласован англ'
             ],
-            'Attachment' => [
+            'Attacment' => [
                 'CodeType' => 'ZKR4',
                 'FileName' => 'Акт выбора ЗУ',
                 'FileId' => '00000000-0000-f1a8-ba4b-0b78748e605b',
