@@ -17,7 +17,6 @@ class CreateProcessesTable extends Migration
             $table->increments('id');
             $table->string('name')->comment('Наименоваие процесса');
             $table->integer('deadline')->comment('Количество дней на заявку');
-            $table->dateTime('deadline_until')->nullable();
             $table->integer('accepted_template_id')->unsigned()->nullable();
             $table->foreign('accepted_template_id')->references('id')->on('templates');
             $table->integer('rejected_template_id')->unsigned()->nullable();

@@ -59,10 +59,10 @@
 
             @else
             <li class="nav-item dropdown">
-              <a class="dropdown-toggle profile-pic float-right" data-toggle="dropdown" href="#" aria-expanded="false" data-toggle="dropdown" aria-haspopup="true">
-                <span>{{ Auth::user()->name }}</span>
+              <a class="dropdown-toggle profile-pic float-right" data-toggle="dropdown" href="#" aria-expanded="false" data-toggle="dropdown" aria-haspopup="true" style="line-height: 100%;margin-top: 10px;">
+                <span>{{ Auth::user()->name }}</span><br>
+                <small>({{ Auth::user()->role->name }})</small>
               </a>
-                <small class="d-flex flex-column w-50 float-right">({{ Auth::user()->role->name }})</small>
               <ul class="dropdown-menu dropdown-user">
                 <li> <a class="dropdown-item" href="{{ route('user.personalArea') }}">Мои данные</a> </li>
                 <li> <a class="dropdown-item" href="{{ route('user.edit', ['user' => Auth::user()]) }}">Редактировать данные</a> </li>
@@ -72,13 +72,10 @@
                     <i class="fa fa-power-off"></i>
                     {{ __('Выйти') }}
                 </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf
-                </form>
               </ul>
                 <!-- /.dropdown-user -->
             </li>
-              @endguest
+            @endguest
           </ul>
         </div>
       </nav>

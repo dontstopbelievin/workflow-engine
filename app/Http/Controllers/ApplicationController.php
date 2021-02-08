@@ -71,12 +71,14 @@ class ApplicationController extends Controller
     {
         $process = Process::find($processId);
         $templateId = $process->accepted_template_id;
-         $templateFields= TemplateField::where('template_id', $templateId)->get();
+        $templateFields= TemplateField::where('template_id', $templateId)->get();
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $applicationId)->first();
         $applicationArray = json_decode(json_encode($application), true);
-        $notInArray = ["id", "process_id", "status_id", "to_revision", "user_id","index_sub_route", "index_main", "revision_reason" ];
+        $appHasMultipleStatuses = $application->statuses;
+        $canApprove = false;
+        // $notInArray = ["id", "process_id", "status_id", "to_revision", "user_id","index_sub_route", "index_main", "reject_reason", "revision_reason" ];
 //        $applicationArray = $this->filterApplicationArray($applicationArray, $notInArray); // not used yet, but surely will
 
         $statusId = $application->status_id;
@@ -194,7 +196,7 @@ class ApplicationController extends Controller
                     ->where('process_id', $process->id)
                     ->where('application_id', $application->id)
                     ->where('template_id', $templateId)
-                    ->get()->toArray();
+                    ->get();
                 $templateTableFields = json_decode($templateTableFields, true);
                 $exceptionArray = ["id", "template_id", "process_id", "application_id"];
                 $templateTableFields = $this->filterTemplateFieldsTable($templateTableFields, $exceptionArray);
@@ -417,71 +419,87 @@ class ApplicationController extends Controller
     public function create(Process $process)
     {
         $tableName = $this->getTableName($process->name);
-        $notInclude = ['id', 'process_id', 'status_id', 'user_id', 'index_sub_route', 'index_main', 'doc_path', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at'];
-        $tableColumns = $this->getColumns($tableName, $notInclude);
-        $originalTableColumns = $this->getOriginalColumns($tableColumns);
-        $dictionaries = $this->getAllDictionaries();
-        $res = [];
-
-        foreach($dictionaries as $item) {
-            foreach($originalTableColumns as $column) {
-                if($item["name"] === $column) {
-                    array_push($res, $item);
-                }
-            }
-        }
-        $dictionariesWithOptions = $this->addOptionsToDictionary($res);
+        $tableColumns = $this->getColumns($tableName);
+        $dictionaries = $this->getAllDictionaries(array_values($tableColumns));
+        $dictionariesWithOptions = $this->addOptionsToDictionary($dictionaries);
         $arrayToFront = $this->getAllDictionariesWithOptions($dictionariesWithOptions);
-
+        $roles = $this->get_roles_in_order($process->id);
+        if(count($roles) == 0){
+            return Redirect::route('applications.index', [$process])->with('status', 'Создайте сперва маршрут!');
+        }
         return view('application.create', compact('process', 'arrayToFront'));
     }
 
     public function store(Request $request)
     {
+        try {
+            DB::beginTransaction();
+            $input = $request->input();
+            if ($request->hasFile('attachment')) {
+                $input["attachment"] = $request->file('attachment')->store('applicant-attachments','public');
+            }
+            $applicationTableFields = $input;
+            if(isset($applicationTableFields['_token'])){
+                unset($applicationTableFields['_token']);
+            }
+            $process = Process::find($request->process_id);
 
-        $input = $request->input();
-        if ($request->hasFile('attachment')) {
-            $input["attachment"] = $request->file('attachment')->store('applicant-attachments','public');
+    //         $notifyUsers = $role->users;
+    // //        dd($notifyUsers, $role);
+    //         foreach($notifyUsers as $notifyUser) {
+    // //            dd($notifyUser);
+    //             $details = [
+
+    //                 'greeting' => 'Привет' . ', ' . $notifyUser->name,
+
+    //                 'body' => 'Это уведомление о том, что Вы должны согласовать заявку',
+
+    //                 'thanks' => 'Пожалуйста, зайтите на портал и согласуйте услугу',
+
+    //                 'actionText' => 'Workflow Engine',
+    // //
+    //                 'actionURL' => url('/services'),
+    // //
+    //                 'order_id' => 101
+
+    //             ];
+    //             Notification::send($notifyUser, new ApproveNotification($details));
+    //         }
+    //        dd($notifyUsers);
+
+            // $parallelRoutesExist = $this->checkIfRoutesInParallel($process->id);
+            $tableName = $this->getTableName($process->name);
+            $table = CreatedTable::where('name', $tableName)->first();
+            // if ($parallelRoutesExist) {
+            //     $parallelRoutes = $this->getSortedParallelRoutes($process->id);
+            //     $firstRolesOfParallelRoutes = $this->getFirstRoles($parallelRoutes);
+            //     $statuses = $this->getStatuses($firstRolesOfParallelRoutes);
+            //     $statusesJson = json_encode($statuses);
+            //     $modifiedApplicationTableFields = $this->modifyApplicationTableFieldsWithStatuses($applicationTableFields, $statusesJson, $user->id);
+            //     $applicationId = DB::table($tableName)->insertGetId($modifiedApplicationTableFields);
+            // } else {
+            $applicationTableFields["statuses"] = $this->get_roles_of_order($process->id, 1);
+            $applicationTableFields["user_id"] = Auth::user()->id;
+            $application_id = DB::table($tableName)->insertGetId($applicationTableFields);
+            $logsArray = $this->getLogs(1, $table->id, $application_id, Auth::user()->role_id, 0, 1);
+            Log::insert($logsArray);
+            // }
+            DB::commit();
+            return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return Redirect::route('applications.service')->with('status', $e->getMessage());
         }
-        $applicationTableFields = $input;
-        if(isset($applicationTableFields['_token'])){
-            unset($applicationTableFields['_token']);
+    }
+
+    private function getFirstRoles($routesArr) {
+        $firstRolesArr = [];
+        foreach($routesArr as $route) {
+            $firstRole = array_shift($route);
+            array_push($firstRolesArr, $firstRole);
         }
-        $process = Process::find($request->process_id);
-        $routes = $this->getRolesWithoutParent($process->id);
-        $arrRoutes = json_decode($routes, true);
-        $status = Status::find($arrRoutes[0]["id"]);
-
-//         $notifyUsers = $role->users;
-// //        dd($notifyUsers, $role);
-//         foreach($notifyUsers as $notifyUser) {
-// //            dd($notifyUser);
-//             $details = [
-
-//                 'greeting' => 'Привет' . ', ' . $notifyUser->name,
-
-//                 'body' => 'Это уведомление о том, что Вы должны согласовать заявку',
-
-//                 'thanks' => 'Пожалуйста, зайтите на портал и согласуйте услугу',
-
-//                 'actionText' => 'Workflow Engine',
-// //
-//                 'actionURL' => url('/services'),
-// //
-//                 'order_id' => 101
-
-//             ];
-//             Notification::send($notifyUser, new ApproveNotification($details));
-//         }
-//        dd($notifyUsers);
-        $tableName = $this->getTableName($process->name);
-        $table = CreatedTable::where('name', $tableName)->first();
-        $user = Auth::user();
-//        dd($applicationTableFields);
-        $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
-        $applicationId = DB::table($tableName)->insertGetId($modifiedApplicationTableFields);
-        $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $arrRoutes[0]["id"]); // получить историю хода согласования
-        Log::insert($logsArray);
+        return $firstRolesArr;
+    }
 
         return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
     }
@@ -512,12 +530,34 @@ class ApplicationController extends Controller
         $applicationTableFields["goal"] = $aData["goal"];
         $applicationTableFields["area"] = $aData["area"];
 //        dd($aData, $applicationTableFields);
-        $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
-        $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
-        $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $arrRoutes[0]["id"]); // получить историю хода согласования
-        Log::insert($logsArray);
+        // $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
+        // $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
+        // $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $arrRoutes[0]["id"]); // получить историю хода согласования
 
-        return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
+        $incomingApplications = EgknService::where('passed_to_process', 0)->get();
+        if (!count($incomingApplications)) {
+            return Redirect::route('applications.service')->with('status', 'Новых заявок не обнаружено');
+        }
+        $countApp = 0; // считаем количество заявок
+        foreach($incomingApplications as $app) {
+            $countApp++;
+            $applicationTableFields = [];
+            $applicationTableFields["process_id"] = $process->id;
+            $app->passed_to_process = 1;
+            $app->timestamps = false;
+            $app->update();
+            $attrOfIncApp = $app->getAttributes();
+            array_shift($attrOfIncApp);
+            foreach ($attrOfIncApp as $key => $value) {
+                $applicationTableFields[$key] = $value;
+            };
+            $modifiedApplicationTableFields = $this->modifyApplicationTableFieldsWithStatus($applicationTableFields, $status->id, $user->id);
+            $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
+            $logsArray = $this->getLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
+            Log::insert($logsArray);
+        }
+
+        return Redirect::route('applications.service')->with('status', 'Заявки Успешно созданы (' . $countApp . ')');
     }
 
     public function sendToSubRoute(Request $request)
@@ -777,24 +817,16 @@ class ApplicationController extends Controller
         return $roleWithIndex;
     }
 
-    private function getLogs($statusId, $tableId, $applicationId, $roleId)
+    private function getLogs($status_id, $table_id, $application_id, $role_id, $order, $answer, $to_role = '')
     {
         $logsArray = [];
-        $logsArray["status_id"] = $statusId;
-        $logsArray["role_id"] = $roleId;
-        $logsArray["table_id"] = $tableId;
-        $logsArray["application_id"] = $applicationId;
-        $logsArray["created_at"] = Carbon::now();
-        return $logsArray;
-    }
-
-    private function getFirstLogs($statusId, $tableId, $applicationId, $roleId)
-    {
-        $logsArray = [];
-        $logsArray["status_id"] = $statusId;
-        $logsArray["role_id"] = 1;
-        $logsArray["table_id"] = $tableId;
-        $logsArray["application_id"] = $applicationId;
+        $logsArray["status_id"] = $status_id;
+        $logsArray["table_id"] = $table_id;
+        $logsArray["application_id"] = $application_id;
+        $logsArray["role_id"] = $role_id;
+        $logsArray["order"] = $order;
+        $logsArray["answer"] = $answer;
+        $logsArray["to_role"] = $to_role;
         $logsArray["created_at"] = Carbon::now();
         return $logsArray;
     }
@@ -825,14 +857,22 @@ class ApplicationController extends Controller
         return $res;
     }
 
-    private function modifyApplicationTableFields($applicationTableFields, $statusId, $userId)
-    {
-        $applicationTableFields["status_id"] = $statusId;
-        $applicationTableFields["user_id"] = $userId;
-        $applicationTableFields["index_main"] = 1;
-        $applicationTableFields["index_sub_route"] = 0;
-        return $applicationTableFields;
-    }
+    // private function modifyApplicationTableFieldsWithStatus($applicationTableFields, $statusId, $userId)
+    // {
+    //     $applicationTableFields["status_id"] = $statusId;
+    //     $applicationTableFields["user_id"] = $userId;
+    //     $applicationTableFields["index_main"] = 1;
+    //     $applicationTableFields["index_sub_route"] = 0;
+    //     return $applicationTableFields;
+    // }
+    // private function modifyApplicationTableFieldsWithStatuses($applicationTableFields, $statuses, $userId)
+    // {
+    //     $applicationTableFields["statuses"] = $statuses;
+    //     $applicationTableFields["user_id"] = $userId;
+    //     $applicationTableFields["index_main"] = 1;
+    //     $applicationTableFields["index_sub_route"] = 0;
+    //     return $applicationTableFields;
+    // }
 
     private function insertTemplateFields($fieldValues, $templateTable,$processId, $applicationId, $templateId)
     {
@@ -893,7 +933,7 @@ class ApplicationController extends Controller
         $templateTable = $this->checkForWrongCharacters($templateTable);
         $templateTable = $this->modifyTemplateTable($templateTable);
         if (strlen($templateTable) > 57) {
-            $templateTable = $this->truncateTableName($templateTable); // если количество символов больше 64, то необходимо укоротить длину названия до 64
+            $templateTable = substr($templateTable, 0, 57);
         }
         return $templateTable;
     }
@@ -902,8 +942,8 @@ class ApplicationController extends Controller
     {
         $arrayToFront = [];
         foreach($dictionariesWithOptions as $item) {
-            $replaced = str_replace(' ', '_', $item["name"]);
-            $item["name"] = $replaced;
+            $replaced = str_replace(' ', '_', $item->name);
+            $item->name = $replaced;
             array_push($arrayToFront, $item);
         }
         return $arrayToFront;

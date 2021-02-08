@@ -179,12 +179,14 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
     Route::get('process/create', 'ProcessController@create')->name('processes.create');
     Route::get('process/{process}', 'ProcessController@view')->name('processes.view');
     Route::post('process/store', 'ProcessController@store')->name('processes.store');
-    Route::post('process/add-sub-roles', 'ProcessController@addSubRoles')->name('processes.addSubRoles');
     Route::post('process/add-organization/{process}', 'ProcessController@addOrganization')->name('processes.addOrganization');
     Route::get('processes-edit/{process}', 'ProcessController@edit')->name('processes.edit');
     Route::put('processes-update/{process}', 'ProcessController@update')->name('processes.update');
     Route::post('create-process-table/{process}', 'ProcessController@createProcessTable')->name('processes.createProcessTable');
     Route::post('process-add-role/{process}', 'ProcessController@addRole')->name('processes.addRole');
+    Route::post('process/add_sub_role/{process}', 'ProcessController@add_sub_role');
+    Route::post('process_role/update/{process}', 'ProcessController@update_process_role');
+    Route::post('process_role/delete/{process}', 'ProcessController@delete_process_role');
 
     Route::post('process-add-doc-templates', 'ProcessController@addDocTemplates')->name('process.addDocTemplates');
     Route::post('process/approve-in-parallel', 'ProcessController@approveInParallel')->name('processes.approveParallel');

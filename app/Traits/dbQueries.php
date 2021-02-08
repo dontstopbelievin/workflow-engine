@@ -10,17 +10,17 @@ use App\Status;
 
 trait dbQueries
 {
-    public function getRolesWithoutParent($id) {
+    // public function getRolesWithoutParent($id) {
 
-        $res = DB::table('roles')
-        ->join('process_role', 'roles.id','=','process_role.role_id')
-        ->select('roles.id', 'roles.name')
-        ->where('process_role.process_id',$id)
-        ->where('process_role.parent_role_id',Null)
-        ->orderBy('process_role.id', 'asc')
-        ->get();
-        return $res;
-    }
+    //     $res = DB::table('roles')
+    //     ->join('process_role', 'roles.id','=','process_role.role_id')
+    //     ->select('roles.id', 'roles.name')
+    //     ->where('process_role.process_id',$id)
+    //     ->where('process_role.parent_role_id',Null)
+    //     ->orderBy('process_role.id', 'asc')
+    //     ->get();
+    //     return $res;
+    // }
     private function getButtons($processId, $roleId)
     {
         return DB::table('process_role')
@@ -30,34 +30,18 @@ trait dbQueries
             ->toArray();
     }
 
-    private function updateProcessRoleCanReject($processId, $roleId)
-    {
-        DB::table("process_role")
-            ->where('process_id', $processId)
-            ->where('role_id', $roleId)
-            ->update(['can_reject' => 1]);
-    }
-
-    private function updateProcessRoleToRevision($processId, $roleId)
-    {
-        DB::table("process_role")
-            ->where('process_id', $processId)
-            ->where('role_id', $roleId)
-            ->update(['can_send_to_revision' => 1]);
-    }
-
-    private function checkIfRoutesInParallel($processId) {
-        $parallelRoutesExist = DB::table('process_role')
-            ->where('process_id', $processId)
-            ->where('approve_in_parallel', '<>', Null)
-            ->exists();
-        return $parallelRoutesExist;
-    }
+    // private function checkIfRoutesInParallel($processId) {
+    //     $parallelRoutesExist = DB::table('process_role')
+    //         ->where('process_id', $processId)
+    //         ->where('approve_in_parallel', '!=', Null)
+    //         ->exists();
+    //     return $parallelRoutesExist;
+    // }
 
     private function getParallelRoutes($processId) {
         $parallelRoutes = DB::table('process_role')
             ->where('process_id', $processId)
-            ->where('approve_in_parallel', '<>', Null)
+            ->where('approve_in_parallel', '!=', Null)
             ->get();
 
         return json_decode(json_encode($parallelRoutes), true);
@@ -80,29 +64,70 @@ trait dbQueries
         return $groupArr;
     }
 
-    public function getParentRoleId($id) {
+    // public function getParentRoleId($id) {
 
-        $parentRoleId = DB::table('process_role')
-        ->select('parent_role_id')
-        ->where('process_id', $id)
-        ->where('parent_role_id', '<>' ,Null)
-        ->limit(1)
-        ->get()->toArray();
-        $arrayId = json_decode(json_encode($parentRoleId), true);
-        if (empty($arrayId)) {
-            return 0;
-        }
-        return intval($arrayId[0]['parent_role_id']);
+    //     $parentRoleId = DB::table('process_role')
+    //     ->select('parent_role_id')
+    //     ->where('process_id', $id)
+    //     ->where('parent_role_id', '!=' ,Null)
+    //     ->limit(1)
+    //     ->get()->toArray();
+    //     $arrayId = json_decode(json_encode($parentRoleId), true);
+    //     if (empty($arrayId)) {
+    //         return 0;
+    //     }
+    //     return intval($arrayId[0]['parent_role_id']);
+    // }
+
+    public function get_roles_of_order($process_id, $order){
+
+        return DB::table('roles')
+            ->join('process_role', 'roles.id','=','process_role.role_id')
+            ->select('roles.id')
+            ->where('process_role.process_id', $process_id)
+            ->where('process_role.order', $order)
+            ->orderBy('process_role.order', 'asc')
+            ->get()->pluck('id');
     }
 
+    public function get_roles_in_order($process_id){
+
+        $without_parents = DB::table('roles')
+            ->join('process_role', 'roles.id','=','process_role.role_id')
+            ->select('process_role.id', 'roles.id as role_id', 'roles.name','process_role.order')
+            ->where('process_role.process_id', $process_id)
+            ->where('process_role.parent_role_id',Null)
+            ->orderBy('process_role.order', 'asc')
+            ->get();
+
+        foreach($without_parents as $value) {
+            $value->child = $this->add_child($process_id, $value->role_id);
+        }
+        return $without_parents;
+    }
+
+    public function add_child($process_id, $role_id){
+
+        $roles = DB::table('roles')
+            ->join('process_role', 'roles.id','=','process_role.role_id')
+            ->select('process_role.id', 'roles.id as role_id', 'roles.name','process_role.order')
+            ->where('process_role.process_id', $process_id)
+            ->where('process_role.parent_role_id', $role_id)
+            ->orderBy('process_role.order', 'asc')
+            ->get();
+
+        foreach($roles as $value) {
+            $value->child = $this->add_child($process_id, $value->role_id);
+        }
+        return $roles;
+    }
 
     public function getAllRoles($process, $parentId, $iterateRoles) {
 
         $sAllRoles = array();
         $sTmp = $this->getSubRoutes($process->id);
-        $counter = 0;
+
         foreach($iterateRoles as $key => $value) {
-            $counter++;
             $sAllRoles[$value->name] = $value->id;
             if ($value->id === $parentId) {
                 $sAllRoles[$value->name] = $sTmp;
@@ -143,7 +168,7 @@ trait dbQueries
 
     private function getTableWithMultipleStatuses($table)
     {
-        $applications = DB::table($table)->where('statuses', '<>', Null)->get()->toArray(); //get collection of StdClass objects
+        $applications = DB::table($table)->where('statuses', '!=', Null)->get()->toArray(); //get collection of StdClass objects
         $convertedApplications = json_decode(json_encode($applications), true);
 
         if(Schema::hasTable($table)) {
@@ -167,7 +192,7 @@ trait dbQueries
 
     private function checkIfAppHasMultipleStatuses($table)
     {
-        return DB::table($table)->where('statuses', '<>', Null)->exists();
+        return DB::table($table)->where('statuses', '!=', Null)->exists();
     }
 
     public function getSubRoutes($id) {
@@ -176,9 +201,9 @@ trait dbQueries
         ->join('process_role', 'roles.id','=','process_role.role_id')
         ->select('name')
         ->where('process_role.process_id',$id)
-        ->where('process_role.parent_role_id', '<>','null')
-        ->get()->toArray();
-        $array = json_decode(json_encode($routes), true);
+        ->where('process_role.parent_role_id', '!=','null')
+        ->get();
+        $array = json_decode($routes, true);
         $res = array();
         foreach($array as  $arr) {
             foreach($arr as $key => $value) {
@@ -220,28 +245,19 @@ trait dbQueries
         return preg_match('/[A-Za-z]/u', $text);
     }
 
-    public function getColumns($tableName, $columns) {
+    public function getColumns($tableName) {
+        $notInclude = ['id', 'process_id', 'status_id', 'user_id', 'index_sub_route', 'index_main', 'doc_path', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at', 'statuses'];
         $tableColumns = Schema::getColumnListing($tableName);
-        return $this->filterArray($tableColumns, $columns);
+        return $this->filterArray($tableColumns, $notInclude);
     }
 
     public function getTableName($table) {
-
         $tableName = $this->translateSybmols($table);
         if (strlen($tableName) > 60) {
-            $tableName = $this->truncateTableName($tableName); // если количество символов больше 64, то необходимо укоротить длину названия до 64
+            $tableName = substr($tableName, 0, 60);
         }
-        $tableName = $this->modifyTableName($tableName);
+        $tableName = 'wf_'.$tableName;
         return $this->checkForWrongCharacters($tableName);
-    }
-
-    public function getOriginalColumns($tableColumns) {
-
-        $array = [];
-        foreach ($tableColumns as $column) {
-            array_push($array, str_replace('_', ' ', $column));
-        }
-        return $array;
     }
 
     public function filterArray($array, $columns) {
@@ -265,26 +281,31 @@ trait dbQueries
         $array = [];
         foreach($dictionaries as $dictionary) {
 
-            if($dictionary["inputName"] === 'select') {
-                $options = $this->getOptionsOfThisSelect($dictionary["name"]);
-                $dictionary["inputName"] = $options;
+            if($dictionary->inputName === 'select') {
+                $options = $this->getOptionsOfThisSelect($dictionary->name);
+                $dictionary->inputName = $options;
             }
             array_push($array, $dictionary);
         }
         return $array;
     }
 
-    public function getAllDictionaries() {
-
-        $query = DB::table('dictionaries')
+    public function getAllDictionaries($to_search = []) {
+        if(count($to_search) == 0){
+            return DB::table('dictionaries')
             ->join('input_types', 'dictionaries.input_type_id', '=', 'input_types.id')
             ->join('insert_types', 'dictionaries.insert_type_id', '=', 'insert_types.id')
             ->select('dictionaries.name','dictionaries.label_name as labelName', 'input_types.name as inputName', 'insert_types.name as insertName')
-            ->get()->toArray();
-        return json_decode(json_encode($query), true);
+            ->get();
+        }else{
+            return DB::table('dictionaries')
+            ->join('input_types', 'dictionaries.input_type_id', '=', 'input_types.id')
+            ->join('insert_types', 'dictionaries.insert_type_id', '=', 'insert_types.id')
+            ->select('dictionaries.name','dictionaries.label_name as labelName', 'input_types.name as inputName', 'insert_types.name as insertName')
+            ->whereIn('dictionaries.name', $to_search)
+            ->get();
+        }
     }
-
-
 
     public function getAuctionRaws($id)
     {
@@ -349,18 +370,6 @@ trait dbQueries
         return json_decode(json_encode($query), true);
     }
 
-    public function truncateTableName($name) {
-
-        $arrOfLetters = str_split($name, 1);
-        $resArr = [];
-        for ($i = 0; $i <=60; $i++) {
-            array_push($resArr, $arrOfLetters[$i]);
-        }
-        return implode('', $resArr);
-
-
-    }
-
     public function filterApplicationArray($array, $notInArray){
 
         $res = [];
@@ -374,13 +383,8 @@ trait dbQueries
 
     public function checkForWrongCharacters($name) {
 
-        $arrayOfWrongCharacters = array('!', ' ', '-', '?');
-        return str_replace( $arrayOfWrongCharacters,'_',$name);
-    }
-
-    public function modifyTableName($name) {
-
-        return 'wf_'.$name;
+        $chars = array('!', ' ', '-', '?');
+        return str_replace($chars, '_', $name);
     }
 
     public function modifyTemplateTable($name) {

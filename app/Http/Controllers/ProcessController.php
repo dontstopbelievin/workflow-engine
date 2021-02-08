@@ -31,8 +31,7 @@ class ProcessController extends Controller
     {
         $parentId = $this->getParentRoleId($process->id);
         $tableName = $this->getTableName($process->name);
-        $notInclude = ['id', 'process_id', 'status_id', 'user_id', 'index_sub_route', 'index_main', 'doc_path', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at'];
-        $tableColumns = $this->getColumns($tableName, $notInclude);
+        $tableColumns = $this->getColumns($tableName);
         if ($parentId === 0) {
             return view('process.view', compact('process','tableColumns'));
         }
@@ -48,44 +47,38 @@ class ProcessController extends Controller
 
     public function store(Request $request)
     {
-        $numberOfDays = intval($request->get('deadline'));
-        $deadline = Carbon::now()->addDays($numberOfDays);
-
-        $request->validate([
+        $validator = Validator::make($request->all(),[
             'name' => 'required',
             'deadline' => 'required',
         ]);
+        if ($validator->fails()) {
+            return Redirect::route('processes.edit', [$process])->with('failure', $validator->errors());
+        }
         $process = new Process ([
-            'name' => $request->get('name'),
-            'deadline' => $numberOfDays,
-            'deadline_until' => $deadline,
+            'name' => $request->name,
+            'deadline' => $request->deadline,
         ]);
         $process->save();
         return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был создан');
     }
-
 
     public function edit(Process $process) {
         try {
             $accepted = Template::where('id', $process->accepted_template_id)->where('accept_template', 1)->first();
             $rejected = Template::where('id', $process->rejected_template_id)->where('accept_template', 0)->first();
             $columns = $this->getAllDictionaries();
-            $roles = Role::where('name' ,'<>', 'Заявитель')->get();
+            $roles = Role::where('name' ,'!=', 'Заявитель')->get();
             $tableName = $this->getTableName($process->name);
-            $notInclude = ['id', 'process_id', 'status_id', 'user_id', 'index_sub_route', 'index_main', 'doc_path', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at'];
-            $tableColumns = $this->getColumns($tableName, $notInclude);
-            $parentId = $this->getParentRoleId($process->id);
+            $tableColumns = $this->getColumns($tableName);
+            // $parentId = $this->getParentRoleId($process->id);
             $organizations = CityManagement::all();
-            $mainOrg = CityManagement::find($process->main_organization_id);
-            $nameMainOrg = '';
-            if(isset($mainOrg->name)) {
-                $nameMainOrg=$mainOrg->name;
-            }
-            //dd($columns);
+            $nameMainOrg = CityManagement::find($process->main_organization_id)->name ?? '';
             $templateDocs = TemplateDoc::all();
-            $iterateRoles = $this->getIterateRoles($process);
-            $sAllRoles = $this->getAllRoles($process, $parentId, $iterateRoles);
-            return view('process.edit', compact('templateDocs', 'process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','sAllRoles', 'organizations', 'nameMainOrg'));
+            // $iterateRoles = $this->getIterateRoles($process);
+            // $sAllRoles = $this->getAllRoles($process, $parentId, $iterateRoles);
+            $process_roles = $this->get_roles_in_order($process->id);
+            // return $process_roles;
+            return view('process.edit', compact('templateDocs', 'process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','process_roles', 'organizations', 'nameMainOrg'));
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }
@@ -110,30 +103,24 @@ class ProcessController extends Controller
 
     public function createProcessTable(Request $request, Process $process) {
         try {
-            // return $request->fields;
             DB::beginTransaction();
-            $processName = $process->name;
-            $fields = $request->fields;
-            if ($fields === Null) {
+            if ($request->fields === Null) {
                 return Redirect::route('processes.edit', [$process])->with('failure', 'Пожалуйста, выберите поля');
             }
-            $tableName = $this->translateSybmols($processName);
-            $tableName = $this->checkForWrongCharacters($tableName);
-            if (strlen($tableName) > 60) {
-                $tableName = $this->truncateTableName($tableName); // если количество символов больше 64, то необходимо укоротить длину названия до 64
-            }
-            $tableName = $this->modifyTableName($tableName);
+
+            $tableName = $this->getTableName($process->name);
             $table = new CreatedTable();
             $table->name = $tableName;
             $table->save();
+
             if (!Schema::hasTable($tableName)) {
                 $dbQueryString = "CREATE TABLE $tableName (id INT PRIMARY KEY AUTO_INCREMENT)";
                 DB::statement($dbQueryString);
             }
-            foreach($fields as $fieldName) {
+            foreach($request->fields as $fieldName) {
                 if($this->isRussian($fieldName)) {
                     $fieldName = $this->translateSybmols($fieldName);
-                } ;
+                }
                 $fieldName = $this->checkForWrongCharacters($fieldName);
                 if (Schema::hasColumn($tableName, $fieldName)) {
                     continue;
@@ -230,70 +217,110 @@ class ProcessController extends Controller
     }
 
     public function addRole(Request $request, Process $process) {
-        
-        if ($request->approveType === "parallel") {
-            $requestRoles = $request->roles;
-            $rolesLen = sizeof($requestRoles);
-            $parallelRoles = [];
-            foreach($requestRoles as $id) {
-                $role = Role::find($id);
-                array_push($parallelRoles, $role);
+        try {
+            $validator = Validator::make($request->all(),[
+                'order' => 'required|integer',
+                'roles'   => 'required|array',
+                'roles.*' => 'integer',
+                'reject'   => 'nullable|array',
+                'reject.*' => 'integer',
+                'revision'   => 'nullable|array',
+                'revision.*' => 'integer',
+            ]);
+            if ($validator->fails()) {
+                
+                return Redirect::route('processes.edit', [$process])->with('failure', $validator->errors());
             }
-            $roles = Role::all();
-            return view('process.parallel', compact('parallelRoles', 'process','roles', 'rolesLen'));
+            DB::beginTransaction();
+            // if ($request->approveType === "parallel") {
+            //     $requestRoles = $request->roles;
+            //     $rolesLen = sizeof($requestRoles);
+            //     $parallelRoles = [];
+            //     foreach($requestRoles as $id) {
+            //         $role = Role::find($id);
+            //         array_push($parallelRoles, $role);
+            //     }
+            //     $roles = Role::all();
+            //     return view('process.parallel', compact('parallelRoles', 'process','roles', 'rolesLen'));
+            // }
+
+            if (sizeof($request->roles) === 1) {
+                // $route = new Route;
+                // $route->name = $role->name;
+                // $route->role_id = $role->id;
+                // $route->process_id = $process->id;
+                // $route->save();
+
+                $process->roles()->attach($request->roles[0], [
+                    'can_reject' => in_array($request->roles[0], $request->reject ?? []),
+                    'can_send_to_revision' => in_array($request->roles[0], $request->revision ?? []),
+                    'order' => $request->order
+                ]);
+                // $process->save();
+                DB::commit();
+                return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
+            } else {
+
+               foreach ($request->roles as $id) {
+                   $process->roles()->attach($id, [
+                        'can_reject' => in_array($id, $request->reject ?? []),
+                        'can_send_to_revision' => in_array($id, $request->revision ?? []),
+                        'order' => $request->order
+                    ]);
+                   // $process->save();
+               }
+               DB::commit();
+               return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
+           }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return Redirect::route('processes.edit', [$process])->with('failure', $e->getMessage());
         }
-        if (!isset($request->roles)) {
-            return Redirect::route('processes.edit', [$process])->with('failure', 'Пожалуйста, выберите маршрут');
-        } else if (sizeof($request->roles) === 1) {
-            $role = Role::where('id', intval($request->roles[0]))->first();
-            $route = new Route;
-            $route->name = $role->name;
-            $route->role_id = $role->id;
-            $route->process_id = $process->id;
-            $route->save();
+    }
 
-            $can_reject = 1;// for test
-            $can_send_to_revision = 1;// for test
+    public function add_sub_role(Request $request, Process $process) {
+        try {
+            $validator = Validator::make($request->all(),[
+                'parent_role_id' => 'required|integer',
+                'order' => 'required|integer',
+                'roles'   => 'required|array',
+                'roles.*' => 'integer',
+                'reject'   => 'nullable|array',
+                'reject.*' => 'integer',
+                'revision'   => 'nullable|array',
+                'revision.*' => 'integer',
+            ]);
+            if ($validator->fails()) {
+                
+                return Redirect::route('processes.edit', [$process])->with('failure', $validator->errors());
+            }
 
-            if(isset($request->reject)){
-              foreach ($request->reject as $id) {
-                if($id == $role->id){
-                  $can_reject = 1;
-                  break;
-                }
-              }
-            }
-            if(isset($request->revision)){
-              foreach ($request->revision as $id) {
-                if($id == $role->id){
-                  $can_send_to_revision = 1;
-                  break;
-                }
-              }
-            }
-            $process->roles()->attach($role, ['can_reject' => $can_reject, 'can_send_to_revision' => $can_send_to_revision]);
-            $process->save();
-            return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
-        } else {
-           $rolesId = $request->roles;
-           $maxParallelNumber = DB::table('process_role')->max('is_parallel');
-           foreach ($rolesId as $id) {
-               $role = Role::where('id', intval($id))->first();
-               $process->roles()->attach($role, ['is_parallel' => $maxParallelNumber + 1]);
-               $process->save();
+            DB::beginTransaction();
+            if (sizeof($request->roles) === 1) {
+                $process->roles()->attach($request->roles[0], [
+                    'parent_role_id' => $request->parent_role_id,
+                    'can_reject' => in_array($request->roles[0], $request->reject ?? []),
+                    'can_send_to_revision' => in_array($request->roles[0], $request->revision ?? []),
+                    'order' => $request->order
+                ]);
+                DB::commit();
+                return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
+            } else {
+               foreach ($request->roles as $id) {
+                   $process->roles()->attach($id, [
+                        'parent_role_id' => $request->parent_role_id,
+                        'can_reject' => in_array($id, $request->reject ?? []),
+                        'can_send_to_revision' => in_array($id, $request->revision ?? []),
+                        'order' => $request->order
+                    ]);
+               }
+               DB::commit();
+               return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
            }
-           if(isset($request->reject)){
-             foreach ($request->reject as $id) {
-                 $this->updateProcessRoleCanReject($process->id, $id);
-             }
-           }
-           if(isset($request->revision)){
-             foreach ($request->revision as $id) {
-                 $this->updateProcessRoleToRevision($process->id, $id);
-             }
-           }
-           return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
-       }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return Redirect::route('processes.edit', [$process])->with('failure', $e->getMessage());
+        }
     }
 
     public function addOrganization(Request $request, Process $process)
@@ -315,26 +342,49 @@ class ProcessController extends Controller
         return Redirect::back()->with('status', 'Основной маршрут выбран успешно');
     }
 
-    public function addSubRoles(Request $request)
+    public function update_process_role(Request $request, Process $process)
     {
-        $parentRole = Role::where('name', $request->roleToAdd)->first();
-        $process = Process::find($request->processId);
-        $subRoutes = $request->subRoles;
-        $supportOrganization = CityManagement::where('name', $request->subOrg)->first();
-        $process->support_organization_id = $supportOrganization->id;
-        foreach($subRoutes as $route) {
-            $mRole = Role::where('name', $route)->get();
-            $process->roles()->attach($mRole, [
-                'parent_role_id' => $parentRole->id,
+        try {
+            $validator = Validator::make($request->all(),[
+                'id' => 'required|integer',
+                'order' => 'required|integer',
             ]);
+            if ($validator->fails()) {
+                return Redirect::route('processes.edit', [$process])->with('failure', $validator->errors());
+            }
+            DB::table('process_role')
+                ->where('id', $request->id)
+                ->update(['order' => $request->order]);
+            return Redirect::route('processes.edit', [$process])->with('status', 'Очередность успешно изменена.');
+        } catch (Exception $e) {
+            return Redirect::route('processes.edit', [$process])->with('status', $e->getMessage());
         }
-        $process->update();
-        return 'done';
+    }
+
+    public function delete_process_role(Request $request, Process $process)
+    {
+        try {
+            $validator = Validator::make($request->all(),[
+                'id' => 'required|integer',
+            ]);
+            if ($validator->fails()) {
+                return Redirect::route('processes.edit', [$process])->with('failure', $validator->errors());
+            }
+            DB::table('process_role')
+                ->where('id', $request->id)
+                ->delete();
+            return Redirect::route('processes.edit', [$process])->with('status', 'Успешно удален.');
+        } catch (Exception $e) {
+            return Redirect::route('processes.edit', [$process])->with('status', $e->getMessage());
+        }
     }
 
     public function delete(Process $process)
     {
         $tableName = $this->getTableName($process->name);
+        if(DB::table($tableName)->count() > 0){
+            return  Redirect::route('processes.index')->with('failure', 'Не удалось удалить процесс, удалите данные.');
+        }
         $true = Schema::dropIfExists($tableName);
         if ($true !== Null) {
             return Redirect::route('processes.index')->with('failure', 'Не удалось удалить процесс');
