@@ -4,23 +4,25 @@ namespace App\Traits;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Auth;
 use App\Dictionary;
 use App\Log;
 use App\Status;
 
 trait dbQueries
 {
-    // public function getRolesWithoutParent($id) {
+    public function getRolesWithoutParent($id) {
 
-    //     $res = DB::table('roles')
-    //     ->join('process_role', 'roles.id','=','process_role.role_id')
-    //     ->select('roles.id', 'roles.name')
-    //     ->where('process_role.process_id',$id)
-    //     ->where('process_role.parent_role_id',Null)
-    //     ->orderBy('process_role.id', 'asc')
-    //     ->get();
-    //     return $res;
-    // }
+        $res = DB::table('roles')
+        ->join('process_role', 'roles.id','=','process_role.role_id')
+        ->select('roles.id', 'roles.name')
+        ->where('process_role.process_id',$id)
+        ->where('process_role.parent_role_id',Null)
+        ->orderBy('process_role.id', 'asc')
+        ->get();
+        return $res;
+    }
+
     private function getButtons($processId, $roleId)
     {
         return DB::table('process_role')
@@ -137,7 +139,6 @@ trait dbQueries
     }
 
     public function getIterateRoles($process) {
-
         $rolesWithoutParent = $this->getRolesWithoutParent($process->id);
         return $process->roles->take(count($rolesWithoutParent));
     }
@@ -193,6 +194,40 @@ trait dbQueries
     private function checkIfAppHasMultipleStatuses($table)
     {
         return DB::table($table)->where('statuses', '!=', Null)->exists();
+    }
+
+    private function allParallelRoleStatuses($tableName, $applicationId){
+        $statuses = DB::table($tableName)->where('id', $applicationId)->select('statuses')->get()->toArray()[0];
+        $statuses = json_decode(json_encode($statuses), true)['statuses'];
+
+        return $statuses;
+    }
+
+    private function getRoleChildren($process, $currentOrder){
+        $role = Auth::user()->role;
+        $children = $process->roles()->where('parent_role_id', $role->id)->get()->toArray();
+        return $children;
+    }
+
+    private function currentStatusesToArray($currentStatuses){
+        $currentStatuses = substr($currentStatuses, 0, -1);
+        $currentStatuses = substr($currentStatuses, 1);
+        $arrayOfStatuses = explode(',', $currentStatuses);
+        foreach ($arrayOfStatuses as $key => $value) {
+          $arrayOfStatuses[$key] = (int)$value;
+        }
+        return $arrayOfStatuses;
+    }
+
+    private function deleteCurrentRoleFromStatuses($currentStatuses){
+        $role = Auth::user()->role->id;
+        foreach($currentStatuses as $key => $status){
+            if($status == $role){
+              array_splice($currentStatuses, $key, 1);
+              break;
+            }
+        }
+        return $currentStatuses;
     }
 
     public function getSubRoutes($id) {
