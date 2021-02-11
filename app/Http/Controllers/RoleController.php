@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
 class RoleController extends Controller
-{   
+{
     public function index()
     {
         $roles = Role::all();
@@ -21,7 +21,7 @@ class RoleController extends Controller
     {
         return view('role.view', compact('role'));
     }
- 
+
     public function create()
     {
         $cityManagements = CityManagement::all();
@@ -66,9 +66,16 @@ class RoleController extends Controller
 
     public function delete(Role $role)
     {
-        $role->users()->delete();
-        $role->delete();
-        return Redirect::route('role.index')->with('status','Роль успешно удалена');
+        try {
+            DB::beginTransaction();
+            $role->users()->delete();
+            $role->delete();
+            DB::commit();
+            return Redirect::route('role.index')->with('status','Роль успешно удалена');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 
     public function search(Request $request)

@@ -242,9 +242,8 @@
                             </div>
                         </div>
 
-                        <div class="modal fade" id="sendToSubRouteId" tabindex="-1" role="dialog">
+                        <!-- <div class="modal fade" id="sendToSubRouteId" tabindex="-1" role="dialog">
                             <div class="modal-dialog" role="document">
-                                <!-- Modal content-->
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h4 class="modal-title  text-center">Форма отправки в другую организацию</h4>
@@ -264,7 +263,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <div id="items">
                             @if($canApprove)
                                     @if (isset($templateFields) && $rejectReasonArray['rejectReason'] == null)
@@ -289,68 +288,47 @@
                                             @endforeach
                                         </form>
                                     @endif
-                                @if($toCitizen)
-                                    <form action="{{ route('applications.toCitizen', ['application_id' => $application->id]) }}" method="post">
-                                        @csrf
-                                        <input type="hidden" name="process_id" value = {{$process->id}}>
-                                        <input type="hidden" name="application_id" value = {{$application->id}}>
-                                        <div style="text-align: center">
-                                            <button class="btn btn-danger" style="margin-top: 30px;margin-bottom: 30px;" type="submit">Отправить заявителю</button>
-                                        </div>
-                                    </form>
-                                @elseif($backToMainOrg)
-                                    <form action="{{ route('applications.backToMainOrg', ['application_id' => $application->id]) }}" method="post">
-                                        @csrf
-                                        <input type="hidden" name="process_id" value = {{$process->id}}>
-                                        <button class="btn btn-warning" style="margin-bottom: 70px;" type="submit">Согласовать</button>
-                                    </form>
-                                @else
-                                    @if(isset($sendToSubRoute["name"]))
-                                        @if($application->index_sub_route === Null)
-                                                    <form action="{{ route('applications.sendToSubRoute', ['application_id' => $application->id]) }}" method="post">
-                                                        @csrf
-                                                        <input type="hidden" name="process_id" value = {{$process->id}}>
-                                                        <button class="btn btn-warning" type="button" data-toggle="modal" data-target="#sendToSubRouteId">Отправить в {{$sendToSubRoute["name"]}}</button>
-                                                    </form>
-                                        @else <form action="{{ route('applications.sendToSubRoute', ['application_id' => $application->id]) }}" method="post">
-                                            @csrf
-                                            <input type="hidden" name="process_id" value = {{$process->id}}>
-                                            <button class="btn btn-warning" type="button" data-toggle="modal" data-target="#sendToSubRouteId">Согласовать в {{$sendToSubRoute["name"]}}</button>
-                                        </form>
-                                                @endif
-                                    @endif
                                     <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
-                                      @if($buttons[0]->can_reject == 1)
-                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
-                                      @endif
-                                      @if($buttons[0]->can_send_to_revision == 1)
-                                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
-                                      @endif
-                                        @if($toMultipleRoles["exists"])
-                                          <div class="col-md-6">
-                                              {{--<form action="{{ route('applications.multipleApprove', ['application_id' => $application->id]) }}" method="post">--}}
-                                                  {{--@csrf--}}
-                                                  <select name="role" id="role" class="form-control">
-                                                  @foreach($toMultipleRoles["roleOptions"] as $role)
-                                                      <option value="{{$role->id}}">{{$role->name}}</option>
-                                                  @endforeach
-                                                  </select>
-                                                  {{--<input type="hidden" name="process_id" value = {{$process->id}}>--}}
-                                                  <button  class="btn btn-success" id="multipleApproveButton" type="submit">Согласовать</button>
-                                              {{--</form>--}}
-                                          </div>
-                                        @else
-                                          @if($rejectReasonArray['rejectReason'] == null)
-                                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
+                                      @if($rejectReasonArray['rejectReason'] == null)
+                                          @if($toCitizen)
+                                              <form action="{{ route('applications.toCitizen', ['application_id' => $application->id]) }}" method="post">
+                                                  @csrf
+                                                  <input type="hidden" name="process_id" value = {{$process->id}}>
+                                                  <input type="hidden" name="application_id" value = {{$application->id}}>
+                                                  <input type="hidden" name="answer" value = "1">
+                                                  <div style="text-align: center">
+                                                      <button class="btn btn-success" style="margin-top: 30px;margin-bottom: 30px;" type="submit">Согласовать и отправить заявителю</button>
+                                                  </div>
+                                              </form>
                                           @else
+                                              <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
+                                              @if($buttons[0]->can_reject == 1)
+                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
+                                              @endif
+                                          @endif
+                                          @if($buttons[0]->can_send_to_revision == 1)
+                                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
+                                          @endif
+                                      @else
+                                        @if($toCitizen)
+                                          <form action="{{ route('applications.toCitizen', ['application_id' => $application->id]) }}" method="post">
+                                              @csrf
+                                              <input type="hidden" name="process_id" value = {{$process->id}}>
+                                              <input type="hidden" name="application_id" value = {{$application->id}}>
+                                              <input type="hidden" name="answer" value = "0">
+                                              <div style="text-align: center">
+                                                  <button class="btn btn-danger" style="margin-top: 30px;margin-bottom: 30px;" type="submit">Отправить заявителю с отказом</button>
+                                              </div>
+                                          </form>
+                                        @else
                                             <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
                                             <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
                                             <button class="btn btn-danger" data-dismiss="modal" id="approveReject">Согласовать отказ</button>
-                                          @endif
                                         @endif
 
+                                      @endif
                                     </div>
-                                @endif
+
                             @endif
                         </div>
                     </div>
@@ -466,61 +444,6 @@
             });
         });
 
-        $('#multipleApproveButton').click(function(event) {
-
-            let formData = new FormData();
-            let processId = $('#processId').val();
-            let applicationId = $('#applicationId').val();
-            let role = $('#role').val();
-
-            formData.append('role', role);
-            formData.append('processId', processId);
-            formData.append('applicationId', applicationId);
-            formData.append('_token', $('input[name=_token]').val());
-            let inputs = $('#templateFieldsId :input');
-            let inputsMap = new Map();
-            inputs.each(function(index) {
-                // let inputObject = {};
-                let input = $(this); // This is the jquery object of the input, do what you will
-                let inputId = input.attr('id');
-                // inputObject[inputId] = input.val();
-
-                if (input.val()) {
-
-                    if (input[0].files === null) {
-                        // inputsMap.set(inputId, input.val());
-                        formData.append(inputId, input.val());
-                    } else {
-                        let file = input[0].files[0];
-                        // inputsMap.set(inputId, file);
-                        formData.append(inputId, file);
-                    }
-                }
-            });
-
-            const inputsObj = Object.fromEntries(inputsMap);
-            console.log(inputsObj);
-            // formData.append('inputsObj' : inputsObj);
-
-
-            {{--$.post('{{ route('applications.multipleApprove') }}', {'processId': processId,'applicationId': applicationId,'role': role,'inputsObj': inputsObj, '_token':$('input[name=_token]').val()}, function(data){--}}
-
-                {{--$('#items').load(location.href + ' #items');--}}
-            {{--});--}}
-
-            $.ajax({
-                method: "POST",
-                url: '{{ route('applications.multipleApprove') }}',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(data){
-                    $('#items').load(location.href + ' #items');
-                }
-            });
-        });
-
-
         $('#commentButton').click(function(event) {
             // event.preventDefault();
             let formData = new FormData();
@@ -570,21 +493,21 @@
 
 
         });
-        $('#sendToSubOrgButton').click(function(event) {
-            var comments = $('#subOrgComments').val();
-            var inputs = $('#templateFieldsId :input');
-            var values = {};
-            inputs.each(function() {
-                values[this.name] = $(this).val();
-            });
-            var processId = $('#processId').val();
-            var applicationId = $('#applicationId').val();
-            console.log(comments, processId, applicationId)
-            $.post('/applications/sendToSubRoute', {'comments':comments,'fieldValues':values,'processId':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
-
-                $('#items').load(location.href + ' #items');
-            });
-        });
+        // $('#sendToSubOrgButton').click(function(event) {
+        //     var comments = $('#subOrgComments').val();
+        //     var inputs = $('#templateFieldsId :input');
+        //     var values = {};
+        //     inputs.each(function() {
+        //         values[this.name] = $(this).val();
+        //     });
+        //     var processId = $('#processId').val();
+        //     var applicationId = $('#applicationId').val();
+        //     console.log(comments, processId, applicationId)
+        //     $.post('/applications/sendToSubRoute', {'comments':comments,'fieldValues':values,'processId':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
+        //
+        //         $('#items').load(location.href + ' #items');
+        //     });
+        // });
 
     });
 </script>
