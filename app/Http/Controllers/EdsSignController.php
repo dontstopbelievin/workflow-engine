@@ -16,6 +16,7 @@ class EdsSignController extends Controller
         $data = $request->data;
         $oDate = new \DateTime('now');
         preg_match('|<ds\:X509Certificate[^>]*?>(.*?)</ds\:X509Certificate>|si', $data, $x509Info);
+
         $replacedXml = str_replace("\r\n", '', $x509Info[1]);
 
         $oNca = new PhpNCANode\NCANodeClient('http://95.59.124.162:14579'); //95.59.124.162 когда локально

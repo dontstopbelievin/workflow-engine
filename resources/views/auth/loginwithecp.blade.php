@@ -17,6 +17,7 @@
     </head>
 
     <body class="pt-8">
+    <div id="errorDiv"></div>
     <div class="flex items-center min-h-screen p-6">
         <div class="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
             <div class="flex flex-col overflow-y-auto md:flex-row">
@@ -82,7 +83,7 @@
             var websocket = new WebSocket("wss://127.0.0.1:13579/");
             websocket.onopen = function(e) {
                 console.log("[open] Connection established");
-                console.log(websocket);
+                // console.log(websocket);
                 ready = true;
             };
             websocket.onclose = (e) => {
@@ -118,20 +119,21 @@
             };
 
             websocket.onmessage = e => {
-                const data1 = JSON.parse(e.data);
-                ecpData.data = data1.responseObject;
+                const data = JSON.parse(e.data);
+                ecpData.data = data.responseObject;
                 if(typeof ecpData.data === 'string' || ecpData.data instanceof String) {
                     console.log('type is string')
                     sendRequest()
                 }
 
-                console.log('tut', ecpData.data1);
+                console.log('tut', ecpData.data);
             };
 
             function sendRequest() {
                 event.preventDefault();
                 $.post('/loginwithecp/bar', {'data':ecpData.data, '_token':$('input[name=_token]').val()})
                     .done(function(data,textStatus, jqXHR){
+                        // console.log(data)
                         window.location = 'services';
                     })
                     .fail(function(xhr, status, error) {

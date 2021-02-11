@@ -68,10 +68,13 @@
                 <li> <a class="dropdown-item" href="{{ route('user.edit', ['user' => Auth::user()]) }}">Редактировать данные</a> </li>
                 <li> <a class="dropdown-item" href="/password/reset">Cменить пароль</a> </li>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <a class="dropdown-item"href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();">
                     <i class="fa fa-power-off"></i>
                     {{ __('Выйти') }}
                 </a>
+                <form id="frm-logout" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    {{ csrf_field() }}
+                </form>
               </ul>
                 <!-- /.dropdown-user -->
             </li>

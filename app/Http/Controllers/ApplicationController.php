@@ -239,8 +239,9 @@ class ApplicationController extends Controller
             $user = Auth::user();
             $user->has_not_accepted_agreement = false;
             $user->update();
+            return response()->json(['message' => true], 200);
         }
-//        return Redirect::route('applications.service');
+        return response()->json(['message' => false], 200);
     }
 
     private function hasMultipleOptions($process, $role)

@@ -64,12 +64,6 @@
                                                 Сервисов.<br>
                                         </div>
                                         <div class="modal-footer" style="display: flex;justify-content: space-between;">
-                                            {{--<div class="checkbox pull-left">
-                                                --}}
-                                                {{--<label><input type="checkbox"
-                                                        id="acceptId" value="">Я
-                                                    согласен</label>--}}
-                                                {{--</div>--}}
                                             <div class="pull-right">
                                                 <button type="submit" class="btn btn-info btn-lg" id="acceptButton">Я
                                                     согласен</button>
@@ -94,12 +88,6 @@
                                                 ответственность в соответствии с законодательством Республики Казахстан.
                                         </div>
                                         <div class="modal-footer" style="display: flex;justify-content: space-between;">
-                                            {{--<div class="checkbox pull-left">
-                                                --}}
-                                                {{--<label><input type="checkbox"
-                                                        id="acceptId" value="">Я
-                                                    согласен</label>--}}
-                                                {{--</div>--}}
                                             <div class="pull-right">
                                                 <button type="submit" class="btn btn-info btn-lg" id="acceptModalButton">
                                                     Я согласен</button>
@@ -123,9 +111,6 @@
                                             <p>Ведется логирование вашей учетной записи. Ваши действия записываются в базу данных. За любые противоправные действия на Портале, вы несете ответственность в соответствии с законодательством Республики Казахстан.
                                         </div>
                                         <div class="modal-footer" style="display: flex;justify-content: space-between;">
-                                            {{--<div class="checkbox pull-left">--}}
-                                                {{--<label><input type="checkbox" id="acceptId" value="">Я согласен</label>--}}
-                                            {{--</div>--}}
                                             <div class="pull-right">
                                                 <button type="submit" class="btn btn-info btn-lg" id="acceptModalButton">Я согласен</button>
                                             </div>
@@ -200,6 +185,11 @@
 
                 $.post('/agreement-accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
                     $('#acceptModal').modal('hide');
+                    if(data.message)
+                    {location.reload();}
+                    else{
+                      alert('Ошибка');  
+                    }
                 });
             });
 
@@ -207,6 +197,11 @@
 
                 $.post('/agreement-accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
                     $('#acceptModalId').modal('hide');
+                    if(data.message)
+                    {location.reload();}
+                    else{
+                      alert('Ошибка');  
+                    }
                 });
             });
         });
