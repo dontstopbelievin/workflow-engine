@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
 @section('title')
     Редактирование процесса
@@ -113,6 +113,7 @@
                                       </div>
                                     </div>
                                   </div>
+                                  @section('srcipt')
                                   <script>
                                     $("#participant{{$role->id}}").click(function(){
                                       if(document.getElementById("dropdown-permission{{$role->id}}").style.display == "none"){
@@ -124,6 +125,7 @@
                                       }
                                     });
                                   </script>
+                                  @endsection
                               @endforeach
                           @endisset
                           <div style="text-align: center;">
@@ -231,6 +233,7 @@
                                       </div>
                                     </div>
                                   </div>
+                                  @section('script')
                                   <script>
                                     $("#participant{{$role->id}}").click(function(){
                                       if(document.getElementById("dropdown-permission{{$role->id}}").style.display == "none"){
@@ -242,6 +245,7 @@
                                       }
                                     });
                                   </script>
+                                  @endsection
                               @endforeach
                           @endisset
                           <div style="text-align: center;">
@@ -335,10 +339,8 @@
     </div>
   </div>
   </div>
-    {{csrf_field()}}
-<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script> -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous"></script>
+@endsection
+@section('script')
 <script>
     $(document).ready(function() {
         $('.AddButton').click(function(event) {
@@ -347,7 +349,4 @@
           });
       });
   </script>
-@endsection
-
-@section('scripts')
 @endsection

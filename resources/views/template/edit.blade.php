@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
 @section('title')
    Измененить шаблона
@@ -41,7 +41,4 @@
         </div>
     </div>
 </div>
-@endsection
-
-@section('scripts')
 @endsection

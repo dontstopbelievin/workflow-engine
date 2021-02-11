@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
 @section('title')
     Создание Шаблона
@@ -45,7 +45,4 @@
             </div>
         </div>
     </div>
-@endsection
-
-@section('scripts')
 @endsection

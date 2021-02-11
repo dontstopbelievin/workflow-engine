@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
 @section('title')
     Процессы
@@ -70,8 +70,4 @@
       </div>
     </div>
   </div>
-@endsection
-
-@section('scripts')
-
 @endsection

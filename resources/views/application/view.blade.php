@@ -466,32 +466,38 @@
                 }
             });
             formData.append('_token', $('input[name=_token]').val());
-            $.ajax({
-                method: "POST",
-                url: '{{ route('applications.approve') }}',
-                data: formData,
-                xhrFields: {
-                    responseType: 'blob'
-                },
-                processData: false,
-                contentType: false,
-                success: function(response){
-                    // console.log(data);
-
-                    // var blob = new Blob([response]);
-                    // var link = document.createElement('a');
-                    // link.href = window.URL.createObjectURL(blob);
-                    // link.download = "Sample.pdf";
-                    // link.click();
-
-
-                    // console.log('tut');
-                    $('#items').load(location.href + ' #items');
+            // $.post('{{route('applications.approve')}}', formData, function(data){
+            //     console.log('msg: '+data);
+            //     $('#items').load(location.href + ' #items');
+            // });
+            var xhr = new XMLHttpRequest();
+            xhr.open("post", "{{route('applications.approve')}}", true);
+            xhr.setRequestHeader("Authorization", "Bearer " + "{{csrf_token()}}");
+            xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    console.log(data);
+                }else{
+                    var data = JSON.parse(xhr.responseText);
+                    console.log(data);
                 }
-            });
-
-
-
+            }.bind(this)
+            xhr.send(JSON.stringify(FormData));
+            // $.ajax({
+            //     type: "POST",
+            //     url: '{{ route('applications.approve') }}',
+            //     data: formData,
+            //     xhrFields: {
+            //         responseType: 'blob'
+            //     },
+            //     processData: false,
+            //     contentType: false,
+            //     success: function(data) {
+            //       alert('asds');
+            //     },
+            // });
+            // alert( "Data Saved: ");
         });
         // $('#sendToSubOrgButton').click(function(event) {
         //     var comments = $('#subOrgComments').val();
@@ -508,9 +514,7 @@
         //         $('#items').load(location.href + ' #items');
         //     });
         // });
-
     });
 </script>
-
 </body>
 </html>

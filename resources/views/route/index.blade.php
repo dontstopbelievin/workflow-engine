@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
 @section('title')
    Маршруты
@@ -56,7 +56,4 @@
         </div>
     </div>                   
 
-@endsection
-
-@section('scripts')
 @endsection

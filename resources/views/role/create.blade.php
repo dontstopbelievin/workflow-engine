@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
 @section('title')
     Создание Ролей
@@ -49,7 +49,4 @@
     </div>
   </div>
 </div>
-@endsection
-
-@section('scripts')
 @endsection

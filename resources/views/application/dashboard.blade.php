@@ -1,8 +1,4 @@
-@extends('layouts.master')
-
-@section('title')
-    Услуги
-@endsection
+@extends('layouts.app')
 
 @section('content')
     <div class="main-panel">

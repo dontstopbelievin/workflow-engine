@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
 @section('title')
   Просмотр Процесса
@@ -75,7 +75,3 @@
         </div>
     </div>
 @endsection
-
-@section('scripts')
-@endsection
-

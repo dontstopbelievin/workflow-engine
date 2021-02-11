@@ -283,6 +283,8 @@ class ApplicationController extends Controller
         try {
             DB::beginTransaction();
             $requestVal = $request->all();
+            return response()->json(['message' => $requestVal], 200);
+            return $requestVal;
             for ($i = 0; $i <=2; $i ++) {
                 array_shift($requestVal);
             }
