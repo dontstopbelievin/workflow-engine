@@ -492,4 +492,4 @@
             // });
         });
     </script>
-@endsection
+@append

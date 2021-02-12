@@ -116,7 +116,7 @@
                                       </div>
                                     </div>
                                   </div>
-                                  @section('srcipt')
+                                  @section('scripts')
                                   <script>
                                     $("#participant{{$role->id}}").click(function(){
                                       if(document.getElementById("dropdown-permission{{$role->id}}").style.display == "none"){
@@ -128,7 +128,7 @@
                                       }
                                     });
                                   </script>
-                                  @endsection
+                                  @append
                               @endforeach
                           @endisset
                           <div style="text-align: center;">
@@ -236,7 +236,7 @@
                                       </div>
                                     </div>
                                   </div>
-                                  @section('script')
+                                  @section('scripts')
                                   <script>
                                     $("#participant{{$role->id}}").click(function(){
                                       if(document.getElementById("dropdown-permission{{$role->id}}").style.display == "none"){
@@ -248,7 +248,7 @@
                                       }
                                     });
                                   </script>
-                                  @endsection
+                                  @append
                               @endforeach
                           @endisset
                           <div style="text-align: center;">
@@ -343,7 +343,7 @@
   </div>
   </div>
 @endsection
-@section('script')
+@section('scripts')
 <script>
     $(document).ready(function() {
         $('.AddButton').click(function(event) {
@@ -352,4 +352,4 @@
           });
       });
   </script>
-@endsection
+@append

@@ -1,8 +1,9 @@
 @if ($message = Session::get('success'))
     <div class="my_message alert alert-success alert-block">
-        <button type="button" class="close" data-dismiss="alert">×</button>
+        <button type="button" class="close" data-item="success" data-dismiss="alert">×</button>
         <strong>{{ $message }}</strong>
     </div>
+    {{session()->forget('success')}}
 @endif
 
 
@@ -20,6 +21,7 @@
             <strong>{{ $message }}</strong>
         </div>
     @endif
+    {{session()->forget('error')}}
 @endif
 
 
@@ -28,6 +30,7 @@
         <button type="button" class="close" data-dismiss="alert">×</button>
         <strong>{{ $message }}</strong>
     </div>
+    {{session()->forget('warning')}}
 @endif
 
 
@@ -36,6 +39,7 @@
         <button type="button" class="close" data-dismiss="alert">×</button>
         <strong>{{ $message }}</strong>
     </div>
+    {{session()->forget('info')}}
 @endif
 
 
