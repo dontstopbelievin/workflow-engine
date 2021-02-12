@@ -17,7 +17,7 @@
                         <a href="{{ route('processes.create') }}" class="btn btn-info float-left">Добавить процесс</a>
                       </div>
                       <div class="col-md-6">
-                        <h4 class="card-title font-weight-bold text-center">
+                        <h4 class="page-title text-center">
                           Список Процессов
                         </h4>
                       </div>

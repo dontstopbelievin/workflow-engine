@@ -1,4 +1,4 @@
-<nav class="navbar navbar-header navbar-expand-lg fixed-top bg-light">
+<nav class="navbar navbar-header navbar-expand-lg fixed-top" style="background: white!important; height: 40px;box-shadow: 0 4px 3px -3px #999;">
     <div class="container-fluid">
         <div class="navbar-header">
             <div>

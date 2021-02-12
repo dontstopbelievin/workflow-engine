@@ -5,30 +5,18 @@
 @endsection
 
 @section('content')
-
     <div class="main-panel">
       <div class="content">
         <div class="container-fluid">
-          <h4 class="page-title">Личный Кабинет</h4>
-          @if (session('status'))
-              <div class="alert alert-success" role="alert">
-                  {{ session('status') }}
-              </div>
-          @endif
-          @if (session('error'))
-              <div class="alert alert-danger" role="alert">
-                  {{ session('error') }}
-              </div>
-          @endif
                 <div class="card">
-                    <!-- <div class="card-header">
-                        <h3 class="card-title font-weight-bold text-center">Личный Кабинет</h3>
+                    <div class="card-header">
+                        <h4 class="card-title font-weight-bold text-center">Личный Кабинет</h4>
                     </div>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
                         </div>
-                    @endif -->
+                    @endif
                     <div class="card-body" id="items">
 
                         <p>Имя: {{$user->name}}</p>
@@ -108,6 +96,5 @@
                 </div>
             </div>
         </div>
-
     </div>
 @endsection

@@ -15,7 +15,7 @@
     @section('header')
         @include('layouts.header')
     @show
-    @if(Auth::check() && Route::current()->uri != 'policy')
+    @if(Auth::check())
         @section('sidebar')
             @include('layouts.sidebar')
         @show
