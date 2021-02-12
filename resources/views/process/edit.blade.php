@@ -8,20 +8,23 @@
 <div class="main-panel">
   <div class="content">
     <div class="container-fluid">
-      <h4 class="page-title">Изменение Процесса: {{$process->name}}</h4>
-      @if (session('status'))
-          <div class="alert alert-success" role="alert">
-              {{ session('status') }}
-          </div>
-      @elseif (session('failure'))
-          <div class="alert alert-warning" role="alert">
-              {{ session('failure') }}
-          </div>
-      @endif
       <div class="card">
+        <div class="card-header">
+          <h4 class="page-title">
+            <a href="{{ route('processes.index') }}" class="btn btn-info" style="margin-right: 10px;">Назад</a>
+            Изменение Процесса: {{$process->name}}</h4>
+          @if (session('status'))
+              <div class="alert alert-success" role="alert">
+                  {{ session('status') }}
+              </div>
+          @elseif (session('failure'))
+              <div class="alert alert-warning" role="alert">
+                  {{ session('failure') }}
+              </div>
+          @endif
+        </div>
         <div class="card-body">
           <div class="col-md-12">
-            <a href="{{ route('processes.index') }}" class="btn btn-outline-danger" style="margin-bottom: 20px;">Назад</a>
             <h5>О процессе:</h5>
             <form action="{{ route('processes.update', ['process' => $process]) }}" method="POST">
               {{ csrf_field( )}}

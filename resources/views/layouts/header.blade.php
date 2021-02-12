@@ -1,4 +1,4 @@
-<nav class="navbar navbar-header navbar-expand-lg">
+<nav class="navbar navbar-header navbar-expand-lg fixed-top bg-light">
     <div class="container-fluid">
         <div class="navbar-header">
             <div>
@@ -35,5 +35,6 @@
             </li>
             @endguest
         </ul>
+
     </div>
 </nav>

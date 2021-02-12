@@ -8,13 +8,15 @@
 <div class="main-panel">
   <div class="content">
     <div class="container-fluid">
-      <h4 class="page-title">Создание процесса</h4>
-      @if (session('status'))
-          <div class="alert alert-success" role="alert">
-              {{ session('status') }}
-          </div>
-      @endif
       <div class="card">
+        <div class="card-header">
+          <h4 class="page-title">Создание процесса</h4>
+          @if (session('status'))
+              <div class="alert alert-success" role="alert">
+                  {{ session('status') }}
+              </div>
+          @endif
+        </div>
         <form action="{{ route('processes.store') }}" method="POST">
           <div class="card-body">
             @csrf
@@ -31,6 +33,7 @@
           </div>
           <div class="card-action">
             <button type="submit" class="btn btn-success">Создать</button>
+            <a href="{{ route('processes.index') }}" class="btn btn-info">Назад</a>
           </div>
         </form>
       </div>

@@ -38,6 +38,7 @@
                                   </div>
                                   <div>
                                     <button type="submit" class="btn btn-success">Создать</button>
+                                    <a href="{{ route('role.index') }}" class="btn btn-danger">Отмена</a>
                                   </div>
                               </form>
                           </div>

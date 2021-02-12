@@ -1,5 +1,5 @@
 <div class="sidebar" style="margin-top: 40px;">
-  <div class="scrollbar-inner sidebar-wrapper">
+  <div class="scrollbar-inner sidebar-wrapper" style="padding-top: 0px;">
       <ul class="nav">
         @if( request()->segment(1) == 'auction' )
             <li class="nav-item active">

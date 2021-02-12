@@ -12,17 +12,25 @@
           <div class="col-md-12">
               <div class="card bg-white">
                   <div class="card-header">
-                      <h3 class="card-title font-weight-bold text-center">Список Процессов </h3>
-                      <a href="{{ route('processes.create') }}" class="btn btn-info">Добавить процесс</a><br><br>
-                      @if (session('status'))
-                          <div class="alert alert-success" role="alert">
-                              {{ session('status') }}
-                          </div>
-                          @elseif (session('failure'))
-                          <div class="alert alert-warning" role="alert">
-                              {{ session('failure') }}
-                          </div>
-                      @endif
+                    <div class="row">
+                      <div class="col-md-3">
+                        <a href="{{ route('processes.create') }}" class="btn btn-info float-left">Добавить процесс</a>
+                      </div>
+                      <div class="col-md-6">
+                        <h3 class="card-title font-weight-bold text-center">
+                        Список Процессов
+                      </h3>
+                      </div>
+                    </div>
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                        @elseif (session('failure'))
+                        <div class="alert alert-warning" role="alert">
+                            {{ session('failure') }}
+                        </div>
+                    @endif
                   </div>
   						<div class="card">
   							<!-- <div class="card-header">
