@@ -17,9 +17,9 @@
                         <a href="{{ route('processes.create') }}" class="btn btn-info float-left">Добавить процесс</a>
                       </div>
                       <div class="col-md-6">
-                        <h3 class="card-title font-weight-bold text-center">
-                        Список Процессов
-                      </h3>
+                        <h4 class="card-title font-weight-bold text-center">
+                          Список Процессов
+                        </h4>
                       </div>
                     </div>
                     @if (session('status'))
