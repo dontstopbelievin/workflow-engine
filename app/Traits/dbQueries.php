@@ -94,6 +94,16 @@ trait dbQueries
 
     public function get_roles_in_order($process_id){
 
+        return DB::table('roles')
+            ->join('process_role', 'roles.id','=','process_role.role_id')
+            ->select('process_role.id', 'roles.id as role_id', 'roles.name','process_role.order')
+            ->where('process_role.process_id', $process_id)
+            ->orderBy('process_role.order', 'asc')
+            ->get();
+    }
+
+    public function get_roles_for_edit($process_id){
+
         $without_parents = DB::table('roles')
             ->join('process_role', 'roles.id','=','process_role.role_id')
             ->select('process_role.id', 'roles.id as role_id', 'roles.name','process_role.order')
@@ -196,38 +206,22 @@ trait dbQueries
         return DB::table($table)->where('statuses', '!=', Null)->exists();
     }
 
-    private function allParallelRoleStatuses($tableName, $applicationId){
-        $statuses = DB::table($tableName)->where('id', $applicationId)->select('statuses')->get()->toArray()[0];
-        $statuses = json_decode(json_encode($statuses), true)['statuses'];
-
-        return $statuses;
+    private function getProcessStatuses($tableName, $applicationId){
+        return json_decode(DB::table($tableName)->where('id', $applicationId)->select('statuses')->first()->statuses, true);
     }
 
-    private function getRoleChildren($process, $currentOrder){
-        $role = Auth::user()->role;
-        $children = $process->roles()->where('parent_role_id', $role->id)->get()->toArray();
-        return $children;
+    private function getRoleChildren($process){
+        return $process->roles()->where('parent_role_id', Auth::user()->role_id)->get();
     }
 
-    private function currentStatusesToArray($currentStatuses){
-        $currentStatuses = substr($currentStatuses, 0, -1);
-        $currentStatuses = substr($currentStatuses, 1);
-        $arrayOfStatuses = explode(',', $currentStatuses);
-        foreach ($arrayOfStatuses as $key => $value) {
-          $arrayOfStatuses[$key] = (int)$value;
-        }
-        return $arrayOfStatuses;
-    }
-
-    private function deleteCurrentRoleFromStatuses($currentStatuses){
-        $role = Auth::user()->role->id;
-        foreach($currentStatuses as $key => $status){
-            if($status == $role){
-              array_splice($currentStatuses, $key, 1);
+    private function deleteCurrentRoleFromStatuses($currentRoles){
+        foreach($currentRoles as $key => $role_id){
+            if($role_id == Auth::user()->role_id){
+              unset($currentRoles[$key]);
               break;
             }
         }
-        return $currentStatuses;
+        return $currentRoles;
     }
 
     public function getSubRoutes($id) {

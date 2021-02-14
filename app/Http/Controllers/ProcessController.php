@@ -76,7 +76,7 @@ class ProcessController extends Controller
             $templateDocs = TemplateDoc::all();
             // $iterateRoles = $this->getIterateRoles($process);
             // $sAllRoles = $this->getAllRoles($process, $parentId, $iterateRoles);
-            $process_roles = $this->get_roles_in_order($process->id);
+            $process_roles = $this->get_roles_for_edit($process->id);
             // return $process_roles;
             return view('process.edit', compact('templateDocs', 'process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','process_roles', 'organizations', 'nameMainOrg'));
         } catch (Exception $e) {

@@ -162,7 +162,7 @@
                                                 </div>
                                             </div>
                                             <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
-                                            <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
+                                            <input type="hidden" id="application_id" name="application_id" value = {{$application->id}}>
                                             <button class="btn btn-info" style="float:center" data-dismiss="modal" id="rejectButton">Отправить</button>
                                         </div>
                                     </div>
@@ -185,7 +185,7 @@
                                                 </div>
                                             </div>
                                             <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
-                                            <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
+                                            <input type="hidden" id="application_id" name="application_id" value = {{$application->id}}>
                                             <button class="btn btn-info" data-dismiss="modal" id="commentButton">Отправить</button>
                                         </div>
                                     </div>
@@ -212,41 +212,18 @@
                                                 <select name="roleToRevise" id="roleToRevise" class="form-control">
                                                     <option selected disabled>Выберите Ниже</option>
                                                     @foreach($allRoles as $role)
-                                                        <option value="{{$role}}">{{$role}}</option>
+                                                        <option value="{{$role->id}}">{{$role->name}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
-                                            <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
+                                            <input type="hidden" id="application_id" name="application_id" value = {{$application->id}}>
                                             <button class="btn btn-info" data-dismiss="modal" id="revisionButton">Отправить</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- <div class="modal fade" id="sendToSubRouteId" tabindex="-1" role="dialog">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title  text-center">Форма отправки в другую организацию</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="form-group">
-                                            <div class="form-group row">
-                                                <label for="subOrgComments" class="col-md-4 col-form-label text-md-right">{{ __("Введите комментарий (не обязательно)") }}</label>
-                                                <div class="col-md-6">
-                                                    <input type="text" id="subOrgComments" class="form-control" name="sendToAnotherOrganization" autofocus>
-                                                </div>
-                                            </div>
-                                            <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
-                                            <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
-                                            <button class="btn btn-info" data-dismiss="modal" id="sendToSubOrgButton">Отправить</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
                         <div id="items">
                             @if($canApprove)
                                     @if (isset($templateFields) && $rejectReasonArray['rejectReason'] == null)
@@ -305,7 +282,7 @@
                                           </form>
                                         @else
                                             <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
-                                            <input type="hidden" id="applicationId" name="application_id" value = {{$application->id}}>
+                                            <input type="hidden" id="application_id" name="application_id" value = {{$application->id}}>
                                             <button class="btn btn-danger" data-dismiss="modal" id="approveReject">Согласовать отказ</button>
                                         @endif
 
@@ -313,7 +290,7 @@
                                     </div>
 
                             @endif
-                            <a href="{{ route('applications.index', ['process' => $process]) }}" class="btn btn-info">Назад</a>
+                            <a href="{{ route('applications.index', ['process' => $process]) }}" class="btn btn-info" style="margin-top: 10px;">Назад</a>
                         </div>
                     </div>
                 </div>
@@ -393,9 +370,9 @@
             $('#rejectButton').click(function(event) {
                 var rejectReason = $('#rejectReason').val();
                 var processId = $('#processId').val();
-                var applicationId = $('#applicationId').val();
-                console.log(rejectReason, processId, applicationId)
-                $.post('/applications/reject', {'rejectReason':rejectReason,'processId':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
+                var application_id = $('#application_id').val();
+                console.log(rejectReason, processId, application_id)
+                $.post('/applications/reject', {'rejectReason':rejectReason,'processId':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
                     console.log('reject: '+data);
                     $('#items').load(location.href + ' #items');
                 });
@@ -403,9 +380,9 @@
 
             $('#approveReject').click(function(event) {
                 var processId = $('#processId').val();
-                var applicationId = $('#applicationId').val();
-                console.log(processId, applicationId)
-                $.post('/applications/approveReject', {'processId':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
+                var application_id = $('#application_id').val();
+                console.log(processId, application_id)
+                $.post('/applications/approveReject', {'processId':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
                     $('#items').load(location.href + ' #items');
                 });
             });
@@ -414,8 +391,8 @@
                 let revisionReason = $('#revisionReason').val();
                 var roleToRevise = $( "#roleToRevise option:selected" ).text();
                 var processId = $('#processId').val();
-                var applicationId = $('#applicationId').val();
-                $.post('/applications/revision', {'revisionReason':revisionReason,'processId':processId,'applicationId':applicationId,'roleToRevise':roleToRevise, '_token':$('input[name=_token]').val()}, function(data){
+                var application_id = $('#application_id').val();
+                $.post('/applications/revision', {'revisionReason':revisionReason,'processId':processId,'application_id':application_id,'roleToRevise':roleToRevise, '_token':$('input[name=_token]').val()}, function(data){
                     $('#items').load(location.href + ' #items');
                 });
             });
@@ -424,15 +401,12 @@
                 // event.preventDefault();
                 let formData = new FormData();
                 //let comments = $('#comments').val();
-                let processId = $('#processId').val();
-                let applicationId = $('#applicationId').val();
                 let inputs = $('#templateFieldsId :input');
                 //formData.append('comments', comments)
-                formData.append('process_id', processId)
-                formData.append('applicationId', applicationId)
+                formData.append('process_id', $('#processId').val())
+                formData.append('application_id', $('#application_id').val())
                 inputs.each(function() {
                     if ($(this)[0].files === null) {
-                        // values[this.name] = $(this).val();
                         formData.append(this.name, $(this).val());
                     } else {
                         var file = $('input[type=file]')[0].files[0];
@@ -442,14 +416,9 @@
                     }
                 });
                 formData.append('_token', $('input[name=_token]').val());
-                // $.post('{{route('applications.approve')}}', formData, function(data){
-                //     console.log('msg: '+data);
-                //     $('#items').load(location.href + ' #items');
-                // });
                 var xhr = new XMLHttpRequest();
                 xhr.open("post", "{{route('applications.approve')}}", true);
                 xhr.setRequestHeader("Authorization", "Bearer " + "{{csrf_token()}}");
-                xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
                 xhr.onload = function () {
                     if (xhr.status === 200) {
                         var data = JSON.parse(xhr.responseText);
@@ -458,38 +427,10 @@
                         var data = JSON.parse(xhr.responseText);
                         console.log(data);
                     }
+                    location.reload();
                 }.bind(this)
-                xhr.send(JSON.stringify(FormData));
-                // $.ajax({
-                //     type: "POST",
-                //     url: '{{ route('applications.approve') }}',
-                //     data: formData,
-                //     xhrFields: {
-                //         responseType: 'blob'
-                //     },
-                //     processData: false,
-                //     contentType: false,
-                //     success: function(data) {
-                //       alert('asds');
-                //     },
-                // });
-                // alert( "Data Saved: ");
+                xhr.send(formData);
             });
-            // $('#sendToSubOrgButton').click(function(event) {
-            //     var comments = $('#subOrgComments').val();
-            //     var inputs = $('#templateFieldsId :input');
-            //     var values = {};
-            //     inputs.each(function() {
-            //         values[this.name] = $(this).val();
-            //     });
-            //     var processId = $('#processId').val();
-            //     var applicationId = $('#applicationId').val();
-            //     console.log(comments, processId, applicationId)
-            //     $.post('/applications/sendToSubRoute', {'comments':comments,'fieldValues':values,'processId':processId,'applicationId':applicationId, '_token':$('input[name=_token]').val()}, function(data){
-            //
-            //         $('#items').load(location.href + ' #items');
-            //     });
-            // });
         });
     </script>
 @append
