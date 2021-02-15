@@ -48,7 +48,7 @@ class ApplicationController extends Controller
         $tableName = $this->getTableName($process->name);
 
         $appHasMultipleStatuses = $this->checkIfAppHasMultipleStatuses($tableName);
-//        dd('here');
+
         if ($appHasMultipleStatuses) {
             $arrayApps = $this->getTableWithMultipleStatuses($tableName);
 

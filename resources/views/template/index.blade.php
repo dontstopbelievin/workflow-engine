@@ -5,7 +5,6 @@
 @endsection
 
 @section('content')
-
     <div class="main-panel">
         <div class="col-md-12">
             <div class="card">
@@ -119,86 +118,88 @@
         </div><!-- /.modal -->
 
     </div>
-    <script>
-        $(document).ready(function() {
-
-          $(document).on('click', '.ourItem', function(event) {
-                  var id  = $(this).find('#templateId').val();
-
-                  var text = $('#templateName'+id).val();
-                  $('#title').text('Изменить шаблон');
-                  $('#id').val(id);
-                  $('#fieldName').val(text);
-                  $('#delete').show('400');
-                  $('#templateType').hide('400');
-                  $('#saveChanges').show('400');
-                  $('#AddButton').hide('400');
-                  console.log(text);
-          });
-
-            $(document).on('click', '#addNew', function(event) {
-                    $('#title').text('Создать новый шаблон');
-                    $('#fieldName').val("");
-                    $('#templateType').show('400');
-                    $('#delete').hide('400');
-                    $('#saveChanges').hide('400');
-                    $('#AddButton').show('400');
-            });
-
-            $('#AddButton').click(function(event) {
-                var formData = new FormData();
-                formData.append('file_input', $('input[type=file]')[0].files[0]);
-                formData.append('name', $('#fieldName').val());
-                formData.append('template_state', $('#accept_template').val());
-                formData.append('_token', $('input[name=_token]').val());
-                $.ajax({
-                  url: '/templates/create',
-                  data: formData,
-                  processData: false,
-                  contentType: false,
-                  type: 'POST',
-                  success: function(data){
-                    alert(data);
-                    $('#successMessage').val(data);
-                    $('#success').load(location.href + ' #success');
-                    $('#acceptedTemplates').load(location.href + ' #acceptedTemplates');
-                    $('#rejectedTemplates').load(location.href + ' #rejectedTemplates');
-                  }
-                });
-            });
-
-            $('#delete').click(function(event) {
-                var id = $('#id').val();
-                $.post('/template-delete/' + id, {'_token':$('input[name=_token]').val()}, function(data){
-                    alert(data);
-                    $('#acceptedTemplates').load(location.href + ' #acceptedTemplates');
-                    $('#rejectedTemplates').load(location.href + ' #rejectedTemplates');
-                });
-            });
-
-            $('#saveChanges').click(function(event) {
-                var formData = new FormData();
-                var id = $('#id').val();
-                var file = $('input[type=file]')[0].files[0];
-                if(file!==undefined) {
-                    formData.append('file_input', file);
-                }
-                formData.append('name', $('#fieldName').val());
-                formData.append('_token', $('input[name=_token]').val());
-                $.ajax({
-                    url: '/template-update/' + id,
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    type: 'POST',
-                    success: function(data){
-                        alert(data);
-                        $('#acceptedTemplates').load(location.href + ' #acceptedTemplates');
-                        $('#rejectedTemplates').load(location.href + ' #rejectedTemplates');
-                    }
-                });
-            });
-
-        });
-    </script>
 @endsection
+@section('scripts')
+<script>
+    $(document).ready(function() {
+
+      $(document).on('click', '.ourItem', function(event) {
+              var id  = $(this).find('#templateId').val();
+
+              var text = $('#templateName'+id).val();
+              $('#title').text('Изменить шаблон');
+              $('#id').val(id);
+              $('#fieldName').val(text);
+              $('#delete').show('400');
+              $('#templateType').hide('400');
+              $('#saveChanges').show('400');
+              $('#AddButton').hide('400');
+              console.log(text);
+      });
+
+        $(document).on('click', '#addNew', function(event) {
+                $('#title').text('Создать новый шаблон');
+                $('#fieldName').val("");
+                $('#templateType').show('400');
+                $('#delete').hide('400');
+                $('#saveChanges').hide('400');
+                $('#AddButton').show('400');
+        });
+
+        $('#AddButton').click(function(event) {
+            var formData = new FormData();
+            formData.append('file_input', $('input[type=file]')[0].files[0]);
+            formData.append('name', $('#fieldName').val());
+            formData.append('template_state', $('#accept_template').val());
+            formData.append('_token', $('input[name=_token]').val());
+            $.ajax({
+              url: '/templates/create',
+              data: formData,
+              processData: false,
+              contentType: false,
+              type: 'POST',
+              success: function(data){
+                alert(data);
+                $('#successMessage').val(data);
+                $('#success').load(location.href + ' #success');
+                $('#acceptedTemplates').load(location.href + ' #acceptedTemplates');
+                $('#rejectedTemplates').load(location.href + ' #rejectedTemplates');
+              }
+            });
+        });
+
+        $('#delete').click(function(event) {
+            var id = $('#id').val();
+            $.post('/template-delete/' + id, {'_token':$('input[name=_token]').val()}, function(data){
+                alert(data);
+                $('#acceptedTemplates').load(location.href + ' #acceptedTemplates');
+                $('#rejectedTemplates').load(location.href + ' #rejectedTemplates');
+            });
+        });
+
+        $('#saveChanges').click(function(event) {
+            var formData = new FormData();
+            var id = $('#id').val();
+            var file = $('input[type=file]')[0].files[0];
+            if(file!==undefined) {
+                formData.append('file_input', file);
+            }
+            formData.append('name', $('#fieldName').val());
+            formData.append('_token', $('input[name=_token]').val());
+            $.ajax({
+                url: '/template-update/' + id,
+                data: formData,
+                processData: false,
+                contentType: false,
+                type: 'POST',
+                success: function(data){
+                    alert(data);
+                    $('#acceptedTemplates').load(location.href + ' #acceptedTemplates');
+                    $('#rejectedTemplates').load(location.href + ' #rejectedTemplates');
+                }
+            });
+        });
+
+    });
+</script>
+@append

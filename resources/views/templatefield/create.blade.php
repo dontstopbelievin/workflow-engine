@@ -125,6 +125,8 @@
     </div>
   </div>
 </div>
+@endsection
+@section('scripts')
 <script>
     $(document).ready(function() {
       $(document).on('click', '#addNew', function(event) {
@@ -212,4 +214,4 @@
 
     });
 </script>
-@endsection
+@append
