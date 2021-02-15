@@ -113,6 +113,14 @@
                                            <input type="checkbox" name="revision[]" id="revision{{$role->id}}" value="{{$role->id}}" class="mr-2">
                                            <span class="form-check-sign">Отправить на доработку</span>
                                         </label>
+                                        <label class="form-check-label">
+                                           <input type="checkbox" name="motiv_otkaz[]" id="motiv_otkaz{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                           <span class="form-check-sign">Мотивированный отказ</span>
+                                        </label>
+                                        <label class="form-check-label">
+                                           <input type="checkbox" name="ecp_sign[]" id="ecp_sign{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                           <span class="form-check-sign">Подпись ЭЦП</span>
+                                        </label>
                                       </div>
                                     </div>
                                   </div>
@@ -125,6 +133,8 @@
                                         document.getElementById("dropdown-permission{{$role->id}}").style.display = "none";
                                         document.getElementById("revision{{$role->id}}").checked = false;
                                         document.getElementById("reject{{$role->id}}").checked = false;
+                                        document.getElementById("motiv_otkaz{{$role->id}}").checked = false;
+                                        document.getElementById("ecp_sign{{$role->id}}").checked = false;
                                       }
                                     });
                                   </script>
@@ -220,31 +230,41 @@
                               @foreach ($roles as $role)
                                   <div class="pb-0">
                                     <label class="form-check-label py-0">
-                                      <input type="checkbox" name="roles[]" value="{{$role->id}}" class="form-check-input" id="participant{{$role->id}}">
+                                      <input type="checkbox" name="roles[]" value="{{$role->id}}" class="form-check-input" id="s_participant{{$role->id}}">
                                       <span class="form-check-sign">{{$role->name}}</span>
                                     </label>
                                     <div id="dropdown" class="form-check">
-                                      <div class="dropdown-permission{{$role->id}}" id="dropdown-permission{{$role->id}}" style="display:none;">
+                                      <div class="dropdown-permission{{$role->id}}" id="s_dropdown-permission{{$role->id}}" style="display:none;">
                                         <label class="form-check-label">
-                                           <input type="checkbox" name="reject[]" id="reject{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                           <input type="checkbox" name="reject[]" id="s_reject{{$role->id}}" value="{{$role->id}}" class="mr-2">
                                            <span class="form-check-sign">Отказать</span>
                                         </label>
                                         <label class="form-check-label">
-                                           <input type="checkbox" name="revision[]" id="revision{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                           <input type="checkbox" name="revision[]" id="s_revision{{$role->id}}" value="{{$role->id}}" class="mr-2">
                                            <span class="form-check-sign">Отправить на доработку</span>
+                                        </label>
+                                        <label class="form-check-label">
+                                           <input type="checkbox" name="motiv_otkaz[]" id="s_motiv_otkaz{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                           <span class="form-check-sign">Мотивированный отказ</span>
+                                        </label>
+                                        <label class="form-check-label">
+                                           <input type="checkbox" name="ecp_sign[]" id="s_ecp_sign{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                           <span class="form-check-sign">Подпись ЭЦП</span>
                                         </label>
                                       </div>
                                     </div>
                                   </div>
                                   @section('scripts')
                                   <script>
-                                    $("#participant{{$role->id}}").click(function(){
-                                      if(document.getElementById("dropdown-permission{{$role->id}}").style.display == "none"){
-                                        document.getElementById("dropdown-permission{{$role->id}}").style.display = "block";
+                                    $("#s_participant{{$role->id}}").click(function(){
+                                      if(document.getElementById("s_dropdown-permission{{$role->id}}").style.display == "none"){
+                                        document.getElementById("s_dropdown-permission{{$role->id}}").style.display = "block";
                                       }else{
-                                        document.getElementById("dropdown-permission{{$role->id}}").style.display = "none";
-                                        document.getElementById("revision{{$role->id}}").checked = false;
-                                        document.getElementById("reject{{$role->id}}").checked = false;
+                                        document.getElementById("s_dropdown-permission{{$role->id}}").style.display = "none";
+                                        document.getElementById("s_reject{{$role->id}}").checked = false;
+                                        document.getElementById("s_revision{{$role->id}}").checked = false;
+                                        document.getElementById("s_motiv_otkaz{{$role->id}}").checked = false;
+                                        document.getElementById("s_ecp_sign{{$role->id}}").checked = false;
                                       }
                                     });
                                   </script>

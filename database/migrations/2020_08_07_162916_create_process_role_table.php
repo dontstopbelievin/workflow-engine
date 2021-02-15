@@ -23,6 +23,8 @@ class CreateProcessRoleTable extends Migration
             $table->foreign('parent_role_id')->references('id')->on('roles');
             $table->integer('can_reject')->default(0);
             $table->integer('can_send_to_revision')->default(0);
+            $table->integer('can_motiv_otkaz')->default(0);
+            $table->integer('can_ecp_sign')->default(0);
             $table->integer('order')->unsigned();
             $table->timestamps();
         });

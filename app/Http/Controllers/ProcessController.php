@@ -232,42 +232,23 @@ class ProcessController extends Controller
                 return Redirect::route('processes.edit', [$process])->with('failure', $validator->errors());
             }
             DB::beginTransaction();
-            // if ($request->approveType === "parallel") {
-            //     $requestRoles = $request->roles;
-            //     $rolesLen = sizeof($requestRoles);
-            //     $parallelRoles = [];
-            //     foreach($requestRoles as $id) {
-            //         $role = Role::find($id);
-            //         array_push($parallelRoles, $role);
-            //     }
-            //     $roles = Role::all();
-            //     return view('process.parallel', compact('parallelRoles', 'process','roles', 'rolesLen'));
-            // }
-
             if (sizeof($request->roles) === 1) {
-                // $route = new Route;
-                // $route->name = $role->name;
-                // $route->role_id = $role->id;
-                // $route->process_id = $process->id;
-                // $route->save();
-
                 $process->roles()->attach($request->roles[0], [
                     'can_reject' => in_array($request->roles[0], $request->reject ?? []),
                     'can_send_to_revision' => in_array($request->roles[0], $request->revision ?? []),
+                    'can_ecp_sign' => in_array($request->roles[0], $request->ecp_sign ?? []),
+                    'can_motiv_otkaz' => in_array($request->roles[0], $request->motiv_otkaz ?? []),
                     'order' => $request->order
                 ]);
-                // $process->save();
                 DB::commit();
                 return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
             } else {
-
                foreach ($request->roles as $id) {
                    $process->roles()->attach($id, [
                         'can_reject' => in_array($id, $request->reject ?? []),
                         'can_send_to_revision' => in_array($id, $request->revision ?? []),
                         'order' => $request->order
                     ]);
-                   // $process->save();
                }
                DB::commit();
                return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
@@ -301,6 +282,8 @@ class ProcessController extends Controller
                     'parent_role_id' => $request->parent_role_id,
                     'can_reject' => in_array($request->roles[0], $request->reject ?? []),
                     'can_send_to_revision' => in_array($request->roles[0], $request->revision ?? []),
+                    'can_ecp_sign' => in_array($request->roles[0], $request->ecp_sign ?? []),
+                    'can_motiv_otkaz' => in_array($request->roles[0], $request->motiv_otkaz ?? []),
                     'order' => $request->order
                 ]);
                 DB::commit();
@@ -311,6 +294,8 @@ class ProcessController extends Controller
                         'parent_role_id' => $request->parent_role_id,
                         'can_reject' => in_array($id, $request->reject ?? []),
                         'can_send_to_revision' => in_array($id, $request->revision ?? []),
+                        'can_ecp_sign' => in_array($id, $request->ecp_sign ?? []),
+                        'can_motiv_otkaz' => in_array($id, $request->motiv_otkaz ?? []),
                         'order' => $request->order
                     ]);
                }

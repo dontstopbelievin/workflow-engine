@@ -24,7 +24,8 @@ class CreateLogsTable extends Migration
             $table->integer('to_role')->unsigned()->nullable();
             $table->unsignedBigInteger('application_id');
             $table->integer('order')->unsigned();
-            $table->integer('answer')->unsigned();
+            $table->integer('answer')->unsigned(); //1-soglas//0-otkaz//2-dorabotka
+            $table->text('comment')->nullable();
             $table->timestamps();
         });
     }
