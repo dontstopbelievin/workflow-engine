@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="{{url('assets/css/ready.css?v=1.13')}}">
     <link rel="stylesheet" href="{{url('assets/css/demo.css?v=1.13')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css?v=1.13">
-    <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
 </head>
 <body>
     @section('header')
