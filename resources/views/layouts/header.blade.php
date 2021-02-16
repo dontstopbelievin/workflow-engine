@@ -5,6 +5,13 @@
 .dropdown-menu a{
     color:black!important;
 }
+.navbar-nav a{
+    padding: 5px;
+    margin: 5px;
+}
+.navbar-nav .active{
+    background-color: green;
+}
 </style>
 <nav class="navbar navbar-header navbar-expand-lg fixed-top" style="background: #0067B8!important; height: 60px;box-shadow: 0 2px 1px -1px #999; color:white!important;">
     <div class="container-fluid">
@@ -15,17 +22,17 @@
                 </a>
             </div>
         </div>
-        <ul class="nav navbar-nav" style="margin-left: 20px;">
-            <li>
-                <a href="/policy" class="navbar-left navbar-form nav-search mr-md-3 w-50">
+        <ul class="navbar-nav" style="margin-left: 20px;">
+            <li class="nav-item">
+                <a href="/policy" class="navbar-left navbar-form nav-search {{request()->segment(1) == 'services' ? 'active' : ''}}">
                 Документы</a>
             </li>
-            <li>
-                <a href="/policy" class="navbar-left navbar-form nav-search mr-md-3 w-50">
+            <li class="nav-item">
+                <a href="/policy" class="navbar-left navbar-form nav-search {{request()->segment(1) == 'incoming' ? 'active' : ''}}">
                 Контрагенты</a>
             </li>
-            <li>
-                <a href="/policy" class="navbar-left navbar-form nav-search mr-md-3 w-50">
+            <li class="nav-item">
+                <a href="/policy" class="navbar-left navbar-form nav-search {{request()->segment(1) == 'policy' ? 'active' : ''}}">
                 Правила информационной безопасности</a>
             </li>
         </ul>

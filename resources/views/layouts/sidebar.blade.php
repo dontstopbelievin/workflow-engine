@@ -1,5 +1,6 @@
 <div class="sidebar" style="margin-top: 60px;">
   <div class="scrollbar-inner sidebar-wrapper" style="padding-top: 0px;">
+    @if(Auth::user()->usertype == "admin")
       <ul class="nav">
         @if( request()->segment(1) == 'auction' )
             <li class="nav-item active">
@@ -93,5 +94,46 @@
               </a>
           </li>
       </ul>
+    @else
+      <ul class="nav">
+        <li class="nav-item text-center">
+          <button class="btn btn-primary">
+            <i class="fa fa-plus"></i>
+            <span style="margin-left: 5px;">Создать документ</span>
+          </button>
+          <br><hr>
+        </li>
+        <li class="nav-item {{request()->segment(1) == 'incoming' ? 'active' : ''}}">
+          <a href="{{ route('auction.index') }}">
+              <i class="la la-table"></i>
+              <p>Входящие</p>
+          </a>
+        </li>
+        <li class="nav-item {{request()->segment(1) == 'outgoing' ? 'active' : ''}}">
+          <a href="{{ route('auction.index') }}">
+              <i class="la la-table"></i>
+              <p>Исходящие</p>
+          </a>
+        </li>
+        <li class="nav-item {{request()->segment(1) == 'my_docs' ? 'active' : ''}}">
+          <a href="{{ route('auction.index') }}">
+              <i class="la la-table"></i>
+              <p>Мои документы</p>
+          </a>
+        </li>
+        <li class="nav-item {{request()->segment(1) == 'archive' ? 'active' : ''}}">
+          <a href="{{ route('auction.index') }}">
+              <i class="la la-table"></i>
+              <p>Черновики</p>
+          </a>
+        </li>
+        <li class="nav-item {{request()->segment(1) == 'archive' ? 'active' : ''}}">
+          <a href="{{ route('auction.index') }}">
+              <i class="la la-table"></i>
+              <p>Архив документов</p>
+          </a>
+        </li>
+      </ul>
+    @endif
   </div>
 </div>

@@ -21,7 +21,7 @@
         @show
     @endif
     @section('messages')
-        <div style="position:absolute;float:right;min-width:calc(100% - 320px);margin-top: 40px;margin-left: 290px; z-index: 1000;">
+        <div style="position:absolute;float:right;min-width:calc(100% - 320px);margin-top: 60px;margin-left: 290px; z-index: 1000;">
             @include('layouts.messages')
         </div>
     @show
