@@ -14,7 +14,7 @@
                         {{ session('status') }}
                     </div>
                 @endif
-                <a href="{{route('egknservice.load')}}"  class="btn btn-info btn-lg my-5">Обновить</a>
+                <a href="{{route('egknservice.load')}}"  class="btn btn-info btn-md my-5">Обновить</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -31,15 +31,15 @@
                         @isset($aFields)
                             @foreach($aFields as $field)
                                 <tbody>
-                                    <tr class="shadow p-3 mb-5 rounded">
-                                        <td class="text-left align-middle"><h4>{{$field->id}}</h4></td>
-                                        <td class="text-left align-middle"><h4>{{$field->egkn_reg_number}}</h4></td>
-                                        <td class="text-left align-middle"><h4>{{$field->receipt_date}}</h4></td>
-                                        <td class="text-left align-middle"><h4>{{$field->surname .' '. $field->firstname .' '. $field->middlename}}</h4></td>
-                                        <td class="text-left align-middle"><h4>{{$field->egkn_status}}</h4></td>
-                                        <td class="text-left align-middle"><h4>{{$field->execution_date}}</h4></td>
+                                    <tr class="shadow-sm p-3 mb-5 rounded">
+                                        <td class="text-left align-middle">{{$field->id}}</td>
+                                        <td class="text-left align-middle">{{$field->egkn_reg_number}}</td>
+                                        <td class="text-left align-middle">{{$field->receipt_date}}</td>
+                                        <td class="text-left align-middle">{{$field->surname .' '. $field->firstname .' '. $field->middlename}}</td>
+                                        <td class="text-left align-middle">{{$field->egkn_status}}</td>
+                                        <td class="text-left align-middle">{{$field->execution_date}}</td>
 
-                                        <td class="text-left align-middle"><a href="{{route('egknservice.view', ['id' => $field->id])}}"><i class="fa fa-eye" style="font-size:36px"></i></a></td>
+                                        <td class="text-left align-middle"><a href="{{route('egknservice.view', ['id' => $field->id])}}"><i class="fa fa-eye" style="font-size:24px"></i></a></td>
                                     </tr>
                                 </tbody>
                             @endforeach
