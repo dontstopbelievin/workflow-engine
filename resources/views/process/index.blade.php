@@ -32,7 +32,6 @@
                         </div>
                     @endif
                   </div>
-  						<div class="card">
   							<!-- <div class="card-header">
   				        <div class="card-title">Table</div>
   				      </div> -->
@@ -71,7 +70,6 @@
   									</tbody>
   								</table>
   							</div>
-  						</div>
   					</div>
   				</div>
   			</div>
