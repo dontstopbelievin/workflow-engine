@@ -87,6 +87,7 @@ trait dbQueries
             ->join('process_role', 'roles.id','=','process_role.role_id')
             ->select('roles.id')
             ->where('process_role.process_id', $process_id)
+            ->where('process_role.parent_role_id', NULL)
             ->where('process_role.order', $order)
             ->orderBy('process_role.order', 'asc')
             ->get()->pluck('id');
@@ -358,17 +359,6 @@ trait dbQueries
         return json_decode(json_encode($query), true);
     }
 
-    public function getComments($applicationId, $tableId) {
-
-        $query = DB::table('comments')
-            ->join('roles', 'comments.role_id', '=', 'roles.id')
-            ->select('roles.name as role', 'comments.name as comment', 'comments.created_at as created_at')
-            ->where('application_id', $applicationId)
-            ->where('table_id', $tableId)
-            ->get()->toArray();
-        return json_decode(json_encode($query), true);
-    }
-
     public function mergeRoles($mainRoles, $subRoles) {
 
         $mainRolesNames = [];
@@ -391,7 +381,7 @@ trait dbQueries
 
         $query = Log::join('roles', 'logs.role_id', '=', 'roles.id')
                       ->join('statuses', 'logs.status_id', '=', 'statuses.id')
-                      ->select( 'statuses.name as name', 'logs.created_at as created_at', 'roles.name as role')
+                      ->select( 'statuses.name as name', 'logs.comment as comment', 'logs.created_at as created_at', 'roles.name as role')
                       ->where('application_id', $applicationId)
                       ->where('table_id', $tableId)
                       ->get()->toArray();
