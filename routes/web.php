@@ -27,7 +27,10 @@ use Illuminate\Support\Facades\View;
 Route::get('/', function () {
     return view('auth.login');
 });
-
+Route::get('password/expired', 'Auth\ExpiredPasswordController@expired')
+        ->name('password.expired');
+    Route::post('password/post_expired', 'Auth\ExpiredPasswordController@postExpired')
+        ->name('password.post_expired');
 Route::get('/policy', function () {
     return view('policy');
 });
@@ -68,10 +71,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('personal-area/filter', 'UserController@filter')->name('user.filter');
     Route::get('user-to-edit/{user}', 'UserController@edit')->name('user.edit');
     Route::put('user/update/{user}', 'UserController@update')->name('user.update');
-    Route::get('password/expired', 'Auth\ExpiredPasswordController@expired')
-        ->name('password.expired');
-    Route::post('password/post_expired', 'Auth\ExpiredPasswordController@postExpired')
-        ->name('password.post_expired');
 
     Route::get('services', 'ApplicationController@service')->name('applications.service');
     Route::post('applications/search', 'ApplicationController@search')->name('applications.search');
