@@ -78,8 +78,6 @@ class ApplicationController extends Controller
 
         $canApprove = false;
 
-        $comments = $this->getComments($application->id, $table->id);
-
         foreach(json_decode($application->statuses) as $id) {
             if ($id === Auth::user()->role_id) {
                 $canApprove = true;
@@ -96,7 +94,7 @@ class ApplicationController extends Controller
           $currentOrder = $process->roles()->select('order')->where('role_id', Auth::user()->role_id)->first()->order;
           $maxOrder = $process->roles()->max('order');
           $currentRoles = $this->getProcessStatuses($tableName, $application->id);
-          if (sizeof($currentRoles) == 1 && sizeof($children)==0 && $maxOrder==$currentOrder) {
+          if (sizeof($currentRoles) == 1 && sizeof($children)==0 && $maxOrder == $currentOrder) {
               $toCitizen = true; // если заявку подписывает последний специалист в обороте, заявка идет обратно к заявителю
           }
         }
@@ -155,9 +153,10 @@ class ApplicationController extends Controller
         if(isset($buttons[0]) && $rejectReasonArray['rejectReason'] != null){
           $buttons[0]->can_reject = 0;
         }
+
         $applicationArrays = json_decode(json_encode($application), true);
 
-        return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','allRoles','comments','records','revisionReasonArray','rejectReasonArray', 'buttons', 'aRowNameRows','applicationArrays'));
+        return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','allRoles','records','revisionReasonArray','rejectReasonArray', 'buttons', 'aRowNameRows','applicationArrays'));
     }
 
     public function acceptAgreement(Request $request)
@@ -220,6 +219,7 @@ class ApplicationController extends Controller
             if(isset($requestVal['_token'])){
                 unset($requestVal['_token']);
             }
+
             $fieldValues = $requestVal;
             if ($fieldValues) {
                 foreach($fieldValues as $key=>$val) {
@@ -229,12 +229,15 @@ class ApplicationController extends Controller
                     }
                 }
             }
+
             $process = Process::find($request->process_id);
             $tableName = $this->getTableName($process->name);
             $table = CreatedTable::where('name', $tableName)->first();
             $templateId = $process->accepted_template_id;
             $template = Template::where('id', $templateId)->first();
             $templateTable = $this->getTemplateTableName($template->name);
+            $templateTable = $this->getTemplateTableName($template->name);
+            $comment = $request->comments;
 
             // insertion of fields into template
             if(!$this->insertTemplateFields($fieldValues, $templateTable, $process->id, $request->application_id, $templateId)){
@@ -244,27 +247,15 @@ class ApplicationController extends Controller
             $currentRoleOrder = $process->roles()->select('order')->where('role_id', Auth::user()->role_id)->first()->order;
             $processRoles = $this->getProcessStatuses($tableName, $request->application_id);
             $children = $this->getRoleChildren($process);
-            if(sizeof($children) > 0){
-                $processRoles = $this->deleteCurrentRoleFromStatuses($processRoles);
-                foreach($children as $child){
-                    array_push($processRoles, $child->id);
-                }
-            }else{
-                if(sizeof($processRoles) == 1){
-                    // the last one and has NO children
-                    $processRoles = $this->get_roles_of_order($process->id, $currentRoleOrder+1);
-                    //check if next order exist; if not send to citizen
-                }else{
-                    // not the last one and has NO children => just delete current
-                    $processRoles = $this->deleteCurrentRoleFromStatuses($processRoles);
-                }
-            }
+
+            $processRoles = array_values($this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder));
 
             DB::table($tableName)
                 ->where('id', $request->application_id)
                 ->update(['statuses' => $processRoles]);
 
-            $logsArray = $this->getLogs(1, $table->id, $request->application_id, Auth::user()->role_id, $currentRoleOrder, 1);
+            $logsArray = $this->getLogs(1, $table->id, $request->application_id, Auth::user()->role_id, $currentRoleOrder, 1, '',$comment);
+
             Log::insert( $logsArray);
 
             $this->insertComments($request->comments, $request->application_id, $table->id);
@@ -283,6 +274,25 @@ class ApplicationController extends Controller
             DB::rollBack();
             return Redirect::route('applications.service')->with('status', $e->getMessage());
         }
+    }
+
+    public function deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder){
+        if(sizeof($children) > 0){
+            $processRoles = $this->deleteCurrentRoleFromStatuses($processRoles);
+            foreach($children as $child){
+                array_push($processRoles, $child->id);
+            }
+        }else{
+            if(sizeof($processRoles) == 1){
+                // the last one and has NO children
+                $processRoles = $this->get_roles_of_order($process->id, $currentRoleOrder+1)->toArray();
+                //check if next order exist; if not send to citizen
+            }else{
+                // not the last one and has NO children => just delete current
+                $processRoles = $this->deleteCurrentRoleFromStatuses($processRoles);
+            }
+        }
+        return $processRoles;
     }
 
     public function create(Process $process)
@@ -446,6 +456,7 @@ class ApplicationController extends Controller
         $template = Template::where('id', $templateId)->first();
         $templateTable = $this->getTemplateTableName($template->name);
         $approveOrReject = $request->answer;
+        $comment = (isset($request->comments)) ? $request->comments : "";
 
         if (Schema::hasTable($templateTable)) {
             $fields = DB::table($templateTable)->select('*')->where('application_id', $applicationId)->first();
@@ -507,7 +518,7 @@ class ApplicationController extends Controller
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $id)->first();
         // creating the logs with order = 0 as it was sent to citizen
-        $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id, 0, $approveOrReject);
+        $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id, 0, $approveOrReject,'', $comment);
         Log::insert($logsArray);
 
         // updating the status_id (not the statuses field) as "Sent to citizen"
@@ -534,28 +545,43 @@ class ApplicationController extends Controller
             DB::beginTransaction();
             $process = Process::find($request->processId);
             $tableName = $this->getTableName($process->name);
-            $application = DB::table($tableName)->where('id', $request->applicationId)->first();
+            $application = DB::table($tableName)->where('id', $request->application_id)->first();
             $table = CreatedTable::where('name', $tableName)->first();
 
-            $index = $application->index_main;
-            $appRoutes = $this->getAppRoutes($application->process_id);
-            $nextRoleId = $appRoutes[$index]['id']; // find next role id
-            $index = $index + 1;
-            $status = Status::find($nextRoleId);
-
             $user = Auth::user();
-            $logsArray = $this->getLogs($status->id, $table->id, $application->id, $user->role_id);
+            $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
+            $processRoles = $this->getProcessStatuses($tableName, $request->application_id);
+            $children = $this->getRoleChildren($process);
+
+
+            $processRoles = array_values($this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder));
+
+            if($request->motiv_otkaz == 1){ // если у него мотивированный отказ есть => reject_reason заполнить, и дальше чисто согласование мотив отказа
+              DB::table($tableName)
+                  ->where('id', $request->application_id)
+                  ->update(['statuses' => $processRoles, 'reject_reason' => $request->rejectReason, 'reject_reason_from_spec_id' => $user->role_id]);
+            }else{
+              DB::table($tableName)
+                  ->where('id', $request->application_id)
+                  ->update(['statuses' => $processRoles]);
+            }
+
+            // если нету Мотивированного отказа => записать коммент в логи, и идти дальше с согласованием
+
+            $logsArray = $this->getLogs(1, $table->id, $application->id, $user->role_id, $currentRoleOrder, 0, '', $request->rejectReason);
+
             Log::insert( $logsArray);
 
-            if ($application->to_revision === 0) {
-                DB::table($tableName)
-                    ->where('id', $request->applicationId)
-                    ->update(['status_id' => $status->id, 'index_main' => $index, 'reject_reason' => $request->rejectReason, 'reject_reason_from_spec_id' => $user->role_id]);
-            } else {
-                DB::table($tableName)
-                    ->where('id', $request->applicationId)
-                    ->update(['status_id' => $status->id, 'index_main' => $index, 'reject_reason' => $request->rejectReason, 'to_revision' => 0, 'reject_reason_from_spec_id' => $user->role_id]);
-            }
+            // if ($application->to_revision === 0) {
+            //     DB::table($tableName)
+            //         ->where('id', $request->applicationId)
+            //         ->update(['status_id' => $status->id, 'index_main' => $index, 'reject_reason' => $request->rejectReason, 'reject_reason_from_spec_id' => $user->role_id]);
+            // } else {
+            //     DB::table($tableName)
+            //         ->where('id', $request->applicationId)
+            //         ->update(['status_id' => $status->id, 'index_main' => $index, 'reject_reason' => $request->rejectReason, 'to_revision' => 0, 'reject_reason_from_spec_id' => $user->role_id]);
+            // }
+
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
@@ -656,7 +682,7 @@ class ApplicationController extends Controller
         return $roleWithIndex;
     }
 
-    private function getLogs($status_id, $table_id, $application_id, $role_id, $order, $answer, $to_role = '')
+    private function getLogs($status_id, $table_id, $application_id, $role_id, $order, $answer, $to_role = '', $comment = '')
     {
         $logsArray = [];
         $logsArray["status_id"] = $status_id;
@@ -665,6 +691,7 @@ class ApplicationController extends Controller
         $logsArray["role_id"] = $role_id;
         $logsArray["order"] = $order;
         $logsArray["answer"] = $answer;
+        $logsArray["comment"] = $comment;
         $logsArray["to_role"] = $to_role;
         $logsArray["created_at"] = Carbon::now();
         return $logsArray;

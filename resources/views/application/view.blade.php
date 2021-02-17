@@ -18,7 +18,6 @@
                         <div class="tab">
                             <button class="tablinks" id="mybutton" onclick="openTab(event, 'applicationInfo')">Информация о заявителе</button>
                             <button class="tablinks" onclick="openTab(event, 'specialistFields')">Поля заполненные специалистами</button>
-                            <button class="tablinks" onclick="openTab(event, 'commentsTab')">Комментарии</button>
                             <button class="tablinks" onclick="openTab(event, 'logs')">Ход согласования</button>
                             <button class="tablinks" onclick="openTab(event, 'revisionReasonTab')">Причина отправки на доработку</button>
                             <button class="tablinks" onclick="openTab(event, 'rejectReasonTab')">Причина отказа</button>
@@ -54,11 +53,10 @@
                                         @endif
                                     @endforeach
                                 </ul>
-                                @endisset
-
-                                @isset($application->doc_path)
-                                    <li class="list-group-item">Выходной документ:  <a href="{{asset('storage/' .$application->doc_path)}}" target="_blanc">Просмотр</a></li>
-                                @endisset
+                              @endisset
+                              @isset($application->doc_path)
+                                  <li class="list-group-item">Выходной документ:  <a href="{{asset('storage/' .$application->doc_path)}}" target="_blanc">Просмотр</a></li>
+                              @endisset
                         </div>
 
                         <div id="logs" class="tabcontent">
@@ -68,6 +66,7 @@
                                     <tr>
                                         <th>Статус</th>
                                         <th>Участник</th>
+                                        <th>Комментарии</th>
                                         <th>Время</th>
                                     </tr>
                                 </thead>
@@ -77,29 +76,10 @@
                                         <tr>
                                             <td>{{$record["name"]}}</td>
                                             <td>{{$record["role"]}}</td>
+                                            <td>{{$record["comment"]}}</td>
                                             <td>{{Carbon\Carbon::parse($record["created_at"])->format('d-m-Y h:i:s A')}}</td>
                                         </tr>
                                     @endforeach
-                                @endisset
-                                </tbody>
-                            </table>
-                        </div>
-                        <div id="commentsTab" class="tabcontent">
-                            <table class="table" style="background: white;">
-                                <thead>
-                                    <tr>
-                                        <th>Роль</th>
-                                        <th>Комментарий</th>
-                                        <th>Время</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                @isset($comments[0])
-                                    <tr>
-                                        <td>{{$comments[0]["role"]}}</td>
-                                        <td>{{$comments[0]["comment"]}}</td>
-                                        <td>{{$comments[0]["created_at"]}}</td>
-                                    </tr>
                                 @endisset
                                 </tbody>
                             </table>
@@ -161,6 +141,11 @@
                                                     <input type="text" id="rejectReason" class="form-control" name="reject_reason"  autocomplete="reject_reason" autofocus>
                                                 </div>
                                             </div>
+                                            @if($buttons[0]->can_motiv_otkaz == 1)
+                                              <input type="hidden" id="motiv_otkaz" name="motiv_otkaz" value="1">
+                                            @else
+                                              <input type="hidden" id="motiv_otkaz" name="motiv_otkaz" value="0">
+                                            @endif
                                             <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
                                             <input type="hidden" id="application_id" name="application_id" value = {{$application->id}}>
                                             <button class="btn btn-info" style="float:center" data-dismiss="modal" id="rejectButton">Отправить</button>
@@ -248,6 +233,7 @@
                                             @endforeach
                                         </form>
                                     @endif
+
                                     <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
                                       @if($rejectReasonArray['rejectReason'] == null)
                                           @if($toCitizen)
@@ -256,15 +242,25 @@
                                                   <input type="hidden" name="process_id" value = {{$process->id}}>
                                                   <input type="hidden" name="application_id" value = {{$application->id}}>
                                                   <input type="hidden" name="answer" value = "1">
+                                                  <div class="form-group row">
+                                                      <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Введите комментарии перед отправкой заявителю") }}</label>
+                                                      <div class="col-md-6">
+                                                          <input type="text" id="comments" class="form-control" name="comments"  autocomplete="comments" autofocus>
+                                                      </div>
+                                                  </div>
                                                   <div style="text-align: center">
                                                       <button class="btn btn-success" style="margin-top: 30px;margin-bottom: 30px;" type="submit">Согласовать и отправить заявителю</button>
                                                   </div>
                                               </form>
                                           @else
                                               <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
-                                              @if($buttons[0]->can_reject == 1)
-                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
-                                              @endif
+                                          @endif
+                                          @if($buttons[0]->can_motiv_otkaz == 1)
+                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
+                                          @else
+                                            @if($buttons[0]->can_reject == 1)
+                                              <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Отказ</button>
+                                            @endif
                                           @endif
                                           @if($buttons[0]->can_send_to_revision == 1)
                                             <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
@@ -276,6 +272,12 @@
                                               <input type="hidden" name="process_id" value = {{$process->id}}>
                                               <input type="hidden" name="application_id" value = {{$application->id}}>
                                               <input type="hidden" name="answer" value = "0">
+                                              <div class="form-group row">
+                                                  <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Введите комментарии перед отправкой заявителю") }}</label>
+                                                  <div class="col-md-6">
+                                                      <input type="text" id="comments" class="form-control" name="comments"  autocomplete="comments" autofocus>
+                                                  </div>
+                                              </div>
                                               <div style="text-align: center">
                                                   <button class="btn btn-danger" style="margin-top: 30px;margin-bottom: 30px;" type="submit">Отправить заявителю с отказом</button>
                                               </div>
@@ -285,11 +287,9 @@
                                             <input type="hidden" id="application_id" name="application_id" value = {{$application->id}}>
                                             <button class="btn btn-danger" data-dismiss="modal" id="approveReject">Согласовать отказ</button>
                                         @endif
-
                                       @endif
                                     </div>
-
-                            @endif
+                                @endif
                             <a href="{{ route('applications.index', ['process' => $process]) }}" class="btn btn-info" style="margin-top: 10px;">Назад</a>
                         </div>
                     </div>
@@ -369,10 +369,11 @@
 
             $('#rejectButton').click(function(event) {
                 var rejectReason = $('#rejectReason').val();
+                var motiv_otkaz = $('#motiv_otkaz').val();
                 var processId = $('#processId').val();
                 var application_id = $('#application_id').val();
                 console.log(rejectReason, processId, application_id)
-                $.post('/applications/reject', {'rejectReason':rejectReason,'processId':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
+                $.post('/applications/reject', {'rejectReason':rejectReason,'motiv_otkaz':motiv_otkaz,'processId':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
                     console.log('reject: '+data);
                     $('#items').load(location.href + ' #items');
                 });
@@ -400,9 +401,9 @@
             $('#commentButton').click(function(event) {
                 // event.preventDefault();
                 let formData = new FormData();
-                //let comments = $('#comments').val();
+                let comments = $('#comments').val();
                 let inputs = $('#templateFieldsId :input');
-                //formData.append('comments', comments)
+                formData.append('comments', comments);
                 formData.append('process_id', $('#processId').val())
                 formData.append('application_id', $('#application_id').val())
                 inputs.each(function() {
@@ -415,6 +416,7 @@
                         }
                     }
                 });
+
                 formData.append('_token', $('input[name=_token]').val());
                 var xhr = new XMLHttpRequest();
                 xhr.open("post", "{{route('applications.approve')}}", true);
