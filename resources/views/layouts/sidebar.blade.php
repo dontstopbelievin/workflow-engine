@@ -1,6 +1,6 @@
 <div class="sidebar" style="margin-top: 60px;">
   <div class="scrollbar-inner sidebar-wrapper" style="padding-top: 0px;">
-    @if(Auth::user()->usertype == "admin")
+    @if(Auth::user()->usertype != "admin")
       <ul class="nav">
         @if( request()->segment(1) == 'auction' )
             <li class="nav-item active">
@@ -101,7 +101,7 @@
     @else
       <ul class="nav">
         <li class="nav-item text-center">
-          <button class="btn btn-primary">
+          <button class="btn btn-primary" onclick="location.href='{{url('services')}}';">
             <i class="fa fa-plus"></i>
             <span style="margin-left: 5px;">Создать документ</span>
           </button>
@@ -109,31 +109,31 @@
         </li>
         <li class="nav-item {{request()->segment(1) == 'incoming' ? 'active' : ''}}">
           <a href="{{ route('auction.index') }}">
-              <i class="la la-table"></i>
+              <i class="la la-sign-out"></i>
               <p>Входящие</p>
           </a>
         </li>
         <li class="nav-item {{request()->segment(1) == 'outgoing' ? 'active' : ''}}">
           <a href="{{ route('auction.index') }}">
-              <i class="la la-table"></i>
+              <i class="la la-sign-in"></i>
               <p>Исходящие</p>
           </a>
         </li>
         <li class="nav-item {{request()->segment(1) == 'my_docs' ? 'active' : ''}}">
           <a href="{{ route('auction.index') }}">
-              <i class="la la-table"></i>
+              <i class="fa fa-book"></i>
               <p>Мои документы</p>
           </a>
         </li>
         <li class="nav-item {{request()->segment(1) == 'archive' ? 'active' : ''}}">
           <a href="{{ route('auction.index') }}">
-              <i class="la la-table"></i>
+              <i class="fa fa-file-text"></i>
               <p>Черновики</p>
           </a>
         </li>
         <li class="nav-item {{request()->segment(1) == 'archive' ? 'active' : ''}}">
           <a href="{{ route('auction.index') }}">
-              <i class="la la-table"></i>
+              <i class="fa fa-archive"></i>
               <p>Архив документов</p>
           </a>
         </li>

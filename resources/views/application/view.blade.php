@@ -6,8 +6,9 @@
         <div class="container-fluid">
                 <div class="card">
                     <div class="card-header">
-                        <a href="{{ route('applications.index', ['process' => $process]) }}" class="btn btn-info">Назад</a>
-                        <h2 class="card-title text-center" style="margin-bottom: 20px;">Просмотр заявки</h2>
+                        <h2 class="card-title text-center" style="margin-bottom: 20px;">
+                            <a href="{{ route('applications.index', ['process' => $process]) }}" class="btn btn-info float-left">Назад</a>Просмотр заявки
+                        </h2>
                         @if (session('status'))
                             <div class="alert alert-success" role="alert">
                                 {{ session('status') }}
@@ -63,7 +64,6 @@
 
                         <div id="logs" class="tabcontent">
                             <table class="table" style="background: white;">
-                                <h4 class="text-center" style="margin-top:50px;">Ход согласования</h4>
                                 <thead>
                                     <tr>
                                         <th>Статус</th>

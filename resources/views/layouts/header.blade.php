@@ -10,6 +10,9 @@
     margin: 5px;
 }
 .navbar-nav .active{
+    border-bottom: solid;
+}
+.navbar-nav .active{
     background-color: green;
 }
 </style>
@@ -24,7 +27,7 @@
         </div>
         <ul class="navbar-nav" style="margin-left: 20px;">
             <li class="nav-item">
-                <a href="/policy" class="navbar-left navbar-form nav-search {{request()->segment(1) == 'services' ? 'active' : ''}}">
+                <a href="/services" class="navbar-left navbar-form nav-search {{request()->segment(1) == 'services' ? 'active' : ''}}">
                 Документы</a>
             </li>
             <li class="nav-item">

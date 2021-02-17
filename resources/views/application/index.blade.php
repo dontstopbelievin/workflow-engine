@@ -8,22 +8,30 @@
     <div class="main-panel">
       <div class="content">
         <div class="container-fluid">
-          @if (session('status'))
-            <div class="alert alert-success" role="alert">
-                {{ session('status') }}
-            </div>
-          @endif
-          @if (Auth::user()->role->name === 'Заявитель')
-            <a href="{{ route('applications.create', ['process' => $process]) }}" class="btn btn-info mb-3">Создать Заявку</a>
-            <form action="{{ route('applications.search')}}" method="POST">
-                @csrf
-                <input type="hidden" name="processId" value="{{$process->id}}">
-                <button type="submit">Обновить</button>
-            </form>
-          @endif
           <div class="card">
             <div class="card-header">
-              <h4 class="page-title">Заявки по услуге "{{$process->name}}" </h4>
+              <div class="row">
+                <div class="col-md-3">
+                  @if (Auth::user()->role->name === 'Заявитель')
+                    <a href="{{ route('applications.create', ['process' => $process]) }}" class="btn btn-info mb-3">Создать Заявку</a>
+                    <form action="{{ route('applications.search')}}" method="POST">
+                        @csrf
+                        <input type="hidden" name="processId" value="{{$process->id}}">
+                        <button class="btn btn-info" type="submit">Обновить</button>
+                    </form>
+                  @endif
+                </div>
+                <div class="col-md-6">
+                  <h4 class="page-title text-center">
+                    Заявки по услуге "{{$process->name}}" 
+                  </h4>
+                </div>
+              </div>
+              @if (session('status'))
+                <div class="alert alert-success" role="alert">
+                    {{ session('status') }}
+                </div>
+              @endif
             </div>
             <div class="card-body">
                 <div class="table-responsive">

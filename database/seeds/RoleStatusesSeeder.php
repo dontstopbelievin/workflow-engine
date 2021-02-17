@@ -13,6 +13,11 @@ class RoleStatusesSeeder extends Seeder
     {
     	//1-odobril 2-otkazal 3-podpisal 4-otrpavelno
         DB::table('role_statuses')->insert([
+        	[
+                'status_id' => 4,
+                'role_name' => 'Заявитель',
+                'string' => 'Отправлено специалистом Айкала',
+            ],
             [
                 'status_id' => 1,
                 'role_name' => 'Специалист Айкала',
