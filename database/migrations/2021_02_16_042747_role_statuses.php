@@ -16,8 +16,8 @@ class RoleStatuses extends Migration
         Schema::create('role_statuses', function (Blueprint $table) {
             $table->id();
             $table->integer('status_id')->unsigned();
-            $table->integer('role_id')->unsigned();
-            $table->foreign('role_id')->references('id')->on('roles');
+            $table->string('role_name');
+            $table->foreign('role_name')->references('name')->on('roles');
             $table->text('string');
             $table->timestamps();
         });

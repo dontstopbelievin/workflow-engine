@@ -27,12 +27,12 @@
         </div>
         <ul class="navbar-nav" style="margin-left: 20px;">
             <li class="nav-item">
-                <a href="/services" class="navbar-left navbar-form nav-search {{request()->segment(1) == 'services' ? 'active' : ''}}">
+                <a href="#" onclick="openTab2(event, 'sidebar2')" class="tablinks avbar-left navbar-form nav-search {{request()->segment(1) == 'services' ? 'active' : ''}}">
                 Документы</a>
             </li>
             <li class="nav-item">
-                <a href="/policy" class="navbar-left navbar-form nav-search {{request()->segment(1) == 'incoming' ? 'active' : ''}}">
-                Контрагенты</a>
+                <a href="#" onclick="openTab2(event, 'sidebar1')" class="tablinks navbar-left navbar-form nav-search {{request()->segment(1) == 'asaf' ? 'active' : ''}}">
+                Администрирование</a>
             </li>
             <li class="nav-item">
                 <a href="/policy" class="navbar-left navbar-form nav-search {{request()->segment(1) == 'policy' ? 'active' : ''}}">

@@ -1,6 +1,6 @@
 <div class="sidebar" style="margin-top: 60px;">
   <div class="scrollbar-inner sidebar-wrapper" style="padding-top: 0px;">
-    @if(Auth::user()->usertype != "admin")
+    <div id="sidebar1" class="tabcontent" style="display: none;">
       <ul class="nav">
           <li class="nav-item {{request()->segment(1) == 'auction' ? 'active' : ''}}">
             <a href="{{ route('auction.index') }}">
@@ -62,7 +62,8 @@
             </a>
           </li>
       </ul>
-    @else
+    </div>
+    <div id="sidebar2" class="tabcontent" >
       <ul class="nav">
         <li class="nav-item text-center">
           <button class="btn btn-primary" onclick="location.href='{{url('services')}}';">
@@ -71,37 +72,37 @@
           </button>
           <br><hr>
         </li>
-        <li class="nav-item {{request()->segment(1) == 'incoming' ? 'active' : ''}}">
-          <a href="{{ route('auction.index') }}">
+        <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : ''}}">
+          <a href="{{ url('services') }}">
               <i class="la la-sign-out"></i>
               <p>Входящие</p>
           </a>
         </li>
-        <li class="nav-item {{request()->segment(1) == 'outgoing' ? 'active' : ''}}">
-          <a href="{{ route('auction.index') }}">
+        <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : ''}}">
+          <a href="{{ url('services') }}">
               <i class="la la-sign-in"></i>
               <p>Исходящие</p>
           </a>
         </li>
-        <li class="nav-item {{request()->segment(1) == 'my_docs' ? 'active' : ''}}">
-          <a href="{{ route('auction.index') }}">
+        <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : ''}}">
+          <a href="{{ url('services') }}">
               <i class="fa fa-book"></i>
               <p>Мои документы</p>
           </a>
         </li>
-        <li class="nav-item {{request()->segment(1) == 'archive' ? 'active' : ''}}">
-          <a href="{{ route('auction.index') }}">
+        <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : ''}}">
+          <a href="{{ url('services') }}">
               <i class="fa fa-file-text"></i>
               <p>Черновики</p>
           </a>
         </li>
-        <li class="nav-item {{request()->segment(1) == 'archive' ? 'active' : ''}}">
-          <a href="{{ route('auction.index') }}">
+        <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : ''}}">
+          <a href="{{ url('services') }}">
               <i class="fa fa-archive"></i>
               <p>Архив документов</p>
           </a>
         </li>
       </ul>
-    @endif
+    </div>
   </div>
 </div>

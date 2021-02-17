@@ -32,12 +32,16 @@
                                    @foreach ($aRowNameRows as $aRowNameRow)
                                         @if (array_key_exists($aRowNameRow->name, $applicationArrays))
                                         {{--dd($applicationArrays[$aRowNameRow->name], $aRowNameRow->label_name);--}}
-                                           <li class="list-group-item">{{$aRowNameRow->label_name}}: {{$applicationArrays[$aRowNameRow->name]}}</li>
+                                            @if($aRowNameRow->label_name == 'Загрузите Файл')
+                                                <li class="list-group-item">{{$aRowNameRow->label_name}}: <a href="{{url('storage/' .$application->attachment)}}" target="_blank">Просмотр</a></li>
+                                            @else
+                                                <li class="list-group-item">{{$aRowNameRow->label_name}}: {{$applicationArrays[$aRowNameRow->name]}}</li>
+                                            @endif
                                         @endif
                                    @endforeach
                                 @endisset
                                 {{--@isset($application->attachment)--}}
-                                    {{--<li class="list-group-item">Загруженный документ:  <a href="{{asset('storage/' .$application->attachment)}}" target="_blanc">Просмотр</a></li>--}}
+                                    {{--<li class="list-group-item">Загруженный документ:  <a href="{{url('storage/' .$application->attachment)}}" target="_blank">Просмотр</a></li>--}}
                                 {{--@endisset--}}
                             </ul>
                         </div>
@@ -141,7 +145,7 @@
                                                     <input type="text" id="rejectReason" class="form-control" name="reject_reason"  autocomplete="reject_reason" autofocus>
                                                 </div>
                                             </div>
-                                            @if($buttons[0]->can_motiv_otkaz == 1)
+                                            @if($buttons && $buttons[0]->can_motiv_otkaz == 1)
                                               <input type="hidden" id="motiv_otkaz" name="motiv_otkaz" value="1">
                                             @else
                                               <input type="hidden" id="motiv_otkaz" name="motiv_otkaz" value="0">
@@ -255,14 +259,14 @@
                                           @else
                                               <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
                                           @endif
-                                          @if($buttons[0]->can_motiv_otkaz == 1)
+                                          @if($buttons[0] && $buttons[0]->can_motiv_otkaz == 1)
                                             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
                                           @else
-                                            @if($buttons[0]->can_reject == 1)
+                                            @if($buttons[0] && $buttons[0]->can_reject == 1)
                                               <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Отказ</button>
                                             @endif
                                           @endif
-                                          @if($buttons[0]->can_send_to_revision == 1)
+                                          @if($buttons[0] && $buttons[0]->can_send_to_revision == 1)
                                             <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
                                           @endif
                                       @else
@@ -422,13 +426,6 @@
                 xhr.open("post", "{{route('applications.approve')}}", true);
                 xhr.setRequestHeader("Authorization", "Bearer " + "{{csrf_token()}}");
                 xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        var data = JSON.parse(xhr.responseText);
-                        console.log(data);
-                    }else{
-                        var data = JSON.parse(xhr.responseText);
-                        console.log(data);
-                    }
                     location.reload();
                 }.bind(this)
                 xhr.send(formData);

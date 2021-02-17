@@ -380,8 +380,8 @@ trait dbQueries
     public function getRecords($applicationId, $tableId) {
 
         $query = Log::join('roles', 'logs.role_id', '=', 'roles.id')
-                      ->join('statuses', 'logs.status_id', '=', 'statuses.id')
-                      ->select( 'statuses.name as name', 'logs.comment as comment', 'logs.created_at as created_at', 'roles.name as role')
+                      ->join('role_statuses', 'logs.status_id', '=', 'role_statuses.id')
+                      ->select( 'role_statuses.string as name', 'logs.comment as comment', 'logs.created_at as created_at', 'roles.name as role')
                       ->where('application_id', $applicationId)
                       ->where('table_id', $tableId)
                       ->get()->toArray();
