@@ -25,7 +25,6 @@ use Illuminate\Support\Facades\View;
 */
 
 Route::get('/', function () {
-    return view('home');
     return view('auth.login');
 });
 
