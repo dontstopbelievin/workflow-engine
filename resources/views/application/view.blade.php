@@ -6,9 +6,14 @@
         <div class="container-fluid">
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="card-title text-center" style="margin-bottom: 20px;">
-                            <a href="{{ route('applications.index', ['process' => $process]) }}" class="btn btn-info float-left">Назад</a>Просмотр заявки
-                        </h2>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <a href="{{ route('applications.index', ['process' => $process]) }}" class="btn btn-info float-left">Назад</a>
+                            </div>
+                            <div class="col-md-6">
+                              <h2 class="card-title text-center" style="margin-bottom: 20px;">Просмотр заявки</h2>
+                            </div>
+                        </div>
                         @if (session('status'))
                             <div class="alert alert-success" role="alert">
                                 {{ session('status') }}
@@ -20,8 +25,6 @@
                             <button class="tablinks" id="mybutton" onclick="openTab(event, 'applicationInfo')">Информация о заявителе</button>
                             <button class="tablinks" onclick="openTab(event, 'specialistFields')">Поля заполненные специалистами</button>
                             <button class="tablinks" onclick="openTab(event, 'logs')">Ход согласования</button>
-                            <button class="tablinks" onclick="openTab(event, 'revisionReasonTab')">Причина отправки на доработку</button>
-                            <button class="tablinks" onclick="openTab(event, 'rejectReasonTab')">Причина отказа</button>
                         </div>
                         <div id="applicationInfo" class="tabcontent">
                             <!-- <h4 class="text-center">Информация о заявителе</h4> -->
@@ -65,13 +68,13 @@
                         </div>
 
                         <div id="logs" class="tabcontent">
-                            <table class="table" style="background: white;">
+                            <table class="table" style="background: white;width: 100%;">
                                 <thead>
                                     <tr>
-                                        <th>Статус</th>
-                                        <th>Участник</th>
-                                        <th>Комментарии</th>
-                                        <th>Время</th>
+                                        <th style="width: 30%;">Статус</th>
+                                        <th style="width: 30%;">Участник</th>
+                                        <th style="width: 30%;">Комментарии</th>
+                                        <th style="width: 10%;">Время</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -85,47 +88,6 @@
                                         </tr>
                                     @endforeach
                                 @endisset
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div id="revisionReasonTab" class="tabcontent">
-                            <table class="table" style="background: white;">
-                                <thead>
-                                    <tr>
-                                        <th>Кто отправил</th>
-                                        <th>Причина</th>
-                                        <th>Кому отправили</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                @isset($revisionReasonArray)
-                                    <tr>
-                                        <td>{{$revisionReasonArray["fromRole"]}}</td>
-                                        <td>{{$revisionReasonArray["revisionReason"]}}</td>
-                                        <td>{{$revisionReasonArray["toRole"]}}</td>
-                                    </tr>
-                                    @endisset
-                                </tbody>
-                            </table>
-
-                        </div>
-
-                        <div id="rejectReasonTab" class="tabcontent">
-                            <table class="table" style="background: white;">
-                                <thead>
-                                    <tr>
-                                        <th>Кто отказал</th>
-                                        <th>Причина</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                @isset($rejectReasonArray)
-                                    <tr>
-                                        <td>{{$rejectReasonArray["fromRole"]}}</td>
-                                        <td>{{$rejectReasonArray["rejectReason"]}}</td>
-                                    </tr>
-                                    @endisset
                                 </tbody>
                             </table>
                         </div>
@@ -215,7 +177,7 @@
                         </div>
                         <div id="items">
                             @if($canApprove)
-                                    @if (isset($templateFields) && $rejectReasonArray['rejectReason'] == null)
+                                    @if (isset($templateFields) && $application->reject_reason == null)
                                         <h4 class="card-title text-center" style="margin-top:50px;">Поля Шаблона</h4>
                                         <form id = "templateFieldsId" method="POST" enctype="multipart/form-data">
                                             {{--<input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">--}}
@@ -239,7 +201,7 @@
                                     @endif
 
                                     <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
-                                      @if($rejectReasonArray['rejectReason'] == null)
+                                      @if($application->reject_reason == null)
                                           @if($toCitizen)
                                               <form action="{{ route('applications.toCitizen', ['application_id' => $application->id]) }}" method="post">
                                                   @csrf

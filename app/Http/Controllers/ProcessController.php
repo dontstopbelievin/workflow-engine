@@ -155,8 +155,8 @@ class ProcessController extends Controller
                 $dbQueryString = "ALTER TABLE $tableName ADD  index_sub_route INT";
                 DB::statement($dbQueryString);
             }
-            if (!Schema::hasColumn($tableName, 'index_main')) {
-                $dbQueryString = "ALTER TABLE $tableName ADD index_main INT";
+            if (!Schema::hasColumn($tableName, 'current_order')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD current_order INT";
                 DB::statement($dbQueryString);
             }
             if (!Schema::hasColumn($tableName, 'doc_path')) {
