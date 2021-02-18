@@ -21,6 +21,7 @@ class TemplateFieldController extends Controller
     public function create(Template $template) {
 
         $id = $template->id;
+        $template_name = $template->name;
         $process = Process::where('accepted_template_id', $id)->orWhere('rejected_template_id', $id)->first();
         $processId = $process->id;
         $inputTypes = InputType::all();
@@ -33,7 +34,7 @@ class TemplateFieldController extends Controller
                     ->get('roles.name');
 
         $oTemplateFields = $this->getAllTemplateFields($template->id);
-        return view('templatefield.create', compact('id', 'oTemplateFields','inputTypes','insertTypes','options','processId', 'roles'));
+        return view('templatefield.create', compact('id', 'oTemplateFields','inputTypes','insertTypes','options','processId', 'roles', 'template_name'));
     }
 
     public function store(Request $request) {

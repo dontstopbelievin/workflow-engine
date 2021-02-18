@@ -9,23 +9,22 @@
 <div class="main-panel">
   <div class="content">
     <div class="container-fluid">
-      <div class="d-flex justify-content-between">
-        <div class="">
-          <h4 class="page-title">Поле шаблонов </h4>
-        </div>
-        <div class="">
-          <button id="addNew" class="btn btn-primary" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i></button>
-        </div>
-      </div>
-      @if (session('status'))
-          <div class="alert alert-success" role="alert">
-              {{ session('status') }}
-          </div>
-      @endif
       <div class="card">
-        <!-- <div class="card-header">
-          <div class="card-title">Table</div>
-        </div> -->
+        <div class="card-header">
+          <div class="row">
+            <div class="col-md-3">
+              <button id="addNew" class="btn btn-primary" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i></button>
+            </div>
+            <div class="col-md-6 text-center">
+              <h5>Поля шаблона: {{$template_name}}</h5>
+            </div>
+          </div>
+          @if (session('status'))
+              <div class="alert alert-success" role="alert">
+                  {{ session('status') }}
+              </div>
+          @endif
+        </div>
         <div class="card-body">
           <table class="table table-hover" id="items">
             <thead>
@@ -47,9 +46,9 @@
               @endforeach
             </tbody>
           </table>
+          <a href="{{route('processes.edit', ['process' => $processId])}}" class="btn btn-primary">Продолжить</a>
         </div>
       </div>
-      <a href="{{route('processes.edit', ['process' => $processId])}}" class="btn btn-primary">Продолжить</a>
     </div>
   </div>
 </div>
