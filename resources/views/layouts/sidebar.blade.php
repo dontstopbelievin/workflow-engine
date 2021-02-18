@@ -1,6 +1,6 @@
 <div class="sidebar" style="margin-top: 60px;">
   <div class="scrollbar-inner sidebar-wrapper" style="padding-top: 0px;">
-    <div id="sidebar1" class="tabcontent" style="display: none;">
+    <div id="sidebar1" class="tabcontent2" style="display: none;">
       <ul class="nav">
           <li class="nav-item {{request()->segment(1) == 'auction' ? 'active' : ''}}">
             <a href="{{ route('auction.index') }}">
@@ -63,7 +63,7 @@
           </li>
       </ul>
     </div>
-    <div id="sidebar2" class="tabcontent" >
+    <div id="sidebar2" class="tabcontent2">
       <ul class="nav">
         <li class="nav-item text-center">
           <button class="btn btn-primary" onclick="location.href='{{url('services')}}';">
