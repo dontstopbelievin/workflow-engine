@@ -14,14 +14,14 @@
                 <p>Поступившие заявки</p>
             </a>
           </li>
-          <li class="nav-item {{request()->segment(1) == 'process' ? 'active' : request()->segment(1) == 'processes' ? 'active' : request()->segment(1) == 'processes-edit' ? 'active' : request()->segment(1) == 'template-field-create' ? 'active' : ''}}">
+          <li class="nav-item {{request()->segment(1) == 'process' ? 'active' : (request()->segment(1) == 'processes' ? 'active' : (request()->segment(1) == 'processes-edit' ? 'active' : (request()->segment(1) == 'template-field-create' ? 'active' : '')))}}">
             <a href="{{ route('processes.index') }}">
                 <i class="la la-gears"></i>
                 <p>Процессы</p>
                 <span class="badge badge-count">{{ $processesCount }}</span>
             </a>
           </li>
-          <li class="nav-item {{request()->segment(1) == 'roles' ? 'active' : request()->segment(1) == 'role-edit' ? 'active' : ''}}">
+          <li class="nav-item {{request()->segment(1) == 'roles' ? 'active' : (request()->segment(1) == 'role-edit' ? 'active' : '')}}">
             <a href="{{ route('role.index') }}">
                 <i class="la la-user"></i>
                 <p>Роли</p>
@@ -35,7 +35,7 @@
                 <span class="badge badge-count">{{ $cityManagementCount }}</span>
             </a>
           </li>
-          <li class="nav-item {{request()->segment(1) == 'role-register' ? 'active' : request()->segment(1) == 'user-edit' ? 'active' : ''}}">
+          <li class="nav-item {{request()->segment(1) == 'role-register' ? 'active' : (request()->segment(1) == 'user-edit' ? 'active' : '')}}">
             <a href="{{ route('user-role.register') }}">
                 <i class="la la-users"></i>
                 <p>Пользователи</p>
@@ -55,7 +55,7 @@
                 <p>Логи сервиса</p>
             </a>
           </li>
-          <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : request()->segment(1) == 'index' ? 'active' : request()->segment(1) == 'applications-create' ? 'active' : ''}}">
+          <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : (request()->segment(1) == 'index' ? 'active' : (request()->segment(1) == 'applications-create' ? 'active' : ''))}}">
             <a href="{{ route('applications.service') }}">
                 <i class="la la-list"></i>
                 <p>Все услуги</p>
