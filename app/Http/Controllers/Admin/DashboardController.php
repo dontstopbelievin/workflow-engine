@@ -50,12 +50,12 @@ class DashboardController extends Controller
       file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
 //        fwrite($myfile, $txt);
 //        fclose($myfile);
-      return Redirect::route('user-role.register')->with('status','Данные пользователя изменены');
+      return Redirect::to('user_role/register')->with('status','Данные пользователя изменены');
    }
 
     public function registerdelete(User $user)
     {
        $user->delete();
-       return Redirect::route('user-role.register')->with('status','Пользователь удален');
+       return Redirect::to('user_role/register')->with('status','Пользователь удален');
     }
 }

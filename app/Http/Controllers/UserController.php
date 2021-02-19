@@ -51,7 +51,7 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->update();
-        return Redirect::route('user.personalArea')->with('status', 'Данные успешно обновлены');
+        return Redirect::to('user/personal_area')->with('status', 'Данные успешно обновлены');
     }
 
     public function deleteUnnecessary($result, $delete) {

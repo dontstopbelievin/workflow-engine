@@ -20,7 +20,7 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <div>
-                <a href="{{ route('applications.service') }}" class="logo" style="font-weight: bold;">
+                <a href="{{ url('services') }}" class="logo" style="font-weight: bold;">
                     <img style="height: 20px;" src="{{url('/images/logo.png')}}">
                 </a>
             </div>
@@ -51,8 +51,8 @@
                 <small>({{ Auth::user()->role->name }})</small>
               </a>
               <ul class="dropdown-menu dropdown-user">
-                <li> <a class="dropdown-item" href="{{ route('user.personalArea') }}">Мои данные</a> </li>
-                <li> <a class="dropdown-item" href="{{ route('user.edit', ['user' => Auth::user()]) }}">Редактировать данные</a> </li>
+                <li> <a class="dropdown-item" href="{{ url('user/personal_area') }}">Мои данные</a> </li>
+                <li> <a class="dropdown-item" href="{{ url('user/edit', ['user' => Auth::user()]) }}">Редактировать данные</a> </li>
                 <li> <a class="dropdown-item" href="/password/reset">Cменить пароль</a> </li>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item"href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();">

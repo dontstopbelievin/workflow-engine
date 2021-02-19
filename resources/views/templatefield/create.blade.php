@@ -46,7 +46,7 @@
               @endforeach
             </tbody>
           </table>
-          <a href="{{route('processes.edit', ['process' => $processId])}}" class="btn btn-primary">Продолжить</a>
+          <a href="{{url('process/edit', ['process' => $processId])}}" class="btn btn-primary">Продолжить</a>
         </div>
       </div>
     </div>
@@ -189,7 +189,7 @@
                 alert('Выберите специалиста');
             }
 
-            $.post('/template-field-create', {'tempId':id,'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, 'role':role, '_token':"{{csrf_token()}}"}, function(data){
+            $.post('/template_field/create', {'tempId':id,'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, 'role':role, '_token':"{{csrf_token()}}"}, function(data){
                 console.log('data:'+data);
                 $('#items').load(location.href + ' #items');
             });

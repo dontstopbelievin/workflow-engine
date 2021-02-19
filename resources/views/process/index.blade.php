@@ -14,7 +14,7 @@
                   <div class="card-header">
                     <div class="row">
                       <div class="col-md-3">
-                        <a href="{{ route('processes.create') }}" class="btn btn-info float-left">Добавить процесс</a>
+                        <a href="{{ url('process/create') }}" class="btn btn-info float-left">Добавить процесс</a>
                       </div>
                       <div class="col-md-6">
                         <h4 class="page-title text-center">
@@ -48,15 +48,15 @@
   									<tbody>
                       @foreach($processes as $process)
                         <tr>
-                            <td><a href="{{ route('processes.view', ['process' => $process]) }}">{{$loop->iteration}}</a></td>
+                            <td><a href="{{ url('process/view', ['process' => $process]) }}">{{$loop->iteration}}</a></td>
                             <td>{{$process->name}}</td>
                             <td>{{$process->deadline}}</td>
                             <td>
                               <div class="row">
-                                <button class="btn btn-link btn-simple-primary" data-original-title="Изменить" onclick="window.location='{{route('processes.edit', ['process' => $process])}}'">
+                                <button class="btn btn-link btn-simple-primary" data-original-title="Изменить" onclick="window.location='{{url('process/edit', ['process' => $process])}}'">
                                     <i class="la la-edit"></i>
                                 </button>
-                                <form action="{{ route('processes.delete', ['process' => $process]) }}" method="post">
+                                <form action="{{ url('process/delete', ['process' => $process]) }}" method="post">
                                     {{csrf_field()}}
                                     {{method_field('DELETE')}}
                                     <button type="submit" class="btn btn-link btn-danger" data-original-title="Удалить">

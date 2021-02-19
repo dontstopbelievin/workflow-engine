@@ -8,7 +8,7 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-3">
-                                <a href="{{ route('applications.index', ['process' => $process]) }}" class="btn btn-info float-left">Назад</a>
+                                <a href="{{ url('applications/index', ['process' => $process]) }}" class="btn btn-info float-left">Назад</a>
                             </div>
                             <div class="col-md-6">
                               <h2 class="card-title text-center" style="margin-bottom: 20px;">Просмотр заявки</h2>
@@ -203,7 +203,7 @@
                                     <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
                                       @if($application->reject_reason == null)
                                           @if($toCitizen)
-                                              <form action="{{ route('applications.toCitizen', ['application_id' => $application->id]) }}" method="post">
+                                              <form action="{{ url('applications/toCitizen', ['application_id' => $application->id]) }}" method="post">
                                                   @csrf
                                                   <input type="hidden" name="process_id" value = {{$process->id}}>
                                                   <input type="hidden" name="application_id" value = {{$application->id}}>
@@ -233,7 +233,7 @@
                                           @endif
                                       @else
                                         @if($toCitizen)
-                                          <form action="{{ route('applications.toCitizen', ['application_id' => $application->id]) }}" method="post">
+                                          <form action="{{ url('applications/toCitizen', ['application_id' => $application->id]) }}" method="post">
                                               @csrf
                                               <input type="hidden" name="process_id" value = {{$process->id}}>
                                               <input type="hidden" name="application_id" value = {{$application->id}}>
@@ -256,7 +256,7 @@
                                       @endif
                                     </div>
                                 @endif
-                            <a href="{{ route('applications.index', ['process' => $process]) }}" class="btn btn-info" style="margin-top: 10px;">Назад</a>
+                            <a href="{{ url('applications/index', ['process' => $process]) }}" class="btn btn-info" style="margin-top: 10px;">Назад</a>
                         </div>
                     </div>
                 </div>
@@ -349,7 +349,7 @@
 
                 formData.append('_token', $('input[name=_token]').val());
                 var xhr = new XMLHttpRequest();
-                xhr.open("post", "{{route('applications.approve')}}", true);
+                xhr.open("post", "{{url('applications/approve')}}", true);
                 xhr.setRequestHeader("Authorization", "Bearer " + "{{csrf_token()}}");
                 xhr.onload = function () {
                     location.reload();

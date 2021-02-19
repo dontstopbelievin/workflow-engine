@@ -12,7 +12,7 @@
                     <div class="card-header">
                         <div class="row">
                           <div class="col-md-3">
-                            <a href="{{ route('role.create') }}" class="btn btn-info">Добавить роль</a>
+                            <a href="{{ url('role/create') }}" class="btn btn-info">Добавить роль</a>
                           </div>
                           <div class="col-md-6">
                             <h4 class="page-title text-center">Роли</h4>
@@ -37,15 +37,15 @@
                             <tbody>
                             @foreach($roles as $role)
                               <tr>
-                                  <td><a href="{{ route('role.view', ['role' => $role]) }}">{{$loop->iteration}}</a></td>
-                                  <td>{{$role->name}}</td>
+                                  <td>{{$loop->iteration}}</td>
+                                  <td><a href="{{ url('role/view', ['role' => $role]) }}">{{$role->name}}</a></td>
                                   <td>{{$role->cityManagement->name ?? ''}}</td>
                                   <td>
                                     <div class="row">
-                                      <button class="btn btn-link btn-simple-primary" data-original-title="Изменить"  onclick="window.location='{{route('role.edit', ['role' => $role])}}'">
+                                      <button class="btn btn-link btn-simple-primary" data-original-title="Изменить"  onclick="window.location='{{url('role/edit', ['role' => $role])}}'">
                                           <i class="la la-edit"></i>
                                       </button>
-                                      <form action="{{ route('role.delete', ['role' => $role]) }}" method="post">
+                                      <form action="{{ url('role/delete', ['role' => $role]) }}" method="post">
                                           {{csrf_field()}}
                                           {{method_field('DELETE')}}
                                           <button type="submit" class="btn btn-link btn-danger" data-original-title="Удалить">

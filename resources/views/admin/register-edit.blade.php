@@ -17,7 +17,7 @@
                   <div class="card-body">
                       <div class="row">
                           <div class="col-md-6">
-                              <form action="{{ route('user-role.update', ['user' => $user]) }}" method="POST">
+                              <form action="{{ url('user_role/update', ['user' => $user]) }}" method="POST">
                                   @csrf
                                   {{ method_field('PUT') }}
                                   <div class="form-group">
@@ -38,7 +38,7 @@
                                   </div>
                                   <div>
                                       <button type="submit" class="btn btn-success">Изменить</button>
-                                      <a href="{{ route('user-role.register') }}" class="btn btn-danger">Отмена</a>
+                                      <a href="{{ url('user_role/register') }}" class="btn btn-danger">Отмена</a>
                                   </div>
                               </form>
                           </div>

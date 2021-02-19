@@ -61,7 +61,7 @@ class RoleController extends Controller
         $role->name = $request->name;
         $role->city_management_id = $request->city_management_id;
         $role->update();
-        return Redirect::route('role.index')->with('status','Роль успешно обновлена');
+        return Redirect::to('role')->with('status','Роль успешно обновлена');
     }
 
     public function delete(Role $role)
@@ -71,7 +71,7 @@ class RoleController extends Controller
             $role->users()->delete();
             $role->delete();
             DB::commit();
-            return Redirect::route('role.index')->with('status','Роль успешно удалена');
+            return Redirect::to('role')->with('status','Роль успешно удалена');
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json(['message' => $e->getMessage()], 500);

@@ -46,7 +46,7 @@ class TemplateController extends Controller
             if ($request->template_state === "accepted") {
                 $process->update(['accepted_template_id' => $template->id]);
                 DB::commit();
-                return Redirect::route('templatefield.create', [$template])->with('status','Шаблон успешно создан');
+                return Redirect::to('template_field/create', [$template])->with('status','Шаблон успешно создан');
             } else if ($request->template_state === "rejected") {
                 $process->update(['rejected_template_id' => $template->id]);
                 DB::commit();

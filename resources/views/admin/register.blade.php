@@ -50,10 +50,10 @@
                         @endif
                         <td>
                           <div class="row">
-                            <button class="btn btn-link btn-simple-primary" data-original-title="Изменить" onclick="window.location='{{route('user-role.edit', ['user' => $user])}}'">
+                            <button class="btn btn-link btn-simple-primary" data-original-title="Изменить" onclick="window.location='{{url('user_role/edit', ['user' => $user])}}'">
                               <i class="la la-edit"></i>
                             </button>
-                            <form action="{{ route('user-role.delete', ['user' => $user]) }}" method="post">
+                            <form action="{{ url('user_role/delete', ['user' => $user]) }}" method="post">
                                 {{csrf_field()}}
                                 {{method_field('DELETE')}}
                                 <button type="submit" class="btn btn-link btn-danger" data-original-title="Удалить">

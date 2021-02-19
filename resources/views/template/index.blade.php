@@ -153,7 +153,7 @@
             formData.append('template_state', $('#accept_template').val());
             formData.append('_token', $('input[name=_token]').val());
             $.ajax({
-              url: '/templates/create',
+              url: '/template/store',
               data: formData,
               processData: false,
               contentType: false,
@@ -170,7 +170,7 @@
 
         $('#delete').click(function(event) {
             var id = $('#id').val();
-            $.post('/template-delete/' + id, {'_token':$('input[name=_token]').val()}, function(data){
+            $.post('/template/delete/' + id, {'_token':$('input[name=_token]').val()}, function(data){
                 alert(data);
                 $('#acceptedTemplates').load(location.href + ' #acceptedTemplates');
                 $('#rejectedTemplates').load(location.href + ' #rejectedTemplates');
@@ -187,7 +187,7 @@
             formData.append('name', $('#fieldName').val());
             formData.append('_token', $('input[name=_token]').val());
             $.ajax({
-                url: '/template-update/' + id,
+                url: '/template/update/' + id,
                 data: formData,
                 processData: false,
                 contentType: false,

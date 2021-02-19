@@ -16,7 +16,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form action="{{ route('template.update', ['template' => $template]) }}" method="POST">
+                            <form action="{{ url('template/update', ['template' => $template]) }}" method="POST">
                                 {{ csrf_field( )}}
                                 {{ method_field('PUT') }}
                                 <div class="form-group">
@@ -30,8 +30,8 @@
                                 </div>
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-success">Обновить</button>
-                                    <a href="/templates" class="btn btn-danger">Отмена</a>
-                                    <a href="{{ route('templatefield.create', ['id' => $template]) }}" class="btn btn-outline-success">Добавление поле шаблонов</a>
+                                    <a href="/template" class="btn btn-danger">Отмена</a>
+                                    <a href="{{ url('template_field/create', ['id' => $template]) }}" class="btn btn-outline-success">Добавление поле шаблонов</a>
                                 </div>
                             </form>
                         </div>

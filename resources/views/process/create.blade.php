@@ -17,7 +17,7 @@
               </div>
           @endif
         </div>
-        <form action="{{ route('processes.store') }}" method="POST">
+        <form action="{{ url('process/store') }}" method="POST">
           <div class="card-body">
             @csrf
             @empty($process)
@@ -33,7 +33,7 @@
           </div>
           <div class="card-action">
             <button type="submit" class="btn btn-success">Создать</button>
-            <a href="{{ route('processes.index') }}" class="btn btn-info">Назад</a>
+            <a href="{{ url('process') }}" class="btn btn-info">Назад</a>
           </div>
         </form>
       </div>
