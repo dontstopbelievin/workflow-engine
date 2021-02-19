@@ -303,6 +303,36 @@ class DictionarySeeder extends Seeder
                 'input_type_id' => 1,
                 'insert_type_id' => 1
             ],
+             [
+                 'name' => 'dictionary_target',
+                 'label_name' => 'Справочник цель использования',
+                 'input_type_id' => 3,
+                 'insert_type_id' => 6
+             ],
+             [
+                 'name' => 'dictionary_purpose',
+                 'label_name' => 'Справочник цель назначения',
+                 'input_type_id' => 3,
+                 'insert_type_id' => 6
+             ],
+             [
+                 'name' => 'dictionary_right_type',
+                 'label_name' => 'Справочник право использования',
+                 'input_type_id' => 3,
+                 'insert_type_id' => 6
+             ],
+             [
+                 'name' => 'dictionary_land_category',
+                 'label_name' => 'Справочник категория земель',
+                 'input_type_id' => 3,
+                 'insert_type_id' => 6
+             ],
+             [
+                 'name' => 'dictionary_land_divisibility',
+                 'label_name' => 'Справочник делимость земель',
+                 'input_type_id' => 3,
+                 'insert_type_id' => 6
+             ],
         ]);
     }
 }
