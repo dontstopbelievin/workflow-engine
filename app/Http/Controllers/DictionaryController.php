@@ -62,8 +62,8 @@ class DictionaryController extends Controller
 
         if ($request->has('selectedOptions')) {
             foreach($selectOptions as $key=>$value) {
-            $optn = SelectOption::where('name', $value)->first();
-            $dic->selectOptions()->attach($optn);
+                $optn = SelectOption::where('name', $value)->first();
+                $dic->selectOptions()->attach($optn);
             }
         }
     }
