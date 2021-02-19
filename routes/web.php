@@ -49,9 +49,8 @@ Route::middleware(['guest'])->group(function () {
     });
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::group(['middleware' => ['auth']], function () {
 
-    Route::get('services', 'ApplicationController@service');
     Route::post('agreement_accept', 'ApplicationController@acceptAgreement');
 
     Route::prefix('password')->group(function () {
@@ -59,7 +58,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/post_expired', 'Auth\ExpiredPasswordController@postExpired');
     });
 
-    Route::prefix('applications')->group(function () {
+    Route::prefix('docs')->group(function () {
+        Route::get('/', 'ApplicationController@service');
         Route::get('index/{process}', 'ApplicationController@index');
         Route::post('/search', 'ApplicationController@search');
         Route::post('/store', 'ApplicationController@store');
@@ -81,7 +81,7 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-Route::group(['middleware' => ['admin', 'auth']], function () {
+Route::group([ 'middleware' => ['admin', 'auth']], function () {
 
     Route::get('send', 'HomeController@sendNotification');
 
@@ -148,7 +148,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
 
     Route::prefix('template_field')->group(function () {
         Route::get('/create/{template}', 'TemplateFieldController@create');
-        Route::post('/create', 'TemplateFieldController@store');
+        Route::post('/store', 'TemplateFieldController@store');
     });
     
     Route::prefix('auction')->group(function () {
@@ -180,7 +180,7 @@ Route::group(['middleware' => ['admin', 'auth']], function () {
         Route::get('/view/{process}', 'ProcessController@view');
         Route::post('/store', 'ProcessController@store');
         Route::post('/add_organization/{process}', 'ProcessController@addOrganization');
-        Route::get('/edit/{process}', 'ProcessController@edit');
+        Route::get('/edit/{process}', 'ProcessController@edit')->name('process/edit');
         Route::put('/update/{process}', 'ProcessController@update');
         Route::post('/create_process_table/{process}', 'ProcessController@createProcessTable');
         Route::post('/add_role/{process}', 'ProcessController@addRole');

@@ -11,7 +11,7 @@
         <div class="card">
             <div class="card-header">
                 <h4 class="page-title">
-                    <a href="{{ url('applications/index/'.$process->id) }}" class="btn btn-info" style="margin-right: 10px;">Назад</a>Создание заявки "{{$process->name}}"
+                    <a href="{{ url('docs/index/'.$process->id) }}" class="btn btn-info" style="margin-right: 10px;">Назад</a>Создание заявки "{{$process->name}}"
                 </h4>
                 @if (session('status'))
                     <div class="alert alert-success" role="alert">
@@ -21,7 +21,7 @@
             </div>
             <div class="card-body">
               <div class="col-md-6">
-                <form action="{{ url('applications/store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ url('docs/store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @foreach($arrayToFront as $item)
                         <label>{{$item->labelName}}</label>

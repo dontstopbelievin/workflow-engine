@@ -189,7 +189,7 @@
                 alert('Выберите специалиста');
             }
 
-            $.post('/template_field/create', {'tempId':id,'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, 'role':role, '_token':"{{csrf_token()}}"}, function(data){
+            $.post('/template_field/store', {'tempId':id,'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, 'role':role, '_token':"{{csrf_token()}}"}, function(data){
                 console.log('data:'+data);
                 $('#items').load(location.href + ' #items');
             });

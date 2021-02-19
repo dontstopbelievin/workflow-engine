@@ -217,7 +217,7 @@ class ApplicationController extends Controller
 
             // insertion of fields into template
             if(!$this->insertTemplateFields($fieldValues, $templateTable, $process->id, $request->application_id, $templateId)){
-                return Redirect::to('services')->with('status', 'insert template fields error');
+                return Redirect::to('docs')->with('status', 'insert template fields error');
             }
 
             $currentRoleOrder = $process->roles()->select('order')->where('role_id', Auth::user()->role_id)->first()->order;
@@ -246,10 +246,10 @@ class ApplicationController extends Controller
             //         ->update(['to_revision' => 0 ]);
             // }
             DB::commit();
-            return Redirect::to('services')->with('status', 'Отправлено след специалисту');
+            return Redirect::to('docs')->with('status', 'Отправлено след специалисту');
         }catch (Exception $e) {
             DB::rollBack();
-            return Redirect::to('services')->with('status', $e->getMessage());
+            return Redirect::to('docs')->with('status', $e->getMessage());
         }
     }
 
@@ -294,7 +294,7 @@ class ApplicationController extends Controller
         $arrayToFront = $this->getAllDictionariesWithOptions($dictionariesWithOptions);
         $roles = $this->get_roles_in_order($process->id);
         if(count($roles) == 0){
-            return Redirect::to('applications/index', [$process])->with('status', 'Создайте сперва маршрут!');
+            return Redirect::action([ApplicationController::class, 'index'], [$process])->with('status', 'Создайте сперва маршрут!');
         }
         return view('application.create', compact('process', 'arrayToFront'));
     }
@@ -350,10 +350,10 @@ class ApplicationController extends Controller
                 Log::insert($logsArray);
             }
             DB::commit();
-            return Redirect::to('services')->with('status', 'Заявка Успешно создана');
+            return Redirect::to('docs')->with('status', 'Заявка Успешно создана');
         } catch (Exception $e) {
             DB::rollBack();
-            return Redirect::to('services')->with('status', $e->getMessage());
+            return Redirect::to('docs')->with('status', $e->getMessage());
         }
     }
 
@@ -405,7 +405,7 @@ class ApplicationController extends Controller
 
         $incomingApplications = EgknService::where('passed_to_process', 0)->get();
         if (!count($incomingApplications)) {
-            return Redirect::to('services')->with('status', 'Новых заявок не обнаружено');
+            return Redirect::to('docs')->with('status', 'Новых заявок не обнаружено');
         }
         $countApp = 0; // считаем количество заявок
         foreach($incomingApplications as $app) {
@@ -426,7 +426,7 @@ class ApplicationController extends Controller
             Log::insert($logsArray);
         }
 
-        return Redirect::to('services')->with('status', 'Заявки Успешно созданы (' . $countApp . ')');
+        return Redirect::to('docs')->with('status', 'Заявки Успешно созданы (' . $countApp . ')');
     }
 
     public function toCitizen($id, Request $request)
@@ -519,7 +519,7 @@ class ApplicationController extends Controller
             ->where('id', $id)
             ->update(['status_id' => $statusId, 'current_order' => 0, 'statuses' => '[]']);
 
-        return Redirect::to('services')->with('status', $status->name);
+        return Redirect::to('docs')->with('status', $status->name);
     }
 
     function generateRandomString($length = 20) {

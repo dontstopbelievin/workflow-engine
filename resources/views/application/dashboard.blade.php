@@ -141,7 +141,7 @@
                                             <td class="text-center align-middle border">
                                                 <button class="btn btn-simple-primary px-0 py-0"
                                                     style=" background-color: transparent;font-size:30px;"
-                                                    onclick="window.location='{{ url('applications/index', ['process' => $process]) }}'">
+                                                    onclick="window.location='{{ url('docs/index', ['process' => $process]) }}'">
                                                     <i class="la la-arrow-circle-o-right"></i>
                                                 </button>
                                             </td>

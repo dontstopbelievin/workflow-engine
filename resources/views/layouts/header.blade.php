@@ -20,17 +20,17 @@
     <div class="container-fluid" style="padding-left: 0px;">
         <div class="navbar-header">
             <div>
-                <a href="{{ url('services') }}" class="logo" style="padding-right: 5px; text-decoration: none!important;">
+                <a href="{{ url('docs') }}" class="logo" style="padding-right: 5px; text-decoration: none!important;">
                     <img style="height: 35px;" src="{{url('/images/astana-logo.png')}}">
                 </a>
-                <a href="{{ url('services') }}" class="logo">
+                <a href="{{ url('docs') }}" class="logo">
                     <img style="height: 13px;" src="{{url('/images/logo.png')}}">
                 </a>
             </div>
         </div>
         <ul class="navbar-nav" style="margin-left: 20px;">
             <li class="nav-item">
-                <a href="{{url('services')}}" class="navbar-left navbar-form nav-search {{(request()->segment(1) == 'services') || (request()->segment(1) == 'applications') ? 'active' : ''}}">
+                <a href="{{url('docs')}}" class="navbar-left navbar-form nav-search {{(request()->segment(1) == 'docs') || (request()->segment(1) == 'applications') ? 'active' : ''}}">
                 Документы</a>
             </li>
             <li class="nav-item">

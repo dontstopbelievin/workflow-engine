@@ -47,7 +47,7 @@ class HomeController extends Controller
 
             'actionText' => 'Workflow Engine',
 //
-            'actionURL' => url('/services'),
+            'actionURL' => url('/docs'),
 //
             'order_id' => 101
 

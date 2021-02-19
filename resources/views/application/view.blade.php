@@ -8,7 +8,7 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-3">
-                                <a href="{{ url('applications/index', ['process' => $process]) }}" class="btn btn-info float-left">Назад</a>
+                                <a href="{{ url('docs/index', ['process' => $process]) }}" class="btn btn-info float-left">Назад</a>
                             </div>
                             <div class="col-md-6">
                               <h2 class="card-title text-center" style="margin-bottom: 20px;">Просмотр заявки</h2>
@@ -203,7 +203,7 @@
                                     <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
                                       @if($application->reject_reason == null)
                                           @if($toCitizen)
-                                              <form action="{{ url('applications/toCitizen', ['application_id' => $application->id]) }}" method="post">
+                                              <form action="{{ url('docs/toCitizen', ['application_id' => $application->id]) }}" method="post">
                                                   @csrf
                                                   <input type="hidden" name="process_id" value = {{$process->id}}>
                                                   <input type="hidden" name="application_id" value = {{$application->id}}>
@@ -233,7 +233,7 @@
                                           @endif
                                       @else
                                         @if($toCitizen)
-                                          <form action="{{ url('applications/toCitizen', ['application_id' => $application->id]) }}" method="post">
+                                          <form action="{{ url('docs/toCitizen', ['application_id' => $application->id]) }}" method="post">
                                               @csrf
                                               <input type="hidden" name="process_id" value = {{$process->id}}>
                                               <input type="hidden" name="application_id" value = {{$application->id}}>
@@ -256,7 +256,7 @@
                                       @endif
                                     </div>
                                 @endif
-                            <a href="{{ url('applications/index', ['process' => $process]) }}" class="btn btn-info" style="margin-top: 10px;">Назад</a>
+                            <a href="{{ url('docs/index', ['process' => $process]) }}" class="btn btn-info" style="margin-top: 10px;">Назад</a>
                         </div>
                     </div>
                 </div>
@@ -303,7 +303,7 @@
                 var processId = $('#processId').val();
                 var application_id = $('#application_id').val();
                 console.log(rejectReason, processId, application_id)
-                $.post('/applications/reject', {'rejectReason':rejectReason,'motiv_otkaz':motiv_otkaz,'processId':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
+                $.post('/docs/reject', {'rejectReason':rejectReason,'motiv_otkaz':motiv_otkaz,'processId':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
                     console.log('reject: '+data);
                     $('#items').load(location.href + ' #items');
                 });
@@ -313,7 +313,7 @@
                 var processId = $('#processId').val();
                 var application_id = $('#application_id').val();
                 console.log(processId, application_id)
-                $.post('/applications/approveReject', {'processId':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
+                $.post('/docs/approveReject', {'processId':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
                     $('#items').load(location.href + ' #items');
                 });
             });
@@ -323,7 +323,7 @@
                 var roleToRevise = $( "#roleToRevise option:selected" ).text();
                 var processId = $('#processId').val();
                 var application_id = $('#application_id').val();
-                $.post('/applications/revision', {'revisionReason':revisionReason,'processId':processId,'application_id':application_id,'roleToRevise':roleToRevise, '_token':$('input[name=_token]').val()}, function(data){
+                $.post('/docs/revision', {'revisionReason':revisionReason,'processId':processId,'application_id':application_id,'roleToRevise':roleToRevise, '_token':$('input[name=_token]').val()}, function(data){
                     $('#items').load(location.href + ' #items');
                 });
             });
@@ -349,7 +349,7 @@
 
                 formData.append('_token', $('input[name=_token]').val());
                 var xhr = new XMLHttpRequest();
-                xhr.open("post", "{{url('applications/approve')}}", true);
+                xhr.open("post", "{{url('docs/approve')}}", true);
                 xhr.setRequestHeader("Authorization", "Bearer " + "{{csrf_token()}}");
                 xhr.onload = function () {
                     location.reload();

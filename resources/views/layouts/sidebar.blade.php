@@ -1,42 +1,42 @@
 <div class="sidebar" style="margin-top: 60px;">
   <div class="scrollbar-inner sidebar-wrapper" style="padding-top: 0px;">
-    @if(request()->segment(1) == 'applications' || request()->segment(1) == 'services' ||
+    @if(request()->segment(1) == 'applications' || request()->segment(1) == 'docs' ||
       request()->segment(1) == 'user' || request()->segment(1) == 'password'
       || request()->segment(1) == 'policy')
       <ul class="nav">
         <li class="nav-item text-center">
-          <button class="btn btn-primary" onclick="location.href='{{url('services')}}';">
+          <button class="btn btn-primary" onclick="location.href='{{url('docs')}}';">
             <i class="fa fa-plus"></i>
             <span style="margin-left: 5px;">Создать документ</span>
           </button>
           <br><hr>
         </li>
-        <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : ''}}">
-          <a href="{{ url('services') }}">
+        <li class="nav-item {{request()->segment(1) == 'docs' ? 'active' : ''}}">
+          <a href="{{ url('docs') }}">
               <i class="la la-sign-out"></i>
               <p>Входящие</p>
           </a>
         </li>
         <li class="nav-item {{request()->segment(1) == 'services2' ? 'active' : ''}}">
-          <a href="{{ url('services') }}">
+          <a href="{{ url('docs') }}">
               <i class="la la-sign-in"></i>
               <p>Исходящие</p>
           </a>
         </li>
         <li class="nav-item {{request()->segment(1) == 'services3' ? 'active' : ''}}">
-          <a href="{{ url('services') }}">
+          <a href="{{ url('docs') }}">
               <i class="fa fa-book"></i>
               <p>Мои документы</p>
           </a>
         </li>
         <li class="nav-item {{request()->segment(1) == 'services4' ? 'active' : ''}}">
-          <a href="{{ url('services') }}">
+          <a href="{{ url('docs') }}">
               <i class="fa fa-file-text"></i>
               <p>Черновики</p>
           </a>
         </li>
         <li class="nav-item {{request()->segment(1) == 'services5' ? 'active' : ''}}">
-          <a href="{{ url('services') }}">
+          <a href="{{ url('docs') }}">
               <i class="fa fa-archive"></i>
               <p>Архив документов</p>
           </a>
@@ -97,8 +97,8 @@
                 <p>Логи сервиса</p>
             </a>
           </li>
-          <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : (request()->segment(1) == 'index' ? 'active' : (request()->segment(1) == 'applications-create' ? 'active' : ''))}}">
-            <a href="{{ url('services') }}">
+          <li class="nav-item {{request()->segment(1) == 'docs' ? 'active' : (request()->segment(1) == 'index' ? 'active' : (request()->segment(1) == 'applications-create' ? 'active' : ''))}}">
+            <a href="{{ url('docs') }}">
                 <i class="la la-list"></i>
                 <p>Все услуги</p>
             </a>
