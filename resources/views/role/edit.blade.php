@@ -12,7 +12,7 @@
                 <dir class="card-header">
                     <h4 class="page-title">Изменение Роли {{$role->name}}</h4>
                 </dir>
-                <form action="{{ url('role/update', ['role' => $role]) }}" method="POST">
+                <form action="{{ url('admin/role/update', ['role' => $role]) }}" method="POST">
                     {{ csrf_field( )}}
                     {{ method_field('PUT') }}
                 <div class="card-body">
@@ -34,7 +34,7 @@
 				</div>
 				<div class="card-action">
                     <button type="submit" class="btn btn-success">Изменить</button>
-                    <a href="{{ url('role') }}" class="btn btn-danger">Отмена</a>
+                    <a href="{{ url('admin/role') }}" class="btn btn-danger">Отмена</a>
 				</div>
             </form>
 			</div>

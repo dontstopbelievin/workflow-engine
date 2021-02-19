@@ -81,7 +81,7 @@ Route::group(['middleware' => ['auth']], function () {
     });
 });
 
-Route::group([ 'middleware' => ['admin', 'auth']], function () {
+Route::group(['prefix' => '/admin', 'middleware' => ['admin', 'auth']], function () {
 
     Route::get('send', 'HomeController@sendNotification');
 
@@ -118,7 +118,7 @@ Route::group([ 'middleware' => ['admin', 'auth']], function () {
 
     Route::prefix('role')->group(function () {
         Route::get('/', 'RoleController@index');
-        Route::get('view/{role}', 'RoleController@view');
+        Route::get('/view/{role}', 'RoleController@view');
         Route::get('/create', 'RoleController@create');
         Route::post('/create', 'RoleController@store');
         Route::get('/edit/{role}', 'RoleController@edit');

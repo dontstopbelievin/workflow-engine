@@ -12,7 +12,7 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-3">
-                                <a href="{{ url('role') }}" class="btn btn-info">Назад</a>
+                                <a href="{{ url('admin/role') }}" class="btn btn-info">Назад</a>
                             </div>
                             <div class="col-md-6">
                                 <h4 class="card-title text-center">Пользователи с ролью <i>"{{$role->name}}"</i></h4>  

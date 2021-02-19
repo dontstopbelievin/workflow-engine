@@ -11,7 +11,7 @@
       <div class="card">
         <div class="card-header">
           <h4 class="page-title">
-            <a href="{{ url('process') }}" class="btn btn-info" style="margin-right: 10px;">Назад</a>
+            <a href="{{ url('admin/process') }}" class="btn btn-info" style="margin-right: 10px;">Назад</a>
             Изменение Процесса: {{$process->name}}</h4>
           @if(session('status'))
               <div class="alert alert-success" role="alert">
@@ -33,7 +33,7 @@
               <button class="tablinks3" onclick="openTab3(event, 'create_template')">Создание шаблонов</button>
             </div>
             <div id="about_process" class="tabcontent3">
-              <form action="{{ url('process/update', ['process' => $process]) }}" method="POST">
+              <form action="{{ url('admin/process/update', ['process' => $process]) }}" method="POST">
                 {{ csrf_field( )}}
                 {{ method_field('PUT') }}
                 <div class="form-group">
@@ -65,7 +65,7 @@
             <div id="organization" class="tabcontent3"  style="display: none;">
               <h6>Организация - {{ $nameMainOrg ?? 'не выбрана'}}</h6>
               @isset($organizations)
-                <form action="{{ url('process/add_organization', ['process' => $process]) }}" method="POST">
+                <form action="{{ url('admin/process/add_organization', ['process' => $process]) }}" method="POST">
                     @csrf
                     <div class="form-group">
                         <label for="mainOrganization">Выберите Оргaнизацию основного маршрута</label>
@@ -113,7 +113,7 @@
                     @endif
                   @endforeach
                 </div>
-                <form action="{{ url('process/add_doc_template') }}" method="POST">
+                <form action="{{ url('admin/process/add_doc_template') }}" method="POST">
                     @csrf
                     <div class="form-group">
                         <input type="hidden" name="processId" value = {{$process->id}}>
@@ -138,7 +138,7 @@
               <div>
                 <div class="card-title" style="margin-top: 10px;">Шаблон одобрения</div>
                 @empty($accepted)
-                <form action="{{ url('template/store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ url('admin/template/store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="template_state" value="accepted">
                     <input type="hidden" name="processId" value="{{$process->id}}">
@@ -152,13 +152,13 @@
                 @isset($accepted)
                     <p>
                       <u>{{$accepted->name}}</u>
-                      <a href="{{ url('template_field/create', [$accepted]) }}" class="btn btn-outline-danger btn-xs">Редактировать</a>
+                      <a href="{{ url('admin/template_field/create', [$accepted]) }}" class="btn btn-outline-danger btn-xs">Редактировать</a>
                     </p>
                 @endisset
                 <hr>
                 <div class="card-title" style="margin-top: 10px;">Шаблон отказa</div>
                 @empty($rejected)
-                <form action="{{ url('template/store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ url('admin/template/store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="template_state" value="rejected">
                     <input type="hidden" name="processId" value="{{$process->id}}">
@@ -173,7 +173,7 @@
                 @isset($rejected)
                      <p>
                         <u>{{$rejected->name}}</u>
-                        <a href="{{ url('template_field/create', [$rejected]) }}" class="btn btn-outline-danger btn-xs">Редактировать</a>
+                        <a href="{{ url('admin/template_field/create', [$rejected]) }}" class="btn btn-outline-danger btn-xs">Редактировать</a>
                      </p>
                 @endisset
               </div>
@@ -186,7 +186,7 @@
                               <h4 class="modal-title">Список Ролей</h4>
                           </div>
                           <div class="modal-body">
-                            <form action="{{ url('process/add_role', ['process' => $process]) }}" method="POST">
+                            <form action="{{ url('admin/process/add_role', ['process' => $process]) }}" method="POST">
                               @csrf
                               <div style="margin-bottom: 10px;text-align: center;">
                                 <button type="submit" class="btn btn-success">Выбрать</button>
@@ -260,7 +260,7 @@
                             <h4 class="modal-title">Список Ролей</h4>
                         </div>
                         <div class="modal-body">
-                          <form action="{{ url('process/add_sub_role', ['process' => $process]) }}" method="POST">
+                          <form action="{{ url('admin/process/add_sub_role', ['process' => $process]) }}" method="POST">
                             @csrf
                             <div style="margin-bottom: 10px;text-align: center;">
                               <button type="submit" class="btn btn-success">Выбрать</button>
@@ -338,7 +338,7 @@
                           <span class="modal-title">Список Полей</span>
                       </div>
                       <div class="modal-body">
-                        <form action="{{ url('process/create_process_table', ['process' => $process]) }}" method="POST">
+                        <form action="{{ url('admin/process/create_process_table', ['process' => $process]) }}" method="POST">
                           @csrf
                           <div style="text-align: center;">
                             <button type="submit" class="btn btn-success">Создать</button>

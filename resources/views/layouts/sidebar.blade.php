@@ -44,55 +44,55 @@
       </ul>
     @else
       <ul class="nav">
-          <li class="nav-item {{request()->is('auction') ? 'active' : ''}}">
-            <a href="{{ url('auction') }}">
+          <li class="nav-item {{request()->is('admin/auction') ? 'active' : ''}}">
+            <a href="{{ url('admin/auction') }}">
                 <i class="la la-legal"></i>
                 <p>Аукцион</p>
             </a>
           </li>
-          <li class="nav-item {{request()->is('egknservice') ? 'active' : ''}}">
-            <a href="{{ url('egknservice') }}">
+          <li class="nav-item {{request()->is('admin/egknservice') ? 'active' : ''}}">
+            <a href="{{ url('admin/egknservice') }}">
                 <i class="la la-archive"></i>
                 <p>Поступившие заявки</p>
             </a>
           </li>
-          <li class="nav-item {{(request()->is('process') ? 'active' : request()->segment(1) == 'processes') ? 'active' : (request()->segment(1) == 'processes-edit' ? 'active' : (request()->segment(1) == 'template_field/create' ? 'active' : ''))}}">
-            <a href="{{ url('process') }}">
+          <li class="nav-item {{(request()->is('admin/process') ? 'active' : request()->segment(1) == 'processes') ? 'active' : (request()->segment(1) == 'processes-edit' ? 'active' : (request()->segment(1) == 'admin/template_field/create' ? 'active' : ''))}}">
+            <a href="{{ url('admin/process') }}">
                 <i class="la la-gears"></i>
                 <p>Процессы</p>
                 <span class="badge badge-count">{{ $processesCount }}</span>
             </a>
           </li>
-          <li class="nav-item {{request()->is('role') ? 'active' : (request()->segment(1) == 'role-edit' ? 'active' : '')}}">
-            <a href="{{ url('role') }}">
+          <li class="nav-item {{request()->is('admin/role') ? 'active' : (request()->segment(1) == 'role-edit' ? 'active' : '')}}">
+            <a href="{{ url('admin/role') }}">
                 <i class="la la-user"></i>
                 <p>Роли</p>
                 <span class="badge badge-count">{{ $rolesCount }}</span>
             </a>
           </li>
-          <li class="nav-item {{request()->is('city/index') ? 'active' : ''}}">
-            <a href="{{ url('city/index') }}">
+          <li class="nav-item {{request()->is('admin/city/index') ? 'active' : ''}}">
+            <a href="{{ url('admin/city/index') }}">
                 <i class="la la-building"></i>
                 <p>Организации</p>
                 <span class="badge badge-count">{{ $cityManagementCount }}</span>
             </a>
           </li>
-          <li class="nav-item {{request()->is('user_role/register') ? 'active' : (request()->segment(1) == 'user-edit' ? 'active' : '')}}">
-            <a href="{{ url('user_role/register') }}">
+          <li class="nav-item {{request()->is('admin/user_role/register') ? 'active' : (request()->segment(1) == 'user-edit' ? 'active' : '')}}">
+            <a href="{{ url('admin/user_role/register') }}">
                 <i class="la la-users"></i>
                 <p>Пользователи</p>
                 <span class="badge badge-count">{{ $usersCount }}</span>
             </a>
           </li>
-          <li class="nav-item {{request()->segment(1) == 'dictionary' ? 'active' : ''}}">
-            <a href="{{ url('dictionary') }}">
+          <li class="nav-item {{request()->is('admin/dictionary') ? 'active' : ''}}">
+            <a href="{{ url('admin/dictionary') }}">
                 <i class="la la-book"></i>
                 <p>Справочник</p>
                 <span class="badge badge-count">{{ $dictionariesCount }}</span>
             </a>
           </li>
-          <li class="nav-item {{request()->is('process/logs') ? 'active' : ''}}">
-            <a href="{{ url('process/logs') }}">
+          <li class="nav-item {{request()->is('admin/process/logs') ? 'active' : ''}}">
+            <a href="{{ url('admin/process/logs') }}">
                 <i class="la la-comment"></i>
                 <p>Логи сервиса</p>
             </a>

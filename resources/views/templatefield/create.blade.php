@@ -46,7 +46,7 @@
               @endforeach
             </tbody>
           </table>
-          <a href="{{url('process/edit', ['process' => $processId])}}" class="btn btn-primary">Продолжить</a>
+          <a href="{{url('admin/process/edit', ['process' => $processId])}}" class="btn btn-primary">Продолжить</a>
         </div>
       </div>
     </div>
@@ -197,15 +197,16 @@
 
         $('#delete').click(function(event) {
             var id = $('#id').val();
-            $.post('list/delete', {'id':id, '_token':"{{csrf_token()}}"}, function(data){
+            $.post('admin/list/delete', {'id':id, '_token':"{{csrf_token()}}"}, function(data){
                 console.log(data);
                 $('#items').load(location.href + ' #items');
             });
         });
+
         $('#saveChanges').click(function(event) {
             var id = $('#id').val();
             var value = $('#addItem').val();
-            $.post('list/update ', {'id':id, 'value':value,'_token':"{{csrf_token()}}"}, function(data){
+            $.post('admin/list/update ', {'id':id, 'value':value,'_token':"{{csrf_token()}}"}, function(data){
                 console.log(data);
                 $('#items').load(location.href + ' #items');
             });

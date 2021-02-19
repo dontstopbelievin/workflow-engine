@@ -30,12 +30,11 @@
         </div>
         <ul class="navbar-nav" style="margin-left: 20px;">
             <li class="nav-item">
-                <a href="{{url('docs')}}" class="navbar-left navbar-form nav-search {{(request()->segment(1) == 'docs') || (request()->segment(1) == 'applications') ? 'active' : ''}}">
+                <a href="{{url('docs')}}" class="navbar-left navbar-form nav-search {{request()->segment(1) == 'docs' ? 'active' : ''}}">
                 Документы</a>
             </li>
             <li class="nav-item">
-                <a href="{{url('process')}}" class="navbar-left navbar-form nav-search {{(request()->segment(1) == 'process') || (request()->segment(1) == 'role') || (request()->segment(1) == 'city') ||
-                    (request()->segment(1) == 'user_role') || (request()->segment(1) == 'dictionary') ? 'active' : ''}}">
+                <a href="{{url('admin/process')}}" class="navbar-left navbar-form nav-search {{(request()->segment(1) == 'process') || (request()->segment(1) == 'admin') ? 'active' : ''}}">
                 Администрирование</a>
             </li>
             <li class="nav-item">

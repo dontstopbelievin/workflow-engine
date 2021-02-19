@@ -14,7 +14,7 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <a href="{{ url('egknservice/load') }}"
+                                        <a href="{{ url('admin/egknservice/load') }}"
                                             class="btn btn-info float-left">Обновить</a>
                                     </div>
                                     <div class="col-md-6">
@@ -55,7 +55,7 @@
                                                         <td class="text-left align-middle">{{ $field->execution_date }}</td>
 
                                                         <td class="text-left align-middle"><a
-                                                                href="{{ url('egknservice/view', ['id' => $field->id]) }}"><i
+                                                                href="{{ url('admin/egknservice/view', ['id' => $field->id]) }}"><i
                                                                     class="fa fa-eye" style="font-size:24px"></i></a></td>
                                                     </tr>
                                                 </tbody>

@@ -173,7 +173,7 @@
               if (insertItem === null) {
                   alert('Выберите тип сохранения');
               }
-              $.post('dictionary/create', {'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, '_token':$('input[name=_token]').val()}, function(data){
+              $.post('admin/dictionary/create', {'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, '_token':$('input[name=_token]').val()}, function(data){
                   console.log(data);
                   $('#items').load(location.href + ' #items');
               });
@@ -181,7 +181,7 @@
 
           $('#delete').click(function(event) {
               var id = $('#id').val();
-              $.post('list/delete', {'id':id, '_token':$('input[name=_token]').val()}, function(data){
+              $.post('admin/list/delete', {'id':id, '_token':$('input[name=_token]').val()}, function(data){
                   console.log(data);
                   $('#items').load(location.href + ' #items');
               });
@@ -189,7 +189,7 @@
           $('#saveChanges').click(function(event) {
               var id = $('#id').val();
               var value = $('#addItem').val();
-              $.post('list/update ', {'id':id, 'value':value,'_token':$('input[name=_token]').val()}, function(data){
+              $.post('admin/list/update ', {'id':id, 'value':value,'_token':$('input[name=_token]').val()}, function(data){
                   console.log(data);
                   $('#items').load(location.href + ' #items');
               });

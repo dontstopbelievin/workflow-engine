@@ -17,7 +17,7 @@
               </div>
           @endif
         </div>
-        <form action="{{ url('process/store') }}" method="POST">
+        <form action="{{ url('admin/process/store') }}" method="POST">
           <div class="card-body">
             @csrf
             @empty($process)
@@ -33,7 +33,7 @@
           </div>
           <div class="card-action">
             <button type="submit" class="btn btn-success">Создать</button>
-            <a href="{{ url('process') }}" class="btn btn-info">Назад</a>
+            <a href="{{ url('admin/process') }}" class="btn btn-info">Назад</a>
           </div>
         </form>
       </div>
