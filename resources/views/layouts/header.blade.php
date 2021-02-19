@@ -16,13 +16,15 @@
     background-color: green;
 }
 </style>
-<nav class="navbar navbar-header navbar-expand-lg fixed-top" style="background: #0067B8!important; height: 60px;box-shadow: 0 2px 1px -1px #999; color:white!important;">
-    <div class="container-fluid">
+<nav class="navbar navbar-header navbar-expand-lg fixed-top" style="background: #0067B8!important; height: 60px;box-shadow: 0 2px 1px -1px #999; color:white!important;padding-left: 0px;">
+    <div class="container-fluid" style="padding-left: 0px;">
         <div class="navbar-header">
             <div>
-                <a href="{{ url('services') }}" class="logo" style="font-size: 15px;">
-                    <img style="height: 35px; padding-right: 5px;" src="{{url('/images/astana-logo.png')}}">
-                    Электронные услуги
+                <a href="{{ url('services') }}" class="logo" style="padding-right: 5px; text-decoration: none!important;">
+                    <img style="height: 35px;" src="{{url('/images/astana-logo.png')}}">
+                </a>
+                <a href="{{ url('services') }}" class="logo">
+                    <img style="height: 13px;" src="{{url('/images/logo.png')}}">
                 </a>
             </div>
         </div>
