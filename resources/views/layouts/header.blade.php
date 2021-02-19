@@ -20,8 +20,9 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <div>
-                <a href="{{ url('services') }}" class="logo" style="font-weight: bold;">
-                    <img style="height: 20px;" src="{{url('/images/logo.png')}}">
+                <a href="{{ url('services') }}" class="logo" style="font-size: 15px;">
+                    <img style="height: 35px; padding-right: 5px;" src="{{url('/images/astana-logo.png')}}">
+                    Электронные услуги
                 </a>
             </div>
         </div>
