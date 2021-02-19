@@ -1,6 +1,48 @@
 <div class="sidebar" style="margin-top: 60px;">
   <div class="scrollbar-inner sidebar-wrapper" style="padding-top: 0px;">
-    <div id="sidebar1" class="tabcontent2" style="display: none;">
+    @if(request()->segment(1) == 'applications' || request()->segment(1) == 'services' ||
+      request()->segment(1) == 'user' || request()->segment(1) == 'password'
+      || request()->segment(1) == 'policy')
+      <ul class="nav">
+        <li class="nav-item text-center">
+          <button class="btn btn-primary" onclick="location.href='{{url('services')}}';">
+            <i class="fa fa-plus"></i>
+            <span style="margin-left: 5px;">Создать документ</span>
+          </button>
+          <br><hr>
+        </li>
+        <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : ''}}">
+          <a href="{{ url('services') }}">
+              <i class="la la-sign-out"></i>
+              <p>Входящие</p>
+          </a>
+        </li>
+        <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : ''}}">
+          <a href="{{ url('services') }}">
+              <i class="la la-sign-in"></i>
+              <p>Исходящие</p>
+          </a>
+        </li>
+        <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : ''}}">
+          <a href="{{ url('services') }}">
+              <i class="fa fa-book"></i>
+              <p>Мои документы</p>
+          </a>
+        </li>
+        <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : ''}}">
+          <a href="{{ url('services') }}">
+              <i class="fa fa-file-text"></i>
+              <p>Черновики</p>
+          </a>
+        </li>
+        <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : ''}}">
+          <a href="{{ url('services') }}">
+              <i class="fa fa-archive"></i>
+              <p>Архив документов</p>
+          </a>
+        </li>
+      </ul>
+    @else
       <ul class="nav">
           <li class="nav-item {{request()->is('auction') ? 'active' : ''}}">
             <a href="{{ url('auction') }}">
@@ -63,46 +105,6 @@
           </li>
       </ul>
     </div>
-    <div id="sidebar2" class="tabcontent2">
-      <ul class="nav">
-        <li class="nav-item text-center">
-          <button class="btn btn-primary" onclick="location.href='{{url('services')}}';">
-            <i class="fa fa-plus"></i>
-            <span style="margin-left: 5px;">Создать документ</span>
-          </button>
-          <br><hr>
-        </li>
-        <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : ''}}">
-          <a href="{{ url('services') }}">
-              <i class="la la-sign-out"></i>
-              <p>Входящие</p>
-          </a>
-        </li>
-        <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : ''}}">
-          <a href="{{ url('services') }}">
-              <i class="la la-sign-in"></i>
-              <p>Исходящие</p>
-          </a>
-        </li>
-        <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : ''}}">
-          <a href="{{ url('services') }}">
-              <i class="fa fa-book"></i>
-              <p>Мои документы</p>
-          </a>
-        </li>
-        <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : ''}}">
-          <a href="{{ url('services') }}">
-              <i class="fa fa-file-text"></i>
-              <p>Черновики</p>
-          </a>
-        </li>
-        <li class="nav-item {{request()->segment(1) == 'services' ? 'active' : ''}}">
-          <a href="{{ url('services') }}">
-              <i class="fa fa-archive"></i>
-              <p>Архив документов</p>
-          </a>
-        </li>
-      </ul>
-    </div>
+    @endif
   </div>
 </div>

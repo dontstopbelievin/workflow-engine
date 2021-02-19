@@ -27,11 +27,12 @@
         </div>
         <ul class="navbar-nav" style="margin-left: 20px;">
             <li class="nav-item">
-                <a href="#" onclick="openTab2(event, 'sidebar2')" class="tablinks avbar-left navbar-form nav-search {{request()->segment(1) == 'services' ? 'active' : ''}}">
+                <a href="{{url('services')}}" class="navbar-left navbar-form nav-search {{(request()->segment(1) == 'services') || (request()->segment(1) == 'applications') ? 'active' : ''}}">
                 Документы</a>
             </li>
             <li class="nav-item">
-                <a href="#" onclick="openTab2(event, 'sidebar1')" class="tablinks navbar-left navbar-form nav-search {{request()->segment(1) == 'asaf' ? 'active' : ''}}">
+                <a href="{{url('process')}}" class="navbar-left navbar-form nav-search {{(request()->segment(1) == 'process') || (request()->segment(1) == 'role') || (request()->segment(1) == 'city') ||
+                    (request()->segment(1) == 'user_role') || (request()->segment(1) == 'dictionary') ? 'active' : ''}}">
                 Администрирование</a>
             </li>
             <li class="nav-item">
