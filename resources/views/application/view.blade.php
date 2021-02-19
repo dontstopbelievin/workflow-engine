@@ -22,9 +22,9 @@
                     </div>
                     <div class="card-body">
                         <div class="tab">
-                            <button class="tablinks" id="mybutton" onclick="openTab(event, 'applicationInfo')">Информация о заявителе</button>
-                            <button class="tablinks" onclick="openTab(event, 'specialistFields')">Поля заполненные специалистами</button>
-                            <button class="tablinks" onclick="openTab(event, 'logs')">Ход согласования</button>
+                            <button class="tablinks" id="mybutton" onclick="openTab(event, 'applicationInfo')">Входные данные</button>
+                            <button class="tablinks" onclick="openTab(event, 'specialistFields')">Выходные данные</button>
+                            <button class="tablinks" onclick="openTab(event, 'logs')">Движение документа</button>
                         </div>
                         <div id="applicationInfo" class="tabcontent">
                             <!-- <h4 class="text-center">Информация о заявителе</h4> -->
