@@ -165,42 +165,23 @@ trait dbQueries
             ->get();
         return json_decode($routes, true);
     }
-    private function getTableWithStatuses($table) {
 
-        if(Schema::hasTable($table)) {
-            return DB::table($table)
-                ->join('statuses', $table.'.status_id','=', 'statuses.id')
-                ->select($table.'.*', 'statuses.name as status')
-                ->get()->toArray();
-        } else {
-            echo 'Процесс не был сформирован полностью. Сначала завершите формирование процесса';
-            exit();
-        }
+    private function getApplications($table_name, $table_id) {
 
-    }
-
-    private function getTableWithMultipleStatuses($table)
-    {
-        $applications = DB::table($table)->where('statuses', '!=', Null)->get()->toArray(); //get collection of StdClass objects
-        $convertedApplications = json_decode(json_encode($applications), true);
-
-        if(Schema::hasTable($table)) {
-            foreach($convertedApplications as &$app) {
-                $statuses = [];
-                $statusIds = json_decode($app["statuses"]);
-                foreach($statusIds as $id) {
-                    $status = Status::find($id)->name;
-                    array_push($statuses, $status);
+        if(Schema::hasTable($table_name)) {
+            $apps = DB::table($table_name)->get();
+            foreach ($apps as $app) {
+                $last_log = DB::table('logs')->where('table_id', $table_id)->where('application_id', $app->id)->latest('created_at')->first();
+                if($last_log){
+                    $app->last_status = Status::select('name')->where('id', $last_log->status_id)->first()->name;
                 }
-              $app["statuses"] = $statuses;
             }
-
-            return $convertedApplications;
-
+            return $apps;
         } else {
             echo 'Процесс не был сформирован полностью. Сначала завершите формирование процесса';
             exit();
         }
+
     }
 
     private function checkIfAppHasMultipleStatuses($table)

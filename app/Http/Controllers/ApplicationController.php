@@ -44,26 +44,9 @@ class ApplicationController extends Controller
 
     public function index(Process $process)
     {
-
         $tableName = $this->getTableName($process->name);
-
-        $appHasMultipleStatuses = $this->checkIfAppHasMultipleStatuses($tableName);
-
-        if ($appHasMultipleStatuses) {
-            $arrayApps = $this->getTableWithMultipleStatuses($tableName);
-
-        } else {
-            $applications = $this->getTableWithStatuses($tableName);
-            $arrayApps = json_decode(json_encode($applications), true);
-
-            foreach($arrayApps as &$app) {
-                if ($app["to_revision"] === 1) {
-                    $app["status"] = $app["status"] . " на доработку";
-                } else {
-                    $app["status"] = $app["status"] . " на согласование";
-                }
-            }
-        }
+        $table = CreatedTable::where('name', $tableName)->first();
+        $arrayApps = $this->getApplications($tableName, $table->id);
         return view('application.index', compact('arrayApps', 'process'));
     }
 
