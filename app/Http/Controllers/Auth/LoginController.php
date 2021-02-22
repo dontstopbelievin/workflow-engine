@@ -140,7 +140,7 @@ class LoginController extends Controller
             'last_failed_login_at' => Carbon::now()->toDateTimeString(),
             'last_failed_login_ip' => $request->getClientIp()
         ]);
-        return back();
+        return Redirect::to('/');
     }
 
     public function logout(Request $request)

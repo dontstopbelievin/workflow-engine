@@ -26,7 +26,6 @@ use Illuminate\Support\Facades\View;
 
 Auth::routes();
 
-Route::get('/', 'ApplicationController@service');
 Route::get('/policy', function () {return view('policy');});
 Route::get('/list', function () {return view('list.list');});
 
@@ -51,6 +50,7 @@ Route::middleware(['guest'])->group(function () {
 
 Route::group(['middleware' => ['auth']], function () {
 
+    Route::get('/', 'ApplicationController@service');
     Route::post('agreement_accept', 'ApplicationController@acceptAgreement');
 
     Route::prefix('password')->group(function () {
