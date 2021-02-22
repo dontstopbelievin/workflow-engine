@@ -16,7 +16,7 @@ class CreateLogsTable extends Migration
         Schema::create('logs', function (Blueprint $table) {
             $table->id();
             $table->integer('status_id')->unsigned();
-            $table->foreign('status_id')->references('id')->on('statuses');
+            $table->foreign('status_id')->references('id')->on('role_statuses');
             $table->integer('table_id')->unsigned();
             $table->foreign('table_id')->references('id')->on('created_tables');
             $table->integer('role_id')->unsigned();
