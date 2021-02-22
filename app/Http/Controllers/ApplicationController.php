@@ -169,8 +169,11 @@ class ApplicationController extends Controller
 
           $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
 
-          $nextRoleId = $this->getNextUnparallelRoleId($process, $currentRoleOrder, $request->application_id);
-          //dd($nextRoleId);
+          $role_status = DB::table('role_statuses')->where('role_name', $user->role->name)->where('status_id', 2)->first();
+          $logsArray = $this->getLogs($role_status->id, $table->id, $application->id, $user->role_id, $currentRoleOrder, 0, '', "Согласовал(а) отказ");
+          Log::insert( $logsArray);
+
+          $nextRoleId = $this->getNextUnparallelRoleId($process, $currentRoleOrder, $request->application_id, $table->id);
 
           if($nextRoleId[0] == 1){
             DB::table($tableName)
@@ -181,11 +184,6 @@ class ApplicationController extends Controller
                 ->where('id', $request->application_id)
                 ->update(['statuses' => [$nextRoleId[0]], 'current_order' => $nextRoleId[1]]);
           }
-
-          $role_status = DB::table('role_statuses')->where('role_name', $user->role->name)->where('status_id', 2)->first();
-          $logsArray = $this->getLogs($role_status->id, $table->id, $application->id, $user->role_id, $currentRoleOrder, 0, '', "Согласовал(а) отказ");
-          // dd($logsArray);
-          Log::insert( $logsArray);
 
           $this->insertComments($request->comments, $request->applicationId, $table->id);
           // if ($application->to_revision === 0) {
@@ -568,9 +566,13 @@ class ApplicationController extends Controller
 
             $user = Auth::user();
             $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
+            $role_status = DB::table('role_statuses')->where('role_name', Auth::user()->role->name)->where('status_id', 2)->first();
+            $logsArray = $this->getLogs($role_status->id, $table->id, $application->id, $user->role_id, $currentRoleOrder, 0, '', $request->rejectReason);
+
+            Log::insert( $logsArray);
 
             if($request->motiv_otkaz == 1){ // если у него мотивированный отказ есть => reject_reason заполнить, и дальше чисто согласование мотив отказа
-                $nextRoleId = $this->getNextUnparallelRoleId($process, $currentRoleOrder, $request->application_id);
+                $nextRoleId = $this->getNextUnparallelRoleId($process, $currentRoleOrder, $request->application_id,  $table->id);
                 // dd($nextRoleId);
                 if($nextRoleId[0] == 1){
                   DB::table($tableName)
@@ -592,11 +594,6 @@ class ApplicationController extends Controller
                     ->update(['statuses' => $processRoles]);
             }
 
-            $role_status = DB::table('role_statuses')->where('role_name', Auth::user()->role->name)->where('status_id', 2)->first();
-            $logsArray = $this->getLogs($role_status->id, $table->id, $application->id, $user->role_id, $currentRoleOrder, 0, '', $request->rejectReason);
-
-            Log::insert( $logsArray);
-
             // if ($application->to_revision === 0) {
             //     DB::table($tableName)
             //         ->where('id', $request->applicationId)
@@ -608,6 +605,7 @@ class ApplicationController extends Controller
             // }
 
             DB::commit();
+            return response()->json(['message' => 'success'], 200);
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json(['message' => $e->getMessage()], 500);

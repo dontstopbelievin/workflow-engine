@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Auth;
 use App\Dictionary;
 use App\Log;
+use App\Role;
 use App\Status;
 
 trait dbQueries
@@ -225,7 +226,8 @@ trait dbQueries
         return $currentRoles;
     }
 
-    public function getNextUnparallelRoleId($process, $currentRoleOrder, $application_id){
+    public function getNextUnparallelRoleId($process, $currentRoleOrder, $application_id, $table_id){
+        $my_order = $currentRoleOrder;
         $maxOrder = $process->roles()->max('order');
 
         while($maxOrder >= $currentRoleOrder){
@@ -239,7 +241,11 @@ trait dbQueries
         if($currentRoleOrder > $maxOrder){
           return [1, 0];
         }else{
-          return [$rolesAfter[0]->pivot['role_id'], $rolesAfter[0]->pivot['order']];
+            $role = Role::select('name')->where('id', $rolesAfter[0]->pivot['role_id'])->first();
+            $role_status = DB::table('role_statuses')->where('role_name', $role->name)->where('status_id', 4)->first();
+            $logsArray = app('App\Http\Controllers\ApplicationController')->getLogs($role_status->id, $table_id, $application_id, Auth::user()->role_id, $my_order, 0);
+            Log::insert($logsArray);
+            return [$rolesAfter[0]->pivot['role_id'], $rolesAfter[0]->pivot['order']];
         }
 
     }

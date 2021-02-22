@@ -20,7 +20,7 @@
                             </div>
                         @endif
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" id="items">
                         <div class="tab">
                             <button class="tablinks" id="mybutton" onclick="openTab(event, 'applicationInfo')">Входные данные</button>
                             <button class="tablinks" onclick="openTab(event, 'specialistFields')">Выходные данные</button>
@@ -130,7 +130,7 @@
                                     <div class="modal-body">
                                         <div class="form-group">
                                             <div class="form-group row">
-                                                <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Введите комментарии") }}</label>
+                                                <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Введите комментарий") }}</label>
                                                 <div class="col-md-6">
                                                     <input type="text" id="comments" class="form-control" name="comments"  autocomplete="comments" autofocus>
                                                 </div>
@@ -175,7 +175,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="items">
+                        <div>
                             @if($canApprove)
                                     @if (isset($templateFields) && $application->reject_reason == null)
                                         <h4 class="card-title text-center" style="margin-top:50px;">Поля Шаблона</h4>
@@ -209,7 +209,7 @@
                                                   <input type="hidden" name="application_id" value = {{$application->id}}>
                                                   <input type="hidden" name="answer" value = "1">
                                                   <div class="form-group row">
-                                                      <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Введите комментарии перед отправкой заявителю") }}</label>
+                                                      <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Комментарий") }}</label>
                                                       <div class="col-md-6">
                                                           <input type="text" id="comments" class="form-control" name="comments"  autocomplete="comments" autofocus>
                                                       </div>
@@ -239,7 +239,7 @@
                                               <input type="hidden" name="application_id" value = {{$application->id}}>
                                               <input type="hidden" name="answer" value = "0">
                                               <div class="form-group row">
-                                                  <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Введите комментарии перед отправкой заявителю") }}</label>
+                                                  <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Комментарий") }}</label>
                                                   <div class="col-md-6">
                                                       <input type="text" id="comments" class="form-control" name="comments"  autocomplete="comments" autofocus>
                                                   </div>
@@ -304,8 +304,7 @@
                 var application_id = $('#application_id').val();
                 console.log(rejectReason, processId, application_id)
                 $.post('/docs/reject', {'rejectReason':rejectReason,'motiv_otkaz':motiv_otkaz,'processId':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
-                    console.log('reject: '+data);
-                    $('#items').load(location.href + ' #items');
+                    location.reload();
                 });
             });
 
@@ -314,7 +313,7 @@
                 var application_id = $('#application_id').val();
                 console.log(processId, application_id)
                 $.post('/docs/approveReject', {'processId':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
-                    $('#items').load(location.href + ' #items');
+                    location.reload();
                 });
             });
 
@@ -324,7 +323,7 @@
                 var processId = $('#processId').val();
                 var application_id = $('#application_id').val();
                 $.post('/docs/revision', {'revisionReason':revisionReason,'processId':processId,'application_id':application_id,'roleToRevise':roleToRevise, '_token':$('input[name=_token]').val()}, function(data){
-                    $('#items').load(location.href + ' #items');
+                    location.reload();
                 });
             });
 
