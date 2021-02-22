@@ -5,7 +5,7 @@
 .dropdown-menu a{
     color:black!important;
 }
-.navbar-nav a{
+.nav_left_form a{
     padding: 5px;
     margin: 5px;
 }
@@ -28,7 +28,7 @@
                 </a>
             </div>
         </div>
-        <ul class="navbar-nav" style="margin-left: 20px;">
+        <ul class="navbar-nav nav_left_form" style="margin-left: 20px;">
             <li class="nav-item">
                 <a href="{{url('docs')}}" class="navbar-left navbar-form nav-search {{request()->segment(1) == 'docs' ? 'active' : ''}}">
                 Документы</a>
@@ -36,10 +36,6 @@
             <li class="nav-item">
                 <a href="{{url('admin/process')}}" class="navbar-left navbar-form nav-search {{(request()->segment(1) == 'process') || (request()->segment(1) == 'admin') ? 'active' : ''}}">
                 Администрирование</a>
-            </li>
-            <li class="nav-item">
-                <a href="/policy" class="navbar-left navbar-form nav-search {{request()->segment(1) == 'policy' ? 'active' : ''}}">
-                Правила информационной безопасности</a>
             </li>
         </ul>
         <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
@@ -51,12 +47,20 @@
             <li class="nav-item dropdown">
               <a class="dropdown-toggle profile-pic float-right" data-toggle="dropdown" href="#" aria-expanded="false" data-toggle="dropdown" aria-haspopup="true" style="line-height: 100%;margin-top: 10px;">
                 <span style="color:white!important">{{ Auth::user()->name }}</span><br>
-                <small>({{ Auth::user()->role->name }})</small>
+                <small>
+                    @if(strlen(Auth::user()->role->name) > 60)
+                        ({{substr(Auth::user()->role->name, 0, 60)}})
+                    @else
+                        ({{Auth::user()->role->name}})
+                    @endif
+                </small>
               </a>
               <ul class="dropdown-menu dropdown-user">
-                <li> <a class="dropdown-item" href="{{ url('user/personal_area') }}">Мои данные</a> </li>
-                <li> <a class="dropdown-item" href="{{ url('user/edit', ['user' => Auth::user()]) }}">Редактировать данные</a> </li>
-                <li> <a class="dropdown-item" href="/password/reset">Cменить пароль</a> </li>
+                <li><a class="dropdown-item" href="{{ url('user/personal_area') }}">Мои данные</a></li>
+                <li><a class="dropdown-item" href="{{ url('user/edit', ['user' => Auth::user()]) }}">Редактировать данные</a></li>
+                <li><a class="dropdown-item" href="{{url('password/reset')}}">Cменить пароль</a></li>
+                <li><a class="dropdown-item" href="{{url('policy')}}">
+                    Правила информационной без...</a></li>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item"href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();">
                     <i class="fa fa-power-off"></i>
