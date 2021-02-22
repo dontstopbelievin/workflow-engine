@@ -156,36 +156,55 @@ class ApplicationController extends Controller
         return sizeof($parallelRoles) != 0;
     }
 
-    // public function approveReject(Request $request){
-    //
-    //   $process = Process::find($request->processId);
-    //   $tableName = $this->getTableName($process->name);
-    //   $application = DB::table($tableName)->where('id', $request->applicationId)->first();
-    //   $table = CreatedTable::where('name', $tableName)->first();
-    //
-    //   $index = $application->index_main;
-    //   $appRoutes = $this->getAppRoutes($application->process_id);
-    //   //dd($appRoutes);
-    //   $nextRoleId = $appRoutes[$index]['id']; // find next role
-    //   $index = $index + 1;
-    //   $status = Status::find($nextRoleId);
-    //   //dd($status);
-    //   $user = Auth::user();
-    //   $role = $user->role;
-    //   $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
-    //
-    //   DB::table('logs')->insert( $logsArray);
-    //   $this->insertComments($request->comments, $request->applicationId, $table->id);
-    //   if ($application->to_revision === 0) {
-    //       DB::table($tableName)
-    //           ->where('id', $request->applicationId)
-    //           ->update(['status_id' => $status->id, 'index_main' => $index]);
-    //   } else {
-    //       DB::table($tableName)
-    //           ->where('id', $request->applicationId)
-    //           ->update(['status_id' => $status->id, 'index_main' => $index,'to_revision' => 0 ]);
-    //   }
-    // }
+    public function approveReject(Request $request){
+      try {
+          DB::beginTransaction();
+
+
+          $process = Process::find($request->processId);
+          $tableName = $this->getTableName($process->name);
+          $application = DB::table($tableName)->where('id', $request->application_id)->first();
+          $table = CreatedTable::where('name', $tableName)->first();
+
+          $user = Auth::user();
+
+          $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
+
+          $nextRoleId = $this->getNextUnparallelRoleId($process, $currentRoleOrder, $request->application_id);
+          //dd($nextRoleId);
+
+          if($nextRoleId[0] == 1){
+            DB::table($tableName)
+                ->where('id', $request->application_id)
+                ->update(['status_id' => 32, 'statuses' => '[]', 'current_order' => 0]);
+          }else{
+            DB::table($tableName)
+                ->where('id', $request->application_id)
+                ->update(['statuses' => [$nextRoleId[0]], 'current_order' => $nextRoleId[1]]);
+          }
+
+          $role_status = DB::table('role_statuses')->where('role_name', $user->role->name)->where('status_id', 2)->first();
+          $logsArray = $this->getLogs($role_status->id, $table->id, $application->id, $user->role_id, $currentRoleOrder, 0, '', "Согласовал(а) отказ");
+          // dd($logsArray);
+          Log::insert( $logsArray);
+
+          $this->insertComments($request->comments, $request->applicationId, $table->id);
+          // if ($application->to_revision === 0) {
+          //     DB::table($tableName)
+          //         ->where('id', $request->applicationId)
+          //         ->update(['status_id' => $status->id, 'index_main' => $index]);
+          // } else {
+          //     DB::table($tableName)
+          //         ->where('id', $request->applicationId)
+          //         ->update(['status_id' => $status->id, 'index_main' => $index,'to_revision' => 0 ]);
+          // }
+
+          DB::commit();
+      }catch (Exception $e) {
+          DB::rollBack();
+          return Redirect::to('docs')->with('status', $e->getMessage());
+      }
+    }
 
     public function approve(Request $request)
     {
@@ -246,7 +265,6 @@ class ApplicationController extends Controller
             //         ->update(['to_revision' => 0 ]);
             // }
             DB::commit();
-            return Redirect::to('docs')->with('status', 'Отправлено след специалисту');
         }catch (Exception $e) {
             DB::rollBack();
             return Redirect::to('docs')->with('status', $e->getMessage());
@@ -431,95 +449,103 @@ class ApplicationController extends Controller
 
     public function toCitizen($id, Request $request)
     {
-        $role = Auth::user()->role;
-        $applicationId = $request->application_id;
-        $process = Process::find($request->process_id);
-        $fieldValues = $request->fieldValues;
-        $tableName = $this->getTableName($process->name);
-        $application = DB::table($tableName)->where('id', $applicationId)->first();
-        $table = CreatedTable::where('name', $tableName)->first();
-        $templateId = $process->accepted_template_id;
-        $template = Template::where('id', $templateId)->first();
-        $templateTable = $this->getTemplateTableName($template->name);
-        $approveOrReject = $request->answer;
-        $comment = (isset($request->comments)) ? $request->comments : "";
+      try {
+          DB::beginTransaction();
 
-        if (Schema::hasTable($templateTable)) {
-            $fields = DB::table($templateTable)->select('*')->where('application_id', $applicationId)->first();
-            $aFields = json_decode(json_encode($fields), true);
+          $role = Auth::user()->role;
+          $applicationId = $request->application_id;
+          $process = Process::find($request->process_id);
+          $fieldValues = $request->fieldValues;
+          $tableName = $this->getTableName($process->name);
+          $application = DB::table($tableName)->where('id', $applicationId)->first();
+          $table = CreatedTable::where('name', $tableName)->first();
+          $templateId = $process->accepted_template_id;
+          $template = Template::where('id', $templateId)->first();
+          $templateTable = $this->getTemplateTableName($template->name);
+          $approveOrReject = $request->answer;
+          $comment = (isset($request->comments)) ? $request->comments : "";
+          $user = Auth::user();
+          if (Schema::hasTable($templateTable)) {
+              $fields = DB::table($templateTable)->select('*')->where('application_id', $applicationId)->first();
+              $aFields = json_decode(json_encode($fields), true);
 
-            $updatedFields = [];
-            if ($aFields !== Null) {
-                foreach($aFields as $key => $field) {
-                    if ($key === 'id' || $key === 'template_id' || $key === 'process_id' || $key === 'application_id' || $key === '_token') {
-                        continue;
-                    }
-                    $updatedFields[$key] = $field;
-                }
-            }
+              $updatedFields = [];
+              if ($aFields !== Null) {
+                  foreach($aFields as $key => $field) {
+                      if ($key === 'id' || $key === 'template_id' || $key === 'process_id' || $key === 'application_id' || $key === '_token') {
+                          continue;
+                      }
+                      $updatedFields[$key] = $field;
+                  }
+              }
 
-            $fileName = $this->generateRandomString();
-            $docPath = 'final_docs/'. $fileName . '.pdf';
-            $todayDate=date('d-m-Y');
-            $updatedFields["date"] = $todayDate;
-            $updatedFields["id"] = $applicationId;
-            $updatedFields["applicant_name"] = 'Аман';
-            $updatedFields["area"] = '114 га';
-            $updatedFields["area2"] = '114 га';
-            $updatedFields["flat_number"] = '114 га';
+              $fileName = $this->generateRandomString();
+              $docPath = 'final_docs/'. $fileName . '.pdf';
+              $todayDate=date('d-m-Y');
+              $updatedFields["date"] = $todayDate;
+              $updatedFields["id"] = $applicationId;
+              $updatedFields["applicant_name"] = 'Аман';
+              $updatedFields["area"] = '114 га';
+              $updatedFields["area2"] = '114 га';
+              $updatedFields["flat_number"] = '114 га';
 
-            $updatedFields["square"] = 'Байконур';
-            $updatedFields["street"] = 'Кабанбай батыра';
-            $updatedFields["duration"] = '12';
-            $updatedFields["object_name"] = 'object_name';
-            $updatedFields["cadastral_number"] = '1146';
-            $updatedFields["construction_name_before"] = '1146';
-            $updatedFields["construction_name_after"] = '1146';
-            $updatedFields["area_number"] = '1146';
-            $updatedFields["construction_name_before"] = 'Строительство';
-            $updatedFields["construction_name_after"] = 'Делопроизводство';
-            $updatedFields["area_number"] = '1146';
-            $userName = Auth::user()->name;
-            $roleName = Auth::user()->role->name;
-            $pathToView = $process->template_doc->pdf_path;
-            $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
+              $updatedFields["square"] = 'Байконур';
+              $updatedFields["street"] = 'Кабанбай батыра';
+              $updatedFields["duration"] = '12';
+              $updatedFields["object_name"] = 'object_name';
+              $updatedFields["cadastral_number"] = '1146';
+              $updatedFields["construction_name_before"] = '1146';
+              $updatedFields["construction_name_after"] = '1146';
+              $updatedFields["area_number"] = '1146';
+              $updatedFields["construction_name_before"] = 'Строительство';
+              $updatedFields["construction_name_after"] = 'Делопроизводство';
+              $updatedFields["area_number"] = '1146';
+              $userName = Auth::user()->name;
+              $roleName = Auth::user()->role->name;
+              $pathToView = $process->template_doc->pdf_path;
+              $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
 
-            $content = view($pathToView, compact('updatedFields', 'userName', 'roleName'))->render();
-            $mpdf = new Mpdf();
-            $mpdf->WriteHTML($content);
-            $mpdf->Output(storage_path(). $storagePathToPDF, \Mpdf\Output\Destination::FILE);
-            // return view('pdf_viewer')->with('my_pdf', $content);
-            $affected = DB::table($tableName)
-                ->where('id', $id)
-                ->update(['doc_path' => $docPath]);
-            // dd('done');
-        }
+              $content = view($pathToView, compact('updatedFields', 'userName', 'roleName'))->render();
+              $mpdf = new Mpdf();
+              $mpdf->WriteHTML($content);
+              $mpdf->Output(storage_path(). $storagePathToPDF, \Mpdf\Output\Destination::FILE);
+              // return view('pdf_viewer')->with('my_pdf', $content);
+              $affected = DB::table($tableName)
+                  ->where('id', $id)
+                  ->update(['doc_path' => $docPath]);
+               dd('done');
+          }
 
-        if ($fieldValues !== Null) {
-            $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
-        }
+          if ($fieldValues !== Null) {
+              $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
+          }
+          // dd('done');
+          $tableName = $this->getTableName($process->name);
+          $table = CreatedTable::where('name', $tableName)->first();
+          $application = DB::table($tableName)->where('id', $id)->first();
+          $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
 
-        $tableName = $this->getTableName($process->name);
-        $table = CreatedTable::where('name', $tableName)->first();
-        $application = DB::table($tableName)->where('id', $id)->first();
-        $currentRoleOrder = $process->roles()->select('order')->where('role_id', $role->id)->first()->order;
+          $role_status = DB::table('role_statuses')->where('role_name', $user->role->name)->where('status_id', ($approveOrReject == 0) ? 2 : 1;)->first();
+          $logsArray = $this->getLogs($role_status->id, $table->id, $applicationId, $user->role_id, $currentRoleOrder, $approveOrReject,'', $comment);
+          Log::insert($logsArray);
 
-        $role_status = DB::table('role_statuses')->where('role_name', $role->name)->where('status_id', 1)->first();
-        $logsArray = $this->getLogs($role_status->id, $table->id, $application->id, $role->id, $currentRoleOrder, $approveOrReject,'', $comment);
-        Log::insert($logsArray);
+          $role_status = DB::table('role_statuses')->where('role_name', 'Заявитель')->where('status_id', 4)->first();
+          $logsArray = $this->getLogs($role_status->id, $table->id, $applicationId, $user->role_id, $currentRoleOrder, $approveOrReject,'');
+          Log::insert($logsArray);
 
-        $role_status = DB::table('role_statuses')->where('role_name', 'Заявитель')->where('status_id', 4)->first();
-        $logsArray = $this->getLogs($role_status->id, $table->id, $application->id, $role->id, $currentRoleOrder, $approveOrReject,'');
-        Log::insert($logsArray);
+          // updating the status_id (not the statuses field) as "Sent to citizen"
+          $statusId = ($approveOrReject == 0) ? 32 : 33;
+          $status = Status::find($statusId);
+          $affected = DB::table($tableName)
+              ->where('id', $id)
+              ->update(['status_id' => $statusId, 'current_order' => 0, 'statuses' => '[]']);
 
-        // updating the status_id (not the statuses field) as "Sent to citizen"
-        $statusId = ($approveOrReject == 0) ? 32 : 33;
-        $status = Status::find($statusId);
-        $affected = DB::table($tableName)
-            ->where('id', $id)
-            ->update(['status_id' => $statusId, 'current_order' => 0, 'statuses' => '[]']);
-
-        return Redirect::to('docs')->with('status', $status->name);
+          DB::commit();
+          // return Redirect::to('docs')->with('status', $status->name);
+      } catch (Exception $e) {
+          DB::rollBack();
+          return response()->json(['message' => $e->getMessage()], 500);
+      }
     }
 
     function generateRandomString($length = 20) {
@@ -543,25 +569,34 @@ class ApplicationController extends Controller
 
             $user = Auth::user();
             $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
-            $processRoles = $this->getProcessStatuses($tableName, $request->application_id);
-            $children = $this->getRoleChildren($process);
+
+            if($request->motiv_otkaz == 1){ // если у него мотивированный отказ есть => reject_reason заполнить, и дальше чисто согласование мотив отказа
+                $nextRoleId = $this->getNextUnparallelRoleId($process, $currentRoleOrder, $request->application_id);
+                // dd($nextRoleId);
+                if($nextRoleId[0] == 1){
+                  DB::table($tableName)
+                      ->where('id', $request->application_id)
+                      ->update(['status_id' => 32, 'statuses' => '[]', 'reject_reason' => $request->rejectReason, 'reject_reason_from_spec_id' => $user->role_id, 'current_order' => 0]);
+                }else{
+                  DB::table($tableName)
+                      ->where('id', $request->application_id)
+                      ->update(['statuses' => [$nextRoleId[0]], 'reject_reason' => $request->rejectReason, 'current_order' => $nextRoleId[1], 'reject_reason_from_spec_id' => $user->role_id]);
+                }
+            }else{
+                $processRoles = $this->getProcessStatuses($tableName, $request->application_id);
+                $children = $this->getRoleChildren($process);
+
+                $processRoles = array_values($this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table->id, $request->application_id, 0));
+
+                DB::table($tableName)
+                    ->where('id', $request->application_id)
+                    ->update(['statuses' => $processRoles]);
+            }
 
             $role_status = DB::table('role_statuses')->where('role_name', Auth::user()->role->name)->where('status_id', 2)->first();
             $logsArray = $this->getLogs($role_status->id, $table->id, $application->id, $user->role_id, $currentRoleOrder, 0, '', $request->rejectReason);
 
             Log::insert( $logsArray);
-
-            $processRoles = array_values($this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table->id, $request->application_id, 0));
-
-            if($request->motiv_otkaz == 1){ // если у него мотивированный отказ есть => reject_reason заполнить, и дальше чисто согласование мотив отказа
-              DB::table($tableName)
-                  ->where('id', $request->application_id)
-                  ->update(['statuses' => $processRoles, 'reject_reason' => $request->rejectReason, 'reject_reason_from_spec_id' => $user->role_id]);
-            }else{
-              DB::table($tableName)
-                  ->where('id', $request->application_id)
-                  ->update(['statuses' => $processRoles]);
-            }
 
             // if ($application->to_revision === 0) {
             //     DB::table($tableName)

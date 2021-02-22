@@ -225,6 +225,25 @@ trait dbQueries
         return $currentRoles;
     }
 
+    public function getNextUnparallelRoleId($process, $currentRoleOrder, $application_id){
+        $maxOrder = $process->roles()->max('order');
+
+        while($maxOrder >= $currentRoleOrder){
+            $rolesAfter = $process->roles()->where('order', $currentRoleOrder + 1)->get();
+            if(sizeof($rolesAfter) == 1){
+                break;
+            }
+            $currentRoleOrder++;
+        }
+
+        if($currentRoleOrder > $maxOrder){
+          return [1, 0];
+        }else{
+          return [$rolesAfter[0]->pivot['role_id'], $rolesAfter[0]->pivot['order']];
+        }
+
+    }
+
     public function getSubRoutes($id) {
 
         $routes = DB::table('roles')
