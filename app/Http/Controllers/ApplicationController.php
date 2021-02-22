@@ -160,7 +160,6 @@ class ApplicationController extends Controller
       try {
           DB::beginTransaction();
 
-
           $process = Process::find($request->processId);
           $tableName = $this->getTableName($process->name);
           $application = DB::table($tableName)->where('id', $request->application_id)->first();
@@ -513,7 +512,7 @@ class ApplicationController extends Controller
               $affected = DB::table($tableName)
                   ->where('id', $id)
                   ->update(['doc_path' => $docPath]);
-               dd('done');
+               // dd('done');
           }
 
           if ($fieldValues !== Null) {
@@ -525,7 +524,7 @@ class ApplicationController extends Controller
           $application = DB::table($tableName)->where('id', $id)->first();
           $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
 
-          $role_status = DB::table('role_statuses')->where('role_name', $user->role->name)->where('status_id', ($approveOrReject == 0) ? 2 : 1;)->first();
+          $role_status = DB::table('role_statuses')->where('role_name', $user->role->name)->where('status_id', ($approveOrReject == 0) ? 2 : 1)->first();
           $logsArray = $this->getLogs($role_status->id, $table->id, $applicationId, $user->role_id, $currentRoleOrder, $approveOrReject,'', $comment);
           Log::insert($logsArray);
 
@@ -541,7 +540,7 @@ class ApplicationController extends Controller
               ->update(['status_id' => $statusId, 'current_order' => 0, 'statuses' => '[]']);
 
           DB::commit();
-          // return Redirect::to('docs')->with('status', $status->name);
+          return Redirect::to('docs')->with('status', $status->name);
       } catch (Exception $e) {
           DB::rollBack();
           return response()->json(['message' => $e->getMessage()], 500);
