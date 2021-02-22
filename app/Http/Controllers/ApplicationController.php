@@ -90,43 +90,15 @@ class ApplicationController extends Controller
 
         if(Auth::user()->role_id != 1){
             // начало проверки на последнего специалиста в процессе
-            $user_role_p = $process->roles()->select('order')->where('role_id', Auth::user()->role_id)->first();
-            if(!$user_role_p){
+            if(!$process->roles()->select('order')->where('role_id', Auth::user()->role_id)->first()){
                 return Redirect::back()->with('error', 'Вы не состоите в процессе.');
             }
-            $currentOrder = $user_role_p->order;
             $children = $process->roles()->where('parent_role_id', Auth::user()->role_id)->get();
             $maxOrder = $process->roles()->max('order');
             $currentRoles = $this->getProcessStatuses($tableName, $application->id);
-            if (sizeof($currentRoles) == 1 && sizeof($children)==0 && $maxOrder == $currentOrder) {
+            if (sizeof($currentRoles) == 1 && sizeof($children)==0 && $maxOrder == $application->current_order) {
                 $toCitizen = true; // если заявку подписывает последний специалист в обороте, заявка идет обратно к заявителю
             }
-        }
-
-        // Обработка причины и участников доработки
-        $fromRole = Role::where('id', $application->revision_reason_from_spec_id)->first(); // кто отправил на доработку
-        $toRole = Role::where('id', $application->revision_reason_to_spec_id)->first(); // кому отправили на доработку
-        $revisionReasonArray = [];
-        $revisionReasonArray["revisionReason"] = $application->revision_reason;
-        if (isset($fromRole)) {
-            $revisionReasonArray["fromRole"] = $fromRole->name;
-        } else {
-            $revisionReasonArray["fromRole"] = Null;
-        }
-        if (isset($fromRole)) {
-            $revisionReasonArray["toRole"] = $toRole->name;
-        } else {
-            $revisionReasonArray["toRole"] = Null;
-        }
-        //
-        // Обработка причины отказа
-        $rejectFromRole = Role::where('id', $application->reject_reason_from_spec_id)->first(); // кто отправил на отказ
-        $rejectReasonArray = [];
-        $rejectReasonArray["rejectReason"] = $application->reject_reason;
-        if (isset($rejectFromRole)) {
-            $rejectReasonArray["fromRole"] = $rejectFromRole->name;
-        } else {
-            $rejectReasonArray["fromRole"] = Null;
         }
 
         $allRoles = $this->get_roles_in_order($process->id);
@@ -154,13 +126,13 @@ class ApplicationController extends Controller
                   ->get()
                   ->toArray();
 
-        if(isset($buttons[0]) && $rejectReasonArray['rejectReason'] != null){
+        if(isset($buttons[0]) && $application->reject_reason != null){
           $buttons[0]->can_reject = 0;
         }
 
         $applicationArrays = json_decode(json_encode($application), true);
 
-        return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','allRoles','records','revisionReasonArray','rejectReasonArray', 'buttons', 'aRowNameRows','applicationArrays'));
+        return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','allRoles','records', 'buttons', 'aRowNameRows','applicationArrays'));
     }
 
     public function acceptAgreement(Request $request)
@@ -245,7 +217,7 @@ class ApplicationController extends Controller
 
             // insertion of fields into template
             if(!$this->insertTemplateFields($fieldValues, $templateTable, $process->id, $request->application_id, $templateId)){
-                return Redirect::route('applications.service')->with('status', 'insert template fields error');
+                return Redirect::to('docs')->with('status', 'insert template fields error');
             }
 
             $currentRoleOrder = $process->roles()->select('order')->where('role_id', Auth::user()->role_id)->first()->order;
@@ -258,7 +230,7 @@ class ApplicationController extends Controller
 
             Log::insert( $logsArray);
 
-            $processRoles = array_values($this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table->id, $request->application_id, 1));
+            $processRoles = array_values($this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table->id, $request->application_id, 1, $tableName));
 
             DB::table($tableName)
                 ->where('id', $request->application_id)
@@ -274,14 +246,14 @@ class ApplicationController extends Controller
             //         ->update(['to_revision' => 0 ]);
             // }
             DB::commit();
-            return Redirect::route('applications.service')->with('status', 'Отправлено след специалисту');
+            return Redirect::to('docs')->with('status', 'Отправлено след специалисту');
         }catch (Exception $e) {
             DB::rollBack();
-            return Redirect::route('applications.service')->with('status', $e->getMessage());
+            return Redirect::to('docs')->with('status', $e->getMessage());
         }
     }
 
-    public function deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table_id, $appl_id, $answer){
+    public function deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table_id, $appl_id, $answer, $tableName){
         if(sizeof($children) > 0){
             $processRoles = $this->deleteCurrentRoleFromStatuses($processRoles);
             foreach($children as $child){
@@ -295,6 +267,9 @@ class ApplicationController extends Controller
             if(sizeof($processRoles) == 1){
                 // the last one and has NO children
                 $processRoles = $this->get_roles_of_order($process->id, $currentRoleOrder+1)->toArray();
+                DB::table($tableName)
+                ->where('id', $appl_id)
+                ->update(['current_order' => $currentRoleOrder+1]);
                 //check if next order exist; if not send to citizen
                 foreach ($processRoles as $item) {
                     $role = Role::select('name')->where('id', $item)->first();
@@ -319,7 +294,7 @@ class ApplicationController extends Controller
         $arrayToFront = $this->getAllDictionariesWithOptions($dictionariesWithOptions);
         $roles = $this->get_roles_in_order($process->id);
         if(count($roles) == 0){
-            return Redirect::route('applications.index', [$process])->with('status', 'Создайте сперва маршрут!');
+            return Redirect::action([ApplicationController::class, 'index'], [$process])->with('status', 'Создайте сперва маршрут!');
         }
         return view('application.create', compact('process', 'arrayToFront'));
     }
@@ -364,6 +339,7 @@ class ApplicationController extends Controller
             $tableName = $this->getTableName($process->name);
             $table = CreatedTable::where('name', $tableName)->first();
             $applicationTableFields["statuses"] = $this->get_roles_of_order($process->id, 1);
+            $applicationTableFields["current_order"] = 1;
             $applicationTableFields["user_id"] = Auth::user()->id;
             $application_id = DB::table($tableName)->insertGetId($applicationTableFields);
 
@@ -374,10 +350,10 @@ class ApplicationController extends Controller
                 Log::insert($logsArray);
             }
             DB::commit();
-            return Redirect::route('applications.service')->with('status', 'Заявка Успешно создана');
+            return Redirect::to('docs')->with('status', 'Заявка Успешно создана');
         } catch (Exception $e) {
             DB::rollBack();
-            return Redirect::route('applications.service')->with('status', $e->getMessage());
+            return Redirect::to('docs')->with('status', $e->getMessage());
         }
     }
 
@@ -429,7 +405,7 @@ class ApplicationController extends Controller
 
         $incomingApplications = EgknService::where('passed_to_process', 0)->get();
         if (!count($incomingApplications)) {
-            return Redirect::route('applications.service')->with('status', 'Новых заявок не обнаружено');
+            return Redirect::to('docs')->with('status', 'Новых заявок не обнаружено');
         }
         $countApp = 0; // считаем количество заявок
         foreach($incomingApplications as $app) {
@@ -450,7 +426,7 @@ class ApplicationController extends Controller
             Log::insert($logsArray);
         }
 
-        return Redirect::route('applications.service')->with('status', 'Заявки Успешно созданы (' . $countApp . ')');
+        return Redirect::to('docs')->with('status', 'Заявки Успешно созданы (' . $countApp . ')');
     }
 
     public function toCitizen($id, Request $request)
@@ -541,9 +517,9 @@ class ApplicationController extends Controller
         $status = Status::find($statusId);
         $affected = DB::table($tableName)
             ->where('id', $id)
-            ->update(['status_id' => $statusId, 'index_main' => Null, 'statuses' => '[]']);
+            ->update(['status_id' => $statusId, 'current_order' => 0, 'statuses' => '[]']);
 
-        return Redirect::route('applications.service')->with('status', $status->name);
+        return Redirect::to('docs')->with('status', $status->name);
     }
 
     function generateRandomString($length = 20) {

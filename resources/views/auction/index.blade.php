@@ -14,7 +14,7 @@
                         {{ session('status') }}
                     </div>
                 @endif
-    			<a href="{{route('auction.create')}}" class="btn btn-info">Добавить лот</a><br><br>
+    			<a href="{{url('admin/auction/create')}}" class="btn btn-info">Добавить лот</a><br><br>
     			<div class="card">
     				<div class="card-body">
     					<table class="table table-hover">
@@ -49,14 +49,14 @@
                                                     @break
                                                 @endswitch</h4></td>
                                         <td class="text-left align-middle"><h4>{{$field->publish_date}}</h4></td>
-                                        <td class="text-left align-middle"><a href="{{route('auction.view', ['id' => $field->id])}}"><i class="fa fa-eye" style="font-size:36px"></i></a></td>
-                                        <td class="text-left align-middle"><a href="{{route('auction.sender', ['id' => $field->id])}}"><i class="fa fa-upload" style="font-size:36px"></i></a></td>
+                                        <td class="text-left align-middle"><a href="{{url('admin/auction/view', ['id' => $field->id])}}"><i class="fa fa-eye" style="font-size:36px"></i></a></td>
+                                        <td class="text-left align-middle"><a href="{{url('admin/auction/send', ['id' => $field->id])}}"><i class="fa fa-upload" style="font-size:36px"></i></a></td>
                                     </tr>
                                 </tbody>
                             @endforeach
                         </table>
                     </div>
-                    <a href="{{route('auction.create')}}"  class="btn btn-info btn-lg my-5">Создать Лот</a>
+                    <a href="{{url('admin/auction/create')}}"  class="btn btn-info btn-lg my-5">Создать Лот</a>
                 </div>
             </div>
         </div>

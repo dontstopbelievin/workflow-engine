@@ -24,7 +24,7 @@
                         <p>Номер Телефона: {{$user->phone}}</p>
                         <p>Почтовый адрес: {{$user->email}}</p>
 
-                        <a class="btn btn-info" href="{{ route('user.edit', ['user' => $user]) }}">Редактировать данные</a>
+                        <a class="btn btn-info" href="{{ url('user/edit', ['user' => $user]) }}">Редактировать данные</a>
                         <br>
                         <br>
                         @if (Route::has('password.request'))
@@ -67,7 +67,7 @@
                         <p>Ip адрес последнего неудачного входа: {{$user->last_failed_login_ip}}</p>
                         <hr>
                         <h5>Фильтровать заявки</h5>
-                        <form class="" action="{{ route('user.filter') }}" method="post" class="">
+                        <form class="" action="{{ url('user/filter') }}" method="post" class="">
                           {{ csrf_field( )}}
                           {{ method_field('GET') }}
                           <input type="text" name="id" value="1" style="display:none;">

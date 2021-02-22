@@ -34,7 +34,7 @@ class EdsSignController extends Controller
                 }
                 if (isset($aUser)) {
                     Auth::login($aUser);
-                    return Redirect::route('applications.service');
+                    return Redirect::to('docs');
                 } else {
                     return response(['message'=>'Пользователь не существует в системе! Обратитесь администратору!'], 409);
                 }

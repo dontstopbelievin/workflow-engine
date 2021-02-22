@@ -12,7 +12,7 @@
                     <div class="card-header">
                         <div class="row">
                           <div class="col-md-3">
-                            <a href="{{ route('role.create') }}" class="btn btn-info">Добавить роль</a>
+                            <a href="{{ url('admin/role/create') }}" class="btn btn-info">Добавить роль</a>
                           </div>
                           <div class="col-md-6">
                             <h4 class="page-title text-center">Роли</h4>
@@ -37,15 +37,15 @@
                             <tbody>
                             @foreach($roles as $role)
                               <tr>
-                                  <td><a href="{{ route('role.view', ['role' => $role]) }}">{{$loop->iteration}}</a></td>
-                                  <td>{{$role->name}}</td>
+                                  <td>{{$loop->iteration}}</td>
+                                  <td><a href="{{ url('admin/role/view', ['admin/role' => $role]) }}">{{$role->name}}</a></td>
                                   <td>{{$role->cityManagement->name ?? ''}}</td>
                                   <td>
                                     <div class="row">
-                                      <button class="btn btn-link btn-simple-primary" data-original-title="Изменить"  onclick="window.location='{{route('role.edit', ['role' => $role])}}'">
+                                      <button class="btn btn-link btn-simple-primary" data-original-title="Изменить"  onclick="window.location='{{url('admin/role/edit', ['role' => $role])}}'">
                                           <i class="la la-edit"></i>
                                       </button>
-                                      <form action="{{ route('role.delete', ['role' => $role]) }}" method="post">
+                                      <form action="{{ url('admin/role/delete', ['role' => $role]) }}" method="post">
                                           {{csrf_field()}}
                                           {{method_field('DELETE')}}
                                           <button type="submit" class="btn btn-link btn-danger" data-original-title="Удалить">
@@ -104,7 +104,7 @@
 
             $('#delete').click(function(event) {
                 var id = $('#id').val();
-                $.post('list/delete', {'id':id, '_token':$('input[name=_token]').val()}, function(data){
+                $.post('admin/list/delete', {'id':id, '_token':$('input[name=_token]').val()}, function(data){
                     console.log(data);
                     $('#items').load(location.href + ' #items');
                 });
@@ -112,7 +112,7 @@
             $('#saveChanges').click(function(event) {
                 var id = $('#id').val();
                 var value = $('#addItem').val();
-                $.post('list/update ', {'id':id, 'value':value,'_token':$('input[name=_token]').val()}, function(data){
+                $.post('admin/list/update ', {'id':id, 'value':value,'_token':$('input[name=_token]').val()}, function(data){
                     console.log(data);
                     $('#items').load(location.href + ' #items');
                 });

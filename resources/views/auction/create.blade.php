@@ -22,7 +22,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div>
-                            <form action="{{ route('auction.store') }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ url('admin/auction/store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="col-xs-6" style="width: 400px">
                                     <h4>Поля для аукциона</h4>

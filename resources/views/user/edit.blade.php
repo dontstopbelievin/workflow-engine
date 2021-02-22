@@ -18,8 +18,8 @@
                             </div>
                         @endif
                     </div>
-                    <div class="card-body" id="items">
-                        <form action="{{ route('user.update',  ['user' => $user]) }}" method="POST">
+                    <div class="card-body col-md-6" id="items">
+                        <form action="{{ url('user/update',  ['user' => $user]) }}" method="POST">
                             @csrf
                             {{ method_field('PUT') }}
                             <div class="form-group">

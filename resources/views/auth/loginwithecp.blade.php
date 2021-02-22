@@ -117,7 +117,7 @@
         $.post('/loginwithecp/bar', {'data':ecpData.data, '_token':$('input[name=_token]').val()})
             .done(function(data,textStatus, jqXHR){
                 // console.log(data)
-                window.location = 'services';
+                window.location = 'docs';
             })
             .fail(function(xhr, status, error) {
                 console.log(xhr);

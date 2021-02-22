@@ -22,7 +22,7 @@
                   <div class="card-body">
                       <div class="row">
                           <div class="col-md-6">
-                              <form action="{{ route('role.store') }}" method="POST">
+                              <form action="{{ url('admin/role/store') }}" method="POST">
                                   @csrf
                                   <div class="form-group">
                                       <label for="name">Роль</label>
@@ -38,7 +38,7 @@
                                   </div>
                                   <div>
                                     <button type="submit" class="btn btn-success">Создать</button>
-                                    <a href="{{ route('role.index') }}" class="btn btn-danger">Отмена</a>
+                                    <a href="{{ url('admin/role') }}" class="btn btn-danger">Отмена</a>
                                   </div>
                               </form>
                           </div>

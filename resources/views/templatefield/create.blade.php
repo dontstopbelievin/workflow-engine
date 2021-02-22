@@ -9,23 +9,22 @@
 <div class="main-panel">
   <div class="content">
     <div class="container-fluid">
-      <div class="d-flex justify-content-between">
-        <div class="">
-          <h4 class="page-title">Поле шаблонов </h4>
-        </div>
-        <div class="">
-          <button id="addNew" class="btn btn-primary" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i></button>
-        </div>
-      </div>
-      @if (session('status'))
-          <div class="alert alert-success" role="alert">
-              {{ session('status') }}
-          </div>
-      @endif
       <div class="card">
-        <!-- <div class="card-header">
-          <div class="card-title">Table</div>
-        </div> -->
+        <div class="card-header">
+          <div class="row">
+            <div class="col-md-3">
+              <button id="addNew" class="btn btn-primary" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i></button>
+            </div>
+            <div class="col-md-6 text-center">
+              <h5>Поля шаблона: {{$template_name}}</h5>
+            </div>
+          </div>
+          @if (session('status'))
+              <div class="alert alert-success" role="alert">
+                  {{ session('status') }}
+              </div>
+          @endif
+        </div>
         <div class="card-body">
           <table class="table table-hover" id="items">
             <thead>
@@ -47,9 +46,9 @@
               @endforeach
             </tbody>
           </table>
+          <a href="{{url('admin/process/edit', ['process' => $processId])}}" class="btn btn-primary">Продолжить</a>
         </div>
       </div>
-      <a href="{{route('processes.edit', ['process' => $processId])}}" class="btn btn-primary">Продолжить</a>
     </div>
   </div>
 </div>
@@ -190,7 +189,7 @@
                 alert('Выберите специалиста');
             }
 
-            $.post('/template-field-create', {'tempId':id,'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, 'role':role, '_token':"{{csrf_token()}}"}, function(data){
+            $.post('/template_field/store', {'tempId':id,'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, 'role':role, '_token':"{{csrf_token()}}"}, function(data){
                 console.log('data:'+data);
                 $('#items').load(location.href + ' #items');
             });
@@ -198,15 +197,16 @@
 
         $('#delete').click(function(event) {
             var id = $('#id').val();
-            $.post('list/delete', {'id':id, '_token':"{{csrf_token()}}"}, function(data){
+            $.post('admin/list/delete', {'id':id, '_token':"{{csrf_token()}}"}, function(data){
                 console.log(data);
                 $('#items').load(location.href + ' #items');
             });
         });
+
         $('#saveChanges').click(function(event) {
             var id = $('#id').val();
             var value = $('#addItem').val();
-            $.post('list/update ', {'id':id, 'value':value,'_token':"{{csrf_token()}}"}, function(data){
+            $.post('admin/list/update ', {'id':id, 'value':value,'_token':"{{csrf_token()}}"}, function(data){
                 console.log(data);
                 $('#items').load(location.href + ' #items');
             });

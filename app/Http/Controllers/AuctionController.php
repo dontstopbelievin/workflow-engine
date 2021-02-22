@@ -142,7 +142,7 @@ class AuctionController extends Controller
 
         //        $auction->identification_doc = $identificationDocPath;
         $auction->save();
-        return Redirect::route('auction.index')->with('status', 'Поля успешно сохранены');
+        return Redirect::to('admin/auction')->with('status', 'Поля успешно сохранены');
     }
 
     public function sendToEgkn(Request $request)

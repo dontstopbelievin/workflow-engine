@@ -16,22 +16,25 @@
     background-color: green;
 }
 </style>
-<nav class="navbar navbar-header navbar-expand-lg fixed-top" style="background: #0067B8!important; height: 60px;box-shadow: 0 2px 1px -1px #999; color:white!important;">
-    <div class="container-fluid">
+<nav class="navbar navbar-header navbar-expand-lg fixed-top" style="background: #0067B8!important; height: 60px;box-shadow: 0 2px 1px -1px #999; color:white!important;padding-left: 0px;">
+    <div class="container-fluid" style="padding-left: 0px;">
         <div class="navbar-header">
             <div>
-                <a href="{{ route('applications.service') }}" class="logo" style="font-weight: bold;">
-                    <img style="height: 20px;" src="{{url('/images/logo.png')}}">
+                <a href="{{ url('docs') }}" class="logo" style="padding-right: 5px; text-decoration: none!important;">
+                    <img style="height: 35px;" src="{{url('/images/astana-logo.png')}}">
+                </a>
+                <a href="{{ url('docs') }}" class="logo">
+                    <img style="height: 13px;" src="{{url('/images/logo.png')}}">
                 </a>
             </div>
         </div>
         <ul class="navbar-nav" style="margin-left: 20px;">
             <li class="nav-item">
-                <a href="#" onclick="openTab2(event, 'sidebar2')" class="tablinks avbar-left navbar-form nav-search {{request()->segment(1) == 'services' ? 'active' : ''}}">
+                <a href="{{url('docs')}}" class="navbar-left navbar-form nav-search {{request()->segment(1) == 'docs' ? 'active' : ''}}">
                 Документы</a>
             </li>
             <li class="nav-item">
-                <a href="#" onclick="openTab2(event, 'sidebar1')" class="tablinks navbar-left navbar-form nav-search {{request()->segment(1) == 'asaf' ? 'active' : ''}}">
+                <a href="{{url('admin/process')}}" class="navbar-left navbar-form nav-search {{(request()->segment(1) == 'process') || (request()->segment(1) == 'admin') ? 'active' : ''}}">
                 Администрирование</a>
             </li>
             <li class="nav-item">
@@ -51,8 +54,8 @@
                 <small>({{ Auth::user()->role->name }})</small>
               </a>
               <ul class="dropdown-menu dropdown-user">
-                <li> <a class="dropdown-item" href="{{ route('user.personalArea') }}">Мои данные</a> </li>
-                <li> <a class="dropdown-item" href="{{ route('user.edit', ['user' => Auth::user()]) }}">Редактировать данные</a> </li>
+                <li> <a class="dropdown-item" href="{{ url('user/personal_area') }}">Мои данные</a> </li>
+                <li> <a class="dropdown-item" href="{{ url('user/edit', ['user' => Auth::user()]) }}">Редактировать данные</a> </li>
                 <li> <a class="dropdown-item" href="/password/reset">Cменить пароль</a> </li>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item"href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();">

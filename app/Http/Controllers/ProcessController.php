@@ -52,14 +52,14 @@ class ProcessController extends Controller
             'deadline' => 'required',
         ]);
         if ($validator->fails()) {
-            return Redirect::route('processes.edit', [$process])->with('failure', $validator->errors());
+            return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', $validator->errors());
         }
         $process = new Process ([
             'name' => $request->name,
             'deadline' => $request->deadline,
         ]);
         $process->save();
-        return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был создан');
+        return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Процесс был создан');
     }
 
     public function edit(Process $process) {
@@ -93,19 +93,19 @@ class ProcessController extends Controller
         ]);
 
         if ((intval($request->deadline) === 0) || (intval($request->deadline) === Null)){
-            return Redirect::route('processes.edit', [$process])->with('failure', 'Пожалуйста, введите правильный срок');
+            return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', 'Пожалуйста, введите правильный срок');
         }
         $process->name = $request->name;
         $process->deadline = intval($request->deadline);
         $process->update();
-        return Redirect::route('processes.edit', [$process])->with('status', 'Процесс был обновлен');
+        return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Процесс был обновлен');
     }
 
     public function createProcessTable(Request $request, Process $process) {
         try {
             DB::beginTransaction();
             if ($request->fields === Null) {
-                return Redirect::route('processes.edit', [$process])->with('failure', 'Пожалуйста, выберите поля');
+                return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', 'Пожалуйста, выберите поля');
             }
 
             $tableName = $this->getTableName($process->name);
@@ -155,8 +155,8 @@ class ProcessController extends Controller
                 $dbQueryString = "ALTER TABLE $tableName ADD  index_sub_route INT";
                 DB::statement($dbQueryString);
             }
-            if (!Schema::hasColumn($tableName, 'index_main')) {
-                $dbQueryString = "ALTER TABLE $tableName ADD index_main INT";
+            if (!Schema::hasColumn($tableName, 'current_order')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD current_order INT";
                 DB::statement($dbQueryString);
             }
             if (!Schema::hasColumn($tableName, 'doc_path')) {
@@ -188,7 +188,7 @@ class ProcessController extends Controller
                 DB::statement($dbQueryString);
             }
             DB::commit();
-            return Redirect::route('processes.edit', [$process])->with('status', 'Таблица успешно создана');
+            return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Таблица успешно создана');
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json(['message' => $e->getMessage()], 500);
@@ -229,7 +229,7 @@ class ProcessController extends Controller
             ]);
             if ($validator->fails()) {
                 
-                return Redirect::route('processes.edit', [$process])->with('failure', $validator->errors());
+                return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', $validator->errors());
             }
             DB::beginTransaction();
             if (sizeof($request->roles) === 1) {
@@ -241,7 +241,7 @@ class ProcessController extends Controller
                     'order' => $request->order
                 ]);
                 DB::commit();
-                return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
+                return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Маршрут добавлен к процессу');
             } else {
                foreach ($request->roles as $id) {
                    $process->roles()->attach($id, [
@@ -251,11 +251,11 @@ class ProcessController extends Controller
                     ]);
                }
                DB::commit();
-               return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
+               return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Маршрут добавлен к процессу');
            }
         } catch (Exception $e) {
             DB::rollBack();
-            return Redirect::route('processes.edit', [$process])->with('failure', $e->getMessage());
+            return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', $e->getMessage());
         }
     }
 
@@ -273,7 +273,7 @@ class ProcessController extends Controller
             ]);
             if ($validator->fails()) {
                 
-                return Redirect::route('processes.edit', [$process])->with('failure', $validator->errors());
+                return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', $validator->errors());
             }
 
             DB::beginTransaction();
@@ -287,7 +287,7 @@ class ProcessController extends Controller
                     'order' => $request->order
                 ]);
                 DB::commit();
-                return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
+                return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Маршрут добавлен к процессу');
             } else {
                foreach ($request->roles as $id) {
                    $process->roles()->attach($id, [
@@ -300,11 +300,11 @@ class ProcessController extends Controller
                     ]);
                }
                DB::commit();
-               return Redirect::route('processes.edit', [$process])->with('status', 'Маршрут добавлен к процессу');
+               return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Маршрут добавлен к процессу');
            }
         } catch (Exception $e) {
             DB::rollBack();
-            return Redirect::route('processes.edit', [$process])->with('failure', $e->getMessage());
+            return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', $e->getMessage());
         }
     }
 
@@ -316,7 +316,7 @@ class ProcessController extends Controller
         }
         $process->main_organization_id = $request->mainOrganization;
         $process->update();
-        return Redirect::route('processes.edit', [$process])->with('status', 'Основной маршрут выбран успешно');
+        return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Основной маршрут выбран успешно');
     }
 
     public function addDocTemplates(Request $request)
@@ -335,14 +335,14 @@ class ProcessController extends Controller
                 'order' => 'required|integer',
             ]);
             if ($validator->fails()) {
-                return Redirect::route('processes.edit', [$process])->with('failure', $validator->errors());
+                return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', $validator->errors());
             }
             DB::table('process_role')
                 ->where('id', $request->id)
                 ->update(['order' => $request->order]);
-            return Redirect::route('processes.edit', [$process])->with('status', 'Очередность успешно изменена.');
+            return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Очередность успешно изменена.');
         } catch (Exception $e) {
-            return Redirect::route('processes.edit', [$process])->with('status', $e->getMessage());
+            return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', $e->getMessage());
         }
     }
 
@@ -353,14 +353,14 @@ class ProcessController extends Controller
                 'id' => 'required|integer',
             ]);
             if ($validator->fails()) {
-                return Redirect::route('processes.edit', [$process])->with('failure', $validator->errors());
+                return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', $validator->errors());
             }
             DB::table('process_role')
                 ->where('id', $request->id)
                 ->delete();
-            return Redirect::route('processes.edit', [$process])->with('status', 'Успешно удален.');
+            return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Успешно удален.');
         } catch (Exception $e) {
-            return Redirect::route('processes.edit', [$process])->with('status', $e->getMessage());
+            return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', $e->getMessage());
         }
     }
 
@@ -368,14 +368,14 @@ class ProcessController extends Controller
     {
         $tableName = $this->getTableName($process->name);
         if(DB::table($tableName)->count() > 0){
-            return  Redirect::route('processes.index')->with('failure', 'Не удалось удалить процесс, удалите данные.');
+            return  Redirect::to('process')->with('failure', 'Не удалось удалить процесс, удалите данные.');
         }
         $true = Schema::dropIfExists($tableName);
         if ($true !== Null) {
-            return Redirect::route('processes.index')->with('failure', 'Не удалось удалить процесс');
+            return Redirect::to('process')->with('failure', 'Не удалось удалить процесс');
         }
         $process->delete();
-        return Redirect::route('processes.index')->with('status', 'Процесс успешно удален');
+        return Redirect::to('process')->with('status', 'Процесс успешно удален');
     }
 
     public function logs()

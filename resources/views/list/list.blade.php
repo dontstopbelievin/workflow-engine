@@ -95,7 +95,7 @@
                 if (text == '') {
                     alert('Please type anything');
                 }
-                $.post('list', {'text':text, '_token':$('input[name=_token]').val()}, function(data){
+                $.post('admin/list', {'text':text, '_token':$('input[name=_token]').val()}, function(data){
                     console.log(data);
                     $('#items').load(location.href + ' #items');
                 });
@@ -103,7 +103,7 @@
 
             $('#delete').click(function(event) {
                 var id = $('#id').val();
-                $.post('list/delete', {'id':id, '_token':$('input[name=_token]').val()}, function(data){
+                $.post('admin/list/delete', {'id':id, '_token':$('input[name=_token]').val()}, function(data){
                     console.log(data);
                     $('#items').load(location.href + ' #items');
                 });
@@ -111,7 +111,7 @@
             $('#saveChanges').click(function(event) {
                 var id = $('#id').val();
                 var value = $('#addItem').val();
-                $.post('list/update ', {'id':id, 'value':value,'_token':$('input[name=_token]').val()}, function(data){
+                $.post('admin/list/update ', {'id':id, 'value':value,'_token':$('input[name=_token]').val()}, function(data){
                     console.log(data);
                     $('#items').load(location.href + ' #items');
                 });

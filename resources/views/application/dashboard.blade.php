@@ -141,7 +141,7 @@
                                             <td class="text-center align-middle border">
                                                 <button class="btn btn-simple-primary px-0 py-0"
                                                     style=" background-color: transparent;font-size:30px;"
-                                                    onclick="window.location='{{ route('applications.index', ['process' => $process]) }}'">
+                                                    onclick="window.location='{{ url('docs/index', ['process' => $process]) }}'">
                                                     <i class="la la-arrow-circle-o-right"></i>
                                                 </button>
                                             </td>
@@ -174,7 +174,7 @@
 
             $('#acceptButton').click(function(event) {
 
-                $.post('/agreement-accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
+                $.post('/agreement_accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
                     $('#acceptModal').modal('hide');
                     if(data.message)
                     {location.reload();}
@@ -186,7 +186,7 @@
 
             $('#acceptModalButton').click(function(event) {
 
-                $.post('/agreement-accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
+                $.post('/agreement_accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
                     $('#acceptModalId').modal('hide');
                     if(data.message)
                     {location.reload();}
