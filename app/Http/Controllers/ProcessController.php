@@ -27,19 +27,6 @@ class ProcessController extends Controller
         return view('process.index', compact('processes'));
     }
 
-    public function view(Process $process)
-    {
-        $parentId = $this->getParentRoleId($process->id);
-        $tableName = $this->getTableName($process->name);
-        $tableColumns = $this->getColumns($tableName);
-        if ($parentId === 0) {
-            return view('process.view', compact('process','tableColumns'));
-        }
-        $iterateRoles = $this->getIterateRoles($process);
-        $sAllRoles = $this->getAllRoles($process, $parentId, $iterateRoles);
-        return view('process.view', compact('process','sAllRoles','tableColumns'));
-    }
-
     public function create()
     {
         return view('process.create');
@@ -70,12 +57,9 @@ class ProcessController extends Controller
             $roles = Role::where('name' ,'!=', 'Заявитель')->get();
             $tableName = $this->getTableName($process->name);
             $tableColumns = $this->getColumns($tableName);
-            // $parentId = $this->getParentRoleId($process->id);
             $organizations = CityManagement::all();
             $nameMainOrg = CityManagement::find($process->main_organization_id)->name ?? '';
             $templateDocs = TemplateDoc::all();
-            // $iterateRoles = $this->getIterateRoles($process);
-            // $sAllRoles = $this->getAllRoles($process, $parentId, $iterateRoles);
             $process_roles = $this->get_roles_for_edit($process->id);
             // return $process_roles;
             return view('process.edit', compact('templateDocs', 'process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','process_roles', 'organizations', 'nameMainOrg'));
@@ -132,7 +116,6 @@ class ProcessController extends Controller
             if (!Schema::hasColumn($tableName, 'process_id')) {
                 $dbQueryString = "ALTER TABLE $tableName ADD  process_id INT";
                 DB::statement($dbQueryString);
-                DB::table($tableName)->insert(['process_id' => $process->id ]);
             }
 
             if (!Schema::hasColumn($tableName, 'status_id')) {
@@ -193,27 +176,6 @@ class ProcessController extends Controller
             DB::rollBack();
             return response()->json(['message' => $e->getMessage()], 500);
         }
-    }
-
-    public function approveInParallel(Request $request)
-    {
-        $allRequest = $request->all();
-        $roleToJoin = $request->roleToJoin;
-//        dd($allRequest);
-        $process = Process::find($request->process);
-        $setOfParallelRoles = $allRequest["allRoles"];
-
-        $index = 0;
-        $priority = 0;
-        foreach($setOfParallelRoles as $key=>$set) {
-            $index++;
-            $priority = array_shift($set);
-            foreach($set as $role) {
-                $r = Role::where('name', $role)->first();
-                $process->roles()->attach($r,['approve_in_parallel'=>$index, 'priority'=>$priority, 'role_to_join' => $roleToJoin]);
-            }
-        }
-        $process->roles()->attach($roleToJoin);
     }
 
     public function addRole(Request $request, Process $process) {

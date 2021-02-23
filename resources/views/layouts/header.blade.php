@@ -34,6 +34,10 @@
                 Документы</a>
             </li>
             <li class="nav-item">
+                <a href="#" class="navbar-left navbar-form nav-search">
+                Отчеты</a>
+            </li>
+            <li class="nav-item">
                 <a href="{{url('admin/process')}}" class="navbar-left navbar-form nav-search {{(request()->segment(1) == 'process') || (request()->segment(1) == 'admin') ? 'active' : ''}}">
                 Администрирование</a>
             </li>

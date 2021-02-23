@@ -48,7 +48,7 @@
   									<tbody>
                       @foreach($processes as $process)
                         <tr>
-                            <td><a href="{{ url('admin/process/view', ['process' => $process]) }}">{{$loop->iteration}}</a></td>
+                            <td>{{$loop->iteration}}</td>
                             <td>{{$process->name}}</td>
                             <td>{{$process->deadline}}</td>
                             <td>

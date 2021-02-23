@@ -46,7 +46,7 @@ class ApplicationController extends Controller
     {
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
-        $arrayApps = $this->getApplications($tableName, $table->id);
+        $arrayApps = $this->get_applications($tableName, $table->id);
         return view('application.index', compact('arrayApps', 'process'));
     }
 

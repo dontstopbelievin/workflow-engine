@@ -12,75 +12,6 @@ use App\Status;
 
 trait dbQueries
 {
-    public function getRolesWithoutParent($id) {
-
-        $res = DB::table('roles')
-        ->join('process_role', 'roles.id','=','process_role.role_id')
-        ->select('roles.id', 'roles.name')
-        ->where('process_role.process_id',$id)
-        ->where('process_role.parent_role_id',Null)
-        ->orderBy('process_role.id', 'asc')
-        ->get();
-        return $res;
-    }
-
-    private function getButtons($processId, $roleId)
-    {
-        return DB::table('process_role')
-            ->where('process_id', $processId)
-            ->where('role_id', $roleId)
-            ->get()
-            ->toArray();
-    }
-
-    // private function checkIfRoutesInParallel($processId) {
-    //     $parallelRoutesExist = DB::table('process_role')
-    //         ->where('process_id', $processId)
-    //         ->where('approve_in_parallel', '!=', Null)
-    //         ->exists();
-    //     return $parallelRoutesExist;
-    // }
-
-    private function getParallelRoutes($processId) {
-        $parallelRoutes = DB::table('process_role')
-            ->where('process_id', $processId)
-            ->where('approve_in_parallel', '!=', Null)
-            ->get();
-
-        return json_decode(json_encode($parallelRoutes), true);
-    }
-
-    private function getSortedParallelRoutes($processId) {
-        $allParallelRoutes = $this->getParallelRoutes($processId);
-//        $tempLevel=0;
-        $newKey=0;
-        foreach ($allParallelRoutes as $key => $val) {
-//            if ($tempLevel==$val['approve_in_parallel']){
-//                $groupArr[$tempLevel][$newKey]=$val;
-//            } else {
-//                $groupArr[$val['approve_in_parallel']][$newKey]=$val;
-//            }
-//            $newKey++;
-            $groupArr[$val['approve_in_parallel']][$newKey]=$val;
-            $newKey++;
-        }
-        return $groupArr;
-    }
-
-    // public function getParentRoleId($id) {
-
-    //     $parentRoleId = DB::table('process_role')
-    //     ->select('parent_role_id')
-    //     ->where('process_id', $id)
-    //     ->where('parent_role_id', '!=' ,Null)
-    //     ->limit(1)
-    //     ->get()->toArray();
-    //     $arrayId = json_decode(json_encode($parentRoleId), true);
-    //     if (empty($arrayId)) {
-    //         return 0;
-    //     }
-    //     return intval($arrayId[0]['parent_role_id']);
-    // }
 
     public function get_roles_of_order($process_id, $order){
 
@@ -136,37 +67,7 @@ trait dbQueries
         return $roles;
     }
 
-    public function getAllRoles($process, $parentId, $iterateRoles) {
-
-        $sAllRoles = array();
-        $sTmp = $this->getSubRoutes($process->id);
-
-        foreach($iterateRoles as $key => $value) {
-            $sAllRoles[$value->name] = $value->id;
-            if ($value->id === $parentId) {
-                $sAllRoles[$value->name] = $sTmp;
-            }
-        }
-        return $sAllRoles;
-    }
-
-    public function getIterateRoles($process) {
-        $rolesWithoutParent = $this->getRolesWithoutParent($process->id);
-        return $process->roles->take(count($rolesWithoutParent));
-    }
-
-    public function getAppRoutes($id) {
-
-        $routes = DB::table('roles')
-            ->join('process_role', 'roles.id','=', 'process_role.role_id')
-            ->select('roles.id', 'roles.name')
-            ->where('process_role.process_id', '=', $id)
-            ->where('parent_role_id', null)
-            ->get();
-        return json_decode($routes, true);
-    }
-
-    private function getApplications($table_name, $table_id) {
+    private function get_applications($table_name, $table_id) {
 
         if(Schema::hasTable($table_name)) {
             $apps = DB::table($table_name)->get();
@@ -182,11 +83,6 @@ trait dbQueries
             exit();
         }
 
-    }
-
-    private function checkIfAppHasMultipleStatuses($table)
-    {
-        return DB::table($table)->where('statuses', '!=', Null)->exists();
     }
 
     private function getProcessStatuses($tableName, $applicationId){
@@ -229,24 +125,6 @@ trait dbQueries
             return [$rolesAfter[0]->pivot['role_id'], $rolesAfter[0]->pivot['order']];
         }
 
-    }
-
-    public function getSubRoutes($id) {
-
-        $routes = DB::table('roles')
-        ->join('process_role', 'roles.id','=','process_role.role_id')
-        ->select('name')
-        ->where('process_role.process_id',$id)
-        ->where('process_role.parent_role_id', '!=','null')
-        ->get();
-        $array = json_decode($routes, true);
-        $res = array();
-        foreach($array as  $arr) {
-            foreach($arr as $key => $value) {
-                array_push($res, $value);
-            }
-        }
-        return $res;
     }
 
     public function getOptionsOfThisSelect($name) {
@@ -365,24 +243,6 @@ trait dbQueries
         return json_decode(json_encode($query), true);
     }
 
-    public function mergeRoles($mainRoles, $subRoles) {
-
-        $mainRolesNames = [];
-        foreach($mainRoles as $role) {
-            array_push($mainRolesNames, $role->name);
-        }
-        return array_merge($mainRolesNames, $subRoles);
-    }
-
-    public function getMainRoleArray($mainRoles) {
-
-        $mainRoleArr = [];
-        foreach ($mainRoles as $role) {
-            array_push($mainRoleArr, $role->name);
-        }
-        return $mainRoleArr;
-    }
-
     public function getRecords($applicationId, $tableId) {
 
         $query = Log::join('roles', 'logs.role_id', '=', 'roles.id')
@@ -393,17 +253,6 @@ trait dbQueries
                       ->get()->toArray();
 
         return json_decode(json_encode($query), true);
-    }
-
-    public function filterApplicationArray($array, $notInArray){
-
-        $res = [];
-        foreach($array as $key=>$value) {
-            if (!in_array($key, $notInArray)) {
-                $res[$key] = $value;
-            }
-        }
-        return $res;
     }
 
     public function checkForWrongCharacters($name) {
