@@ -79,7 +79,7 @@
             <select class="form-control" name="inputType" id="inputType" data-dropup-auto="false">
               <option selected disabled>Выберите Ниже</option>
               @foreach($inputTypes as $type)
-                <option value="{{$type->name}}">{{$type->name}}</>
+                    <option value="{{$type->name}}">{{$type->name}}</option>
               @endforeach
             </select>
           </div>
@@ -88,7 +88,7 @@
           @isset($options)
               @foreach ($options as $option)
                   <div class="checkbox">
-                      <label><input class="get_value" type="checkbox" value="{{$option->name}}">{{$option->name}}</label>
+                      <label><input class="get_value" type="checkbox" value="{{$option->name_rus}}">{{$option->name_rus}}</label>
                   </div>
               @endforeach
           @endisset

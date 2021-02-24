@@ -15,7 +15,23 @@ class CreateSelectOptionsTable extends Migration
     {
         Schema::create('select_options', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->bigInteger('dictionary_id')->nullable();
+            $table->string('name_rus')->nullable();
+            $table->string('name_kaz')->nullable();
+            $table->string('short_name_rus')->nullable();
+            $table->string('short_name_kaz')->nullable();
+
+            $table->bigInteger('target_id')->unsigned()->nullable();
+            $table->bigInteger('target_aurz')->unsigned()->nullable();
+            $table->bigInteger('cod_parent')->nullable();
+            $table->string('category')->nullable();
+            $table->bigInteger('purpose_id')->unsigned()->nullable();
+            $table->bigInteger('right_type_code')->unsigned()->nullable();
+            $table->string('land_category_cod')->nullable();
+            $table->string('land_divisibility_code')->nullable();
+
+            $table->boolean('deleted')->nullable();
+
             $table->timestamps();
         });
     }
