@@ -152,9 +152,7 @@ class ApplicationController extends Controller
 
           $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
 
-          $role_status = DB::table('role_statuses')->where('role_name', $user->role->name)->where('status_id', 2)->first();
-          $logsArray = $this->getLogs($role_status->id, $table->id, $application->id, $user->role_id, $currentRoleOrder, 0, '', "Согласовал(а) отказ");
-          Log::insert( $logsArray);
+          $this->insertLogs($user->role->name, 2, $role_status->id, $table->id, $application->id, $user->role_id, $currentRoleOrder, 0, '', "Согласовал(а) отказ");
 
           $nextRoleId = $this->getNextUnparallelRoleId($process, $currentRoleOrder, $request->application_id, $table->id);
 
@@ -168,7 +166,6 @@ class ApplicationController extends Controller
                 ->update(['statuses' => [$nextRoleId[0]], 'current_order' => $nextRoleId[1]]);
           }
 
-          $this->insertComments($request->comments, $request->applicationId, $table->id);
           // if ($application->to_revision === 0) {
           //     DB::table($tableName)
           //         ->where('id', $request->applicationId)
@@ -211,7 +208,6 @@ class ApplicationController extends Controller
             $templateId = $process->accepted_template_id;
             $template = Template::where('id', $templateId)->first();
             $templateTable = $this->getTemplateTableName($template->name);
-            $templateTable = $this->getTemplateTableName($template->name);
             $comment = $request->comments;
 
             // insertion of fields into template
@@ -223,18 +219,13 @@ class ApplicationController extends Controller
             $processRoles = $this->getProcessStatuses($tableName, $request->application_id);
             $children = $this->getRoleChildren($process);
 
-            $role_status = DB::table('role_statuses')->where('role_name', Auth::user()->role->name)->where('status_id', 1)->first();
-
-            $logsArray = $this->getLogs($role_status->id, $table->id, $request->application_id, Auth::user()->role_id, $currentRoleOrder, 1, '',$comment);
-
-            Log::insert( $logsArray);
+            $this->insertLogs(Auth::user()->role->name, 1, $table->id, $request->application_id, Auth::user()->role_id, $currentRoleOrder, 1, '',$comment);
 
             $processRoles = array_values($this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table->id, $request->application_id, 1, $tableName));
 
             DB::table($tableName)
                 ->where('id', $request->application_id)
                 ->update(['statuses' => $processRoles]);
-            $this->insertComments($request->comments, $request->application_id, $table->id);
             // if ($application->to_revision === 0) {
             //     DB::table($tableName)
             //         ->where('id', $request->applicationId)
@@ -257,9 +248,7 @@ class ApplicationController extends Controller
             foreach($children as $child){
                 array_push($processRoles, $child->id);
                 $role = Role::select('name')->where('id', $child->id)->first();
-                $role_status = DB::table('role_statuses')->where('role_name', $role->name)->where('status_id', 4)->first();
-                $logsArray = $this->getLogs($role_status->id, $table_id, $appl_id, Auth::user()->role_id, $currentRoleOrder, $answer);
-                Log::insert($logsArray);
+                $this->insertLogs($role->name, 4, $table_id, $appl_id, Auth::user()->role_id, $currentRoleOrder, $answer);
             }
         }else{
             if(sizeof($processRoles) == 1){
@@ -271,9 +260,7 @@ class ApplicationController extends Controller
                 //check if next order exist; if not send to citizen
                 foreach ($processRoles as $item) {
                     $role = Role::select('name')->where('id', $item)->first();
-                    $role_status = DB::table('role_statuses')->where('role_name', $role->name)->where('status_id', 4)->first();
-                    $logsArray = $this->getLogs($role_status->id, $table_id, $appl_id, Auth::user()->role_id, $currentRoleOrder, $answer);
-                    Log::insert($logsArray);
+                    $this->insertLogs($role->name, 4, $table_id, $appl_id, Auth::user()->role_id, $currentRoleOrder, $answer);
                 }
             }else{
                 // not the last one and has NO children => just delete current
@@ -343,9 +330,7 @@ class ApplicationController extends Controller
 
             foreach ($applicationTableFields["statuses"] as $value) {
                 $role = Role::select('name')->where('id', $value)->first();
-                $role_status = DB::table('role_statuses')->where('role_name', $role->name)->where('status_id', 4)->first();
-                $logsArray = $this->getLogs($role_status->id, $table->id, $application_id, Auth::user()->role_id, 0, 1);
-                Log::insert($logsArray);
+                $this->insertLogs($role->name, 4, $table->id, $application_id, Auth::user()->role_id, 0, 1);
             }
             DB::commit();
             return Redirect::to('docs')->with('status', 'Заявка Успешно создана');
@@ -420,8 +405,7 @@ class ApplicationController extends Controller
             };
             $modifiedApplicationTableFields = $this->modifyApplicationTableFieldsWithStatus($applicationTableFields, $status->id, $user->id);
             $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
-            $logsArray = $this->getLogs($status->id, $table->id, $applicationId, $role->id); // получить историю хода согласования
-            Log::insert($logsArray);
+            // $this->insertLogs($status->id, $table->id, $applicationId, $role->id);
         }
 
         return Redirect::to('docs')->with('status', 'Заявки Успешно созданы (' . $countApp . ')');
@@ -468,7 +452,6 @@ class ApplicationController extends Controller
               $updatedFields["area"] = '114 га';
               $updatedFields["area2"] = '114 га';
               $updatedFields["flat_number"] = '114 га';
-
               $updatedFields["square"] = 'Байконур';
               $updatedFields["street"] = 'Кабанбай батыра';
               $updatedFields["duration"] = '12';
@@ -497,7 +480,7 @@ class ApplicationController extends Controller
           }
 
           if ($fieldValues !== Null) {
-              $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
+            $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
           }
           // dd('done');
           $tableName = $this->getTableName($process->name);
@@ -505,13 +488,8 @@ class ApplicationController extends Controller
           $application = DB::table($tableName)->where('id', $id)->first();
           $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
 
-          $role_status = DB::table('role_statuses')->where('role_name', $user->role->name)->where('status_id', ($approveOrReject == 0) ? 2 : 1)->first();
-          $logsArray = $this->getLogs($role_status->id, $table->id, $applicationId, $user->role_id, $currentRoleOrder, $approveOrReject,'', $comment);
-          Log::insert($logsArray);
-
-          $role_status = DB::table('role_statuses')->where('role_name', 'Заявитель')->where('status_id', 4)->first();
-          $logsArray = $this->getLogs($role_status->id, $table->id, $applicationId, $user->role_id, $currentRoleOrder, $approveOrReject,'');
-          Log::insert($logsArray);
+          $this->insertLogs($user->role->name, ($approveOrReject == 0) ? 2 : 1, $table->id, $applicationId, $user->role_id, $currentRoleOrder, $approveOrReject,'', $comment);
+          $this->insertLogs('Заявитель', 4, $table->id, $applicationId, $user->role_id, $currentRoleOrder, $approveOrReject,'');
 
           // updating the status_id (not the statuses field) as "Sent to citizen"
           $statusId = ($approveOrReject == 0) ? 32 : 33;
@@ -549,10 +527,8 @@ class ApplicationController extends Controller
 
             $user = Auth::user();
             $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
-            $role_status = DB::table('role_statuses')->where('role_name', Auth::user()->role->name)->where('status_id', 2)->first();
-            $logsArray = $this->getLogs($role_status->id, $table->id, $application->id, $user->role_id, $currentRoleOrder, 0, '', $request->rejectReason);
 
-            Log::insert( $logsArray);
+            $this->insertLogs(Auth::user()->role->name, 2, $table->id, $application->id, $user->role_id, $currentRoleOrder, 0, '', $request->rejectReason);
 
             if($request->motiv_otkaz == 1){ // если у него мотивированный отказ есть => reject_reason заполнить, и дальше чисто согласование мотив отказа
                 $nextRoleId = $this->getNextUnparallelRoleId($process, $currentRoleOrder, $request->application_id,  $table->id);
@@ -632,8 +608,7 @@ class ApplicationController extends Controller
         $role = $user->role;
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $request->applicationId)->first();
-        $logsArray = $this->getLogs($status->id, $table->id, $application->id, $role->id);
-        Log::insert( $logsArray);
+        // $this->insertLogs($user->role->name, 3, $status->id, $table->id, $application->id, $role->id);
 
         if ($index === 0) {
             DB::table($tableName)
@@ -688,10 +663,11 @@ class ApplicationController extends Controller
         return $roleWithIndex;
     }
 
-    private function getLogs($status_id, $table_id, $application_id, $role_id, $order, $answer, $to_role = '', $comment = '')
+    private function insertLogs($role_name, $status_n, $table_id, $application_id, $role_id, $order, $answer, $to_role = '', $comment = '')
     {
+        $role_status = DB::table('role_statuses')->where('role_name', $role_name)->where('status_id', $status_n)->first();
         $logsArray = [];
-        $logsArray["status_id"] = $status_id;
+        $logsArray["status_id"] = $role_status->id;
         $logsArray["table_id"] = $table_id;
         $logsArray["application_id"] = $application_id;
         $logsArray["role_id"] = $role_id;
@@ -700,20 +676,10 @@ class ApplicationController extends Controller
         $logsArray["comment"] = $comment;
         $logsArray["to_role"] = $to_role;
         $logsArray["created_at"] = Carbon::now();
-        return $logsArray;
-    }
-
-    private function insertComments($comments, $applicationId, $tableId)
-    {
-        if ($comments !== Null) {
-            $comment = new Comment( [
-                'name' => $comments,
-                'application_id' => $applicationId,
-                'table_id' => $tableId,
-                'role_id' => Auth::user()->role->id,
-            ]);
-            $comment->save();
+        if(Log::insert($logsArray)){
+            return true;
         }
+        return false;
     }
 
     private function filterTemplateFieldsTable($array, $exceptionArray)

@@ -278,7 +278,7 @@ class ProcessController extends Controller
         }
         $process->main_organization_id = $request->mainOrganization;
         $process->update();
-        return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Основной маршрут выбран успешно');
+        return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Организация успешно изменена.');
     }
 
     public function addDocTemplates(Request $request)
