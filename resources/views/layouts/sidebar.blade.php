@@ -56,14 +56,14 @@
                 <p>Поступившие заявки</p>
             </a>
           </li>
-          <li class="nav-item {{(request()->is('admin/process') ? 'active' : request()->segment(1) == 'processes') ? 'active' : (request()->segment(1) == 'processes-edit' ? 'active' : (request()->segment(1) == 'admin/template_field/create' ? 'active' : ''))}}">
+          <li class="nav-item {{request()->segment(2) == 'process' || request()->segment(1) == 'template_field' ? 'active' : ''}}">
             <a href="{{ url('admin/process') }}">
                 <i class="la la-gears"></i>
                 <p>Процессы</p>
                 <span class="badge badge-count">{{ $processesCount }}</span>
             </a>
           </li>
-          <li class="nav-item {{request()->is('admin/role') ? 'active' : (request()->segment(1) == 'role-edit' ? 'active' : '')}}">
+          <li class="nav-item {{request()->segment(2) == 'role' ? 'active' : ''}}">
             <a href="{{ url('admin/role') }}">
                 <i class="la la-user"></i>
                 <p>Роли</p>
@@ -77,7 +77,7 @@
                 <span class="badge badge-count">{{ $cityManagementCount }}</span>
             </a>
           </li>
-          <li class="nav-item {{request()->is('admin/user_role/register') ? 'active' : (request()->segment(1) == 'user-edit' ? 'active' : '')}}">
+          <li class="nav-item {{request()->segment(2) == 'user_role' ? 'active' : ''}}">
             <a href="{{ url('admin/user_role/register') }}">
                 <i class="la la-users"></i>
                 <p>Пользователи</p>
@@ -91,8 +91,8 @@
                 <span class="badge badge-count">{{ $dictionariesCount }}</span>
             </a>
           </li>
-          <li class="nav-item {{request()->is('admin/process/logs') ? 'active' : ''}}">
-            <a href="{{ url('admin/process/logs') }}">
+          <li class="nav-item {{request()->is('admin/logs') ? 'active' : ''}}">
+            <a href="{{ url('admin/logs') }}">
                 <i class="la la-comment"></i>
                 <p>Логи сервиса</p>
             </a>

@@ -84,6 +84,7 @@ Route::group(['middleware' => ['auth']], function () {
 Route::group(['prefix' => '/admin', 'middleware' => ['admin', 'auth']], function () {
 
     Route::get('send', 'HomeController@sendNotification');
+    Route::get('logs', 'ProcessController@logs');
 
     Route::prefix('dictionary')->group(function () {
         Route::get('/', 'DictionaryController@index');
@@ -187,7 +188,6 @@ Route::group(['prefix' => '/admin', 'middleware' => ['admin', 'auth']], function
         Route::post('/add_sub_role/{process}', 'ProcessController@add_sub_role');
         Route::post('/add_doc_template', 'ProcessController@addDocTemplates');
         Route::delete('/delete/{process}', 'ProcessController@delete');
-        Route::get('logs', 'ProcessController@logs');
     });
 
     Route::prefix('process_role')->group(function () {
