@@ -18,6 +18,7 @@ class SelectOptionSeeder extends Seeder
         foreach ($aFormatedData as $sKey => $aVal) {
             DB::table('select_options')->insert([
                 [   'id' => $id,
+                    'dictionary_id' => 45,
                     'target_id' => $aVal["Код"],
                     'target_aurz' => $aVal["Код(АУЗР)"],
                     'name_rus' => $aVal["Наименование(рус)"],
@@ -39,6 +40,7 @@ class SelectOptionSeeder extends Seeder
             DB::table('select_options')->insert([
                 [
                     'id' => $id,
+                    'dictionary_id' => 46,
                     'purpose_id' =>  $aVal["Кл.код"],
                     'name_rus' =>  $aVal["Наименование на русском языке"],
                     'name_kaz' =>  $aVal["Қазақ тіліндегі атауы"],
@@ -57,6 +59,7 @@ class SelectOptionSeeder extends Seeder
             DB::table('select_options')->insert([
                 [
                     'id' => $id,
+                    'dictionary_id' => 47,
                     'right_type_code' => $aVal["Код"],
                     'name_rus' => $aVal["Наименование рус"],
                     'name_kaz' => $aVal["Наименование каз"],
@@ -76,6 +79,7 @@ class SelectOptionSeeder extends Seeder
             DB::table('select_options')->insert([
                 [
                     'id' => $id,
+                    'dictionary_id' => 48,
                     'land_category_cod' => $aVal["код"],
                     'name_rus' => $aVal["Наименование полное(рус)"],
                     'short_name_rus' => $aVal["Сокращенное наименование (рус)"],
@@ -97,6 +101,7 @@ class SelectOptionSeeder extends Seeder
             DB::table('select_options')->insert([
                 [
                     'id' => $id,
+                    'dictionary_id' => 49,
                     'land_divisibility_code' => $aVal["Код"],
                     'name_rus' => $aVal["Наименование"],
                 ],

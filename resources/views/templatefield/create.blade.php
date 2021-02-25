@@ -74,6 +74,7 @@
         <input type="hidden" id="processId" value="1">
         <input type="hidden" id="tempId" name="tempId" value="{{$id}}">
         @isset($inputTypes)
+
           <div class="form-group">
             <label for="inputType">Выберите Тип Вводимого</label>
             <select class="form-control" name="inputType" id="inputType" data-dropup-auto="false">
@@ -83,16 +84,30 @@
               @endforeach
             </select>
           </div>
+
+          <div class="form-group" id="hidden_div2">
+              @isset($dictionaries)
+                  <label for="inputType">Выберите Справочник</label>
+                  <select class="form-control" name="inputType" id="inputType" data-dropup-auto="false">
+                      <option selected disabled>Выберите Ниже</option>
+                  @foreach($dictionaries as $dictionary)
+                      <option value="{{$dictionary->id}}">{{$dictionary->label_name}}</option>
+                  @endforeach
+                  </select>
+              @endisset
+          </div>
+
+          <div id="hidden_div">
+              @isset($options)
+                  @foreach ($options as $option)
+                      <div class="checkbox">
+                          <label><input class="get_value" type="checkbox" value="{{$option->id}}">{{$option->name_rus}}</label>
+                      </div>
+                  @endforeach
+              @endisset
+          </div>
         @endisset
-        <div id="hidden_div" style="display: none;">
-          @isset($options)
-              @foreach ($options as $option)
-                  <div class="checkbox">
-                      <label><input class="get_value" type="checkbox" value="{{$option->name_rus}}">{{$option->name_rus}}</label>
-                  </div>
-              @endforeach
-          @endisset
-        </div>
+
         @isset($insertTypes)
           <div class="form-group">
             <label for="insertType">Выберите Тип Сохранения</label>

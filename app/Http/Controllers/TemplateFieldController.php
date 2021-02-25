@@ -8,6 +8,7 @@ use App\TemplateField;
 use App\InputType;
 use App\InsertType;
 use App\SelectOption;
+use App\Dictionary;
 use App\Role;
 use Illuminate\Http\Request;
 use App\Traits\dbQueries;
@@ -27,14 +28,15 @@ class TemplateFieldController extends Controller
         $inputTypes = InputType::all();
         $insertTypes = InsertType::all();
         $options = SelectOption::all();
-
+        $dictionaries = Dictionary::where('input_type_id', 3)->get();
+//        dd($dictionaries);
         $roles = DB::table('process_role')
                     ->join('roles', 'roles.id', '=', 'process_role.role_id')
                     ->where('process_role.process_id', '=', $process->id)
                     ->get('roles.name');
 
         $oTemplateFields = $this->getAllTemplateFields($template->id);
-        return view('templatefield.create', compact('id', 'oTemplateFields','inputTypes','insertTypes','options','processId', 'roles', 'template_name'));
+        return view('templatefield.create', compact('id', 'oTemplateFields','inputTypes','insertTypes','options','processId', 'roles', 'template_name', 'dictionaries'));
     }
 
     public function store(Request $request) {
