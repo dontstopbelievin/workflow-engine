@@ -236,8 +236,7 @@ trait dbQueries
         $query = DB::table('template_fields')
             ->join('input_types', 'template_fields.input_type_id', '=', 'input_types.id')
             ->join('insert_types', 'template_fields.insert_type_id', '=', 'insert_types.id')
-            ->join('roles', 'template_fields.can_edit_role_id', '=', 'roles.id')
-            ->select('template_fields.name','template_fields.label_name as labelName', 'input_types.name as inputName', 'insert_types.name as insertName', 'template_fields.template_id as templateId', 'roles.name as can_edit')
+            ->select('template_fields.name','template_fields.label_name as labelName', 'input_types.name as inputName', 'insert_types.name as insertName', 'template_fields.template_id as templateId')
             ->where('template_fields.template_id', $id)
             ->get()->toArray();
         return json_decode(json_encode($query), true);

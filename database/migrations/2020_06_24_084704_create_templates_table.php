@@ -15,9 +15,15 @@ class CreateTemplatesTable extends Migration
     {
         Schema::create('templates', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('doc_path')->nullable();
-            $table->boolean('accept_template')->nullable();
+            $table->integer('process_id')->unsigned();
+            $table->foreign('process_id')->references('id')->on('processes');
+            $table->integer('role_id')->unsigned();
+            $table->foreign('role_id')->references('id')->on('roles');
+            $table->integer('template_doc_id')->unsigned();
+            $table->foreign('template_doc_id')->references('id')->on('template_docs');
+            $table->integer('order')->unsigned();
+            $table->string('table_name');
+            $table->boolean('accept_template');
             $table->timestamps();
         });
     }

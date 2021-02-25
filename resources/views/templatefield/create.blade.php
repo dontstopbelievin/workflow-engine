@@ -16,7 +16,7 @@
               <button id="addNew" class="btn btn-primary" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i></button>
             </div>
             <div class="col-md-6 text-center">
-              <h5>Поля шаблона: {{$template_name}}</h5>
+              <h5>Поля шаблона: {{$template->table_name}}</h5>
             </div>
           </div>
           @if (session('status'))
@@ -53,7 +53,6 @@
   </div>
 </div>
 
-
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -69,10 +68,9 @@
           <input type="text" class="form-control" id="addItem" placeholder="Введите название поля">
         </div>
         <div class="form-group">
-          <input type="text" class="form-control" id="addLabelName" placeholder="Введите ярлык поля(label name)">
+          <input type="text" class="form-control" id="addLabelName" placeholder="Введите label">
         </div>
-        <input type="hidden" id="processId" value="1">
-        <input type="hidden" id="tempId" name="tempId" value="{{$id}}">
+        <input type="hidden" id="temp_id" name="temp_id" value="{{$template->id}}">
         @isset($inputTypes)
           <div class="form-group">
             <label for="inputType">Выберите Тип Вводимого</label>
@@ -100,17 +98,6 @@
               <option selected disabled>Выберите Ниже</option>
               @foreach($insertTypes as $type)
                   <option value="{{$type->name}}">{{$type->name}}</option>
-              @endforeach
-            </select>
-          </div>
-        @endisset
-        @isset($roles)
-          <div class="form-group">
-            <label for="insertType">Выберите специалиста</label>
-            <select class="form-control" id="role" name="role" data-dropup-auto="false" required>
-              <option selected disabled class="w-auto">Выберите Ниже</option>
-              @foreach($roles as $role)
-                  <option value="{{$role->name}}">{{$role->name}}</option>
               @endforeach
             </select>
           </div>
@@ -160,14 +147,12 @@
         });
 
         $('#AddButton').click(function(event) {
-            var labelName = $('#addLabelName').val();
             var text = $('#addItem').val();
+            var labelName = $('#addLabelName').val();
             var inputItem = $('#inputType').val();
             var insertItem = $('#insertType').val();
-            var processId = $('#processId').val();
-            var role = $('#role').val();
             var selectedOptions = [];
-            var id = $('#tempId').val();
+            var id = $('#temp_id').val();
             $('.get_value').each(function(){
                 if($(this).is(":checked"))
                 {
@@ -177,7 +162,6 @@
 
             if (text == '') {
                 alert('Введите название поля');
-                alert(selectedOptions);
             }
             if (inputItem === null) {
                 alert('Выберите тип вводимого');
@@ -185,12 +169,9 @@
             if (insertItem === null) {
                 alert('Выберите тип сохранения');
             }
-            if (role === null) {
-                alert('Выберите специалиста');
-            }
 
-            $.post('/admin/template_field/store', {'tempId':id,'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, 'role':role, '_token':"{{csrf_token()}}"}, function(data){
-                console.log('data:'+data);
+            $.post('/admin/template_field/store', {'temp_id':id,'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'selectedOptions':selectedOptions, '_token':"{{csrf_token()}}"}, function(data){
+                console.log('data: '+data);
                 $('#items').load(location.href + ' #items');
             });
         });

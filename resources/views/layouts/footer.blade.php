@@ -31,5 +31,8 @@
             document.getElementById(tabName).style.display = "block";
             evt.currentTarget.className += " active";
         }
+        $(document).ready(function(){
+          $('[data-toggle="tooltip"]').tooltip();   
+        });
 	</script>
 @endsection

@@ -51,18 +51,16 @@ class ProcessController extends Controller
 
     public function edit(Process $process) {
         try {
-            $accepted = Template::where('id', $process->accepted_template_id)->where('accept_template', 1)->first();
-            $rejected = Template::where('id', $process->rejected_template_id)->where('accept_template', 0)->first();
+            $templates = Template::where('process_id', $process->id)->with('role')->with('doc')->get();
             $columns = $this->getAllDictionaries();
             $roles = Role::where('name' ,'!=', 'Заявитель')->get();
-            $tableName = $this->getTableName($process->name);
-            $tableColumns = $this->getColumns($tableName);
+            $tableColumns = $this->getColumns($process->table_name);
             $organizations = CityManagement::all();
             $nameMainOrg = CityManagement::find($process->main_organization_id)->name ?? '';
-            $templateDocs = TemplateDoc::all();
             $process_roles = $this->get_roles_for_edit($process->id);
-            // return $process_roles;
-            return view('process.edit', compact('templateDocs', 'process', 'accepted','tableColumns', 'rejected', 'columns', 'roles','process_roles', 'organizations', 'nameMainOrg'));
+            $process_roles_2 = $this->get_roles_in_order($process->id);
+            $templateDocs = TemplateDoc::all();
+            return view('process.edit', compact('templates', 'process','tableColumns', 'columns', 'roles','process_roles', 'process_roles_2', 'organizations', 'nameMainOrg', 'templateDocs'));
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }
@@ -96,6 +94,9 @@ class ProcessController extends Controller
             $table = new CreatedTable();
             $table->name = $tableName;
             $table->save();
+
+            $process->table_name = $tableName;
+            $process->save();
 
             if (!Schema::hasTable($tableName)) {
                 $dbQueryString = "CREATE TABLE $tableName (id INT PRIMARY KEY AUTO_INCREMENT)";
@@ -279,14 +280,6 @@ class ProcessController extends Controller
         $process->main_organization_id = $request->mainOrganization;
         $process->update();
         return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Организация успешно изменена.');
-    }
-
-    public function addDocTemplates(Request $request)
-    {
-        $process = Process::find($request->processId);
-        $process->template_doc_id = $request->docTemplateId;
-        $process->save();
-        return Redirect::back()->with('status', 'Основной маршрут выбран успешно');
     }
 
     public function update_process_role(Request $request, Process $process)

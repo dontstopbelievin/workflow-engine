@@ -105,77 +105,83 @@
             </div>
             <div id="create_template" class="tabcontent3"  style="display: none;">
               <div>
-                <div class="card-title">Прикрепленный шаблон:
-                  @foreach($templateDocs as $template)
-                    @if($template->id == $process->template_doc_id)
-                       {{$template->name}}
-                      @break
-                    @endif
-                  @endforeach
-                </div>
-                <form action="{{ url('admin/process/add_doc_template') }}" method="POST">
+                <table border="1" cellpadding="5">
+                  <tr>
+                    <td>Название таблицы</td><td>Согласование/Мотив. отказ</td>
+                    <td>Прикрепленный шаблон</td>
+                    <td>Специалист</td><td>Очередность</td><td>Действие</td>
+                  </tr>
+                  @if(count($templates) > 0)
+                    @foreach($templates as $template)
+                      <tr>
+                        <td>{{$template->table_name}}</td>
+                        <td>
+                          @if($template->accept_template == 1)
+                            Согласование
+                          @else
+                            Мотивированный отказ
+                          @endif
+                        </td>
+                        <td>{{$template->doc->name}}</td>
+                        <td>
+                          @if(strlen($template->role->name) > 60)
+                            <div href="#" data-toggle="tooltip" title="{{$template->role->name}}">
+                              {{substr($template->role->name, 0, 60)}}...
+                            </div>
+                          @else
+                              {{$template->role->name}}
+                          @endif
+                        </td>
+                        <td>{{$template->order}}</td>
+                        <td><a href="{{ url('admin/template_field/create', [$template]) }}" class="btn btn-outline-danger btn-xs">Добавить поля</a></td>
+                      </tr>
+                    @endforeach
+                  @else
+                  <tr><td colspan="6">Упссс тут пусто...</td></tr>
+                  @endif
+                </table>
+              </div>
+              <hr/>
+              <div class="col-md-6">
+                <div class="card-title" style="margin-top: 10px;">Создать шаблон</div>
+                <form action="{{ url('admin/template/store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    <input type="hidden" name="process_id" value="{{$process->id}}">
                     <div class="form-group">
-                        <input type="hidden" name="processId" value = {{$process->id}}>
-                        <label for="docTemplate">Выберите другой документ шаблона:</label>
-                        <select name="docTemplateId" id="docTemplate" class="form-control">
+                      <select name="template_state" class="form-control">
+                        <option selected="true" disabled="disabled">Выберите тип</option>
+                        <option value="1">Согласование</option>
+                        <option value="0">Мотивированный отказ</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <select name="role_id" class="form-control">
+                        <option selected="true" disabled="disabled">Выберите специалиста</option>
+                        @foreach($process_roles_2 as $item)
+                          <option value={{$item->role_id}}>{{$item->name}}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="docTemplate">Выберите документ шаблона:</label>
+                        <select name="template_doc_id" id="docTemplate" class="form-control">
                             @foreach($templateDocs as $doc)
-                              @if($process->template_doc_id == $doc->id)
-                                <option selected value="{{$doc->id}}">
-                                    {{$doc->name}}
-                                </option>
-                              @else
-                                <option value="{{$doc->id}}">
-                                    {{$doc->name}}
-                                </option>
-                              @endif
+                              <option value="{{$doc->id}}">
+                                  {{$doc->name}}
+                              </option>
                             @endforeach
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">Прикрепить</button>
-                </form>
-              </div><hr>
-              <div>
-                <div class="card-title" style="margin-top: 10px;">Шаблон одобрения</div>
-                @empty($accepted)
-                <form action="{{ url('admin/template/store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="template_state" value="accepted">
-                    <input type="hidden" name="processId" value="{{$process->id}}">
+                    <div class="form-group">
+                        <label for="sh_order">Очередность</label>
+                        <input type="number" class="form-control" name="order" id="sh_order">
+                    </div>
                     <div class="form-group">
                         <label for="fieldName">Название шаблона</label>
                         <input type="text" class="form-control" name="name" id="fieldName">
                     </div>
                     <button type="submit" class="btn btn-primary">Создать</button>
                 </form>
-                @endempty
-                @isset($accepted)
-                    <p>
-                      <u>{{$accepted->name}}</u>
-                      <a href="{{ url('admin/template_field/create', [$accepted]) }}" class="btn btn-outline-danger btn-xs">Редактировать</a>
-                    </p>
-                @endisset
-                <hr>
-                <div class="card-title" style="margin-top: 10px;">Шаблон отказa</div>
-                @empty($rejected)
-                <form action="{{ url('admin/template/store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="template_state" value="rejected">
-                    <input type="hidden" name="processId" value="{{$process->id}}">
-
-                    <div class="form-group">
-                        <label for="fieldName">Название шаблона</label>
-                        <input type="text" class="form-control" name="name" id="fieldName">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Создать</button>
-                </form>
-                @endempty
-                @isset($rejected)
-                     <p>
-                        <u>{{$rejected->name}}</u>
-                        <a href="{{ url('admin/template_field/create', [$rejected]) }}" class="btn btn-outline-danger btn-xs">Редактировать</a>
-                     </p>
-                @endisset
               </div>
             </div>
             <div class="modal fade" id="routeModal" role="dialog">

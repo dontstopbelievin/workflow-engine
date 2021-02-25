@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use App\Traits\dbQueries;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class TemplateController extends Controller
 {
@@ -31,28 +32,28 @@ class TemplateController extends Controller
     public function store(Request $request) {
         try {
             DB::beginTransaction();
-            $request->validate([
-                'name' => 'required',
-                'template_state' => 'required',
+            $validator = Validator::make($request->all(),[
+                'name' => 'required|string',
+                'template_state' => 'required|integer',
+                'process_id' => 'required|integer',
+                'template_doc_id' => 'required|integer',
+                'role_id' => 'required|integer',
+                'order' => 'required|integer',
             ]);
-            $templateState = $request->template_state === "accepted";
-            // delete old one?
+            if ($validator->fails()) {
+                return Redirect::back()->with('failure', $validator->errors());
+            }
             $template = new Template([
-                'name' => $request->name,
-                'accept_template' => $templateState,
+                'table_name' => $request->name,
+                'accept_template' => $request->template_state,
+                'process_id' => $request->process_id,
+                'template_doc_id' => $request->template_doc_id,
+                'role_id' => $request->role_id,
+                'order' => $request->order,
             ]);
             $template->save();
-            $process = Process::find($request->processId);
-            if ($request->template_state === "accepted") {
-                $process->update(['accepted_template_id' => $template->id]);
-                DB::commit();
-                return Redirect::action([TemplateFieldController::class, 'create'], [$template])->with('status','Шаблон успешно создан');
-            } else if ($request->template_state === "rejected") {
-                $process->update(['rejected_template_id' => $template->id]);
-                DB::commit();
-                return Redirect::back()->with('status','Шаблон отказа успешно создан');
-            }
-            return response()->json(['message' => 'template not found'], 500);
+            DB::commit();
+            return Redirect::action([TemplateFieldController::class, 'create'], [$template])->with('status','Шаблон успешно создан');
         } catch (Exception $e){
             DB::rollBack();
             return response()->json(['message' => $e->getMessage()], 500);

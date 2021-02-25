@@ -53,7 +53,9 @@
                 <span style="color:white!important">{{ Auth::user()->name }}</span><br>
                 <small>
                     @if(strlen(Auth::user()->role->name) > 60)
-                        ({{substr(Auth::user()->role->name, 0, 60)}})
+                        <span data-toggle="tooltip" title="{{Auth::user()->role->name}}" style="color:white!important;">
+                              ({{substr(Auth::user()->role->name, 0, 60)}}...)
+                        </span>
                     @else
                         ({{Auth::user()->role->name}})
                     @endif

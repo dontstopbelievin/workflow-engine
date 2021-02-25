@@ -186,7 +186,6 @@ Route::group(['prefix' => '/admin', 'middleware' => ['admin', 'auth']], function
         Route::post('/create_process_table/{process}', 'ProcessController@createProcessTable');
         Route::post('/add_role/{process}', 'ProcessController@addRole');
         Route::post('/add_sub_role/{process}', 'ProcessController@add_sub_role');
-        Route::post('/add_doc_template', 'ProcessController@addDocTemplates');
         Route::delete('/delete/{process}', 'ProcessController@delete');
     });
 

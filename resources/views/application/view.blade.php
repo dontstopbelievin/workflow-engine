@@ -55,10 +55,10 @@
                                 <ul class="list-group" id="list">
                                 @foreach($templateTableFields as $key=>$value)
                                     @if(substr($value, 0, 16) === 'application-docs')
-                                            <li class="list-group-item">{{$key}}: <a href="{{asset('storage/' .$value )}}" target="_blanc">Просмотр</a></li>
-                                        @else
-                                    <li class="list-group-item">{{$key}}: {{$value}}</li>
-                                        @endif
+                                        <li class="list-group-item">{{$key}}: <a href="{{asset('storage/' .$value )}}" target="_blanc">Просмотр</a></li>
+                                    @else
+                                        <li class="list-group-item">{{$key}}: {{$value}}</li>
+                                    @endif
                                     @endforeach
                                 </ul>
                               @endisset
@@ -180,9 +180,7 @@
                                     @if (isset($templateFields) && $application->reject_reason == null)
                                         <h4 class="card-title text-center" style="margin-top:50px;">Поля Шаблона</h4>
                                         <form id = "templateFieldsId" method="POST" enctype="multipart/form-data">
-                                            {{--<input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">--}}
                                             @foreach($templateFields as $item)
-                                                @if(Auth::user()->role->id == $item->can_edit_role_id)
                                                     <div class="form-group row">
                                                         <label for="{{$item->name}}" class="col-md-4 col-form-label text-md-right">{{ __($item->label_name) }}</label>
                                                         @if($item->input_type_id === 1)
@@ -195,7 +193,6 @@
                                                             </div>
                                                         @endif
                                                     </div>
-                                                @endif
                                             @endforeach
                                         </form>
                                     @endif
