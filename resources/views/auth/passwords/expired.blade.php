@@ -17,7 +17,7 @@
                             <div class="alert alert-info">
                                 Your password has expired, please change it.
                             </div>
-                            <form class="form-horizontal" method="POST" action="{{ route('password.post_expired') }}">
+                            <form class="form-horizontal" method="POST" action="{{ url('password/post_expired') }}">
                                 {{ csrf_field() }}
 
                                 <div class="form-group{{ $errors->has('current_password') ? ' has-error' : '' }}">

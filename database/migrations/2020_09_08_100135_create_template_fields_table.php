@@ -17,12 +17,13 @@ class CreateTemplateFieldsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('label_name');
-            $table->foreignId('input_type_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('insert_type_id')->nullable()->constrained()->onDelete('cascade');
-//            $table->foreignId('template_id')->nullable()->constrained()->onDelete('cascade');
-            $table->integer('can_edit_role_id')->default(0)->nullable();
+            $table->foreignId('input_type_id')->nullable();
+            $table->foreignId('insert_type_id')->nullable();
             $table->integer('template_id')->unsigned()->nullable();
             $table->foreign('template_id')->references('id')->on('templates');
+            $table->integer('select_dic')->unsigned()->nullable();
+            $table->foreign('select_dic')->references('id')->on('dictionaries');
+            $table->unique(['name', 'template_id']);
             $table->timestamps();
         });
     }

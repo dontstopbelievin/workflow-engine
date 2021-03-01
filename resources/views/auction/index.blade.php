@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
 @section('title')
     Аукцион
@@ -14,7 +14,7 @@
                         {{ session('status') }}
                     </div>
                 @endif
-    			<a href="{{route('auction.create')}}" class="btn btn-info">Добавить лот</a><br><br>
+    			<a href="{{url('admin/auction/create')}}" class="btn btn-info">Добавить лот</a><br><br>
     			<div class="card">
     				<div class="card-body">
     					<table class="table table-hover">
@@ -49,32 +49,16 @@
                                                     @break
                                                 @endswitch</h4></td>
                                         <td class="text-left align-middle"><h4>{{$field->publish_date}}</h4></td>
-                                        <td class="text-left align-middle"><a href="{{route('auction.view', ['id' => $field->id])}}"><i class="fa fa-eye" style="font-size:36px"></i></a></td>
-                                        <td class="text-left align-middle"><a href="{{route('auction.sender', ['id' => $field->id])}}"><i class="fa fa-upload" style="font-size:36px"></i></a></td>
+                                        <td class="text-left align-middle"><a href="{{url('admin/auction/view', ['id' => $field->id])}}"><i class="fa fa-eye" style="font-size:36px"></i></a></td>
+                                        <td class="text-left align-middle"><a href="{{url('admin/auction/send', ['id' => $field->id])}}"><i class="fa fa-upload" style="font-size:36px"></i></a></td>
                                     </tr>
                                 </tbody>
                             @endforeach
                         </table>
                     </div>
-                    <a href="{{route('auction.create')}}"  class="btn btn-info btn-lg my-5">Создать Лот</a>
+                    <a href="{{url('admin/auction/create')}}"  class="btn btn-info btn-lg my-5">Создать Лот</a>
                 </div>
             </div>
         </div>
     </div>
-@endsection
-
-@section('scripts')
-    <script src="../assets/js/core/jquery.min.js"></script>
-    <script src="../assets/js/core/popper.min.js"></script>
-    <script src="../assets/js/core/bootstrap.min.js"></script>
-    <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
-    <!--  Google Maps Plugin    -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
-    <!-- Chart JS -->
-    <script src="../assets/js/plugins/chartjs.min.js"></script>
-    <!--  Notifications Plugin    -->
-    <script src="../assets/js/plugins/bootstrap-notify.js"></script>
-    <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
-    <script src="../assets/js/now-ui-dashboard.min.js?v=1.5.0" type="text/javascript"></script><!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
-    <script src="../assets/demo/demo.js"></script>
 @endsection

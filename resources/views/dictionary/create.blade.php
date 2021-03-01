@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
 @section('title')
     Создание Полей
@@ -53,5 +53,3 @@
         </div>
     </div>
 @endsection
-
-

@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
 @section('title')
     Процессы
@@ -12,19 +12,26 @@
           <div class="col-md-12">
               <div class="card bg-white">
                   <div class="card-header">
-                      <h3 class="card-title font-weight-bold text-center">Список Процессов </h3>
-                      <a href="{{ route('processes.create') }}" class="btn btn-info">Добавить процесс</a><br><br>
-                      @if (session('status'))
-                          <div class="alert alert-success" role="alert">
-                              {{ session('status') }}
-                          </div>
-                          @elseif (session('failure'))
-                          <div class="alert alert-warning" role="alert">
-                              {{ session('failure') }}
-                          </div>
-                      @endif
+                    <div class="row">
+                      <div class="col-md-3">
+                        <a href="{{ url('admin/process/create') }}" class="btn btn-info float-left">Добавить процесс</a>
+                      </div>
+                      <div class="col-md-6">
+                        <h4 class="page-title text-center">
+                          Список Процессов
+                        </h4>
+                      </div>
+                    </div>
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                        @elseif (session('failure'))
+                        <div class="alert alert-warning" role="alert">
+                            {{ session('failure') }}
+                        </div>
+                    @endif
                   </div>
-  						<div class="card">
   							<!-- <div class="card-header">
   				        <div class="card-title">Table</div>
   				      </div> -->
@@ -41,15 +48,15 @@
   									<tbody>
                       @foreach($processes as $process)
                         <tr>
-                            <td><a href="{{ route('processes.view', ['process' => $process]) }}">{{$loop->iteration}}</a></td>
+                            <td>{{$loop->iteration}}</td>
                             <td>{{$process->name}}</td>
                             <td>{{$process->deadline}}</td>
                             <td>
                               <div class="row">
-                                <button class="btn btn-link btn-simple-primary" data-original-title="Изменить" onclick="window.location='{{route('processes.edit', ['process' => $process])}}'">
+                                <button class="btn btn-link btn-simple-primary" data-original-title="Изменить" onclick="window.location='{{url('admin/process/edit', ['process' => $process])}}'">
                                     <i class="la la-edit"></i>
                                 </button>
-                                <form action="{{ route('processes.delete', ['process' => $process]) }}" method="post">
+                                <form action="{{ url('admin/process/delete', ['process' => $process]) }}" method="post">
                                     {{csrf_field()}}
                                     {{method_field('DELETE')}}
                                     <button type="submit" class="btn btn-link btn-danger" data-original-title="Удалить">
@@ -63,15 +70,10 @@
   									</tbody>
   								</table>
   							</div>
-  						</div>
   					</div>
   				</div>
   			</div>
       </div>
     </div>
   </div>
-@endsection
-
-@section('scripts')
-
 @endsection

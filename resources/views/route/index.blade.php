@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
 @section('title')
    Маршруты
@@ -35,9 +35,9 @@
                                         <td>{{$template->id}}</td>
                                         <td>{{$template->name}}</td>
                                         <td>{{$template->created_at->toDateString() }}</td>
-                                        <td><a href="/template-edit/{{$template->id}}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
+                                        <td><a href="/template/edit/{{$template->id}}" class="btn btn-success">ИЗМЕНИТЬ</a></td>
                                         <td>
-                                            <form action="/template-delete/{{$template->id}}" method="post">
+                                            <form action="/template/delete/{{$template->id}}" method="post">
                                                 {{csrf_field()}}
                                                 {{method_field('DELETE')}}
                                                 <button type="submit" class="btn btn-danger">УДАЛИТЬ</button>
@@ -56,7 +56,4 @@
         </div>
     </div>                   
 
-@endsection
-
-@section('scripts')
 @endsection

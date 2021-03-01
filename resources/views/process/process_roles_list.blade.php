@@ -6,7 +6,7 @@
       </li>
     </td>
     <td>
-      <form action="{{ url('process_role/update', [$process]) }}" method="POST">
+      <form action="{{ url('admin/process_role/update', [$process]) }}" method="POST">
           @csrf
           <div class="form-group">
               <input type="hidden" name="id" value={{$process_role->id}} />
@@ -16,7 +16,7 @@
       </form>
     </td>
     <td>
-      <form action="{{ url('process_role/delete', [$process]) }}" method="POST">
+      <form action="{{ url('admin/process_role/delete', [$process]) }}" method="POST">
           @csrf
           <div class="form-group">
               <input type="hidden" name="id" value={{$process_role->id}} />

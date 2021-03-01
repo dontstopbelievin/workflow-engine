@@ -17,8 +17,8 @@ class CreateDictionariesTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('label_name');
-            $table->foreignId('input_type_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('insert_type_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('input_type_id')->nullable();
+            $table->foreignId('insert_type_id')->nullable();
             $table->timestamps();
         });
     }

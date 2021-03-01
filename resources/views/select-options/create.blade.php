@@ -96,7 +96,7 @@
             if (text == '') {
                 alert('Please type anything');
             }
-            $.post('/select-options/store', {'text':text, '_token':$('input[name=_token]').val()}, function(data){
+            $.post('/select_options/store', {'text':text, '_token':$('input[name=_token]').val()}, function(data){
                 console.log(data);
                 $('#items').load(location.href + ' #items');
             });
@@ -104,7 +104,7 @@
 
         $('#delete').click(function(event) {
             var id = $('#id').val();
-            $.post('/select-options/delete', {'id':id, '_token':$('input[name=_token]').val()}, function(data){
+            $.post('/select_options/delete', {'id':id, '_token':$('input[name=_token]').val()}, function(data){
                 console.log(data);
                 $('#items').load(location.href + ' #items');
             });
@@ -112,7 +112,7 @@
         $('#saveChanges').click(function(event) {
             var id = $('#id').val();
             var value = $('#addItem').val();
-            $.post('/select-options/update ', {'id':id, 'value':value,'_token':$('input[name=_token]').val()}, function(data){
+            $.post('/select_options/update ', {'id':id, 'value':value,'_token':$('input[name=_token]').val()}, function(data){
                 console.log(data);
                 $('#items').load(location.href + ' #items');
             });

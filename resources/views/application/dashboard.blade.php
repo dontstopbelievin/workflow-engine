@@ -1,23 +1,18 @@
-@extends('layouts.master')
-
-@section('title')
-    Услуги
-@endsection
+@extends('layouts.app')
 
 @section('content')
     <div class="main-panel">
         <div class="content">
             <div class="container-fluid">
-                <h4 class="page-title">Заявки</h4>
-                @if (session('status'))
-                    <div class="alert alert-success" role="alert">
-                        {{ session('status') }}
-                    </div>
-                @endif
                 <div class="card">
-                    <!-- <div class="card-header">
-               <div class="card-title">Table</div>
-               </div> -->
+                    <div class="card-header">
+                        <h4 class="page-title text-center">Список услуг</h4>
+                        @if (session('status'))
+                            <div class="alert alert-success" role="alert">
+                                {{ session('status') }}
+                            </div>
+                        @endif
+                    </div>
                     <div class="card-body">
                         @if ($modalPopup && Auth::user()->name === 'Admin')
                             <div id="acceptModal" class="modal" data-backdrop="static">
@@ -64,12 +59,6 @@
                                                 Сервисов.<br>
                                         </div>
                                         <div class="modal-footer" style="display: flex;justify-content: space-between;">
-                                            {{--<div class="checkbox pull-left">
-                                                --}}
-                                                {{--<label><input type="checkbox"
-                                                        id="acceptId" value="">Я
-                                                    согласен</label>--}}
-                                                {{--</div>--}}
                                             <div class="pull-right">
                                                 <button type="submit" class="btn btn-info btn-lg" id="acceptButton">Я
                                                     согласен</button>
@@ -94,12 +83,6 @@
                                                 ответственность в соответствии с законодательством Республики Казахстан.
                                         </div>
                                         <div class="modal-footer" style="display: flex;justify-content: space-between;">
-                                            {{--<div class="checkbox pull-left">
-                                                --}}
-                                                {{--<label><input type="checkbox"
-                                                        id="acceptId" value="">Я
-                                                    согласен</label>--}}
-                                                {{--</div>--}}
                                             <div class="pull-right">
                                                 <button type="submit" class="btn btn-info btn-lg" id="acceptModalButton">
                                                     Я согласен</button>
@@ -123,9 +106,6 @@
                                             <p>Ведется логирование вашей учетной записи. Ваши действия записываются в базу данных. За любые противоправные действия на Портале, вы несете ответственность в соответствии с законодательством Республики Казахстан.
                                         </div>
                                         <div class="modal-footer" style="display: flex;justify-content: space-between;">
-                                            {{--<div class="checkbox pull-left">--}}
-                                                {{--<label><input type="checkbox" id="acceptId" value="">Я согласен</label>--}}
-                                            {{--</div>--}}
                                             <div class="pull-right">
                                                 <button type="submit" class="btn btn-info btn-lg" id="acceptModalButton">Я согласен</button>
                                             </div>
@@ -161,7 +141,7 @@
                                             <td class="text-center align-middle border">
                                                 <button class="btn btn-simple-primary px-0 py-0"
                                                     style=" background-color: transparent;font-size:30px;"
-                                                    onclick="window.location='{{ route('applications.index', ['process' => $process]) }}'">
+                                                    onclick="window.location='{{ url('docs/index', ['process' => $process]) }}'">
                                                     <i class="la la-arrow-circle-o-right"></i>
                                                 </button>
                                             </td>
@@ -175,12 +155,8 @@
             </div>
         </div>
     </div>
-    {{csrf_field()}}
-    <script
-        src="https://code.jquery.com/jquery-3.5.1.min.js"
-        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous"></script>
+@endsection
+@section('scripts')
     <script>
         $(document).ready(function(){
             $('input[type="checkbox"]').click(function() {
@@ -198,17 +174,27 @@
 
             $('#acceptButton').click(function(event) {
 
-                $.post('/agreement-accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
+                $.post('/agreement_accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
                     $('#acceptModal').modal('hide');
+                    if(data.message)
+                    {location.reload();}
+                    else{
+                      alert('Ошибка');  
+                    }
                 });
             });
 
             $('#acceptModalButton').click(function(event) {
 
-                $.post('/agreement-accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
+                $.post('/agreement_accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
                     $('#acceptModalId').modal('hide');
+                    if(data.message)
+                    {location.reload();}
+                    else{
+                      alert('Ошибка');  
+                    }
                 });
             });
         });
     </script>
-@endsection
+@append

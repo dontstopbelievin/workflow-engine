@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
 @section('title')
     Создание Шаблона
@@ -20,7 +20,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <form action="{{ route('template.store') }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ url('admin/template/store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group">
                                     <label for="fieldName">Название шаблона</label>
@@ -45,7 +45,4 @@
             </div>
         </div>
     </div>
-@endsection
-
-@section('scripts')
 @endsection

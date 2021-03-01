@@ -180,12 +180,6 @@ class RoleSeeder extends Seeder
                 'name' => 'Уволен', // 28
                 'sign_with_ecp' => 0,
             ],
-            [
-                'city_management_id' => 1,
-                'name' => 'Уволен', // 29
-                'sign_with_ecp' => 0,
-            ],
-
         ]);
     }
 }

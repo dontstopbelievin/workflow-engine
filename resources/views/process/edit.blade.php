@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
 @section('title')
     Редактирование процесса
@@ -8,186 +8,265 @@
 <div class="main-panel">
   <div class="content">
     <div class="container-fluid">
-      <h4 class="page-title">Изменение Процесса: {{$process->name}}</h4>
-      @if (session('status'))
-          <div class="alert alert-success" role="alert">
-              {{ session('status') }}
-          </div>
-      @elseif (session('failure'))
-          <div class="alert alert-warning" role="alert">
-              {{ session('failure') }}
-          </div>
-      @endif
       <div class="card">
+        <div class="card-header">
+          <h4 class="page-title">
+            <a href="{{ url('admin/process') }}" class="btn btn-info" style="margin-right: 10px;">Назад</a>
+            Изменение Процесса: {{$process->name}}</h4>
+          @if(session('status'))
+              <div class="alert alert-success" role="alert">
+                  {{ session('status') }}
+              </div>
+          @elseif (session('failure'))
+              <div class="alert alert-warning" role="alert">
+                  {{ session('failure') }}
+              </div>
+          @endif
+        </div>
         <div class="card-body">
-          <div class="col-md-12">
-            <a href="{{ route('processes.index') }}" class="btn btn-outline-danger" style="margin-bottom: 20px;">Назад</a>
-            <h5>О процессе:</h5>
-            <form action="{{ route('processes.update', ['process' => $process]) }}" method="POST">
-              {{ csrf_field( )}}
-              {{ method_field('PUT') }}
-              <div class="form-group">
-                <label>Наименование Процесса</label>
-                <input type="text" name="name" value="{{ $process->name}}" class="form-control">
-              </div>
-              <div class="form-group">
-                <label>Срок(количество дней)</label>
-                <input type="text" name="deadline" value="{{ $process->deadline}}" class="form-control">
-              </div>
-              <div class="form-group-row">
-                  <button button type="submit" class="btn btn-primary mx-2">Изменить</button>
-              </div>
-            </form>
-            <hr style="height:1px;border-width:0; background-color:black;">
-
-            <!-- Modal -->
-            <div class="modal fade" id="myModal" role="dialog">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <span class="modal-title">Список Полей</span>
+          <div class="col-md-12" style="margin-bottom: 40px;">
+            <div class="tab">
+              <button class="tablinks3 active" onclick="openTab3(event, 'about_process')">О процессе</button>
+              <button class="tablinks3" onclick="openTab3(event, 'organization')">Организация</button>
+              <button class="tablinks3" onclick="openTab3(event, 'creat_table')">Создать таблицу</button>
+              <button class="tablinks3" onclick="openTab3(event, 'create_roles')">Создание маршрута</button>
+              <button class="tablinks3" onclick="openTab3(event, 'create_template')">Создание шаблонов</button>
+            </div>
+            <div id="about_process" class="tabcontent3">
+              <form action="{{ url('admin/process/update', ['process' => $process]) }}" method="POST">
+                {{ csrf_field( )}}
+                {{ method_field('PUT') }}
+                <div class="form-group">
+                  <label>Наименование Процесса</label>
+                  <input type="text" name="name" value="{{ $process->name}}" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Срок(количество дней)</label>
+                  <input type="text" name="deadline" value="{{ $process->deadline}}" class="form-control">
+                </div>
+                <div class="form-group-row">
+                    <button button type="submit" class="btn btn-primary mx-2">Изменить</button>
+                </div>
+              </form>
+            </div>
+            <div id="creat_table" class="tabcontent3" style="display: none;">
+              @isset($tableColumns)
+                <div class="card-header">
+                  <div class="card-title">Поля процесса:</div>
+                </div>
+                  @foreach($tableColumns as $column)
+                  <ul class="list-group text-center mx-2">
+                      <li class="list-group-item w-50 text-center">{{$column}}</li>
+                  </ul>
+                  @endforeach
+              @endisset
+              <button type="button" class="btn btn-primary mx-2" data-toggle="modal" data-target="#myModal" style="margin-top: 20px;">Выбрать Поля</button>
+            </div>
+            <div id="organization" class="tabcontent3"  style="display: none;">
+              <h6>Организация - {{ $nameMainOrg ?? 'не выбрана'}}</h6>
+              @isset($organizations)
+                <form action="{{ url('admin/process/add_organization', ['process' => $process]) }}" method="POST">
+                    @csrf
+                    <div class="form-group">
+                        <label for="mainOrganization">Выберите Оргaнизацию основного маршрута</label>
+                        <select name="mainOrganization" class="form-control" id="mainOrganization" data-dropup-auto="false">
+                            <option selected="true" disabled="disabled">Выберите организацию</option>
+                            @foreach($organizations as $organization)
+                                @if($organization->id == $process->main_organization_id)
+                                        <option selected value={{$organization->id}}>{{$organization->name}} </option>
+                                      @else
+                                        <option value={{$organization->id}}>{{$organization->name}} </option>
+                                      @endif
+                            @endforeach
+                        </select>
                     </div>
-                    <div class="modal-body">
-                      <form action="{{ route('processes.createProcessTable', ['process' => $process]) }}" method="POST">
-                        @csrf
-                        <div style="text-align: center;">
-                          <button type="submit" class="btn btn-success">Создать</button>
-                          <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                        </div>
-                        @isset($columns)
-                              @foreach ($columns as $column)
-                                <div class="form-check" style="padding:0px;">
-                                  <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" name="fields[]" value="{{$column->name}}">
-                                    <span class="form-check-sign">{{$column->labelName}}</span>
-                                  </label>
-                                </div>
-                              @endforeach
-                        @endisset
-                        <div style="text-align: center;">
-                          <button type="submit" class="btn btn-success">Создать</button>
-                          <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                        </div>
-                      </form>   
-                    </div>
-                    <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary mx-2">Выбрать</button>
+                </form>
+              @endisset
+            </div>
+            <div id="create_roles" class="tabcontent3"  style="display: none;">
+              @isset($process->routes)
+                <div style="margin-top: 10px;">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#routeModal">Выбрать Участников</button>
+                    <div class="border border-light" id="items" style="margin-top: 10px;">
+                      <table border="1" cellpadding="5" style="text-align: center;">
+                          <tr>
+                            <td>Роль</td><td>Очередность</td><td></td>
+                            @if(isset($process_roles) && count($process_roles)>0)
+                              @include('process.process_roles_list', ['process_roles' => $process_roles])
+                            @else
+                              <tr><td colspan="3">Упссс тут пусто...</td></tr>
+                            @endif
+                          </tr>
+                        </table>
                     </div>
                 </div>
+              @endisset
+            </div>
+            <div id="create_template" class="tabcontent3"  style="display: none;">
+              <div>
+                <table border="1" cellpadding="5">
+                  <tr>
+                    <td>Название таблицы</td><td>Согласование/Мотив. отказ</td>
+                    <td>Прикрепленный шаблон</td>
+                    <td>Специалист</td><td>Очередность</td><td>Действие</td>
+                  </tr>
+                  @if(count($templates) > 0)
+                    @foreach($templates as $template)
+                      <tr>
+                        <td>{{$template->table_name}}</td>
+                        <td>
+                          @if($template->accept_template == 1)
+                            Согласование
+                          @else
+                            Мотивированный отказ
+                          @endif
+                        </td>
+                        <td>{{$template->doc->name}}</td>
+                        <td>
+                          @if(strlen($template->role->name) > 60)
+                            <div href="#" data-toggle="tooltip" title="{{$template->role->name}}">
+                              {{substr($template->role->name, 0, 60)}}...
+                            </div>
+                          @else
+                              {{$template->role->name}}
+                          @endif
+                        </td>
+                        <td>{{$template->order}}</td>
+                        <td>
+                          <a href="{{ url('admin/template_field/create', [$template]) }}" class="btn btn-outline-danger btn-xs">Добавить поля</a>
+                          <form action="{{ url('admin/template/delete', [$template->id]) }}" method="post">
+                            {{csrf_field()}}
+                            <button type="submit" class="btn btn-outline-danger btn-xs" style="margin:3px;">Удалить</button>
+                          </form>
+                        </td>
+                      </tr>
+                    @endforeach
+                  @else
+                  <tr><td colspan="6">Упссс тут пусто...</td></tr>
+                  @endif
+                </table>
+              </div>
+              <hr/>
+              <div class="col-md-6">
+                <div class="card-title" style="margin-top: 10px;">Создать шаблон</div>
+                <form action="{{ url('admin/template/store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="process_id" value="{{$process->id}}">
+                    <div class="form-group">
+                        <label for="fieldName">Название таблицы шаблона</label>
+                        <input type="text" class="form-control" name="table_name" id="fieldName">
+                    </div>
+                    <div class="form-group">
+                        <label for="sh_order">Очередность</label>
+                        <input type="number" class="form-control" name="order" id="sh_order">
+                    </div>
+                    <div class="form-group">
+                      <label for="template_state">Выберите тип</label>
+                      <select name="template_state" class="form-control">
+                        <option selected="true" disabled="disabled">Выберите тип</option>
+                        <option value="1">Согласование</option>
+                        <option value="0">Мотивированный отказ</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="role_id">Выберите специалиста</label>
+                      <select name="role_id" class="form-control">
+                        <option selected="true" disabled="disabled">Выберите специалиста</option>
+                        @foreach($process_roles_2 as $item)
+                          <option value={{$item->role_id}}>{{$item->name}}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="template_doc_id">Выберите документ шаблона:</label>
+                        <select name="template_doc_id" id="docTemplate" class="form-control">
+                          <option selected="true" disabled="disabled">Выберите документ</option>
+                          @foreach($templateDocs as $doc)
+                            <option value="{{$doc->id}}">
+                                {{$doc->name}}
+                            </option>
+                          @endforeach
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Создать</button>
+                </form>
               </div>
             </div>
             <div class="modal fade" id="routeModal" role="dialog">
-                <div class="modal-dialog">
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Список Ролей</h4>
-                        </div>
-                        <div class="modal-body">
-                          <form action="{{ route('processes.addRole', ['process' => $process]) }}" method="POST">
-                            @csrf
-                            <div style="margin-bottom: 10px;text-align: center;">
+                  <div class="modal-dialog">
+                      <!-- Modal content-->
+                      <div class="modal-content">
+                          <div class="modal-header">
+                              <h4 class="modal-title">Список Ролей</h4>
+                          </div>
+                          <div class="modal-body">
+                            <form action="{{ url('admin/process/add_role', ['process' => $process]) }}" method="POST">
+                              @csrf
+                              <div style="margin-bottom: 10px;text-align: center;">
+                                <button type="submit" class="btn btn-success">Выбрать</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                              </div>
+                              <div class="form-group">
+                                <label>Очередность:</label>
+                                <input type="number" name="order">
+                              </div>
+                              @isset($roles)
+                                @foreach ($roles as $role)
+                                    <div class="pb-0">
+                                      <label class="form-check-label py-0">
+                                        <input type="checkbox" name="roles[]" value="{{$role->id}}" class="form-check-input" id="participant{{$role->id}}">
+                                        <span class="form-check-sign">{{$role->name}}</span>
+                                      </label>
+                                      <div id="dropdown" class="form-check">
+                                        <div class="dropdown-permission{{$role->id}}" id="dropdown-permission{{$role->id}}" style="display:none;">
+                                          <label class="form-check-label">
+                                             <input type="checkbox" name="reject[]" id="reject{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                             <span class="form-check-sign">Отказать</span>
+                                          </label>
+                                          <label class="form-check-label">
+                                             <input type="checkbox" name="revision[]" id="revision{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                             <span class="form-check-sign">Отправить на доработку</span>
+                                          </label>
+                                          <label class="form-check-label">
+                                             <input type="checkbox" name="motiv_otkaz[]" id="motiv_otkaz{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                             <span class="form-check-sign">Мотивированный отказ</span>
+                                          </label>
+                                          <label class="form-check-label">
+                                             <input type="checkbox" name="ecp_sign[]" id="ecp_sign{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                             <span class="form-check-sign">Подпись ЭЦП</span>
+                                          </label>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    @section('scripts')
+                                    <script>
+                                      $("#participant{{$role->id}}").click(function(){
+                                        if(document.getElementById("dropdown-permission{{$role->id}}").style.display == "none"){
+                                          document.getElementById("dropdown-permission{{$role->id}}").style.display = "block";
+                                        }else{
+                                          document.getElementById("dropdown-permission{{$role->id}}").style.display = "none";
+                                          document.getElementById("revision{{$role->id}}").checked = false;
+                                          document.getElementById("reject{{$role->id}}").checked = false;
+                                          document.getElementById("motiv_otkaz{{$role->id}}").checked = false;
+                                          document.getElementById("ecp_sign{{$role->id}}").checked = false;
+                                        }
+                                      });
+                                    </script>
+                                    @append
+                                @endforeach
+                            @endisset
+                            <div style="text-align: center;">
                               <button type="submit" class="btn btn-success">Выбрать</button>
                               <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                             </div>
-                            <div class="form-group">
-                              <label>Очередность:</label>
-                              <input type="number" name="order">
-                            </div>
-                            @isset($roles)
-                              @foreach ($roles as $role)
-                                  <div class="pb-0">
-                                    <label class="form-check-label py-0">
-                                      <input type="checkbox" name="roles[]" value="{{$role->id}}" class="form-check-input" id="participant{{$role->id}}">
-                                      <span class="form-check-sign">{{$role->name}}</span>
-                                    </label>
-                                    <div id="dropdown" class="form-check">
-                                      <div class="dropdown-permission{{$role->id}}" id="dropdown-permission{{$role->id}}" style="display:none;">
-                                        <label class="form-check-label">
-                                           <input type="checkbox" name="reject[]" id="reject{{$role->id}}" value="{{$role->id}}" class="mr-2">
-                                           <span class="form-check-sign">Отказать</span>
-                                        </label>
-                                        <label class="form-check-label">
-                                           <input type="checkbox" name="revision[]" id="revision{{$role->id}}" value="{{$role->id}}" class="mr-2">
-                                           <span class="form-check-sign">Отправить на доработку</span>
-                                        </label>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <script>
-                                    $("#participant{{$role->id}}").click(function(){
-                                      if(document.getElementById("dropdown-permission{{$role->id}}").style.display == "none"){
-                                        document.getElementById("dropdown-permission{{$role->id}}").style.display = "block";
-                                      }else{
-                                        document.getElementById("dropdown-permission{{$role->id}}").style.display = "none";
-                                        document.getElementById("revision{{$role->id}}").checked = false;
-                                        document.getElementById("reject{{$role->id}}").checked = false;
-                                      }
-                                    });
-                                  </script>
-                              @endforeach
-                          @endisset
-                          <div style="text-align: center;">
-                            <button type="submit" class="btn btn-success">Выбрать</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                          </div>
-                        </form>
+                          </form>
+                        </div>
+                        <div class="modal-footer">
+                        </div>
                       </div>
-                      <div class="modal-footer">
-                      </div>
-                    </div>
-                </div>
+                  </div>
             </div>
-            <h5>Создать таблицу:</h5>
-            <button type="button" class="btn btn-outline-info mx-2" data-toggle="modal" data-target="#myModal">Выбрать Поля</button>
-            @isset($tableColumns)
-              <div class="card-header">
-                <div class="card-title">Поля процесса:</div>
-              </div>
-                @foreach($tableColumns as $column)
-                <ul class="list-group text-center mx-2">
-                    <li class="list-group-item w-50 text-center">{{$column}}</li>
-                </ul>
-                @endforeach
-            @endisset
-            <hr style="height:1px;border-width:0; background-color:black;">
-            <h5>Создание маршрута:</h5>
-            <h6>Организация - {{ $nameMainOrg ?? ''}}</h6>
-            @isset($organizations)
-              <form action="{{ route('processes.addOrganization', ['process' => $process]) }}" method="POST">
-                  @csrf
-                  <div class="form-group">
-                      <label for="mainOrganization">Выберите Оргaнизацию основного маршрута</label>
-                      <select name="mainOrganization" class="form-control" id="mainOrganization" data-dropup-auto="false">
-                          <option selected="true" disabled="disabled">Выберите организацию</option>
-                          @foreach($organizations as $organization)
-                              @if($organization->id == $process->main_organization_id)
-                                      <option selected value={{$organization->id}}>{{$organization->name}} </option>
-                                    @else
-                                      <option value={{$organization->id}}>{{$organization->name}} </option>
-                                    @endif
-                          @endforeach
-                      </select>
-                  </div>
-                  <button type="submit" class="btn btn-primary mx-2">Выбрать</button>
-              </form>
-            @endisset
-            @isset($process->routes)
-              <div style="margin-top: 10px;">
-                  <button type="button" class="btn btn-outline-info mx-2" data-toggle="modal" data-target="#routeModal">Выбрать Участников</button>
-                  <div class="border border-light" id="items" style="margin-top: 10px;">
-                    <table border="1" cellpadding="5" style="text-align: center;">
-                        <tr>
-                          <td>Роль</td><td>Очередность</td><td></td>
-                          @if(isset($process_roles) && count($process_roles)>0)
-                            @include('process.process_roles_list', ['process_roles' => $process_roles])
-                          @else
-                            <tr><td colspan="3">Упссс тут пусто...</td></tr>
-                          @endif
-                        </tr>
-                      </table>
-                  </div>
-              </div>
-            @endisset
             <div class="modal fade" id="myModal2" role="dialog">
                 <div class="modal-dialog">
                     <!-- Modal content-->
@@ -196,7 +275,7 @@
                             <h4 class="modal-title">Список Ролей</h4>
                         </div>
                         <div class="modal-body">
-                          <form action="{{ url('process/add_sub_role', ['process' => $process]) }}" method="POST">
+                          <form action="{{ url('admin/process/add_sub_role', ['process' => $process]) }}" method="POST">
                             @csrf
                             <div style="margin-bottom: 10px;text-align: center;">
                               <button type="submit" class="btn btn-success">Выбрать</button>
@@ -215,33 +294,45 @@
                               @foreach ($roles as $role)
                                   <div class="pb-0">
                                     <label class="form-check-label py-0">
-                                      <input type="checkbox" name="roles[]" value="{{$role->id}}" class="form-check-input" id="participant{{$role->id}}">
+                                      <input type="checkbox" name="roles[]" value="{{$role->id}}" class="form-check-input" id="s_participant{{$role->id}}">
                                       <span class="form-check-sign">{{$role->name}}</span>
                                     </label>
                                     <div id="dropdown" class="form-check">
-                                      <div class="dropdown-permission{{$role->id}}" id="dropdown-permission{{$role->id}}" style="display:none;">
+                                      <div class="dropdown-permission{{$role->id}}" id="s_dropdown-permission{{$role->id}}" style="display:none;">
                                         <label class="form-check-label">
-                                           <input type="checkbox" name="reject[]" id="reject{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                           <input type="checkbox" name="reject[]" id="s_reject{{$role->id}}" value="{{$role->id}}" class="mr-2">
                                            <span class="form-check-sign">Отказать</span>
                                         </label>
                                         <label class="form-check-label">
-                                           <input type="checkbox" name="revision[]" id="revision{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                           <input type="checkbox" name="revision[]" id="s_revision{{$role->id}}" value="{{$role->id}}" class="mr-2">
                                            <span class="form-check-sign">Отправить на доработку</span>
+                                        </label>
+                                        <label class="form-check-label">
+                                           <input type="checkbox" name="motiv_otkaz[]" id="s_motiv_otkaz{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                           <span class="form-check-sign">Мотивированный отказ</span>
+                                        </label>
+                                        <label class="form-check-label">
+                                           <input type="checkbox" name="ecp_sign[]" id="s_ecp_sign{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                           <span class="form-check-sign">Подпись ЭЦП</span>
                                         </label>
                                       </div>
                                     </div>
                                   </div>
+                                  @section('scripts')
                                   <script>
-                                    $("#participant{{$role->id}}").click(function(){
-                                      if(document.getElementById("dropdown-permission{{$role->id}}").style.display == "none"){
-                                        document.getElementById("dropdown-permission{{$role->id}}").style.display = "block";
+                                    $("#s_participant{{$role->id}}").click(function(){
+                                      if(document.getElementById("s_dropdown-permission{{$role->id}}").style.display == "none"){
+                                        document.getElementById("s_dropdown-permission{{$role->id}}").style.display = "block";
                                       }else{
-                                        document.getElementById("dropdown-permission{{$role->id}}").style.display = "none";
-                                        document.getElementById("revision{{$role->id}}").checked = false;
-                                        document.getElementById("reject{{$role->id}}").checked = false;
+                                        document.getElementById("s_dropdown-permission{{$role->id}}").style.display = "none";
+                                        document.getElementById("s_reject{{$role->id}}").checked = false;
+                                        document.getElementById("s_revision{{$role->id}}").checked = false;
+                                        document.getElementById("s_motiv_otkaz{{$role->id}}").checked = false;
+                                        document.getElementById("s_ecp_sign{{$role->id}}").checked = false;
                                       }
                                     });
                                   </script>
+                                  @append
                               @endforeach
                           @endisset
                           <div style="text-align: center;">
@@ -255,90 +346,46 @@
                     </div>
                 </div>
             </div>
-
-            <hr style="height:1px;border-width:0; background-color:black;">
-            <div class="card-title"><h5>Создание шаблонов:</h5></div>
-              <div>
-                <div>
-                  <b>Прикрепленный шаблон:</b>
-                  @foreach($templateDocs as $template)
-                    @if($template->id == $process->template_doc_id)
-                       {{$template->name}}
-                      @break
-                    @endif
-                  @endforeach
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <span class="modal-title">Список Полей</span>
+                      </div>
+                      <div class="modal-body">
+                        <form action="{{ url('admin/process/create_process_table', ['process' => $process]) }}" method="POST">
+                          @csrf
+                          <div style="text-align: center;">
+                            <button type="submit" class="btn btn-success">Создать</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                          </div>
+                          @isset($columns)
+                                @foreach ($columns as $column)
+                                  <div class="form-check" style="padding:0px;">
+                                    <label class="form-check-label">
+                                      <input class="form-check-input" type="checkbox" name="fields[]" value="{{$column->name}}">
+                                      <span class="form-check-sign">{{$column->labelName}}</span>
+                                    </label>
+                                  </div>
+                                @endforeach
+                          @endisset
+                          <div style="text-align: center;">
+                            <button type="submit" class="btn btn-success">Создать</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                          </div>
+                        </form>   
+                      </div>
+                      <div class="modal-footer">
+                      </div>
+                  </div>
                 </div>
-                <form action="{{ route('process.addDocTemplates') }}" method="POST">
-                    @csrf
-                    <div class="form-group">
-                        <input type="hidden" name="processId" value = {{$process->id}}>
-                        <label for="docTemplate">Выберите другой документ шаблона:</label>
-                        <select name="docTemplateId" id="docTemplate" class="form-control">
-                            @foreach($templateDocs as $doc)
-                              @if($process->template_doc_id == $doc->id)
-                                <option selected value="{{$doc->id}}">
-                                    {{$doc->name}}
-                                </option>
-                              @else
-                                <option value="{{$doc->id}}">
-                                    {{$doc->name}}
-                                </option>
-                              @endif
-                            @endforeach
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Прикрепить</button>
-                </form>
-              </div>
-            <div>
-              <div class="card-title" style="margin-top: 10px;">Шаблон одобрения</div>
-              @empty($accepted)
-              <form action="{{ route('template.store') }}" method="POST" enctype="multipart/form-data">
-                  @csrf
-                  <input type="hidden" name="template_state" value="accepted">
-                  <input type="hidden" name="processId" value="{{$process->id}}">
-                  <div class="form-group">
-                      <label for="fieldName">Название шаблона</label>
-                      <input type="text" class="form-control" name="name" id="fieldName">
-                  </div>
-                  <button type="submit" class="btn btn-primary">Создать</button>
-              </form>
-              @endempty
-              @isset($accepted)
-                  <p>
-                    <u>{{$accepted->name}}</u>
-                    <a href="{{ route('templatefield.create', [$accepted]) }}" class="btn btn-outline-danger btn-xs">Редактировать</a>
-                  </p>
-              @endisset
-              <div class="card-title" style="margin-top: 10px;">Шаблон отказa</div>
-              @empty($rejected)
-              <form action="{{ route('template.store') }}" method="POST" enctype="multipart/form-data">
-                  @csrf
-                  <input type="hidden" name="template_state" value="rejected">
-                  <input type="hidden" name="processId" value="{{$process->id}}">
-
-                  <div class="form-group">
-                      <label for="fieldName">Название шаблона</label>
-                      <input type="text" class="form-control" name="name" id="fieldName">
-                  </div>
-                  <button type="submit" class="btn btn-primary">Создать</button>
-              </form>
-              @endempty
-              @isset($rejected)
-                   <p>
-                      <u>{{$rejected->name}}</u>
-                      <a href="{{ route('templatefield.create', [$rejected]) }}" class="btn btn-outline-danger btn-xs">Редактировать</a>
-                   </p>
-              @endisset
             </div>
         </div>
     </div>
   </div>
   </div>
-    {{csrf_field()}}
-<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script> -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous"></script>
+@endsection
+@section('scripts')
 <script>
     $(document).ready(function() {
         $('.AddButton').click(function(event) {
@@ -347,7 +394,4 @@
           });
       });
   </script>
-@endsection
-
-@section('scripts')
-@endsection
+@append

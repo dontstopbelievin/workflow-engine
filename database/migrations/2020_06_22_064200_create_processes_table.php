@@ -16,15 +16,9 @@ class CreateProcessesTable extends Migration
         Schema::create('processes', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->comment('Наименоваие процесса');
+            $table->string('table_name');
             $table->integer('deadline')->comment('Количество дней на заявку');
-            $table->integer('accepted_template_id')->unsigned()->nullable();
-            $table->foreign('accepted_template_id')->references('id')->on('templates');
-            $table->integer('rejected_template_id')->unsigned()->nullable();
-            $table->foreign('rejected_template_id')->references('id')->on('templates');
-            $table->integer('template_doc_id')->unsigned()->nullable();
-            $table->foreign('template_doc_id')->references('id')->on('template_docs');
             $table->integer('main_organization_id')->unsigned()->nullable();
-            $table->integer('support_organization_id')->unsigned()->nullable();
             $table->timestamps();
         });
     }

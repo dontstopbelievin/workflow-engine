@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProcessRoleTable extends Migration
+class CreateTemplatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,18 @@ class CreateProcessRoleTable extends Migration
      */
     public function up()
     {
-        Schema::create('process_role', function (Blueprint $table) {
+        Schema::create('templates', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('process_id')->unsigned();
             $table->foreign('process_id')->references('id')->on('processes');
             $table->integer('role_id')->unsigned();
             $table->foreign('role_id')->references('id')->on('roles');
-            $table->integer('parent_role_id')->unsigned()->nullable();
-            $table->foreign('parent_role_id')->references('id')->on('roles');
-            $table->integer('can_reject')->default(0);
-            $table->integer('can_send_to_revision')->default(0);
-            $table->integer('can_motiv_otkaz')->default(0);
-            $table->integer('can_ecp_sign')->default(0);
+            $table->integer('template_doc_id')->unsigned();
+            $table->foreign('template_doc_id')->references('id')->on('template_docs');
             $table->integer('order')->unsigned();
+            $table->string('table_name');
+            $table->boolean('accept_template');
+            $table->unique(['role_id', 'order']);
             $table->timestamps();
         });
     }
@@ -37,6 +36,6 @@ class CreateProcessRoleTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('process_role');
+        Schema::dropIfExists('templates');
     }
 }

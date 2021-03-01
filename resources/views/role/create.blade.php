@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
 @section('title')
     Создание Ролей
@@ -22,7 +22,7 @@
                   <div class="card-body">
                       <div class="row">
                           <div class="col-md-6">
-                              <form action="{{ route('role.store') }}" method="POST">
+                              <form action="{{ url('admin/role/store') }}" method="POST">
                                   @csrf
                                   <div class="form-group">
                                       <label for="name">Роль</label>
@@ -38,6 +38,7 @@
                                   </div>
                                   <div>
                                     <button type="submit" class="btn btn-success">Создать</button>
+                                    <a href="{{ url('admin/role') }}" class="btn btn-danger">Отмена</a>
                                   </div>
                               </form>
                           </div>
@@ -49,7 +50,4 @@
     </div>
   </div>
 </div>
-@endsection
-
-@section('scripts')
 @endsection

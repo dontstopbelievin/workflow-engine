@@ -1,34 +1,22 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
 @section('title')
     Личный Кабинет
 @endsection
 
 @section('content')
-
     <div class="main-panel">
       <div class="content">
         <div class="container-fluid">
-          <h4 class="page-title">Личный Кабинет</h4>
-          @if (session('status'))
-              <div class="alert alert-success" role="alert">
-                  {{ session('status') }}
-              </div>
-          @endif
-          @if (session('error'))
-              <div class="alert alert-danger" role="alert">
-                  {{ session('error') }}
-              </div>
-          @endif
                 <div class="card">
-                    <!-- <div class="card-header">
-                        <h3 class="card-title font-weight-bold text-center">Личный Кабинет</h3>
+                    <div class="card-header">
+                        <h4 class="card-title font-weight-bold text-center">Личный Кабинет</h4>
                     </div>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
                         </div>
-                    @endif -->
+                    @endif
                     <div class="card-body" id="items">
 
                         <p>Имя: {{$user->name}}</p>
@@ -36,7 +24,7 @@
                         <p>Номер Телефона: {{$user->phone}}</p>
                         <p>Почтовый адрес: {{$user->email}}</p>
 
-                        <a class="btn btn-info" href="{{ route('user.edit', ['user' => $user]) }}">Редактировать данные</a>
+                        <a class="btn btn-info" href="{{ url('user/edit', ['user' => $user]) }}">Редактировать данные</a>
                         <br>
                         <br>
                         @if (Route::has('password.request'))
@@ -79,7 +67,7 @@
                         <p>Ip адрес последнего неудачного входа: {{$user->last_failed_login_ip}}</p>
                         <hr>
                         <h5>Фильтровать заявки</h5>
-                        <form class="" action="{{ route('user.filter') }}" method="post" class="">
+                        <form class="" action="{{ url('user/filter') }}" method="post" class="">
                           {{ csrf_field( )}}
                           {{ method_field('GET') }}
                           <input type="text" name="id" value="1" style="display:none;">
@@ -108,6 +96,5 @@
                 </div>
             </div>
         </div>
-
     </div>
 @endsection

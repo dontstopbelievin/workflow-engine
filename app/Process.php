@@ -20,10 +20,6 @@ class Process extends Model
         return $this->hasMany(Route::class);
     }
     public function roles() {
-        return $this->belongsToMany(Role::Class)->withPivot('parent_role_id', 'is_parallel');
-    }
-
-    public function template_doc() {
-        return $this->belongsTo(TemplateDoc::class);
+        return $this->belongsToMany(Role::Class)->withPivot('parent_role_id', 'order');
     }
 }
