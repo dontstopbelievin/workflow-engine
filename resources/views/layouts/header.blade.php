@@ -57,7 +57,7 @@
                               ({{substr(Auth::user()->role->name, 0, 60)}}...)
                         </span>
                     @else
-                        ({{Auth::user()->role->name}})
+                        ({{ Auth::user()->role->name }})
                     @endif
                 </small>
               </a>
