@@ -35,6 +35,33 @@ trait dbQueries
             ->get();
     }
 
+    public function get_roles_before($process, $order, $role_id){
+      $currentRole = $process->roles()->where('role_id', '=', $role_id)->first();
+      $rolesWithLowerOrder = $process->roles()
+                            ->where('order', '<', $order)
+                            ->orderBy('order', 'asc')
+                            ->get()
+                            ->toArray();
+        if($currentRole->pivot->parent_role_id != null){
+
+          $parent_id = $currentRole->pivot->parent_role_id;
+            while(true){
+
+                $parent = $process->roles()->where('role_id', '=', $parent_id)->first();
+                if(isset($parent)){
+                  array_push($rolesWithLowerOrder, $parent->toArray());
+                }
+                if($parent->pivot->parent_role_id == null || !isset($parent)){
+                  break;
+                }
+                $parent_id = $parent->pivot->parent_role_id;
+            }
+        }
+        // dd($rolesWithLowerOrder);
+
+        return $rolesWithLowerOrder;
+    }
+
     public function get_roles_for_edit($process_id){
 
         $without_parents = DB::table('roles')
@@ -74,7 +101,7 @@ trait dbQueries
             foreach ($apps as $app) {
                 $last_log = DB::table('logs')->where('table_id', $table_id)->where('application_id', $app->id)->latest('created_at')->first();
                 if($last_log){
-                    $app->last_status = Status::select('name')->where('id', $last_log->status_id)->first()->name;
+                    $app->last_status = DB::table('role_statuses')->select('string')->where('id', $last_log->status_id)->first()->string;
                 }
             }
             return $apps;

@@ -55,7 +55,7 @@
                     @if(strlen(Auth::user()->role->name) > 60)
                         ({{substr(Auth::user()->role->name, 0, 60)}})
                     @else
-                        ({{Auth::user()->role->name}})
+                        ({{ Auth::user()->role->name }})
                     @endif
                 </small>
               </a>

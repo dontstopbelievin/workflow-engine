@@ -162,8 +162,8 @@
                                                 <label for="roleToRevise" class="col-md-4 col-form-label text-md-right">{{ __('Выберите Специалиста') }}</label>
                                                 <select name="roleToRevise" id="roleToRevise" class="form-control">
                                                     <option selected disabled>Выберите Ниже</option>
-                                                    @foreach($allRoles as $role)
-                                                        <option value="{{$role->id}}">{{$role->name}}</option>
+                                                    @foreach($rolesToRevision as $role)
+                                                        <option value="{{$role['id']}}">{{$role['name']}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>

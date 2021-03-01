@@ -62,6 +62,7 @@ class ApplicationController extends Controller
         $canApprove = false;
 
         foreach(json_decode($application->statuses) as $id) {
+
             if ($id === Auth::user()->role_id) {
                 $canApprove = true;
                 break;
@@ -84,7 +85,6 @@ class ApplicationController extends Controller
             }
         }
 
-        $allRoles = $this->get_roles_in_order($process->id);
         $aRowNameRows = Dictionary::all();
 
         $template = Template::where('id', $templateId)->first();
@@ -112,10 +112,14 @@ class ApplicationController extends Controller
         if(isset($buttons[0]) && $application->reject_reason != null){
           $buttons[0]->can_reject = 0;
         }
+        $rolesToRevision = [];
+        if(isset($buttons[0]) && $buttons[0]->can_send_to_revision == 1){
+            $rolesToRevision = $this->get_roles_before($process, $application->current_order, Auth::user()->role_id);
+        }
 
         $applicationArrays = json_decode(json_encode($application), true);
 
-        return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','allRoles','records', 'buttons', 'aRowNameRows','applicationArrays'));
+        return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','rolesToRevision','records', 'buttons', 'aRowNameRows','applicationArrays'));
     }
 
     public function acceptAgreement(Request $request)
@@ -546,22 +550,12 @@ class ApplicationController extends Controller
                 $processRoles = $this->getProcessStatuses($tableName, $request->application_id);
                 $children = $this->getRoleChildren($process);
 
-                $processRoles = array_values($this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table->id, $request->application_id, 0));
+                $processRoles = array_values($this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table->id, $request->application_id, 0, $tableName));
 
                 DB::table($tableName)
                     ->where('id', $request->application_id)
                     ->update(['statuses' => $processRoles]);
             }
-
-            // if ($application->to_revision === 0) {
-            //     DB::table($tableName)
-            //         ->where('id', $request->applicationId)
-            //         ->update(['status_id' => $status->id, 'index_main' => $index, 'reject_reason' => $request->rejectReason, 'reject_reason_from_spec_id' => $user->role_id]);
-            // } else {
-            //     DB::table($tableName)
-            //         ->where('id', $request->applicationId)
-            //         ->update(['status_id' => $status->id, 'index_main' => $index, 'reject_reason' => $request->rejectReason, 'to_revision' => 0, 'reject_reason_from_spec_id' => $user->role_id]);
-            // }
 
             DB::commit();
             return response()->json(['message' => 'success'], 200);
@@ -573,53 +567,46 @@ class ApplicationController extends Controller
 
     public function revision(Request $request)
     {
-        $roleToRevise = $request->roleToRevise; //Роль, которому форма отправляется на доработку
-        $mainCounter = 0;
-        $subCounter = 0;
-        $index = 0;
-        $indexSubRoute = 0;
-        $process = Process::find($request->processId);
-        $tableName = $this->getTableName($process->name);
-        $mainRoles = $this->getIterateRoles($process); // get collection
-        $mainRoleArr = $this->getMainRoleArray($mainRoles); // get array of names from collection
-        $subRoles = $this->getSubRoutes($process->id);
+      try {
+          DB::beginTransaction();
 
-        foreach($mainRoleArr as $role) {
-            $mainCounter++;
-            if ($role === $roleToRevise) {
-                $index = $mainCounter;
-                break;
-            }
-        }
-        if ($index === 0) {
-            foreach($subRoles as $role) {
-                $subCounter++;
-                if ($role === $roleToRevise) {
-                    $indexSubRoute = $subCounter;
-                    break;
-                }
-            }
-        }
+          $roleToRevise = $request->roleToRevise; //Роль, которому форма отправляется на доработку
+          $process = Process::find($request->processId);
+          $tableName = $this->getTableName($process->name);
+          $user = Auth::user();
+          $to_role = Role::where('name', $roleToRevise)->first();
+          $table = CreatedTable::where('name', $tableName)->first();
+          $application = DB::table($tableName)->where('id', $request->application_id)->first();
 
-        $nextR = Role::where('name', $roleToRevise)->first();
-        $idOfNextRole = $nextR->id;
-        $status = Status::find($idOfNextRole);
-        $user = Auth::user();
-        $role = $user->role;
-        $table = CreatedTable::where('name', $tableName)->first();
-        $application = DB::table($tableName)->where('id', $request->applicationId)->first();
-        // $this->insertLogs($user->role->name, 3, $status->id, $table->id, $application->id, $role->id);
-
-        if ($index === 0) {
+          $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
+          $sendingRoleOrder = $process->roles()->select('order')->where('role_id', $to_role->id)->first()->order;
+          //dd($currentRoleOrder);
+          if($currentRoleOrder == $sendingRoleOrder){
+            $processRoles = $this->getProcessStatuses($tableName, $request->application_id);
+            //dd($processRoles);
+            $processRoles = array_values($this->deleteCurrentRoleFromStatuses($processRoles));
+            array_push($processRoles, $to_role->id);
+            // dd($processRoles);
             DB::table($tableName)
-                ->where('id', $request->applicationId)
-                ->update(['status_id' => $status->id, 'revision_reason' => $request->revisionReason,'to_revision' => 1,'index_sub_route' => $indexSubRoute, 'revision_reason_from_spec_id' =>  $user->role_id, 'revision_reason_to_spec_id' =>  $idOfNextRole] );
-        } else {
+                    ->where('id', $request->application_id)
+                    ->update(['statuses' => $processRoles, 'current_order' => $sendingRoleOrder, 'revision_reason' => $request->revisionReason, 'revision_reason_from_spec_id' =>  $user->role_id, 'revision_reason_to_spec_id' => $to_role->id]);
+          }else{
             DB::table($tableName)
-                ->where('id', $request->applicationId)
-                ->update(['status_id' => $status->id, 'revision_reason' => $request->revisionReason,'to_revision' => 1, 'index_main' => $index, 'revision_reason_from_spec_id' =>  $user->role_id, 'revision_reason_to_spec_id' =>  $idOfNextRole] );
-        }
+                    ->where('id', $request->application_id)
+                    ->update(['statuses' => [$to_role->id], 'current_order' => $sendingRoleOrder, 'revision_reason' => $request->revisionReason, 'revision_reason_from_spec_id' =>  $user->role_id, 'revision_reason_to_spec_id' => $to_role->id]);
+          }
+
+          $this->insertLogs($roleToRevise, 4, $table->id, $application->id, $user->role_id, $currentRoleOrder, 2, $roleToRevise, $request->revisionReason);
+
+
+        DB::commit();
+        return response()->json(['message' => 'success'], 200);
+      } catch (Exception $e) {
+        DB::rollBack();
+        return response()->json(['message' => $e->getMessage()], 500);
+      }
     }
+
 
     private function getSeveralStatuses($process, $table) {
         $statuses = [];
