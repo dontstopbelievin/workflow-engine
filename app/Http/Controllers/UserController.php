@@ -111,7 +111,7 @@ class UserController extends Controller
       foreach ($dictionaries as $value) {
         $dictionary[$value['name']] = $value['label_name'];
       }
-      $result[$process_id] = $this->deleteUnnecessary($result[$process_id], ['process_id', 'status_id', 'user_id', 'index_sub_route', 'index_main', 'doc_path', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at']);
+      $result[$process_id] = $this->deleteUnnecessary($result[$process_id], ['process_id', 'status_id', 'user_id', 'index_main', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at']);
 
       $storagePathToPDF ='/app/public/final_docs/10.pdf';
       $content = view('filter', compact('requirement','result', 'dictionary'))->render();

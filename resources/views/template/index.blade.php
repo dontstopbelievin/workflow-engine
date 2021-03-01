@@ -37,7 +37,7 @@
                                         <input type="hidden" id="templateId" value = {{$template->id}}>
                                         <input type="hidden" id="templateName{{$template->id}}" value = "{{$template->name}}">
                                         <input type="hidden" id="templateType{{$template->id}}" value = {{1}}>
-                                        <input type="hidden" id="templatePath{{$template->id}}" value = "{{$template->doc_path}}">
+                                        <input type="hidden" id="templatePath{{$template->id}}" value = "{{$template->pdf_url}}">
                                     </tr>
                                 @endforeach
                             @endisset
@@ -65,7 +65,7 @@
                                   <input type="hidden" id="templateId" value = {{$template->id}}>
                                   <input type="hidden" id="templateName{{$template->id}}" value = "{{$template->name}}">
                                   <input type="hidden" id="templateType{{$template->id}}" value = {{0}}>
-                                  <input type="hidden" id="templatePath{{$template->id}}" value = "{{$template->doc_path}}">
+                                  <input type="hidden" id="templatePath{{$template->id}}" value = "{{$template->pdf_url}}">
                               </tr>
                             @endforeach
                         @endisset

@@ -24,6 +24,7 @@ class CreateTemplatesTable extends Migration
             $table->integer('order')->unsigned();
             $table->string('table_name');
             $table->boolean('accept_template');
+            $table->unique(['role_id', 'order']);
             $table->timestamps();
         });
     }

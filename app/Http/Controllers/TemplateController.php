@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use App\Traits\dbQueries;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 
 class TemplateController extends Controller
@@ -33,7 +34,7 @@ class TemplateController extends Controller
         try {
             DB::beginTransaction();
             $validator = Validator::make($request->all(),[
-                'name' => 'required|string',
+                'table_name' => 'required|string',
                 'template_state' => 'required|integer',
                 'process_id' => 'required|integer',
                 'template_doc_id' => 'required|integer',
@@ -43,8 +44,23 @@ class TemplateController extends Controller
             if ($validator->fails()) {
                 return Redirect::back()->with('failure', $validator->errors());
             }
+            $t_name = app('App\Http\Controllers\ApplicationController')->getTemplateTableName($request->table_name);
+            if (!Schema::hasTable($t_name)) {
+                $dbQueryString = "CREATE TABLE $t_name (id INT PRIMARY KEY AUTO_INCREMENT)";
+                DB::statement($dbQueryString);
+            }else{
+                return Redirect::back()->with('failure', 'Таблица с таким именем уже существует.');
+            }
+            if (!Schema::hasColumn($t_name, 'application_id')) {
+                $dbQueryString = "ALTER TABLE $t_name ADD  application_id INT";
+                DB::statement($dbQueryString);
+            }
+            if (!Schema::hasColumn($t_name, 'pdf_url')) {
+                $dbQueryString = "ALTER TABLE $t_name ADD  pdf_url varchar(255)";
+                DB::statement($dbQueryString);
+            }
             $template = new Template([
-                'table_name' => $request->name,
+                'table_name' => $t_name,
                 'accept_template' => $request->template_state,
                 'process_id' => $request->process_id,
                 'template_doc_id' => $request->template_doc_id,
@@ -69,7 +85,7 @@ class TemplateController extends Controller
         $isTouch = isset($request->file_input);
         if($isTouch){
           $docPath = request()->file_input->store('templates', 'public');
-          $template = Template::where('id', $id)->update(['name' => $request->name, 'doc_path' => $docPath]);
+          $template = Template::where('id', $id)->update(['name' => $request->name, 'pdf_url' => $docPath]);
         }else{
           $template = Template::where('id', $id)->update(['name' => $request->name]);
         }
@@ -78,8 +94,27 @@ class TemplateController extends Controller
     }
 
     public function delete($id) {
-        $template = Template::where('id', $id)->delete();
-        //$template->delete();
-        return 'Шаблон успешно удален';
+        try {
+            DB::beginTransaction();
+            $template = Template::where('id', $id)->first();
+            if(!Schema::hasTable($template->table_name)){
+                return Redirect::back()->with('failure', 'Таблица шаблона не найдена.');
+            }
+            $template_records = DB::table($template->table_name)->count();
+            $t_fields = TemplateField::where('template_id', $id)->count();
+            if($t_fields > 0){
+                return Redirect::back()->with('failure', 'В таблице есть поля.');
+            }
+            if($template_records > 0){
+                return Redirect::back()->with('failure', 'В таблице шаблона есть записи.');
+            }
+            Schema::dropIfExists($template->table_name);
+            $template->delete();
+            DB::commit();
+            return Redirect::back()->with('success', 'Шаблон успешно удален');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with('errors', $e->getMessage());
+        }
     }
 }

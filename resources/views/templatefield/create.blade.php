@@ -30,23 +30,29 @@
             <thead>
               <tr>
                 <th>Наименование поля</th>
+                <th>Имя поля в базе</th>
                 <th>Тип вводимого</th>
                 <th>Тип сохраняемого</th>
-                <th>Специалист</th>
+                <th>Имя select</th>
+                <th>Действие</th>
               </tr>
             </thead>
             <tbody>
-              @foreach($oTemplateFields as $item)
+              @foreach($temp_fields as $item)
                   <tr>
-                      <td>{{$item["labelName"]}}</td>
-                      <td>{{$item["inputName"]}}</td>
-                      <td>{{$item["insertName"]}}</td>
-                      <td>{{$item["can_edit"]}}</td>
+                      <td>{{$item->label_name}}</td>
+                      <td>{{$item->name}}</td>
+                      <td>{{$item->inputName}}</td>
+                      <td>{{$item->insertName}}</td>
+                      <td>{{$item->dic_name}}</td>
+                      <td>
+                        <a href="{{ url('admin/template_field/def_val/create', [$item->id]) }}" class="btn btn-outline-danger btn-xs">Добавить значения по умолчанию</a>
+                      </td>
                   </tr>
               @endforeach
             </tbody>
           </table>
-          <a href="{{url('admin/process/edit', ['process' => $processId])}}" class="btn btn-primary">Продолжить</a>
+          <a href="{{url('admin/process/edit', ['process' => $processId])}}" class="btn btn-primary">Назад</a>
         </div>
       </div>
     </div>
@@ -72,32 +78,37 @@
         </div>
         <input type="hidden" id="temp_id" name="temp_id" value="{{$template->id}}">
         @isset($inputTypes)
+
           <div class="form-group">
             <label for="inputType">Выберите Тип Вводимого</label>
             <select class="form-control" name="inputType" id="inputType" data-dropup-auto="false">
               <option selected disabled>Выберите Ниже</option>
               @foreach($inputTypes as $type)
-                    <option value="{{$type->name}}">{{$type->name}}</option>
+                    <option value="{{$type->id}}">{{$type->name}}</option>
               @endforeach
             </select>
           </div>
+
+          <div class="form-group" id="hidden_div" style="display: none;">
+              @isset($dictionaries)
+                  <label for="select_dic">Выберите Справочник</label>
+                  <select class="form-control" name="select_dic" id="select_dic" data-dropup-auto="false">
+                      <option selected disabled>Выберите Ниже</option>
+                  @foreach($dictionaries as $dictionary)
+                      <option value="{{$dictionary->id}}">{{$dictionary->label_name}}</option>
+                  @endforeach
+                  </select>
+              @endisset
+          </div>
         @endisset
-        <div id="hidden_div" style="display: none;">
-          @isset($options)
-              @foreach ($options as $option)
-                  <div class="checkbox">
-                      <label><input class="get_value" type="checkbox" value="{{$option->name_rus}}">{{$option->name_rus}}</label>
-                  </div>
-              @endforeach
-          @endisset
-        </div>
+
         @isset($insertTypes)
           <div class="form-group">
             <label for="insertType">Выберите Тип Сохранения</label>
             <select class="form-control" id="insertType" name="insertType" data-dropup-auto="false">
               <option selected disabled>Выберите Ниже</option>
               @foreach($insertTypes as $type)
-                  <option value="{{$type->name}}">{{$type->name}}</option>
+                  <option value="{{$type->id}}">{{$type->name}}</option>
               @endforeach
             </select>
           </div>
@@ -138,11 +149,12 @@
 
 
         $(document).on('change', '#inputType', function(event) {
-            var input = $(this).val();
+            var input = $( "#inputType option:selected" ).text();
             if (input === 'select') {
                 document.getElementById('hidden_div').style.display = "block";
             } else {
                 document.getElementById('hidden_div').style.display = "none";
+                $('#select_dic').val(null);
             }
         });
 
@@ -150,15 +162,9 @@
             var text = $('#addItem').val();
             var labelName = $('#addLabelName').val();
             var inputItem = $('#inputType').val();
+            var select_dic = $('#select_dic').val();
             var insertItem = $('#insertType').val();
-            var selectedOptions = [];
             var id = $('#temp_id').val();
-            $('.get_value').each(function(){
-                if($(this).is(":checked"))
-                {
-                    selectedOptions.push($(this).val());
-                }
-            });
 
             if (text == '') {
                 alert('Введите название поля');
@@ -169,11 +175,31 @@
             if (insertItem === null) {
                 alert('Выберите тип сохранения');
             }
+            if(inputItem == 'select' && select_dic === null){
+                  alert('Выберите справочник');
+            }
 
-            $.post('/admin/template_field/store', {'temp_id':id,'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'selectedOptions':selectedOptions, '_token':"{{csrf_token()}}"}, function(data){
-                console.log('data: '+data);
+            let formData = new FormData();
+            formData.append('temp_id', id);
+            formData.append('fieldName', text);
+            formData.append('labelName', labelName);
+            formData.append('inputItem', inputItem);
+            formData.append('insertItem', insertItem);
+            formData.append('_token', "{{csrf_token()}}");
+            if(select_dic != null){
+              formData.append('select_dic', select_dic);
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("post", "{{url('admin/template_field/store')}}", true);
+            xhr.onload = function () {
+              if(xhr.status === 200){
                 $('#items').load(location.href + ' #items');
-            });
+              }else{
+                alert('Error');
+              }
+            }.bind(this);
+            xhr.send(formData);
         });
 
         $('#delete').click(function(event) {

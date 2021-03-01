@@ -150,6 +150,9 @@ Route::group(['prefix' => '/admin', 'middleware' => ['admin', 'auth']], function
     Route::prefix('template_field')->group(function () {
         Route::get('/create/{template}', 'TemplateFieldController@create');
         Route::post('/store', 'TemplateFieldController@store');
+        Route::get('/def_val/create/{field_id}', 'TemplateFieldController@def_value');
+        Route::post('/def_val/store', 'TemplateFieldController@def_value_store');
+        Route::post('/def_val/delete/{id}', 'TemplateFieldController@delete');
     });
     
     Route::prefix('auction')->group(function () {

@@ -56,7 +56,7 @@
                 <p>Поступившие заявки</p>
             </a>
           </li>
-          <li class="nav-item {{request()->segment(2) == 'process' || request()->segment(1) == 'template_field' ? 'active' : ''}}">
+          <li class="nav-item {{request()->segment(2) == 'process' || request()->segment(2) == 'template_field' ? 'active' : ''}}">
             <a href="{{ url('admin/process') }}">
                 <i class="la la-gears"></i>
                 <p>Процессы</p>

@@ -22,7 +22,9 @@ class InputTypeSeeder extends Seeder
             [
                 'name' => 'select' //3
             ],
-            
+            [
+                'name' => 'textarea' //4
+            ],
         ]);
     }
 }

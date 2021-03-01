@@ -20,7 +20,6 @@ class CreateSelectOptionsTable extends Migration
             $table->string('name_kaz')->nullable();
             $table->string('short_name_rus')->nullable();
             $table->string('short_name_kaz')->nullable();
-
             $table->bigInteger('target_id')->unsigned()->nullable();
             $table->bigInteger('target_aurz')->unsigned()->nullable();
             $table->bigInteger('cod_parent')->nullable();

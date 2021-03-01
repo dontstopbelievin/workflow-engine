@@ -133,7 +133,13 @@
                           @endif
                         </td>
                         <td>{{$template->order}}</td>
-                        <td><a href="{{ url('admin/template_field/create', [$template]) }}" class="btn btn-outline-danger btn-xs">Добавить поля</a></td>
+                        <td>
+                          <a href="{{ url('admin/template_field/create', [$template]) }}" class="btn btn-outline-danger btn-xs">Добавить поля</a>
+                          <form action="{{ url('admin/template/delete', [$template->id]) }}" method="post">
+                            {{csrf_field()}}
+                            <button type="submit" class="btn btn-outline-danger btn-xs" style="margin:3px;">Удалить</button>
+                          </form>
+                        </td>
                       </tr>
                     @endforeach
                   @else
@@ -148,6 +154,15 @@
                     @csrf
                     <input type="hidden" name="process_id" value="{{$process->id}}">
                     <div class="form-group">
+                        <label for="fieldName">Название таблицы шаблона</label>
+                        <input type="text" class="form-control" name="table_name" id="fieldName">
+                    </div>
+                    <div class="form-group">
+                        <label for="sh_order">Очередность</label>
+                        <input type="number" class="form-control" name="order" id="sh_order">
+                    </div>
+                    <div class="form-group">
+                      <label for="template_state">Выберите тип</label>
                       <select name="template_state" class="form-control">
                         <option selected="true" disabled="disabled">Выберите тип</option>
                         <option value="1">Согласование</option>
@@ -155,6 +170,7 @@
                       </select>
                     </div>
                     <div class="form-group">
+                      <label for="role_id">Выберите специалиста</label>
                       <select name="role_id" class="form-control">
                         <option selected="true" disabled="disabled">Выберите специалиста</option>
                         @foreach($process_roles_2 as $item)
@@ -163,24 +179,17 @@
                       </select>
                     </div>
                     <div class="form-group">
-                        <label for="docTemplate">Выберите документ шаблона:</label>
+                        <label for="template_doc_id">Выберите документ шаблона:</label>
                         <select name="template_doc_id" id="docTemplate" class="form-control">
-                            @foreach($templateDocs as $doc)
-                              <option value="{{$doc->id}}">
-                                  {{$doc->name}}
-                              </option>
-                            @endforeach
+                          <option selected="true" disabled="disabled">Выберите документ</option>
+                          @foreach($templateDocs as $doc)
+                            <option value="{{$doc->id}}">
+                                {{$doc->name}}
+                            </option>
+                          @endforeach
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="sh_order">Очередность</label>
-                        <input type="number" class="form-control" name="order" id="sh_order">
-                    </div>
-                    <div class="form-group">
-                        <label for="fieldName">Название шаблона</label>
-                        <input type="text" class="form-control" name="name" id="fieldName">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Создать</button>
+                    <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Создать</button>
                 </form>
               </div>
             </div>

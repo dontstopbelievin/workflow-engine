@@ -33,38 +33,38 @@
                                 <li class="list-group-item">Название услуги: {{$process->name}}</li>
                                 @isset($aRowNameRows)
                                    @foreach ($aRowNameRows as $aRowNameRow)
-                                        @if (array_key_exists($aRowNameRow->name, $applicationArrays))
-                                        {{--dd($applicationArrays[$aRowNameRow->name], $aRowNameRow->label_name);--}}
-                                            @if($aRowNameRow->label_name == 'Загрузите Файл')
-                                                <li class="list-group-item">{{$aRowNameRow->label_name}}: <a href="{{url('storage/' .$application->attachment)}}" target="_blank">Просмотр</a></li>
+                                        @if (array_key_exists($aRowNameRow->name, $application_arr))
+                                            @if($aRowNameRow->inputName == 'file')
+                                                <li class="list-group-item">{{$aRowNameRow->labelName}}: <a href="{{url('storage/' .$application_arr[$aRowNameRow->name])}}" target="_blank">Просмотр</a></li>
                                             @else
-                                                <li class="list-group-item">{{$aRowNameRow->label_name}}: {{$applicationArrays[$aRowNameRow->name]}}</li>
+                                                <li class="list-group-item">{{$aRowNameRow->labelName}}: {{$application_arr[$aRowNameRow->name]}}</li>
                                             @endif
                                         @endif
                                    @endforeach
                                 @endisset
-                                {{--@isset($application->attachment)--}}
-                                    {{--<li class="list-group-item">Загруженный документ:  <a href="{{url('storage/' .$application->attachment)}}" target="_blank">Просмотр</a></li>--}}
-                                {{--@endisset--}}
                             </ul>
                         </div>
 
                         <div id="specialistFields" class="tabcontent">
                             <!-- <h4 class="text-center">Поля заполненные специалистами</h4> -->
                             @isset($templateTableFields)
+                                @foreach($templateTableFields as $item)
+                                Данные документа "{{$item->name}}":
                                 <ul class="list-group" id="list">
-                                @foreach($templateTableFields as $key=>$value)
-                                    @if(substr($value, 0, 16) === 'application-docs')
-                                        <li class="list-group-item">{{$key}}: <a href="{{asset('storage/' .$value )}}" target="_blanc">Просмотр</a></li>
-                                    @else
-                                        <li class="list-group-item">{{$key}}: {{$value}}</li>
-                                    @endif
+                                    @foreach($item->fields as $key=>$value)
+                                        @if(substr($value['value'], 0, 16) === 'application-docs')
+                                            <li class="list-group-item">{{$value['label']}}: <a href="{{asset('storage/' .$value['value'] )}}" target="_blanc">Просмотр</a></li>
+                                        @else
+                                            @if($key == 'pdf_url')
+                                                <li class="list-group-item">Выходной документ: <a href="{{asset('storage/' .$value['value'] )}}" target="_blanc">Просмотр</a></li>
+                                            @else
+                                                <li class="list-group-item">{{$value['label']}}: {{$value['value']}}</li>
+                                            @endif
+                                        @endif
                                     @endforeach
                                 </ul>
-                              @endisset
-                              @isset($application->doc_path)
-                                  <li class="list-group-item">Выходной документ:  <a href="{{asset('storage/' .$application->doc_path)}}" target="_blanc">Просмотр</a></li>
-                              @endisset
+                                @endforeach
+                            @endisset
                         </div>
 
                         <div id="logs" class="tabcontent">
@@ -177,64 +177,68 @@
                         </div>
                         <div>
                             @if($canApprove)
-                                    @if (isset($templateFields) && $application->reject_reason == null)
-                                        <h4 class="card-title text-center" style="margin-top:50px;">Поля Шаблона</h4>
-                                        <form id = "templateFieldsId" method="POST" enctype="multipart/form-data">
-                                            @foreach($templateFields as $item)
-                                                    <div class="form-group row">
-                                                        <label for="{{$item->name}}" class="col-md-4 col-form-label text-md-right">{{ __($item->label_name) }}</label>
-                                                        @if($item->input_type_id === 1)
-                                                            <div class="col-md-6">
-                                                                <input type="text" class="form-control" id="{{$item->name}}"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
-                                                            </div>
-                                                        @elseif($item->input_type_id === 2)
-                                                            <div class="col-md-6">
-                                                                <input type="file" class="form-control" id="{{$item->name}}"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                            @endforeach
-                                        </form>
-                                    @endif
+                                @if (isset($templateFields) && $application->reject_reason == null)
+                                    <h4 class="card-title text-center" style="margin-top:50px;">Поля Шаблона</h4>
+                                    <div id = "templateFieldsId">
+                                        @foreach($templateFields as $item)
+                                            <div class="form-group row">
+                                                <label for="{{$item->name}}" class="col-md-4 col-form-label text-md-right">{{ __($item->label_name) }}</label>
+                                        @switch($item->input_type_id)
+                                            @case(1)
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" id="{{$item->name}}"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
+                                                </div>
+                                                @break
+                                            @case(2)
+                                                <div class="col-md-6">
+                                                    <input type="file" class="form-control" id="{{$item->name}}"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
+                                                </div>
+                                                @break
+                                            @case(3)
+                                                <div class="col-md-6">
+                                                    <select name="{{$item->name}}" id="{{$item->name}}" class="form-control" required>
+                                                        <option selected disabled>Выберите {{$item->label_name}}</option>
+                                                        @foreach($item->options as $option)
+                                                            <option value="{{$option->name_rus}}">{{$option->name_rus}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                @break
+                                            @case(4)
+                                                <div class="col-md-6">
+                                                    @if($item->def_values)
+                                                        <select id="select_{{$item->id}}" class="form-control">
+                                                            <option selected disabled>Выберите {{$item->label_name}}</option>
+                                                            @foreach($item->def_values as $val)
+                                                                <option value="{{$val->text}}">{{$val->title}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        @section('scripts')
+                                                        <script type="text/javascript">
+                                                            $('#select_{{$item->id}}').on('change', function() {
+                                                                $('#{{$item->name}}').val(this.value);
+                                                            });
+                                                        </script>
+                                                        @append
+                                                    @endif
+                                                    <textarea name="{{$item->name}}" rows="3" class="form-control" id="{{$item->name}}" required></textarea>
+                                                </div>
+                                                @break
+                                            @default
+                                        @endswitch
+                                                </div>
+                                        @endforeach
+                                    </div>
+                                @endif
 
-                                    <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
-                                      @if($application->reject_reason == null)
-                                          @if($toCitizen)
-                                              <form action="{{ url('docs/toCitizen', ['application_id' => $application->id]) }}" method="post">
-                                                  @csrf
-                                                  <input type="hidden" name="process_id" value = {{$process->id}}>
-                                                  <input type="hidden" name="application_id" value = {{$application->id}}>
-                                                  <input type="hidden" name="answer" value = "1">
-                                                  <div class="form-group row">
-                                                      <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Комментарий") }}</label>
-                                                      <div class="col-md-6">
-                                                          <input type="text" id="comments" class="form-control" name="comments"  autocomplete="comments" autofocus>
-                                                      </div>
-                                                  </div>
-                                                  <div style="text-align: center">
-                                                      <button class="btn btn-success" style="margin-top: 30px;margin-bottom: 30px;" type="submit">Согласовать и отправить заявителю</button>
-                                                  </div>
-                                              </form>
-                                          @else
-                                              <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
-                                          @endif
-                                          @if($buttons[0] && $buttons[0]->can_motiv_otkaz == 1)
-                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
-                                          @else
-                                            @if($buttons[0] && $buttons[0]->can_reject == 1)
-                                              <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Отказ</button>
-                                            @endif
-                                          @endif
-                                          @if($buttons[0] && $buttons[0]->can_send_to_revision == 1)
-                                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
-                                          @endif
-                                      @else
-                                        @if($toCitizen)
+                                <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
+                                  @if($application->reject_reason == null)
+                                      @if($toCitizen)
                                           <form action="{{ url('docs/toCitizen', ['application_id' => $application->id]) }}" method="post">
                                               @csrf
                                               <input type="hidden" name="process_id" value = {{$process->id}}>
                                               <input type="hidden" name="application_id" value = {{$application->id}}>
-                                              <input type="hidden" name="answer" value = "0">
+                                              <input type="hidden" name="answer" value = "1">
                                               <div class="form-group row">
                                                   <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Комментарий") }}</label>
                                                   <div class="col-md-6">
@@ -242,17 +246,47 @@
                                                   </div>
                                               </div>
                                               <div style="text-align: center">
-                                                  <button class="btn btn-danger" style="margin-top: 30px;margin-bottom: 30px;" type="submit">Отправить заявителю с отказом</button>
+                                                  <button class="btn btn-success" style="margin-top: 30px;margin-bottom: 30px;" type="submit">Согласовать и отправить заявителю</button>
                                               </div>
                                           </form>
-                                        @else
-                                            <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
-                                            <input type="hidden" id="application_id" name="application_id" value = {{$application->id}}>
-                                            <button class="btn btn-danger" data-dismiss="modal" id="approveReject">Согласовать отказ</button>
+                                      @else
+                                          <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
+                                      @endif
+                                      @if($buttons[0] && $buttons[0]->can_motiv_otkaz == 1)
+                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
+                                      @else
+                                        @if($buttons[0] && $buttons[0]->can_reject == 1)
+                                          <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Отказ</button>
                                         @endif
                                       @endif
-                                    </div>
-                                @endif
+                                      @if($buttons[0] && $buttons[0]->can_send_to_revision == 1)
+                                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
+                                      @endif
+                                  @else
+                                    @if($toCitizen)
+                                      <form action="{{ url('docs/toCitizen', ['application_id' => $application->id]) }}" method="post">
+                                          @csrf
+                                          <input type="hidden" name="process_id" value = {{$process->id}}>
+                                          <input type="hidden" name="application_id" value = {{$application->id}}>
+                                          <input type="hidden" name="answer" value = "0">
+                                          <div class="form-group row">
+                                              <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Комментарий") }}</label>
+                                              <div class="col-md-6">
+                                                  <input type="text" id="comments" class="form-control" name="comments"  autocomplete="comments" autofocus>
+                                              </div>
+                                          </div>
+                                          <div style="text-align: center">
+                                              <button class="btn btn-danger" style="margin-top: 30px;margin-bottom: 30px;" type="submit">Отправить заявителю с отказом</button>
+                                          </div>
+                                      </form>
+                                    @else
+                                        <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
+                                        <input type="hidden" id="application_id" name="application_id" value = {{$application->id}}>
+                                        <button class="btn btn-danger" data-dismiss="modal" id="approveReject">Согласовать отказ</button>
+                                    @endif
+                                  @endif
+                                </div>
+                            @endif
                             <a href="{{ url('docs/index', ['process' => $process]) }}" class="btn btn-info" style="margin-top: 10px;">Назад</a>
                         </div>
                     </div>
@@ -333,22 +367,23 @@
                 formData.append('process_id', $('#processId').val())
                 formData.append('application_id', $('#application_id').val())
                 inputs.each(function() {
-                    if ($(this)[0].files === null) {
-                        formData.append(this.name, $(this).val());
-                    } else {
+                    if ('files' in $(this)[0] && $(this)[0].files != null) {
                         var file = $('input[type=file]')[0].files[0];
                         if(file!==undefined) {
                             formData.append(this.name, file);
                         }
+                    } else {
+                        formData.append(this.name, $(this).val());
                     }
                 });
+
 
                 formData.append('_token', $('input[name=_token]').val());
                 var xhr = new XMLHttpRequest();
                 xhr.open("post", "{{url('docs/approve')}}", true);
                 xhr.setRequestHeader("Authorization", "Bearer " + "{{csrf_token()}}");
                 xhr.onload = function () {
-                    location.reload();
+                    // location.reload();
                 }.bind(this)
                 xhr.send(formData);
             });

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDictionariesTable extends Migration
+class DictDefValues extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateDictionariesTable extends Migration
      */
     public function up()
     {
-        Schema::create('dictionaries', function (Blueprint $table) {
+        Schema::create('dic_default_values', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('label_name');
-            $table->foreignId('input_type_id')->nullable();
-            $table->foreignId('insert_type_id')->nullable();
+            $table->string('title');
+            $table->text('text');
+            $table->integer('field_id')->unsigned()->nullable();
+            $table->foreign('field_id')->references('id')->on('template_fields');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateDictionariesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dictionaries');
+        Schema::dropIfExists('dic_default_values');
     }
 }

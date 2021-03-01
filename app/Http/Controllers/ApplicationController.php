@@ -25,6 +25,7 @@ use PhpOffice\PhpWord\TemplateProcessor;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Notification;
+use App\TemplateDoc;
 use App\Notifications\ApproveNotification;
 use Mpdf\Output\Destination;
 use PDF;
@@ -53,8 +54,6 @@ class ApplicationController extends Controller
     public function view($processId, $applicationId)
     {
         $process = Process::find($processId);
-        $templateId = $process->accepted_template_id;
-        $templateFields= TemplateField::where('template_id', $templateId)->get();
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
         $application = DB::table($tableName)->where('id', $applicationId)->first();
@@ -85,24 +84,17 @@ class ApplicationController extends Controller
         }
 
         $allRoles = $this->get_roles_in_order($process->id);
-        $aRowNameRows = Dictionary::all();
+        $tableColumns = $this->getColumns($tableName);
+        $aRowNameRows = $this->getAllDictionaries(array_values($tableColumns));
 
-        $template = Template::where('id', $templateId)->first();
-        $templateTable = $this->getTemplateTableName($template->name);
-        $templateTableFields = [];
-        if (Schema::hasTable($templateTable)) {
-            if (Schema::hasColumn($templateTable, 'template_id') && (Schema::hasColumn($templateTable, 'process_id')) && Schema::hasColumn($templateTable, 'application_id')) {
-                $templateTableFields = DB::table($templateTable)
-                    ->where('process_id', $process->id)
-                    ->where('application_id', $application->id)
-                    ->where('template_id', $templateId)
-                    ->first();
-                $templateTableFields = json_decode(json_encode($templateTableFields), true);
-                $exceptionArray = ["id", "template_id", "process_id", "application_id"];
-                $templateTableFields = $this->filterTemplateFieldsTable($templateTableFields, $exceptionArray);
-            }
+        $template = Template::where('role_id', Auth::user()->role_id)->where('order', $application->current_order)->first();
+        $templateFields = [];
+        if($template){
+            $templateFields = TemplateField::where('template_id', $template->id)->get();
+            $templateFields = $this->get_field_options($templateFields);
         }
 
+        $templateTableFields = $this->get_templates($process->id, $application->id);
         $buttons = DB::table('process_role')
                   ->where('process_id', $process->id)
                   ->where('role_id', Auth::user()->role_id)
@@ -113,9 +105,9 @@ class ApplicationController extends Controller
           $buttons[0]->can_reject = 0;
         }
 
-        $applicationArrays = json_decode(json_encode($application), true);
+        $application_arr = json_decode(json_encode($application), true);
 
-        return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','allRoles','records', 'buttons', 'aRowNameRows','applicationArrays'));
+        return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','allRoles','records', 'buttons', 'aRowNameRows','application_arr'));
     }
 
     public function acceptAgreement(Request $request)
@@ -188,9 +180,6 @@ class ApplicationController extends Controller
         try {
             DB::beginTransaction();
             $requestVal = $request->all();
-            if(isset($requestVal['_token'])){
-                unset($requestVal['_token']);
-            }
 
             $fieldValues = $requestVal;
             if ($fieldValues) {
@@ -199,21 +188,58 @@ class ApplicationController extends Controller
                         $path = $request->file($key)->store('application-docs','public');
                         $fieldValues[$key] = $path;
                     }
+                    if ($key === 'id' || $key === 'application_id' || $key === '_token' || $key === 'pdf_url'
+                    || $key == 'process_id' || $key == 'comments') {
+                      unset($fieldValues[$key]);
+                    }
                 }
             }
 
             $process = Process::find($request->process_id);
             $tableName = $this->getTableName($process->name);
             $table = CreatedTable::where('name', $tableName)->first();
-            $templateId = $process->accepted_template_id;
-            $template = Template::where('id', $templateId)->first();
-            $templateTable = $this->getTemplateTableName($template->name);
+            $application = DB::table($tableName)->where('id', $request->application_id)->first();
+            $template = Template::where('role_id', Auth::user()->role_id)->where('order', $application->current_order)->first();
             $comment = $request->comments;
 
             // insertion of fields into template
-            if(!$this->insertTemplateFields($fieldValues, $templateTable, $process->id, $request->application_id, $templateId)){
+            if(!$this->insertTemplateFields($fieldValues, $request->application_id, $template)){
+                DB::rollBack();
                 return Redirect::to('docs')->with('status', 'insert template fields error');
             }
+
+            $fields = DB::table($template->table_name)->select('*')->where('application_id', $application->id)->first();
+            $aFields = json_decode(json_encode($fields), true);
+
+            $updatedFields = [];
+            if ($aFields !== Null) {
+              foreach($aFields as $key => $field) {
+                  if ($key === 'id' || $key === 'application_id' || $key === '_token' || $key === 'pdf_url') {
+                      continue;
+                  }
+                  $updatedFields[$key] = $field;
+              }
+            }
+
+            $fileName = $this->generateRandomString();
+            $updatedFields["date"] = date('d-m-Y');
+            $updatedFields["id"] = $application->id;
+            $updatedFields = $this->get_test_values($updatedFields);
+            $userName = Auth::user()->name;
+            $roleName = Auth::user()->role->name;
+
+            $template_doc = TemplateDoc::find($template->template_doc_id);
+            $pathToView = $template_doc->pdf_path;
+            $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
+
+            $content = view($pathToView, compact('updatedFields', 'userName', 'roleName'))->render();
+            $mpdf = new Mpdf();
+            $mpdf->WriteHTML($content);
+            $mpdf->Output(storage_path(). $storagePathToPDF, \Mpdf\Output\Destination::FILE);
+
+            $docPath = 'final_docs/'. $fileName . '.pdf';
+            DB::table($template->table_name)->where('application_id', $request->application_id)
+                ->update(['pdf_url' => $docPath]);
 
             $currentRoleOrder = $process->roles()->select('order')->where('role_id', Auth::user()->role_id)->first()->order;
             $processRoles = $this->getProcessStatuses($tableName, $request->application_id);
@@ -419,73 +445,13 @@ class ApplicationController extends Controller
           $role = Auth::user()->role;
           $applicationId = $request->application_id;
           $process = Process::find($request->process_id);
-          $fieldValues = $request->fieldValues;
           $tableName = $this->getTableName($process->name);
-          $application = DB::table($tableName)->where('id', $applicationId)->first();
           $table = CreatedTable::where('name', $tableName)->first();
-          $templateId = $process->accepted_template_id;
-          $template = Template::where('id', $templateId)->first();
-          $templateTable = $this->getTemplateTableName($template->name);
           $approveOrReject = $request->answer;
           $comment = (isset($request->comments)) ? $request->comments : "";
           $user = Auth::user();
-          if (Schema::hasTable($templateTable)) {
-              $fields = DB::table($templateTable)->select('*')->where('application_id', $applicationId)->first();
-              $aFields = json_decode(json_encode($fields), true);
-
-              $updatedFields = [];
-              if ($aFields !== Null) {
-                  foreach($aFields as $key => $field) {
-                      if ($key === 'id' || $key === 'template_id' || $key === 'process_id' || $key === 'application_id' || $key === '_token') {
-                          continue;
-                      }
-                      $updatedFields[$key] = $field;
-                  }
-              }
-
-              $fileName = $this->generateRandomString();
-              $docPath = 'final_docs/'. $fileName . '.pdf';
-              $todayDate=date('d-m-Y');
-              $updatedFields["date"] = $todayDate;
-              $updatedFields["id"] = $applicationId;
-              $updatedFields["applicant_name"] = 'Аман';
-              $updatedFields["area"] = '114 га';
-              $updatedFields["area2"] = '114 га';
-              $updatedFields["flat_number"] = '114 га';
-              $updatedFields["square"] = 'Байконур';
-              $updatedFields["street"] = 'Кабанбай батыра';
-              $updatedFields["duration"] = '12';
-              $updatedFields["object_name"] = 'object_name';
-              $updatedFields["cadastral_number"] = '1146';
-              $updatedFields["construction_name_before"] = '1146';
-              $updatedFields["construction_name_after"] = '1146';
-              $updatedFields["area_number"] = '1146';
-              $updatedFields["construction_name_before"] = 'Строительство';
-              $updatedFields["construction_name_after"] = 'Делопроизводство';
-              $updatedFields["area_number"] = '1146';
-              $userName = Auth::user()->name;
-              $roleName = Auth::user()->role->name;
-              $pathToView = $process->template_doc->pdf_path;
-              $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
-
-              $content = view($pathToView, compact('updatedFields', 'userName', 'roleName'))->render();
-              $mpdf = new Mpdf();
-              $mpdf->WriteHTML($content);
-              $mpdf->Output(storage_path(). $storagePathToPDF, \Mpdf\Output\Destination::FILE);
-              // return view('pdf_viewer')->with('my_pdf', $content);
-              $affected = DB::table($tableName)
-                  ->where('id', $id)
-                  ->update(['doc_path' => $docPath]);
-               // dd('done');
-          }
-
-          if ($fieldValues !== Null) {
-            $this->insertTemplateFields($fieldValues, $templateTable, $process->id, $application->id, $templateId);
-          }
-          // dd('done');
           $tableName = $this->getTableName($process->name);
           $table = CreatedTable::where('name', $tableName)->first();
-          $application = DB::table($tableName)->where('id', $id)->first();
           $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
 
           $this->insertLogs($user->role->name, ($approveOrReject == 0) ? 2 : 1, $table->id, $applicationId, $user->role_id, $currentRoleOrder, $approveOrReject,'', $comment);
@@ -682,22 +648,11 @@ class ApplicationController extends Controller
         return false;
     }
 
-    private function filterTemplateFieldsTable($array, $exceptionArray)
-    {
-        foreach($exceptionArray as $item) {
-            if (isset($array[$item])) {
-                unset($array[$item]);
-            }
-        }
-        return $array;
-    }
-
     // private function modifyApplicationTableFieldsWithStatus($applicationTableFields, $statusId, $userId)
     // {
     //     $applicationTableFields["status_id"] = $statusId;
     //     $applicationTableFields["user_id"] = $userId;
     //     $applicationTableFields["index_main"] = 1;
-    //     $applicationTableFields["index_sub_route"] = 0;
     //     return $applicationTableFields;
     // }
     // private function modifyApplicationTableFieldsWithStatuses($applicationTableFields, $statuses, $userId)
@@ -705,46 +660,21 @@ class ApplicationController extends Controller
     //     $applicationTableFields["statuses"] = $statuses;
     //     $applicationTableFields["user_id"] = $userId;
     //     $applicationTableFields["index_main"] = 1;
-    //     $applicationTableFields["index_sub_route"] = 0;
     //     return $applicationTableFields;
     // }
 
-    private function insertTemplateFields($fieldValues, $templateTable,$processId, $applicationId, $templateId)
+    private function insertTemplateFields($fieldValues, $applicationId, $template)
     {
         try {
             DB::beginTransaction();
-            if (!Schema::hasTable($templateTable)) {
-                $dbQueryString = "CREATE TABLE $templateTable (id INT PRIMARY KEY AUTO_INCREMENT)";
-                DB::statement($dbQueryString);
-            }
-            foreach($fieldValues as $key=>$value) {
-                if (!Schema::hasColumn($templateTable, $key)) {
-                    $dbQueryString = "ALTER TABLE $templateTable ADD COLUMN `$key` varchar(255)";
-                    DB::statement($dbQueryString);
-                }
-            }
-            if (!Schema::hasColumn($templateTable, 'template_id')) {
-                $dbQueryString = "ALTER TABLE $templateTable ADD  template_id INT";
-                DB::statement($dbQueryString);
-            }
-            if (!Schema::hasColumn($templateTable, 'process_id')) {
-                $dbQueryString = "ALTER TABLE $templateTable ADD  process_id INT";
-                DB::statement($dbQueryString);
-            }
-            if (!Schema::hasColumn($templateTable, 'application_id')) {
-                $dbQueryString = "ALTER TABLE $templateTable ADD  application_id INT";
-                DB::statement($dbQueryString);
-            }
-            $checkRow = DB::table($templateTable)
-                ->where('process_id', $processId)
+            $checkRow = DB::table($template->table_name)
                 ->where('application_id', $applicationId)
-                ->where('template_id', $templateId)
                 ->first();
-            $templateTableColumns = $this->getTemplateTableColumns($fieldValues, $templateId, $processId, $applicationId);
+            $templateTableColumns = $this->getTemplateTableColumns($fieldValues, $applicationId);
             if ($checkRow) {
-                DB::table($templateTable)->update( $templateTableColumns);
+                DB::table($template->table_name)->update( $templateTableColumns);
             } else {
-                DB::table($templateTable)->insert( $templateTableColumns);
+                DB::table($template->table_name)->insert( $templateTableColumns);
             }
             DB::commit();
             return true;
@@ -754,7 +684,27 @@ class ApplicationController extends Controller
         }
     }
 
-    private function getTemplateTableColumns($fieldValues,$templateId, $processId, $applicationId )
+    public function get_test_values($updatedFields)
+    {
+        $updatedFields["applicant_name"] = 'Аман';
+        $updatedFields["area"] = '114 га';
+        $updatedFields["area2"] = '114 га';
+        $updatedFields["flat_number"] = '114 га';
+        $updatedFields["square"] = 'Байконур';
+        $updatedFields["street"] = 'Кабанбай батыра';
+        $updatedFields["duration"] = '12';
+        $updatedFields["object_name"] = 'object_name';
+        $updatedFields["cadastral_number"] = '1146';
+        $updatedFields["construction_name_before"] = '1146';
+        $updatedFields["construction_name_after"] = '1146';
+        $updatedFields["area_number"] = '1146';
+        $updatedFields["construction_name_before"] = 'Строительство';
+        $updatedFields["construction_name_after"] = 'Делопроизводство';
+        $updatedFields["area_number"] = '1146';
+        return $updatedFields;
+    }
+
+    private function getTemplateTableColumns($fieldValues, $applicationId )
     {
         $templateTableColumns = [];
         foreach($fieldValues as $key=>$value) {
@@ -762,13 +712,11 @@ class ApplicationController extends Controller
                 $templateTableColumns[$key] = $value;
             }
         }
-        $templateTableColumns["template_id"] = $templateId;
-        $templateTableColumns["process_id"] = $processId;
         $templateTableColumns["application_id"] = $applicationId;
         return $templateTableColumns;
     }
 
-    private function getTemplateTableName($templateName)
+    public function getTemplateTableName($templateName)
     {
         $templateTable = $this->translateSybmols($templateName);
         $templateTable = $this->checkForWrongCharacters($templateTable);

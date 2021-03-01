@@ -9,6 +9,8 @@ use App\Dictionary;
 use App\Log;
 use App\Role;
 use App\Status;
+use App\Template;
+use App\TemplateField;
 
 trait dbQueries
 {
@@ -72,9 +74,9 @@ trait dbQueries
         if(Schema::hasTable($table_name)) {
             $apps = DB::table($table_name)->get();
             foreach ($apps as $app) {
-                $last_log = DB::table('logs')->where('table_id', $table_id)->where('application_id', $app->id)->latest('created_at')->first();
+                $last_log = DB::table('logs')->where('table_id', $table_id)->where('application_id', $app->id)->latest('id')->first();
                 if($last_log){
-                    $app->last_status = Status::select('name')->where('id', $last_log->status_id)->first()->name;
+                    $app->last_status = DB::table('role_statuses')->where('id', $last_log->status_id)->first()->string;
                 }
             }
             return $apps;
@@ -160,7 +162,7 @@ trait dbQueries
     }
 
     public function getColumns($tableName) {
-        $notInclude = ['id', 'process_id', 'status_id', 'user_id', 'index_sub_route', 'index_main', 'doc_path', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at', 'statuses', 'current_order'];
+        $notInclude = ['id', 'process_id', 'status_id', 'user_id', 'index_main', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at', 'statuses', 'current_order'];
         $tableColumns = Schema::getColumnListing($tableName);
         return $this->filterArray($tableColumns, $notInclude);
     }
@@ -204,6 +206,54 @@ trait dbQueries
         return $array;
     }
 
+    public function get_templates($process_id, $application_id){
+
+        $templates = Template::select('templates.id', 'templates.table_name', 'template_docs.name')
+            ->join('template_docs', 'templates.template_doc_id', '=', 'template_docs.id')
+            ->where('process_id', $process_id)->get();
+        if($templates){
+            foreach($templates as $item){
+                $t_name = $item->table_name;
+                $fields = DB::table($t_name)->where('application_id', $application_id)->first();
+                if($fields){
+                    $fields = json_decode(json_encode($fields), true);
+                    $exceptionArray = ["id", "application_id"];
+                    $item->fields = $this->filterTemplateFieldsTable($fields, $exceptionArray);
+                    $item->fields = $this->get_field_label($item->fields, $item->id);
+                }else{
+                    $item->fields = [];
+                }
+            }
+            return $templates;
+        }
+        return [];
+    }
+
+    public function get_field_label($fields, $template_id){
+        foreach ($fields as $key => $value) {
+            $data = [];
+            $field = TemplateField::where('template_id', $template_id)->where('name', $key)->first();
+            if($field){
+                $data['label'] = $field->label_name;
+            }else{
+                $data['label'] = $key;
+            }
+            $data['value'] = $value;
+            $fields[$key] = $data;
+        }
+        return $fields;
+    }
+
+    private function filterTemplateFieldsTable($array, $exceptionArray)
+    {
+        foreach($exceptionArray as $item) {
+            if (isset($array[$item])) {
+                unset($array[$item]);
+            }
+        }
+        return $array;
+    }
+
     public function getAllDictionaries($to_search = []) {
         if(count($to_search) == 0){
             return DB::table('dictionaries')
@@ -221,6 +271,19 @@ trait dbQueries
         }
     }
 
+    public function get_field_options($fields) {
+        foreach ($fields as $item) {
+            if($item->select_dic != null){
+                $item->options = DB::table('select_options')->where('dictionary_id', $item->select_dic)->get();
+            }
+            $def_values = DB::table('dic_default_values')->where('field_id', $item->id)->get();
+            if($def_values){
+                $item->def_values = $def_values;
+            }
+        }
+        return $fields;
+    }
+
     public function getAuctionRaws($id)
     {
         $query = DB::table('auctions')
@@ -230,16 +293,16 @@ trait dbQueries
         return json_decode(json_encode($query), true);
     }
 
-
     public function getAllTemplateFields($id) {
 
-        $query = DB::table('template_fields')
+        return DB::table('template_fields')
             ->join('input_types', 'template_fields.input_type_id', '=', 'input_types.id')
             ->join('insert_types', 'template_fields.insert_type_id', '=', 'insert_types.id')
-            ->select('template_fields.name','template_fields.label_name as labelName', 'input_types.name as inputName', 'insert_types.name as insertName', 'template_fields.template_id as templateId')
+            ->leftJoin('dictionaries', 'template_fields.select_dic', '=', 'dictionaries.id')
+            ->select('template_fields.*', 'input_types.name as inputName', 'insert_types.name as insertName',
+                'dictionaries.label_name as dic_name')
             ->where('template_fields.template_id', $id)
-            ->get()->toArray();
-        return json_decode(json_encode($query), true);
+            ->get();
     }
 
     public function getRecords($applicationId, $tableId) {
