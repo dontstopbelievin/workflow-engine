@@ -4,6 +4,7 @@ namespace App\Integrations\shep\receiver;
 
 use App\Integrations\shep\receiver\services\EgknGeoportalActualizationStrategy;
 use App\Integrations\shep\receiver\services\GeoportalPEPAsyncRequestStrategy;
+use App\Integrations\shep\receiver\services\GetGeoDataFromGzkToGeoportalStrategy;
 use App\Integrations\shep\ShepUtil;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -30,6 +31,9 @@ class ServiceRequestRouter
                     break;
                 case 'get_ZU_RGIS_UniversalService':
                     $oShepServiceStrategy = new GeoportalPEPAsyncRequestStrategy($aResponseData);
+                    break;
+                case 'GetGeoDataFromGzkToGeoportal':
+                    $oShepServiceStrategy = new GetGeoDataFromGzkToGeoportalStrategy($aResponseData);
                     break;
                 default:
                     throw new \SoapFault('Server', 'No service found');
