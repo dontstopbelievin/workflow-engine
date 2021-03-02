@@ -84,7 +84,6 @@ class ApplicationController extends Controller
             }
         }
 
-        $allRoles = $this->get_roles_in_order($process->id);
         $tableColumns = $this->getColumns($tableName);
         $aRowNameRows = $this->getAllDictionaries(array_values($tableColumns));
 
@@ -113,7 +112,7 @@ class ApplicationController extends Controller
 
         $application_arr = json_decode(json_encode($application), true);
 
-        return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen','allRoles', 'rolesToRevision', 'records', 'buttons', 'aRowNameRows','application_arr'));
+        return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen', 'rolesToRevision', 'records', 'buttons', 'aRowNameRows','application_arr'));
     }
 
     public function acceptAgreement(Request $request)
@@ -604,7 +603,6 @@ class ApplicationController extends Controller
             $roleWithIndex['roleAfterParallel'] = $process->roles()->where('order', $order['order'] + 1)->get()->toArray();
         }
 
-        // dd($allRoles);
         // foreach($parallelRoles as $role) {
         //     $index++;
         //     if ($isParallel && $role["pivot"]["is_parallel"] === 0) {

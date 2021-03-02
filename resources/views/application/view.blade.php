@@ -51,17 +51,21 @@
                                 @foreach($templateTableFields as $item)
                                 Данные документа "{{$item->name}}":
                                 <ul class="list-group" id="list">
-                                    @foreach($item->fields as $key=>$value)
-                                        @if(substr($value['value'], 0, 16) === 'application-docs')
-                                            <li class="list-group-item">{{$value['label']}}: <a href="{{asset('storage/' .$value['value'] )}}" target="_blanc">Просмотр</a></li>
-                                        @else
-                                            @if($key == 'pdf_url')
-                                                <li class="list-group-item">Выходной документ: <a href="{{asset('storage/' .$value['value'] )}}" target="_blanc">Просмотр</a></li>
+                                    @if(count($item->fields) > 0)
+                                        @foreach($item->fields as $key=>$value)
+                                            @if(substr($value['value'], 0, 16) === 'application-docs')
+                                                <li class="list-group-item">{{$value['label']}}: <a href="{{asset('storage/' .$value['value'] )}}" target="_blanc">Просмотр</a></li>
                                             @else
-                                                <li class="list-group-item">{{$value['label']}}: {{$value['value']}}</li>
+                                                @if($key == 'pdf_url')
+                                                    <li class="list-group-item">Выходной документ: <a href="{{asset('storage/' .$value['value'] )}}" target="_blanc">Просмотр</a></li>
+                                                @else
+                                                    <li class="list-group-item">{{$value['label']}}: {{$value['value']}}</li>
+                                                @endif
                                             @endif
-                                        @endif
-                                    @endforeach
+                                        @endforeach
+                                    @else
+                                        <li class="list-group-item">Данные не введены.</li>
+                                    @endif
                                 </ul>
                                 @endforeach
                             @endisset
