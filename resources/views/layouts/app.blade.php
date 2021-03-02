@@ -13,22 +13,35 @@
     <link rel="stylesheet" type="text/css" href="{{url('css/custom.css?v=1.13')}}">
 </head>
 <body>
-    @section('header')
-        @include('layouts.header')
-    @show
     @if(Auth::check())
+        @section('header')
+            @include('layouts.header')
+        @show
+        
         @section('sidebar')
             @include('layouts.sidebar')
         @show
-    @endif
-    @section('messages')
-        <div style="position:absolute;float:right;min-width:calc(100% - 320px);margin-top: 60px;margin-left: 290px; z-index: 1000;">
-            @include('layouts.messages')
+        @section('messages')
+            <div style="position:absolute;float:right;min-width:calc(100% - 320px);margin-top: 60px;margin-left: 290px; z-index: 1000;">
+                @include('layouts.messages')
+            </div>
+        @show
+        <div style="height: 100%;">
+            @yield('content')
         </div>
-    @show
-    <div style="height: 100%;">
-        @yield('content')
-    </div>
+    @else
+        @section('header')
+            @include('layouts.header')
+        @show
+        @section('messages')
+            <div style="position:absolute;float:right;min-width:calc(100% - 320px);margin-top: 60px;margin-left: 290px; z-index: 1000;">
+                @include('layouts.messages')
+            </div>
+        @show
+        <div style="height: 100%;">
+            @yield('content')
+        </div>
+    @endif
 </body>
     @section('footer')
         @include('layouts.footer')

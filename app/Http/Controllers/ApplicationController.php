@@ -724,4 +724,48 @@ class ApplicationController extends Controller
         return $arrayToFront;
     }
 
+    public function verification($p, $a, $t){
+        try {
+            if(!isset($t) && !isset($a) && !isset($p)){
+                throw new Exception('Ошибка даных QrCode.');
+            }
+            $template = Template::select('templates.id', 'templates.table_name', 'template_docs.name')
+            ->join('template_docs', 'templates.template_doc_id', '=', 'template_docs.id')
+            ->where('process_id', $t)->first();
+
+            if(!$template){
+                throw new \Exception('Ошибка проверки QrCode.');
+            }
+            $process = Process::find($p);
+            if(!$process){
+                throw new \Exception('Ошибка проверки QrCode.');
+            }
+            $application = DB::table($process->table_name)->where('id', $a)->first();
+            if(!$application){
+                throw new \Exception('Ошибка проверки QrCode.');
+            }
+
+            $tableColumns = $this->getColumns($process->table_name);
+            $aRowNameRows = $this->getAllDictionaries(array_values($tableColumns));
+            $user = User::find($application->user_id);
+            $application_arr = json_decode(json_encode($application), true);
+
+            $templateFields = new \stdClass();
+            $templateFields->id = $template->id;
+            $templateFields->name = $template->name;
+            $fields = DB::table($template->table_name)->where('application_id', $application->id)->first();
+            if($fields){
+                $fields = json_decode(json_encode($fields), true);
+                $exceptionArray = ["id", "application_id"];
+                $templateFields->fields = $this->filterTemplateFieldsTable($fields, $exceptionArray);
+                $templateFields->fields = $this->get_field_label($templateFields->fields, $templateFields->id);
+            }else{
+                $templateFields->fields = [];
+            }
+            $done = true;
+            return view('application.verification', compact('templateFields', 'application_arr', 'process', 'tableColumns', 'aRowNameRows', 'user', 'done'));
+        } catch (\Exception $e) {
+            return view('application.verification')->with('error', $e->getMessage());
+        }
+    }
 }

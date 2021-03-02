@@ -28,6 +28,7 @@ Auth::routes();
 
 Route::get('/policy', function () {return view('policy');});
 Route::get('/list', function () {return view('list.list');});
+Route::get('/verification/{p}/{a}/{t}', 'ApplicationController@verification');
 
 Route::middleware(['guest'])->group(function () {
 

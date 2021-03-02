@@ -28,20 +28,22 @@
                 </a>
             </div>
         </div>
-        <ul class="navbar-nav nav_left_form" style="margin-left: 20px;">
-            <li class="nav-item">
-                <a href="{{url('docs')}}" class="navbar-left navbar-form nav-search {{request()->segment(1) == 'docs' ? 'active' : ''}}">
-                Документы</a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="navbar-left navbar-form nav-search">
-                Отчеты</a>
-            </li>
-            <li class="nav-item">
-                <a href="{{url('admin/process')}}" class="navbar-left navbar-form nav-search {{(request()->segment(1) == 'process') || (request()->segment(1) == 'admin') ? 'active' : ''}}">
-                Администрирование</a>
-            </li>
-        </ul>
+        @if(Auth::check())
+            <ul class="navbar-nav nav_left_form" style="margin-left: 20px;">
+                <li class="nav-item">
+                    <a href="{{url('docs')}}" class="navbar-left navbar-form nav-search {{request()->segment(1) == 'docs' ? 'active' : ''}}">
+                    Документы</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="navbar-left navbar-form nav-search">
+                    Отчеты</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{url('admin/process')}}" class="navbar-left navbar-form nav-search {{(request()->segment(1) == 'process') || (request()->segment(1) == 'admin') ? 'active' : ''}}">
+                    Администрирование</a>
+                </li>
+            </ul>
+        @endif
         <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
             @guest
             <li class="nav-item">
