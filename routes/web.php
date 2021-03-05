@@ -77,7 +77,7 @@ Route::group(['middleware' => ['auth']], function () {
           Route::get('/view/{process_id}/{application_id}', 'ApplicationController@view');
         });
         Route::prefix('outgoing')->group(function () {
-          Route::get('/', 'ApplicationController@incoming');
+          Route::get('/', 'ApplicationController@outgoing');
           Route::get('/view/{process_id}/{application_id}', 'ApplicationController@view');
         });
         Route::get('/drafts', 'ApplicationController@drafts');

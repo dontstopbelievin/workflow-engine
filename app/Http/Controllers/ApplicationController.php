@@ -126,7 +126,7 @@ class ApplicationController extends Controller
     public function getAllApplicationsWithCondition($process, $condition){
       $tableName = $this->getTableName($process->name);
       $table = CreatedTable::where('name', $tableName)->first();
-      dd($condition);
+      //dd($condition);
       return DB::table($tableName)
                         ->join('processes', 'processes.id', $tableName.'.process_id')
                         ->select('processes.id as process_id', 'processes.name as process_name',  $tableName.'.name', $tableName.'.current_order', $tableName.'.statuses',  $tableName.'.surname',  $tableName.'.id as application_id', $tableName.'.updated_at')
