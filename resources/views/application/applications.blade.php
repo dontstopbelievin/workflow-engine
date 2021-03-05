@@ -12,14 +12,6 @@
             <div class="card-header">
               <div class="row">
                 <div class="col-md-3">
-                  @if (Auth::user()->role->name === 'Заявитель')
-                    <a href="{{ url('docs/create', ['process' => $process]) }}" class="btn btn-info mb-3">Создать Заявку</a>
-                    <form action="{{ url('docs/search')}}" method="POST">
-                        @csrf
-                        <input type="hidden" name="processId" value="{{$process->id}}">
-                        <button class="btn btn-info" type="submit">Обновить</button>
-                    </form>
-                  @endif
                 </div>
                 <div class="col-md-6">
                   <h4 class="page-title text-center">
@@ -53,11 +45,7 @@
                               <td>{{$app->process_name ?? ''}}</td>
                               <td>{{$app->updated_at ?? ''}}</td>
                               <td>
-                                @if(request()->segment(2) == 'incoming')
-                                  <button class="rounded-circle bg-white" onclick="window.location='{{url('docs/incoming/view', ['process_id' => $app->process_id, 'application_id' => $app->application_id])}}'">
-                                @else
-                                  <button class="rounded-circle bg-white" onclick="window.location='{{url('docs/outgoing/view', ['process_id' => $app->process_id, 'application_id' => $app->application_id])}}'">
-                                @endif
+                                <button class="rounded-circle bg-white" onclick="window.location='{{url('docs/services/'.request()->segment(3).'/view', ['process_id' => $app->process_id, 'application_id' => $app->application_id])}}'">
                                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
                                     </svg>

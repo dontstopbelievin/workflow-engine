@@ -72,17 +72,25 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/download/{file}', 'ApplicationController@download');
         Route::get('/view/{process_id}/{application_id}', 'ApplicationController@view');
         Route::get('/create/{process}', 'ApplicationController@create');
-        Route::prefix('incoming')->group(function () {
-          Route::get('/', 'ApplicationController@incoming');
-          Route::get('/view/{process_id}/{application_id}', 'ApplicationController@view');
+        Route::prefix('services')->group(function () {
+          Route::prefix('incoming')->group(function () {
+            Route::get('/', 'ApplicationController@incoming');
+            Route::get('/view/{process_id}/{application_id}', 'ApplicationController@view');
+          });
+          Route::prefix('outgoing')->group(function () {
+            Route::get('/', 'ApplicationController@outgoing');
+            Route::get('/view/{process_id}/{application_id}', 'ApplicationController@view');
+          });
+          Route::prefix('mydocs')->group(function () {
+            Route::get('/', 'ApplicationController@mydocs');
+            Route::get('/view/{process_id}/{application_id}', 'ApplicationController@view');
+          });
+          Route::prefix('archive')->group(function () {
+            Route::get('/', 'ApplicationController@archive');
+            Route::get('/view/{process_id}/{application_id}', 'ApplicationController@view');
+          });
+          Route::get('/drafts', 'ApplicationController@drafts');
         });
-        Route::prefix('outgoing')->group(function () {
-          Route::get('/', 'ApplicationController@outgoing');
-          Route::get('/view/{process_id}/{application_id}', 'ApplicationController@view');
-        });
-        Route::get('/drafts', 'ApplicationController@drafts');
-        Route::get('/archive', 'ApplicationController@archive');
-        Route::get('/mydocs', 'ApplicationController@mydocs');
     });
 
     Route::prefix('user')->group(function () {

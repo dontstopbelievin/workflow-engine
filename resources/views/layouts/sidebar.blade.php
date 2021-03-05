@@ -11,32 +11,32 @@
           </button>
           <br><hr>
         </li>
-        <li class="nav-item {{request()->segment(2) == 'incoming' ? 'active' : ''}}">
-          <a href="{{ url('docs/incoming') }}">
+        <li class="nav-item {{request()->segment(3) == 'incoming' ? 'active' : ''}}">
+          <a href="{{ url('docs/services/incoming') }}">
               <i class="la la-sign-out"></i>
               <p>Входящие</p>
           </a>
         </li>
-        <li class="nav-item {{request()->segment(2) == 'outgoing' ? 'active' : ''}}">
-          <a href="{{ url('docs/outgoing') }}">
+        <li class="nav-item {{request()->segment(3) == 'outgoing' ? 'active' : ''}}">
+          <a href="{{ url('docs/services/outgoing') }}">
               <i class="la la-sign-in"></i>
               <p>Исходящие</p>
           </a>
         </li>
-        <li class="nav-item {{request()->segment(2) == 'mydocs' ? 'active' : ''}}">
-          <a href="{{ url('docs/mydocs') }}">
+        <li class="nav-item {{request()->segment(3) == 'mydocs' ? 'active' : ''}}">
+          <a href="{{ url('docs/services/mydocs') }}">
               <i class="fa fa-book"></i>
               <p>Мои документы</p>
           </a>
         </li>
-        <li class="nav-item {{request()->segment(2) == 'drafts' ? 'active' : ''}}">
-          <a href="{{ url('docs/drafts') }}">
+        <li class="nav-item {{request()->segment(3) == 'drafts' ? 'active' : ''}}">
+          <a href="{{ url('docs/services/drafts') }}">
               <i class="fa fa-file-text"></i>
               <p>Черновики</p>
           </a>
         </li>
-        <li class="nav-item {{request()->segment(2) == 'archive' ? 'active' : ''}}">
-          <a href="{{ url('docs/archive') }}">
+        <li class="nav-item {{request()->segment(3) == 'archive' ? 'active' : ''}}">
+          <a href="{{ url('docs/services/archive') }}">
               <i class="fa fa-archive"></i>
               <p>Архив документов</p>
           </a>
