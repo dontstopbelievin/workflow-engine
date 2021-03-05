@@ -72,6 +72,17 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/download/{file}', 'ApplicationController@download');
         Route::get('/view/{process_id}/{application_id}', 'ApplicationController@view');
         Route::get('/create/{process}', 'ApplicationController@create');
+        Route::prefix('incoming')->group(function () {
+          Route::get('/', 'ApplicationController@incoming');
+          Route::get('/view/{process_id}/{application_id}', 'ApplicationController@view');
+        });
+        Route::prefix('outgoing')->group(function () {
+          Route::get('/', 'ApplicationController@incoming');
+          Route::get('/view/{process_id}/{application_id}', 'ApplicationController@view');
+        });
+        Route::get('/drafts', 'ApplicationController@drafts');
+        Route::get('/archive', 'ApplicationController@archive');
+        Route::get('/mydocs', 'ApplicationController@mydocs');
     });
 
     Route::prefix('user')->group(function () {
@@ -155,7 +166,7 @@ Route::group(['prefix' => '/admin', 'middleware' => ['admin', 'auth']], function
         Route::post('/def_val/store', 'TemplateFieldController@def_value_store');
         Route::post('/def_val/delete/{id}', 'TemplateFieldController@delete');
     });
-    
+
     Route::prefix('auction')->group(function () {
         Route::get('/', 'AuctionController@index');
         Route::get('/create', 'AuctionController@create');
@@ -178,7 +189,7 @@ Route::group(['prefix' => '/admin', 'middleware' => ['admin', 'auth']], function
         Route::post('/delete', 'SelectOptionController@delete');
         Route::post('/update', 'SelectOptionController@update');
     });
-    
+
     Route::prefix('process')->group(function () {
         Route::get('/', 'ProcessController@index');
         Route::get('/create', 'ProcessController@create');

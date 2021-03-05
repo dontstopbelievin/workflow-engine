@@ -51,6 +51,91 @@ class ApplicationController extends Controller
         return view('application.index', compact('arrayApps', 'process'));
     }
 
+    public function incoming(){
+        $user = Auth::user();
+
+        // get all processes where the user is engaged
+        $allProcessesWithUser = $this->processesOfUser($user->role_id);
+
+          // check if the user's id is in the "statuses" of every application of every process
+          foreach ($allProcessesWithUser as $number => $process) {
+
+            $allApplications = $this->getAllApplicationsWithCondition($process, "=");
+            $userOrder = $process->order;
+
+              foreach ($allApplications as $key => $application) {
+
+                foreach(json_decode($application->statuses) as $id) {
+                  // insert them into one array and return
+                    if ($id === $user->role_id) {
+                        $apps[$key] = $application;
+                      break;
+                    }
+                }
+
+              }
+          }
+          return view('application.applications', compact('apps'));
+    }
+
+    public function outgoing(){
+        $user = Auth::user();
+
+        // get all processes where the user is engaged
+        $allProcessesWithUser = $this->processesOfUser($user->role_id);
+
+          // check if the user's id is NOT in the "statuses" of every application of every process
+          foreach ($allProcessesWithUser as $number => $process) {
+
+              $allApplications = $this->getAllApplicationsWithCondition($process, ">=");
+              $userOrder = $process->order;
+
+              // dd($allApplications);
+              foreach ($allApplications as $key => $application) {
+                //dd($application);
+                  if($application->current_order > $userOrder){
+                      $apps[$key] = $application;
+                      continue;
+                  }else{
+                    $inProcess = false;
+                    foreach(json_decode($application->statuses) as $id) {
+                      // insert them into one array and return
+                        if ($id === $user->role_id) {
+                            $inProcess = true;
+                            break;
+                        }
+                    }
+                    if(!$inProcess){
+                      $apps[$key] = $application;
+                    }
+                  }
+              }
+          }
+          //dd($apps);
+          return view('application.applications', compact('apps'));
+    }
+
+    public function processesOfUser($role_id){
+      return DB::table('process_role')
+                ->join('processes', 'processes.id', '=', 'process_role.process_id')
+                ->where('role_id', $role_id)
+                ->distinct()
+                ->get();
+    }
+
+    public function getAllApplicationsWithCondition($process, $condition){
+      $tableName = $this->getTableName($process->name);
+      $table = CreatedTable::where('name', $tableName)->first();
+      dd($condition);
+      return DB::table($tableName)
+                        ->join('processes', 'processes.id', $tableName.'.process_id')
+                        ->select('processes.id as process_id', 'processes.name as process_name',  $tableName.'.name', $tableName.'.current_order', $tableName.'.statuses',  $tableName.'.surname',  $tableName.'.id as application_id', $tableName.'.updated_at')
+                        ->where($tableName.'.current_order', $condition, $process->order)
+                        ->where($tableName.'.current_order', '!=', '0')
+                        ->get();
+    }
+
+
     public function view($processId, $applicationId)
     {
         $process = Process::find($processId);

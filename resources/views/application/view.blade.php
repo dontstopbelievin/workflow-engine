@@ -8,7 +8,7 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-3">
-                                <a href="{{ url('docs/index', ['process' => $process]) }}" class="btn btn-info float-left">Назад</a>
+                                <a href="{{ url('docs/'.request()->segment(2)) }}" class="btn btn-info float-left">Назад</a>
                             </div>
                             <div class="col-md-6">
                               <h2 class="card-title text-center" style="margin-bottom: 20px;">Просмотр заявки</h2>
@@ -291,7 +291,7 @@
                                   @endif
                                 </div>
                             @endif
-                            <a href="{{ url('docs/index', ['process' => $process]) }}" class="btn btn-info" style="margin-top: 10px;">Назад</a>
+                            <a href="{{ url('docs/'.request()->segment(2)) }}" class="btn btn-info float-left">Назад</a>
                         </div>
                     </div>
                 </div>
