@@ -51,115 +51,70 @@ class ApplicationController extends Controller
     }
 
     public function incoming(){
-        $user = Auth::user();
+      $user = Auth::user();
 
-        // get all processes where the user is engaged
-        $allProcessesWithUser = $this->processesOfUser($user->role_id);
-        $i = 0;
-          // check if the user's id is in the "statuses" of every application of every process
-          foreach ($allProcessesWithUser as $number => $process) {
+      // get all processes where the user is engaged
+      $allProcessesWithUser = $this->processesOfUser($user->role_id);
+      $i = 0;
+      $apps = [];
+      // check if the user's id is in the "statuses" of every application of every process
+      foreach ($allProcessesWithUser as $number => $process) {
 
-            $tableName = $this->getTableName($process->name);
-            $allApplications = DB::table($tableName)
-                            ->join('processes', 'processes.id', $tableName.'.process_id')
-                            ->where($tableName.'.current_order', '=', $process->order)
-                            ->where($tableName.'.current_order', '!=', '0');
-            $allApplications = $this->getFieldsForView($allApplications, $tableName);
-
-            $userOrder = $process->order;
-
-              foreach ($allApplications as $key => $application) {
-
-                foreach(json_decode($application->statuses) as $id) {
-                  // insert them into one array and return
-                    if ($id === $user->role_id) {
-                        $apps[$i] = $application;
-                        $i++;
-                      break;
-                    }
-                }
-
-              }
-          }
-          if(!isset($apps)) $apps = [];
-          return view('application.applications', compact('apps'));
+        $tableName = $this->getTableName($process->name);
+        $allApplications = DB::table($tableName)
+                        ->join('processes', 'processes.id', $tableName.'.process_id')
+                        ->where($tableName.'.current_order', '=', $process->order)
+                        ->whereJsonContains('statuses', $user->role_id)
+                        ->where($tableName.'.current_order', '!=', '0');
+        $apps = $this->getFieldsForView($allApplications, $tableName);
+      }
+      return view('application.applications', compact('apps'));
     }
 
     public function outgoing(){
-        $user = Auth::user();
+      $user = Auth::user();
 
-        // get all processes where the user is engaged
-        $allProcessesWithUser = $this->processesOfUser($user->role_id);
-          $i = 0;
-          // check if the user's id is NOT in the "statuses" of every application of every process
-          foreach ($allProcessesWithUser as $number => $process) {
-              $tableName = $this->getTableName($process->name);
-              $allApplications = DB::table($tableName)
-                              ->join('processes', 'processes.id', $tableName.'.process_id')
-                              ->where($tableName.'.current_order', '>=', $process->order)
-                              ->where($tableName.'.current_order', '!=', '0');
-              $allApplications = $this->getFieldsForView($allApplications, $tableName);
-
-              $userOrder = $process->order;
-
-              foreach ($allApplications as $key => $application) {
-
-                  if($application->current_order > $userOrder){
-                      $apps[$i] = $application;
-                      $i++;
-                      continue;
-                  }else{
-                    $inProcess = false;
-                    foreach(json_decode($application->statuses) as $id) {
-                      // insert them into one array and return
-                        if ($id === $user->role_id) {
-                            $inProcess = true;
-                            break;
-                        }
-                    }
-                    if(!$inProcess){
-                      $apps[$i] = $application;
-                      $i++;
-                    }
-                  }
-              }
-          }
-          //dd($apps);
-          if(!isset($apps)) $apps = [];
-          return view('application.applications', compact('apps'));
+      // get all processes where the user is engaged
+      $allProcessesWithUser = $this->processesOfUser($user->role_id);
+      $i = 0;
+      $apps = [];
+      // check if the user's id is NOT in the "statuses" of every application of every process
+      foreach ($allProcessesWithUser as $number => $process) {
+        $tableName = $this->getTableName($process->name);
+        $allApplications = DB::table($tableName)
+                        ->join('processes', 'processes.id', $tableName.'.process_id')
+                        ->where($tableName.'.current_order', '>=', $process->order)
+                        ->whereJsonDoesntContain('statuses', $user->role_id)
+                        ->where($tableName.'.current_order', '!=', '0');
+        $apps = $this->getFieldsForView($allApplications, $tableName);
+      }
+      return view('application.applications', compact('apps'));
     }
 
     public function mydocs(){
         $user = Auth::user();
-
         // get all processes
         $allProcesses = Process::get();
-
         // check if the user's id is equal to 'user_id' for all processes
         $i = 0;
+        $apps = [];
         foreach ($allProcesses as $number => $process) {
             $tableName = $process->table_name;
             $allApplications = DB::table($tableName)
                               ->join('processes', 'processes.id', $tableName.'.process_id')
                               ->where($tableName.'.user_id', '=', $user->role_id);
             $allApplications = $this->getFieldsForView($allApplications, $tableName);
-
-             foreach ($allApplications as $key => $application) {
-               $apps[$i] = $application;
-               $i++;
-             }
+            $apps = array_merge($apps, $allApplications->toArray());
         }
-        //dd($apps);
-        if(!isset($apps)) $apps = [];
         return view('application.applications', compact('apps'));
     }
 
     public function archive(){
         $user = Auth::user();
-
         // get all processes where the user is engaged
         $allProcessesWithUser = $this->processesOfUser($user->role_id);
         $i = 0;
+        $apps = [];
         // check if the applications in each process the user engaged is finished
         foreach ($allProcessesWithUser as $number => $process) {
             $tableName = $this->getTableName($process->name);
@@ -167,14 +122,8 @@ class ApplicationController extends Controller
                               ->join('processes', 'processes.id', $tableName.'.process_id')
                               ->where($tableName.'.current_order', '=', '0');
             $allApplications = $this->getFieldsForView($allApplications, $tableName);
-
-            foreach ($allApplications as $key => $application) {
-              $apps[$i] = $application;
-              $i++;
-            }
+            $apps = array_merge($apps, $allApplications->toArray());
         }
-        //dd($apps);
-        if(!isset($apps)) $apps = [];
         return view('application.applications', compact('apps'));
     }
 
