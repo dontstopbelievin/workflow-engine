@@ -210,7 +210,7 @@ class ApplicationController extends Controller
             // insertion of fields into template
             if(!$this->insertTemplateFields($fieldValues, $request->application_id, $template)){
                 DB::rollBack();
-                return Redirect::to('docs')->with('status', 'insert template fields error');
+                return Redirect::to('docs')->with('error', 'insert template fields error');
             }
 
             $fields = DB::table($template->table_name)->select('*')->where('application_id', $application->id)->first();

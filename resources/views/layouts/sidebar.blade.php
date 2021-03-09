@@ -97,12 +97,6 @@
                 <p>Логи сервиса</p>
             </a>
           </li>
-          <li class="nav-item {{request()->segment(1) == 'docs' ? 'active' : (request()->segment(1) == 'index' ? 'active' : (request()->segment(1) == 'applications-create' ? 'active' : ''))}}">
-            <a href="{{ url('docs') }}">
-                <i class="la la-list"></i>
-                <p>Все услуги</p>
-            </a>
-          </li>
       </ul>
     </div>
     @endif

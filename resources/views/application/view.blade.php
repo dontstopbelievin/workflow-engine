@@ -387,7 +387,7 @@
                 xhr.open("post", "{{url('docs/approve')}}", true);
                 xhr.setRequestHeader("Authorization", "Bearer " + "{{csrf_token()}}");
                 xhr.onload = function () {
-                    // location.reload();
+                    location.reload();
                 }.bind(this)
                 xhr.send(formData);
             });
