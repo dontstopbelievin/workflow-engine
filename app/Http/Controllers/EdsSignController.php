@@ -82,9 +82,10 @@ class EdsSignController extends Controller
     public function getEgknRaws($id)
     {
         $query = \DB::table('egkn_services')
-            ->select('*')
-            ->where('id',$id)
-            ->get()->first();
+                    ->select('*')
+                    ->where('id',$id)
+                    ->get()
+                    ->first();
         return json_decode(json_encode($query), true);
     }
 
@@ -92,19 +93,21 @@ class EdsSignController extends Controller
     {
         $aEgknRaws = $this->getEgknRaws($request->id);
         $aEgknXmlRows = $this->xmlGenerator($aEgknRaws);
-//        dd($aEgknXmlRows);
         return view('test.testpage', compact('aEgknRaws', 'aEgknXmlRows'));
+    }
+
+    public function signSave(Request $request)
+    {
+        dd($request);
     }
 
     public function xmlGenerator($aData)
     {
         $xmlstr = "<?xml version='1.0' encoding='UTF-8'?><data>";
-//        $data = new \SimpleXMLElement($xmlstr);
         if (isset($aData) && count($aData)) {
             foreach ($aData as $sKey => $sData) {
                 $xmlstr .= "<".$sKey.">".$sData."</".$sKey.">";
             }
-
         }
         $xmlstr .= "</data>";
         return $xmlstr;

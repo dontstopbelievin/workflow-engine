@@ -219,7 +219,7 @@ Route::group(['prefix' => '/admin', 'middleware' => ['admin', 'auth']], function
     });
     Route::prefix('testpage')->group(function () {
         Route::get('/view/{id}', 'EdsSignController@viewsign');
-        Route::post('/sign', 'EdsSignController@sign');
+        Route::post('/saveXmlAsFile', 'EdsSignController@signSave');
     });
     View::composer(['*'], function($view) {
         $usersCount = count(User::active()->get());

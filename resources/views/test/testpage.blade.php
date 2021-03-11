@@ -46,11 +46,11 @@
                             </div>
                             <hr />
                             <div>
-                                <input value="Подписать XML" id='notsignedXml' onclick="signXmlCall();" type="button"  />
+                                <input value="Подписать XML" id='notsignedXml' onclick="signXmlCall();" type="button"/>
                             </div>
                         </div>
 
-                        <form action="/saveXmlAsFile" method="POST">
+                        <form action="/testpage/saveXmlAsFile" method="POST">
                             @csrf
                             <label for="inputType">Подписанный XML</label>
                             <div>
