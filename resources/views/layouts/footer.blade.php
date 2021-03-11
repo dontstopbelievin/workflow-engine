@@ -10,6 +10,10 @@
 	<script src="{{url('assets/demo/demo.js')}}"></script>
 	<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="http://code.jquery.com/jquery-migrate-1.2.1.js"></script>
+    <script type="text/javascript" src="{{url('assets/js/ncalayer/jquery.blockUI.js')}}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{url('assets/js/ncalayer/ncalayer.js')}}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{url('assets/js/ncalayer/process-ncalayer-calls.js')}}" charset="utf-8"></script>
 	<script type="text/javascript">
         function openTab3(evt, tabName) {
         // Declare all variables
@@ -32,7 +36,7 @@
             evt.currentTarget.className += " active";
         }
         $(document).ready(function(){
-          $('[data-toggle="tooltip"]').tooltip();   
+          $('[data-toggle="tooltip"]').tooltip();
         });
 	</script>
 @endsection

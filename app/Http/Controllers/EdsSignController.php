@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Auction;
 use Illuminate\Http\Request;
 use App\User;
 use App\Libs\PhpNCANode;
@@ -78,4 +78,36 @@ class EdsSignController extends Controller
         echo $bodyContent;
         exit;
     }
+
+    public function getEgknRaws($id)
+    {
+        $query = \DB::table('egkn_services')
+            ->select('*')
+            ->where('id',$id)
+            ->get()->first();
+        return json_decode(json_encode($query), true);
+    }
+
+    public function viewsign(Request $request)
+    {
+        $aEgknRaws = $this->getEgknRaws($request->id);
+        $aEgknXmlRows = $this->xmlGenerator($aEgknRaws);
+//        dd($aEgknXmlRows);
+        return view('test.testpage', compact('aEgknRaws', 'aEgknXmlRows'));
+    }
+
+    public function xmlGenerator($aData)
+    {
+        $xmlstr = "<?xml version='1.0' encoding='UTF-8'?><data>";
+//        $data = new \SimpleXMLElement($xmlstr);
+        if (isset($aData) && count($aData)) {
+            foreach ($aData as $sKey => $sData) {
+                $xmlstr .= "<".$sKey.">".$sData."</".$sKey.">";
+            }
+
+        }
+        $xmlstr .= "</data>";
+        return $xmlstr;
+    }
+
 }

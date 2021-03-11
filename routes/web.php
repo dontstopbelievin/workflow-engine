@@ -47,6 +47,7 @@ Route::middleware(['guest'])->group(function () {
             Route::post('/receiver', 'IntegrationController@receive');
         });
     });
+
 });
 
 Route::group(['middleware' => ['auth']], function () {
@@ -216,7 +217,10 @@ Route::group(['prefix' => '/admin', 'middleware' => ['admin', 'auth']], function
         Route::post('/update/{process}', 'ProcessController@update_process_role');
         Route::post('/delete/{process}', 'ProcessController@delete_process_role');
     });
-
+    Route::prefix('testpage')->group(function () {
+        Route::get('/view/{id}', 'EdsSignController@viewsign');
+        Route::post('/sign', 'EdsSignController@sign');
+    });
     View::composer(['*'], function($view) {
         $usersCount = count(User::active()->get());
         $rolesCount = count(Role::all());
