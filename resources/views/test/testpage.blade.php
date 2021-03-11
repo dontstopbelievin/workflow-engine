@@ -50,11 +50,11 @@
                             </div>
                         </div>
 
-                        <form action="/testpage/saveXmlAsFile" method="POST">
+                        <form action={{url('testpage/saveXmlAsFile')}} method="POST">
                             @csrf
                             <label for="inputType">Подписанный XML</label>
                             <div>
-                                <textarea class="form-control" id="signedXml" rows="6" readonly></textarea>
+                                <textarea class="form-control" name="signedXml" id="signedXml" rows="6" readonly></textarea>
                             </div>
                             <button id='signedXmlSave' disabled type="Submit">Сохранить XML</button>
                         </form>

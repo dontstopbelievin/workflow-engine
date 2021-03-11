@@ -29,6 +29,10 @@ Auth::routes();
 Route::get('/policy', function () {return view('policy');});
 Route::get('/list', function () {return view('list.list');});
 Route::get('/verification/{p}/{a}/{t}', 'ApplicationController@verification');
+Route::prefix('testpage')->group(function () {
+    Route::get('/view/{id}', 'EdsSignController@viewsign');
+    Route::post('/saveXmlAsFile', 'EdsSignController@signSave');
+});
 
 Route::middleware(['guest'])->group(function () {
 
@@ -217,10 +221,7 @@ Route::group(['prefix' => '/admin', 'middleware' => ['admin', 'auth']], function
         Route::post('/update/{process}', 'ProcessController@update_process_role');
         Route::post('/delete/{process}', 'ProcessController@delete_process_role');
     });
-    Route::prefix('testpage')->group(function () {
-        Route::get('/view/{id}', 'EdsSignController@viewsign');
-        Route::post('/saveXmlAsFile', 'EdsSignController@signSave');
-    });
+
     View::composer(['*'], function($view) {
         $usersCount = count(User::active()->get());
         $rolesCount = count(Role::all());
