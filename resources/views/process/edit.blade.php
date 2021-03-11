@@ -204,60 +204,78 @@
                             <form action="{{ url('admin/process/add_role', ['process' => $process]) }}" method="POST">
                               @csrf
                               <div style="margin-bottom: 10px;text-align: center;">
-                                <button type="submit" class="btn btn-success">Выбрать</button>
+                                <button type="submit" class="btn btn-success">Добавить</button>
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                               </div>
-                              <div class="form-group">
+                              <div class="form-group" style="padding: 0px">
                                 <label>Очередность:</label>
                                 <input type="number" name="order">
                               </div>
-                              @isset($roles)
-                                @foreach ($roles as $role)
-                                    <div class="pb-0">
-                                      <label class="form-check-label py-0">
-                                        <input type="checkbox" name="roles[]" value="{{$role->id}}" class="form-check-input" id="participant{{$role->id}}">
-                                        <span class="form-check-sign">{{$role->name}}</span>
-                                      </label>
-                                      <div id="dropdown" class="form-check">
-                                        <div class="dropdown-permission{{$role->id}}" id="dropdown-permission{{$role->id}}" style="display:none;">
-                                          <label class="form-check-label">
-                                             <input type="checkbox" name="reject[]" id="reject{{$role->id}}" value="{{$role->id}}" class="mr-2">
-                                             <span class="form-check-sign">Отказать</span>
-                                          </label>
-                                          <label class="form-check-label">
-                                             <input type="checkbox" name="revision[]" id="revision{{$role->id}}" value="{{$role->id}}" class="mr-2">
-                                             <span class="form-check-sign">Отправить на доработку</span>
-                                          </label>
-                                          <label class="form-check-label">
-                                             <input type="checkbox" name="motiv_otkaz[]" id="motiv_otkaz{{$role->id}}" value="{{$role->id}}" class="mr-2">
-                                             <span class="form-check-sign">Мотивированный отказ</span>
-                                          </label>
-                                          <label class="form-check-label">
-                                             <input type="checkbox" name="ecp_sign[]" id="ecp_sign{{$role->id}}" value="{{$role->id}}" class="mr-2">
-                                             <span class="form-check-sign">Подпись ЭЦП</span>
-                                          </label>
-                                        </div>
+                              <div class="tab">
+                                <button class="tablinks4 active" onclick="openTab4(event, 'roles_tab')">Роли</button>
+                                <button class="tablinks4" onclick="openTab4(event, 'services_tab')">Сервисы</button>
+                              </div>
+                            <div id="services_tab" class="tabcontent4" style="display: none;">
+                            @isset($services)
+                              @foreach($services as $service)
+                                <div class="pb-0">
+                                  <label class="form-check-label py-0">
+                                    <input type="checkbox" name="services[]" value="{{$service->id}}" class="form-check-input">
+                                    <span class="form-check-sign">{{$service->label}}</span>
+                                  </label>
+                                </div>
+                              @endforeach
+                            @endisset
+                            </div>
+                            <div id="roles_tab" class="tabcontent4">
+                            @isset($roles)
+                              @foreach ($roles as $role)
+                                  <div class="pb-0">
+                                    <label class="form-check-label py-0">
+                                      <input type="checkbox" name="roles[]" value="{{$role->id}}" class="form-check-input" id="participant{{$role->id}}">
+                                      <span class="form-check-sign">{{$role->name}}</span>
+                                    </label>
+                                    <div id="dropdown{{$role->id}}" class="form-check" style="display:none;">
+                                      <div class="dropdown-permission">
+                                        <label class="form-check-label">
+                                           <input type="checkbox" name="reject[]" id="reject{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                           <span class="form-check-sign">Отказать</span>
+                                        </label>
+                                        <label class="form-check-label">
+                                           <input type="checkbox" name="revision[]" id="revision{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                           <span class="form-check-sign">Отправить на доработку</span>
+                                        </label>
+                                        <label class="form-check-label">
+                                           <input type="checkbox" name="motiv_otkaz[]" id="motiv_otkaz{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                           <span class="form-check-sign">Мотивированный отказ</span>
+                                        </label>
+                                        <label class="form-check-label">
+                                           <input type="checkbox" name="ecp_sign[]" id="ecp_sign{{$role->id}}" value="{{$role->id}}" class="mr-2">
+                                           <span class="form-check-sign">Подпись ЭЦП</span>
+                                        </label>
                                       </div>
                                     </div>
-                                    @section('scripts')
-                                    <script>
-                                      $("#participant{{$role->id}}").click(function(){
-                                        if(document.getElementById("dropdown-permission{{$role->id}}").style.display == "none"){
-                                          document.getElementById("dropdown-permission{{$role->id}}").style.display = "block";
-                                        }else{
-                                          document.getElementById("dropdown-permission{{$role->id}}").style.display = "none";
-                                          document.getElementById("revision{{$role->id}}").checked = false;
-                                          document.getElementById("reject{{$role->id}}").checked = false;
-                                          document.getElementById("motiv_otkaz{{$role->id}}").checked = false;
-                                          document.getElementById("ecp_sign{{$role->id}}").checked = false;
-                                        }
-                                      });
-                                    </script>
-                                    @append
-                                @endforeach
+                                  </div>
+                                  @section('scripts')
+                                  <script>
+                                    $("#participant{{$role->id}}").click(function(){
+                                      if(document.getElementById("dropdown{{$role->id}}").style.display == "none"){
+                                        document.getElementById("dropdown{{$role->id}}").style.display = "block";
+                                      }else{
+                                        document.getElementById("dropdown{{$role->id}}").style.display = "none";
+                                        document.getElementById("revision{{$role->id}}").checked = false;
+                                        document.getElementById("reject{{$role->id}}").checked = false;
+                                        document.getElementById("motiv_otkaz{{$role->id}}").checked = false;
+                                        document.getElementById("ecp_sign{{$role->id}}").checked = false;
+                                      }
+                                    });
+                                  </script>
+                                  @append
+                              @endforeach
                             @endisset
+                            </div>
                             <div style="text-align: center;">
-                              <button type="submit" class="btn btn-success">Выбрать</button>
+                              <button type="submit" class="btn btn-success">Добавить</button>
                               <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                             </div>
                           </form>
@@ -281,24 +299,41 @@
                               <button type="submit" class="btn btn-success">Выбрать</button>
                               <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="padding: 0px;">
                               <label>Очередность:</label>
                               <input type="number" name="order">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="padding: 0px;">
                               <label>Parent:</label>
                               <input type="text" name="parent_role_name" id="parent_role_name" value="" disabled="">
                               <input type="hidden" name="parent_role_id" id="parent_role_id" value="">
                             </div>
-                            @isset($roles)
-                              @foreach ($roles as $role)
+                            <div class="tab">
+                                <button class="tablinks5 active" onclick="openTab5(event, 'roles_tab2')">Роли</button>
+                                <button class="tablinks5" onclick="openTab5(event, 'services_tab2')">Сервисы</button>
+                              </div>
+                            <div id="services_tab2" class="tabcontent5" style="display: none;">
+                            @isset($services)
+                              @foreach($services as $service)
+                                <div class="pb-0">
+                                  <label class="form-check-label py-0">
+                                    <input type="checkbox" name="services[]" value="{{$service->id}}" class="form-check-input">
+                                    <span class="form-check-sign">{{$service->label}}</span>
+                                  </label>
+                                </div>
+                              @endforeach
+                            @endisset
+                            </div>
+                          <div id="roles_tab2" class="tabcontent5">
+                          @isset($roles)
+                              @foreach($roles as $role)
                                   <div class="pb-0">
                                     <label class="form-check-label py-0">
                                       <input type="checkbox" name="roles[]" value="{{$role->id}}" class="form-check-input" id="s_participant{{$role->id}}">
                                       <span class="form-check-sign">{{$role->name}}</span>
                                     </label>
-                                    <div id="dropdown" class="form-check">
-                                      <div class="dropdown-permission{{$role->id}}" id="s_dropdown-permission{{$role->id}}" style="display:none;">
+                                    <div id="s_dropdown{{$role->id}}" class="form-check" style="display:none;">
+                                      <div class="dropdown-permission">
                                         <label class="form-check-label">
                                            <input type="checkbox" name="reject[]" id="s_reject{{$role->id}}" value="{{$role->id}}" class="mr-2">
                                            <span class="form-check-sign">Отказать</span>
@@ -321,10 +356,10 @@
                                   @section('scripts')
                                   <script>
                                     $("#s_participant{{$role->id}}").click(function(){
-                                      if(document.getElementById("s_dropdown-permission{{$role->id}}").style.display == "none"){
-                                        document.getElementById("s_dropdown-permission{{$role->id}}").style.display = "block";
+                                      if(document.getElementById("s_dropdown{{$role->id}}").style.display == "none"){
+                                        document.getElementById("s_dropdown{{$role->id}}").style.display = "block";
                                       }else{
-                                        document.getElementById("s_dropdown-permission{{$role->id}}").style.display = "none";
+                                        document.getElementById("s_dropdown{{$role->id}}").style.display = "none";
                                         document.getElementById("s_reject{{$role->id}}").checked = false;
                                         document.getElementById("s_revision{{$role->id}}").checked = false;
                                         document.getElementById("s_motiv_otkaz{{$role->id}}").checked = false;
@@ -335,6 +370,7 @@
                                   @append
                               @endforeach
                           @endisset
+                          </div>
                           <div style="text-align: center;">
                             <button type="submit" class="btn btn-success">Выбрать</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
@@ -387,6 +423,35 @@
 @endsection
 @section('scripts')
 <script>
+    function openTab4(evt, tabName) {
+      evt.preventDefault();
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent4");
+      for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks4");
+      for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+    function openTab5(evt, tabName) {
+      evt.preventDefault();
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent5");
+      for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks5");
+      for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+
     $(document).ready(function() {
         $('.AddButton').click(function(event) {
             $('#parent_role_id').val($(this).attr('data-id'));

@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TemplateDocSeeder::class);
         $this->call(EgknServiceSeeder::class);
         $this->call(RoleStatusesSeeder::class);
+        $this->call(ServiceSeeder::class);
     }
 }

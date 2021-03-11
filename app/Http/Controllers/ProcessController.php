@@ -6,6 +6,7 @@ use App\Process;
 use App\Template;
 use App\Role;
 use App\Route;
+use App\Service;
 use App\CityManagement;
 use App\CreatedTable;
 use App\TemplateDoc;
@@ -54,13 +55,14 @@ class ProcessController extends Controller
             $templates = Template::where('process_id', $process->id)->with('role')->with('doc')->get();
             $columns = $this->getAllDictionaries();
             $roles = Role::where('name' ,'!=', 'Заявитель')->get();
+            $services = Service::all();
             $tableColumns = $this->getColumns($process->table_name);
             $organizations = CityManagement::all();
             $nameMainOrg = CityManagement::find($process->main_organization_id)->name ?? '';
             $process_roles = $this->get_roles_for_edit($process->id);
             $process_roles_2 = $this->get_roles_in_order($process->id);
             $templateDocs = TemplateDoc::all();
-            return view('process.edit', compact('templates', 'process','tableColumns', 'columns', 'roles','process_roles', 'process_roles_2', 'organizations', 'nameMainOrg', 'templateDocs'));
+            return view('process.edit', compact('services', 'templates', 'process','tableColumns', 'columns', 'roles','process_roles', 'process_roles_2', 'organizations', 'nameMainOrg', 'templateDocs'));
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }
