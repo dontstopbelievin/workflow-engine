@@ -99,16 +99,15 @@
 
             websocket.send(JSON.stringify(data));
         }
-    };
+    }
 
     websocket.onmessage = e => {
         const data = JSON.parse(e.data);
         ecpData.data = data.responseObject;
         if(typeof ecpData.data === 'string' || ecpData.data instanceof String) {
-            console.log('type is string')
+            console.log('type is string');
             sendRequest()
         }
-
         console.log('tut', ecpData.data);
     };
 
@@ -123,38 +122,39 @@
                 console.log(xhr);
                 console.log(status);
                 console.log(error);
+                let message = xhr.responseJSON.message;
                 var errorDiv = document.getElementById('errorDiv');
                 errorDiv.style.display = "block";
                 if (error === 'Internal Server Error') {
                     $p = document.getElementById('errorDiv');
-                    console.log('Не правильный пароль для ЭЦП или не верный формат P12! Пожалуйста введите еще раз!');
-                    $p.innerText = 'Не правильный пароль для ЭЦП или не верный формат P12! Пожалуйста введите еще раз!';
+                    console.log(message);
+                    $p.innerText = message;
                 } else if (error === 'Not Found') {
-                    console.log('Ошибка авторизации!');
+                    console.log(message);
                     $p = document.getElementById('errorDiv');
-                    $p.innerText = 'Ошибка авторизации!';
+                    $p.innerText = message;
                 } else if (error === 'Conflict') {
-                    console.log('Ошибка авторизации!');
+                    console.log(message);
                     $p = document.getElementById('errorDiv');
-                    $p.innerText = 'Ошибка авторизации!';
+                    $p.innerText = message;
                 } else if (error === 'Bad Request'){
-                    console.log('Ваш сертификат не актуален! Пожалуйста обновите сертификат!');
+                    console.log(message);
                     $p = document.getElementById('errorDiv');
-                    $p.innerText = 'Ваш сертификат не актуален! Пожалуйста обновите сертификат!';
+                    $p.innerText = message;
                 } else if (error === 'Unauthorized'){
-                    console.log('Ваш сертификат просрочен! Пожалуйста обновите сертификат!');
+                    console.log(message);
                     $p = document.getElementById('errorDiv');
-                    $p.innerText = 'Ваш сертификат просрочен! Пожалуйста обновите сертификат!';
+                    $p.innerText = message;
                 } else if (error === 'Not Acceptable') {
-                    console.log('Вы уже зарегистрированы на сервере!');
+                    console.log(message);
                     $p = document.getElementById('errorDiv');
-                    $p.innerText = 'Вы уже зарегистрированы на сервере!';
+                    $p.innerText = message;
                 } else {
-                    console.log('Не правильный пароль для ЭЦП или не верный формат P12! Пожалуйста введите еще раз!');
+                    console.log(message);
                     $p = document.getElementById('errorDiv');
-                    $p.innerText = 'Не правильный пароль для ЭЦП или не верный формат P12! Пожалуйста введите еще раз!';
+                    $p.innerText = message;
                 }
             });
-    };
+    }
 </script>
 @append
