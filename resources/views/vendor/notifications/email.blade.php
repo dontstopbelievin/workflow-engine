@@ -10,11 +10,7 @@
 @endif
 @endif
 
-{{-- Intro Lines --}}
-@foreach ($introLines as $line)
-{{ $line }}
-
-@endforeach
+Вы получили это письмо, потому что мы получили запрос на сброс пароля для вашей учетной записи.
 
 {{-- Action Button --}}
 @isset($actionText)
@@ -29,22 +25,13 @@
     }
 ?>
 @component('mail::button', ['url' => $actionUrl, 'color' => $color])
-{{ $actionText }}
+Сброс пароля
 @endcomponent
 @endisset
 
-{{-- Outro Lines --}}
-@foreach ($outroLines as $line)
-{{ $line }}
+Срок действия ссылки для сброса пароля истечет через 60 минут.
 
-@endforeach
-
-{{-- Salutation --}}
-@if (! empty($salutation))
-{{ $salutation }}
-@else
-
-@endif
+Если вы не запрашивали сброс пароля, никаких дальнейших действий не требуется.
 
 {{-- Subcopy --}}
 @isset($actionText)
