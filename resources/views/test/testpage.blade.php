@@ -46,18 +46,16 @@
                             </div>
                             <hr />
                             <div>
+                                <input hidden="hidden" id="doc_id" name="doc_id" value="{{$aEgknRaws['id']}}"/>
                                 <input value="Подписать XML" id='notsignedXml' onclick="signXmlCall();" type="button"/>
                             </div>
                         </div>
-
-                        <form action={{url('testpage/saveXmlAsFile')}} method="POST">
-                            @csrf
+                        <div class="form-group">
                             <label for="inputType">Подписанный XML</label>
                             <div>
                                 <textarea class="form-control" name="signedXml" id="signedXml" rows="6" readonly></textarea>
                             </div>
-                            <button id='signedXmlSave' disabled type="Submit">Сохранить XML</button>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>

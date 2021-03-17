@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Auction;
 use Illuminate\Http\Request;
 use App\User;
+use App\File;
+use App\FileCategory;
 use App\Libs\PhpNCANode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -30,7 +31,7 @@ class EdsSignController extends Controller
                     $aUser = User::where('iin', $sIin)->first();
                 } else if (isset($aCertRaws['subject']['bin'])) {
                     $sBin = $aCertRaws['subject']['bin'];
-                    $aUser = User::whereW('bin', $sBin)->first();
+                    $aUser = User::where('bin', $sBin)->first();
                 }
                 if (isset($aUser)) {
                     Auth::login($aUser);
@@ -96,20 +97,53 @@ class EdsSignController extends Controller
         return view('test.testpage', compact('aEgknRaws', 'aEgknXmlRows'));
     }
 
+    public function signVerify(Request $request)
+    {
+        $oNca = new PhpNCANode\NCANodeClient('http://95.59.124.162:14579');
+        $signedXml = $request->signedXml;
+        $xmlVerification = $oNca->xmlVerify($signedXml);
+        $doc_id = $request->doc_id;
+        if ($xmlVerification->isValid() === true) {
+            $oCertInfo = $xmlVerification->getCert();
+            if (!empty($oCertInfo)) {
+                if ($oCertInfo->isLegal() === true) {
+                    if ($oCertInfo->isExpired() === false) {
+                        $signSave = $this->signSave($request);
+                    } else {
+                        return response(['message' => 'Ваш сертификат просрочен! Пожалуйста обновите сертификат!'], 403);
+                    }
+                } else {
+                    return response(['message' => 'Ваш сертификат не актуален! Пожалуйста обновите сертификат!'], 402);
+                }
+            } else {
+                return response(['message'=>'Не найден сертификат!'], 401);
+            }
+        } else {
+            return response(['message'=>'Не валидный подпись!'], 400);
+        }
+    }
+
     public function signSave(Request $request)
     {
-        dd($request);
+        $input = $request->all();
+
+        $file = File::addXmlItem('example_xml', FileCategory::XML, 'sign_files/' . $input['doc_id'], $input['signedXml']);
+
+        if (!$file) {
+            throw new \Exception('Не удалось сохранить модель File');
+        }
+        return response (['message'=>'Документ подписан!'], 200);
     }
 
     public function xmlGenerator($aData)
     {
-        $xmlstr = "<?xml version='1.0' encoding='UTF-8'?><data>";
+        $xmlstr = "<?xml version='1.0' encoding='UTF-8' standalone='no'?><root><dataToSign>";
         if (isset($aData) && count($aData)) {
             foreach ($aData as $sKey => $sData) {
                 $xmlstr .= "<".$sKey.">".$sData."</".$sKey.">";
             }
         }
-        $xmlstr .= "</data>";
+        $xmlstr .= "</dataToSign></root>";
         return $xmlstr;
     }
 

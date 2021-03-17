@@ -84,8 +84,15 @@ function signXmlBack(result) {
         alert(result['message']);
     } else if (result['code'] === "200") {
         var res = result['responseObject'];
-        $("#signedXmlSave").attr("disabled", false);
         $("#notsignedXml").attr("disabled", true);
+        $.ajax( {
+            url        : '/testpage/xmlVerification',
+            method     : 'post',
+            data       : { "_token" : $('meta[name="csrf-token"]').attr('content'), signedXml: res, doc_id: $('#doc_id').val()},
+            success: function(response){
+                alert('Документ подписан!');
+            }
+        } );
         $("#signedXml").val(res);
     }
 }

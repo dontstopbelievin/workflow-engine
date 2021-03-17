@@ -32,6 +32,7 @@ Route::get('/verification/{p}/{a}/{t}', 'ApplicationController@verification');
 Route::prefix('testpage')->group(function () {
     Route::get('/view/{id}', 'EdsSignController@viewsign');
     Route::post('/saveXmlAsFile', 'EdsSignController@signSave');
+    Route::post('/xmlVerification', 'EdsSignController@signVerify');
 });
 
 Route::middleware(['guest'])->group(function () {

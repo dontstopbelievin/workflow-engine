@@ -66,13 +66,6 @@ class CertificateInfo
         return $this->notBefore > $oDate && $this->notAfter < $oDate;
     }
 
-    public function isExpiredFix($oDate = null) {
-        if (!$oDate) {
-            $oDate = new \DateTime('now');
-        }
-
-        return $this->notBefore > $oDate && $this->notAfter < $oDate;
-    }
     /**
      * Проверяет, является ли сертификат законным для подписания?
      *
@@ -108,29 +101,4 @@ class CertificateInfo
         return true;
     }
 
-
-    public function isLegalFix($bCheckChain = true) {
-
-        // check date
-        if (!$this->cert['valid']) return false;
-
-        // check ocsp if present
-        if (isset($this->cert['ocsp']) && $this->cert['ocsp']['status'] !== 'ACTIVE') return false;
-
-        // check crl if present
-        if (isset($this->cert['crl']) && $this->cert['crl']['status'] !== 'ACTIVE') return false;
-
-        // check chain
-        if ($bCheckChain) {
-            if (!isset($this->cert['chain']) || !is_array($this->cert['chain']) || count($this->cert['chain']) == 0) {
-                return false;
-            } else {
-                foreach ($this->chain as $chainCert) {
-                    if (!$chainCert->isLegal(false)) return false;
-                }
-            }
-        }
-
-        return true;
-    }
 }
