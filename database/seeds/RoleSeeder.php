@@ -180,6 +180,11 @@ class RoleSeeder extends Seeder
                 'name' => 'Заместитель акима', // 33
                 'sign_with_ecp' => 0,
             ],
+            [
+                'city_management_id' => 1,
+                'name' => 'Руководитель отдела городского планирования',
+                'sign_with_ecp' => 1,
+            ],
         ]);
     }
 }

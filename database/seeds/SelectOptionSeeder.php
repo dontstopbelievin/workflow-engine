@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Dictionary;
 
 class SelectOptionSeeder extends Seeder
 {
@@ -128,6 +129,26 @@ class SelectOptionSeeder extends Seeder
             ],
             [
                 'name_rus' => 'Коммунальные службы' //5
+            ],
+        ]);
+
+        $d_id = Dictionary::where('name', 'region')->first()->id;
+        DB::table('select_options')->insert([
+            [
+            	'dictionary_id' => $d_id,
+                'name_rus' => 'Есиль' //1
+            ],
+            [
+            	'dictionary_id' => $d_id,
+                'name_rus' => 'Сарыарка' //2
+            ],
+            [
+            	'dictionary_id' => $d_id,
+                'name_rus' => 'Алматы' //3
+            ],
+            [
+            	'dictionary_id' => $d_id,
+                'name_rus' => 'Байконыр' //4
             ],
         ]);
     }

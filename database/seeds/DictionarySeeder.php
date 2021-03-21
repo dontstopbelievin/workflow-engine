@@ -11,40 +11,7 @@ class DictionarySeeder extends Seeder
      */
     public function run()
     {
-//        DB::table('dictionaries')->insert([
-////            [
-////                'name' => 'name',
-////                'label_name' => 'Имя',
-////                'input_type_id' => 1,
-////                'insert_type_id' => 1
-////            ],
-////            [
-////                'name' => 'surname',
-////                'label_name' => 'Фамилия',
-////                'input_type_id' => 1,
-////                'insert_type_id' => 1
-////            ],
-////            [
-////                'name' => 'address',
-////                'label_name' => 'Адрес',
-////                'input_type_id' => 1,
-////                'insert_type_id' => 1
-////            ],
-////            [
-////                'name' => 'attachment',
-////                'label_name' => 'Загрузите Файл',
-////                'input_type_id' => 2,
-////                'insert_type_id' => 1
-////            ],
-////
-////        ]);
          DB::table('dictionaries')->insert([
-            [
-                'name' => 'name',
-                'label_name' => 'Имя',
-                'input_type_id' => 1,
-                'insert_type_id' => 1
-            ],
             [
                 'name' => 'address',
                 'label_name' => 'Адрес',
@@ -311,13 +278,13 @@ class DictionarySeeder extends Seeder
              ],
              [
                  'name' => 'dictionary_purpose',
-                 'label_name' => 'Справочник цель назначения',
+                 'label_name' => 'Целевое назначение земельного участка',
                  'input_type_id' => 3,
                  'insert_type_id' => 6
              ],
              [
                  'name' => 'dictionary_right_type',
-                 'label_name' => 'Справочник право использования',
+                 'label_name' => 'Вид права использования',
                  'input_type_id' => 3,
                  'insert_type_id' => 6
              ],
@@ -332,6 +299,30 @@ class DictionarySeeder extends Seeder
                  'label_name' => 'Справочник делимость земель',
                  'input_type_id' => 3,
                  'insert_type_id' => 6
+             ],
+             [
+                 'name' => 'address_mestop_z_u',
+                 'label_name' => 'Адрес (местоположение) земельного участка',
+                 'input_type_id' => 1,
+                 'insert_type_id' => 1
+             ],
+             [
+                 'name' => 'area',
+                 'label_name' => 'Площадь(в гектарах)',
+                 'input_type_id' => 1,
+                 'insert_type_id' => 1
+             ],
+             [
+                 'name' => 'cel_razdela',
+                 'label_name' => 'Цель раздела',
+                 'input_type_id' => 1,
+                 'insert_type_id' => 1
+             ],
+             [
+                 'name' => 'region',
+                 'label_name' => 'Район',
+                 'input_type_id' => 3,
+                 'insert_type_id' => 1
              ],
         ]);
     }
