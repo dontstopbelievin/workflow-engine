@@ -75,13 +75,5 @@ class ProcessSeeder extends Seeder
             ],
             
         ]);
-
-        $processes = Process::all();
-        $fields = ['name', 'surname', 'address', 'attachment'];
-        $request = new \Illuminate\Http\Request();
-        $request->replace(['fields' => $fields]);
-        foreach ($processes as $process) {
-            app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
-        }
     }
 }

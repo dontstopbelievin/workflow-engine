@@ -86,13 +86,12 @@
           </div>
         @endisset
         <div id="hidden_div" style="display: none;">
-          @isset($options)
-              @foreach ($options as $option)
-                  <div class="checkbox">
-                      <label><input class="get_value" type="checkbox" value="{{$option->name}}">{{$option->name}}</label>
-                  </div>
-              @endforeach
-          @endisset
+          <label>Select options:</label>
+          <div class="form-group" id="add_sel_opt">
+            <input type="text" class="form-control" name="selectedOptions[]">
+            <input type="text" class="form-control" name="selectedOptions[]">
+          </div>
+          <button class="btn btn-info add_option">Добавить option</button>
         </div>
         @isset($insertTypes)
           <div class="form-group">
@@ -118,6 +117,11 @@
 @section('scripts')
   <script>
       $(document).ready(function() {
+
+          $(document).on('click', '.add_option', function(event) {
+            var option = '<input type="text" class="form-control" name="selectedOptions[]">\r\n';
+            document.getElementById('add_sel_opt').innerHTML += option;
+          });
 
           $(document).on('click', '.ourItem', function(event) {
                   var text = $(this).text();
@@ -154,26 +158,22 @@
               var inputItem = $('#inputType').val();
               var insertItem = $('#insertType').val();
               var processId = $('#processId').val();
-              var selectedOptions = [];
-
-              $('.get_value').each(function(){
-              if($(this).is(":checked"))
-              {
-                  selectedOptions.push($(this).val());
-              }
-              });
+              var selectedOptions = $("input[name='selectedOptions[]']")
+              .map(function(){return $(this).val();}).get();
 
               if (text == '') {
                   alert('Введите название поля');
-                  alert(selectedOptions);
+                  return;
               }
               if (inputItem === null) {
                   alert('Выберите тип вводимого');
+                  return;
               }
               if (insertItem === null) {
                   alert('Выберите тип сохранения');
+                  return;
               }
-              $.post('admin/dictionary/create', {'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, '_token':$('input[name=_token]').val()}, function(data){
+              $.post("{{url('admin/dictionary/create')}}", {'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, '_token':$('input[name=_token]').val()}, function(data){
                   console.log(data);
                   $('#items').load(location.href + ' #items');
               });

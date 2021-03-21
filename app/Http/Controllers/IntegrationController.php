@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Integrations\shep\sender\ShepRequestSender;
 use App\Integrations\shep\receiver\ServiceRequestRouter;
 
+use App\Process;
+
 class IntegrationController extends Controller
 {
     public function index($type)
@@ -29,6 +31,14 @@ class IntegrationController extends Controller
 
     public function test()
     {
+        $processes = Process::all();
+        dd($processes);
+        $fields = ['name', 'surname', 'address', 'attachment'];
+        $request = new \Illuminate\Http\Request();
+        $request->replace(['fields' => $fields]);
+        // foreach ($processes as $process) {
+        //     app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
+        // }
         return view('test');
         $response = array();
         $response['egkn_receive_status'] = ShepRequestSender::send('egkn_receive_status', $_GET);

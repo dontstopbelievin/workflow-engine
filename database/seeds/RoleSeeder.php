@@ -22,31 +22,6 @@ class RoleSeeder extends Seeder
             ],
             [
                 'city_management_id' => 1,
-                'name' => 'Специалист Айкала', // 2
-                'sign_with_ecp' => 0,
-            ],
-            [
-                'city_management_id' => 1,
-                'name' => 'Специалист Акимата', // 3
-                'sign_with_ecp' => 0,
-            ],
-            [
-                'city_management_id' => 1,
-                'name' => 'Канцелярия Акимата', // 4
-                'sign_with_ecp' => 0,
-            ],
-            [
-                'city_management_id' => 1,
-                'name' => 'Гос Правовой отдел акимата', // 5
-                'sign_with_ecp' => 0,
-            ],
-            [
-                'city_management_id' => 1,
-                'name' => 'Заместитель акима', // 6
-                'sign_with_ecp' => 0,
-            ],
-            [
-                'city_management_id' => 1,
                 'name' => 'Специалист отдела выдачи разрешительных документов на реконструкцию, градостроительного кадастра и учета введенных в эксплуатацию объектов, договоров долевого участия', // 2
                 'sign_with_ecp' => 0,
             ],
@@ -178,6 +153,31 @@ class RoleSeeder extends Seeder
             [
                 'city_management_id' => 1,
                 'name' => 'Уволен', // 28
+                'sign_with_ecp' => 0,
+            ],
+            [
+                'city_management_id' => 1,
+                'name' => 'Специалист Айкала', // 29
+                'sign_with_ecp' => 0,
+            ],
+            [
+                'city_management_id' => 1,
+                'name' => 'Специалист Акимата', // 30
+                'sign_with_ecp' => 0,
+            ],
+            [
+                'city_management_id' => 1,
+                'name' => 'Канцелярия Акимата', // 31
+                'sign_with_ecp' => 0,
+            ],
+            [
+                'city_management_id' => 1,
+                'name' => 'Гос Правовой отдел акимата', // 32
+                'sign_with_ecp' => 0,
+            ],
+            [
+                'city_management_id' => 1,
+                'name' => 'Заместитель акима', // 33
                 'sign_with_ecp' => 0,
             ],
         ]);

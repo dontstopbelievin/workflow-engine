@@ -19,13 +19,11 @@ class DictionaryController extends Controller
 
         $inputTypes = InputType::all();
         $insertTypes = InsertType::all();
-        $options = SelectOption::all();
         $dictionaries = $this->getAllDictionaries();
-        return view('dictionary.index',compact('inputTypes','insertTypes','dictionaries','options'));
+        return view('dictionary.index',compact('inputTypes','insertTypes','dictionaries'));
     }
 
     public function create(Request $request) {
-
         $fieldName = $request->fieldName;
         $labelName = $request->labelName;
         $inputItem = $request->inputItem;
@@ -49,21 +47,19 @@ class DictionaryController extends Controller
         $input = InputType::where('name', $inputItem)->first();
         $insert = InsertType::where('name', $insertItem)->first();
 
-        $dictionaries = new Dictionary ([
+        $dictionary = new Dictionary ([
             'name' => $fieldName,
             'label_name' => $labelName,
             'input_type_id' => $input->id,
             'insert_type_id' => $insert->id,
         ]);
-        $dictionaries->save();
-
-        $dic = Dictionary::where('name', $fieldName)->first();
-        $dicId = $dic->id; // айди поля, которое только что сохранили
-
-        if ($request->has('selectedOptions')) {
-            foreach($selectOptions as $key=>$value) {
-                $optn = SelectOption::where('name', $value)->first();
-                $dic->selectOptions()->attach($optn);
+        $dictionary->save();
+        if ($inputItem == 'select' && $request->has('selectedOptions')) {
+            foreach($selectOptions as $option) {
+                $optn = new SelectOption;
+                $optn->name_rus = $option;
+                $optn->dictionary_id = $dictionary->id;
+                $optn->save();
             }
         }
     }

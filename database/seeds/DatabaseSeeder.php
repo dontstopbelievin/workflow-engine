@@ -26,5 +26,6 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleStatusesSeeder::class);
         $this->call(ServiceSeeder::class);
         $this->call(FileCategorySeeder::class);
+        $this->call(ProcessScript::class);
     }
 }
