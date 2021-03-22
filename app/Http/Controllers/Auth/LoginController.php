@@ -67,6 +67,9 @@ class LoginController extends Controller
         }
 
         $user = \DB::table('users')->where('email', $request->input('email'))->first();
+        if(!$user){
+            return redirect()->back()->with('error', 'Ваша почта или пароль неверно введены!');
+        }
 
         if (auth()->guard('web')->attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
 

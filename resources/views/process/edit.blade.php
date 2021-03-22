@@ -189,6 +189,13 @@
                           @endforeach
                         </select>
                     </div>
+                    <div class="form-group">
+                      <label for="to_citizen">Показать заявителю</label>
+                      <select name="to_citizen" class="form-control">
+                        <option selected value="1">Да</option>
+                        <option value="0">Нет</option>
+                      </select>
+                    </div>
                     <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Создать</button>
                 </form>
               </div>

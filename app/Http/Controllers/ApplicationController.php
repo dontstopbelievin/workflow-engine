@@ -46,6 +46,9 @@ class ApplicationController extends Controller
     public function index(Process $process) {
         $tableName = $this->getTableName($process->name);
         $table = CreatedTable::where('name', $tableName)->first();
+        if(!$table){
+          return redirect()->back()->with('error', 'Услуга не существует.');
+        }
         $arrayApps = $this->get_applications($tableName, $table->id);
         return view('application.index', compact('arrayApps', 'process'));
     }
@@ -66,6 +69,10 @@ class ApplicationController extends Controller
                         ->where($tableName.'.current_order', '=', $process->order)
                         ->whereJsonContains('statuses', $user->role_id)
                         ->where($tableName.'.current_order', '!=', '0');
+                        // ->where(function($q) {
+                        //     $q->where($tableName.'.region', $user->region)
+                        //       ->orWhere($tableName.'.region', null);
+                        // });
         $apps = $this->getFieldsForView($allApplications, $tableName);
       }
       return view('application.applications', compact('apps'));

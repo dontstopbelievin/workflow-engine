@@ -40,6 +40,7 @@ class TemplateController extends Controller
                 'template_doc_id' => 'required|integer',
                 'role_id' => 'required|integer',
                 'order' => 'required|integer',
+                'to_citizen' => 'required|integer',
             ]);
             if ($validator->fails()) {
                 return Redirect::back()->with('failure', $validator->errors());
@@ -66,6 +67,7 @@ class TemplateController extends Controller
                 'template_doc_id' => $request->template_doc_id,
                 'role_id' => $request->role_id,
                 'order' => $request->order,
+                'to_citizen' => $request->to_citizen,
             ]);
             $template->save();
             DB::commit();

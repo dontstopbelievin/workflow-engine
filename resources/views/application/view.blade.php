@@ -48,7 +48,10 @@
                         <div id="specialistFields" class="tabcontent">
                             <!-- <h4 class="text-center">Поля заполненные специалистами</h4> -->
                             @isset($templateTableFields)
+                            {{dd($templateTableFields)}}
                                 @foreach($templateTableFields as $item)
+                                @if ((Auth::user()->role->name == 'Заявитель' && $item->to_citizen == 1) ||
+                                    Auth::user()->role->name != 'Заявитель')
                                 Данные документа "{{$item->name}}":
                                 <ul class="list-group" id="list">
                                     @if(count($item->fields) > 0)

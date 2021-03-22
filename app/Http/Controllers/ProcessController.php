@@ -137,6 +137,10 @@ class ProcessController extends Controller
                 $dbQueryString = "ALTER TABLE $tableName ADD  user_id INT";
                 DB::statement($dbQueryString);
             }
+            if (!Schema::hasColumn($tableName, 'region')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD  region varchar(255)";
+                DB::statement($dbQueryString);
+            }
             if (!Schema::hasColumn($tableName, 'current_order')) {
                 $dbQueryString = "ALTER TABLE $tableName ADD current_order INT";
                 DB::statement($dbQueryString);

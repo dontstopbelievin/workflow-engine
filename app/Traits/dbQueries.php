@@ -235,7 +235,7 @@ trait dbQueries
 
     public function get_templates($process_id, $application_id){
 
-        $templates = Template::select('templates.id', 'templates.table_name', 'template_docs.name')
+        $templates = Template::select('templates.id', 'templates.table_name', 'template_docs.name', 'templates.to_citizen')
             ->join('template_docs', 'templates.template_doc_id', '=', 'template_docs.id')
             ->where('process_id', $process_id)->get();
         if($templates){
