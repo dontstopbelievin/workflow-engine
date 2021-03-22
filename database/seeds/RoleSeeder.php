@@ -52,7 +52,7 @@ class RoleSeeder extends Seeder
             ],
             [
                 'city_management_id' => 6,
-                'name' => 'Специалист Астана Су ', // 8
+                'name' => 'Специалист Астана Су', // 8
                 'sign_with_ecp' => 0,
             ],
             [
