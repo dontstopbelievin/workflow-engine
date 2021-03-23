@@ -48,7 +48,6 @@
                         <div id="specialistFields" class="tabcontent">
                             <!-- <h4 class="text-center">Поля заполненные специалистами</h4> -->
                             @isset($templateTableFields)
-                            {{dd($templateTableFields)}}
                                 @foreach($templateTableFields as $item)
                                 @if ((Auth::user()->role->name == 'Заявитель' && $item->to_citizen == 1) ||
                                     Auth::user()->role->name != 'Заявитель')
@@ -60,7 +59,9 @@
                                                 <li class="list-group-item">{{$value['label']}}: <a href="{{asset('storage/' .$value['value'] )}}" target="_blanc">Просмотр</a></li>
                                             @else
                                                 @if($key == 'pdf_url')
+                                                    @if($value['value'] != null)
                                                     <li class="list-group-item">Выходной документ: <a href="{{asset('storage/' .$value['value'] )}}" target="_blanc">Просмотр</a></li>
+                                                    @endif
                                                 @else
                                                     <li class="list-group-item">{{$value['label']}}: {{$value['value']}}</li>
                                                 @endif
@@ -70,6 +71,7 @@
                                         <li class="list-group-item">Данные не введены.</li>
                                     @endif
                                 </ul>
+                                @endif
                                 @endforeach
                             @endisset
                         </div>
@@ -160,13 +162,11 @@
                                     <div class="modal-body">
                                         <div class="form-group">
                                             <div class="form-group row">
-                                                <label for="revisionReason" class="col-md-4 col-form-label text-md-right">{{ __("Введите причину отправки на доработку") }}</label>
-                                                <div class="col-md-6">
-                                                    <input type="text" id="revisionReason" class="form-control" name="revisionReason"  autocomplete="revisionReason" autofocus>
-                                                </div>
+                                                <label for="revisionReason" class="col-form-label">{{ __("Введите причину отправки на доработку") }}</label>
+                                                <input type="text" id="revisionReason" class="form-control" name="revisionReason"  autocomplete="revisionReason" autofocus>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="roleToRevise" class="col-md-4 col-form-label text-md-right">{{ __('Выберите Специалиста') }}</label>
+                                                <label for="roleToRevise" class="col-form-label">{{ __('Выберите Специалиста') }}</label>
                                                 <select name="roleToRevise" id="roleToRevise" class="form-control">
                                                     <option selected disabled>Выберите Ниже</option>
                                                     @foreach($rolesToRevision as $role)
@@ -391,7 +391,11 @@
                 xhr.open("post", "{{url('docs/approve')}}", true);
                 xhr.setRequestHeader("Authorization", "Bearer " + "{{csrf_token()}}");
                 xhr.onload = function () {
-                    location.reload();
+                    if(xhr.status == 200){
+                        location.reload();
+                    }else{
+                        console.log(xhr.responseText);
+                    }
                 }.bind(this)
                 xhr.send(formData);
             });

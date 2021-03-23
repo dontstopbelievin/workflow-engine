@@ -15,7 +15,7 @@ class CreateDictionariesTable extends Migration
     {
         Schema::create('dictionaries', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('label_name');
             $table->foreignId('input_type_id')->nullable();
             $table->foreignId('insert_type_id')->nullable();

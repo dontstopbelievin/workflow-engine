@@ -156,16 +156,6 @@ trait dbQueries
 
     }
 
-    public function getOptionsOfThisSelect($name) {
-
-        $dictionaries = Dictionary::where('name', $name)->first()->selectOptions()->get();
-        $selectedOptions = [];
-        foreach ($dictionaries as $dic) {
-            array_push($selectedOptions, $dic->name);
-        }
-        return $selectedOptions;
-    }
-
     public function translateSybmols($text) {
 
         $rus=array('А','Б','В','Г','Д','Е','Ё','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ъ','Ы','Ь','Э','Ю','Я','а','б','в','г','д','е','ё','ж','з','и','й','к','л','м','н','о','п','р','с','т','у','ф','х','ц','ч','ш','щ','ъ','ы','ь','э','ю','я',' ');
@@ -221,16 +211,15 @@ trait dbQueries
     }
 
     public function addOptionsToDictionary($dictionaries) {
-        $array = [];
         foreach($dictionaries as $dictionary) {
-
             if($dictionary->inputName === 'select') {
-                $options = $this->getOptionsOfThisSelect($dictionary->name);
-                $dictionary->inputName = $options;
+                $dictionary->options = DB::table('select_options')
+                ->join('dictionaries', 'select_options.dictionary_id', '=', 'dictionaries.id')
+                ->select('name_rus')
+                ->where('dictionaries.name', $dictionary->name)->get();
             }
-            array_push($array, $dictionary);
         }
-        return $array;
+        return $dictionaries;
     }
 
     public function get_templates($process_id, $application_id){

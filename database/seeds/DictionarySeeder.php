@@ -296,7 +296,7 @@ class DictionarySeeder extends Seeder
              ],
              [
                  'name' => 'dictionary_land_divisibility',
-                 'label_name' => 'Справочник делимость земель',
+                 'label_name' => 'Делимость земель',
                  'input_type_id' => 3,
                  'insert_type_id' => 6
              ],

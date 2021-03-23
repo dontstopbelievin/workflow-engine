@@ -52,6 +52,10 @@ class TemplateDocSeeder extends Seeder
                 'name' => 'Шаблон 2 часть приобретение прав на ЗУ', 
                 'pdf_path' => 'PDFtemplates.2_priobretenie_prav_na_zu' //1
             ],
+            [
+                'name' => 'Без шаблона', 
+                'pdf_path' => 'PDFtemplates.empty' //1
+            ],
         ]);
     }
 }

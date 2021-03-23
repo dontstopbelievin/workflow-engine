@@ -36,9 +36,10 @@
                             <input type="file" name={{$item->name}} id={{$item->name}} class="form-control">
                         @else
                             <select name="{{$item->name}}" id="{{$item->name}}" class="form-control">
+                                <label>$item->name</label>
                                 <option selected disabled>Выберите Ниже</option>
-                                @foreach($item->inputName as $key=>$val)
-                                    <option>{{$val}}</option>
+                                @foreach($item->options as $val)
+                                    <option value="{{$val->name_rus}}">{{$val->name_rus}}</option>
                                 @endforeach
                             </select>
                         @endif

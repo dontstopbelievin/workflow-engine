@@ -54,9 +54,9 @@
               <a class="dropdown-toggle profile-pic float-right" data-toggle="dropdown" href="#" aria-expanded="false" data-toggle="dropdown" aria-haspopup="true" style="line-height: 100%;margin-top: 10px;">
                 <span style="color:white!important">{{ Auth::user()->name }}</span><br>
                 <small>
-                    @if(strlen(Auth::user()->role->name) > 60)
+                    @if(mb_strlen(Auth::user()->role->name, 'UTF-8') > 25)
                         <span data-toggle="tooltip" title="{{Auth::user()->role->name}}" style="color:white!important;">
-                              ({{substr(Auth::user()->role->name, 0, 60)}}...)
+                              ({{mb_substr(Auth::user()->role->name, 0, 25, 'utf-8')}}...)
                         </span>
                     @else
                         ({{ Auth::user()->role->name }})

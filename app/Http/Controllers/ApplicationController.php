@@ -116,6 +116,11 @@ class ApplicationController extends Controller
         return view('application.applications', compact('apps'));
     }
 
+    public function drafts(){
+      $apps = [];
+      return view('application.applications', compact('apps')); 
+    }
+
     public function archive(){
         $user = Auth::user();
         // get all processes where the user is engaged
@@ -143,7 +148,11 @@ class ApplicationController extends Controller
     }
 
     private function getFieldsForView($allApplications, $tableName){
+      if (Schema::hasTable($tableName)) {
         return $allApplications->select('processes.id as process_id', 'processes.name as process_name',  $tableName.'.name', $tableName.'.current_order', $tableName.'.statuses',  $tableName.'.surname',  $tableName.'.id as application_id', $tableName.'.updated_at')->get();
+      }else{
+        return collect();//return empty collection
+      }
     }
 
     public function view($processId, $applicationId)
@@ -324,30 +333,30 @@ class ApplicationController extends Controller
             $fileName = $this->generateRandomString();
             $updatedFields["date"] = date('d-m-Y');
             $updatedFields["id"] = $application->id;
+
             $updatedFields = $this->get_test_values($updatedFields);
             $userName = Auth::user()->name;
             $roleName = Auth::user()->role->name;
 
             $template_doc = TemplateDoc::find($template->template_doc_id);
             $pathToView = $template_doc->pdf_path;
-            $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
-
-            $content = view($pathToView, compact('updatedFields', 'userName', 'roleName'))->render();
-            $mpdf = new Mpdf();
-            $mpdf->WriteHTML($content);
-            $mpdf->Output(storage_path(). $storagePathToPDF, \Mpdf\Output\Destination::FILE);
-
-            $docPath = 'final_docs/'. $fileName . '.pdf';
-            DB::table($template->table_name)->where('application_id', $request->application_id)
+            if($pathToView != 'PDFtemplates.empty'){
+              $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
+              $content = view($pathToView, compact('updatedFields', 'userName', 'roleName'))->render();
+              $mpdf = new Mpdf();
+              $mpdf->WriteHTML($content);
+              $mpdf->Output(storage_path(). $storagePathToPDF, \Mpdf\Output\Destination::FILE);
+              $docPath = 'final_docs/'. $fileName . '.pdf';
+              DB::table($template->table_name)->where('application_id', $request->application_id)
                 ->update(['pdf_url' => $docPath]);
+            }
 
             $currentRoleOrder = $process->roles()->select('order')->where('role_id', Auth::user()->role_id)->first()->order;
             $processRoles = $this->getProcessStatuses($tableName, $request->application_id);
             $children = $this->getRoleChildren($process);
-
             $this->insertLogs(Auth::user()->role->name, 1, $table->id, $request->application_id, Auth::user()->role_id, $currentRoleOrder, 1, '',$comment);
 
-            $processRoles = array_values($this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table->id, $request->application_id, 1, $tableName));
+            $processRoles = $this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table->id, $request->application_id, 1, $tableName);
 
             DB::table($tableName)
                 ->where('id', $request->application_id)
@@ -713,21 +722,21 @@ class ApplicationController extends Controller
 
     private function insertLogs($role_name, $status_n, $table_id, $application_id, $role_id, $order, $answer, $to_role = '', $comment = '')
     {
-        $role_status = DB::table('role_statuses')->where('role_name', $role_name)->where('status_id', $status_n)->first();
-        $logsArray = [];
-        $logsArray["status_id"] = $role_status->id;
-        $logsArray["table_id"] = $table_id;
-        $logsArray["application_id"] = $application_id;
-        $logsArray["role_id"] = $role_id;
-        $logsArray["order"] = $order;
-        $logsArray["answer"] = $answer;
-        $logsArray["comment"] = $comment;
-        $logsArray["to_role"] = $to_role;
-        $logsArray["created_at"] = Carbon::now();
-        if(Log::insert($logsArray)){
-            return true;
-        }
-        return false;
+      $role_status = DB::table('role_statuses')->where('role_name', $role_name)->where('status_id', $status_n)->first();
+      $logsArray = [];
+      $logsArray["status_id"] = $role_status->id;
+      $logsArray["table_id"] = $table_id;
+      $logsArray["application_id"] = $application_id;
+      $logsArray["role_id"] = $role_id;
+      $logsArray["order"] = $order;
+      $logsArray["answer"] = $answer;
+      $logsArray["comment"] = $comment;
+      $logsArray["to_role"] = $to_role;
+      $logsArray["created_at"] = Carbon::now();
+      if(Log::insert($logsArray)){
+          return true;
+      }
+      return false;
     }
 
     // private function modifyApplicationTableFieldsWithStatus($applicationTableFields, $statusId, $userId)

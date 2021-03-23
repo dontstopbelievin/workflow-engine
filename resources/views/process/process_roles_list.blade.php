@@ -2,7 +2,13 @@
   <tr>
     <td>
       <li class="list-group-item my-auto ourItem AddButton" data-name="{{$process_role->name}}" data-id="{{$process_role->role_id}}" data-toggle="modal" data-target="#myModal2">
-        {{$process_role->name}}
+        @if(mb_strlen($process_role->name, 'utf-8') > 50)
+          <div href="#" data-toggle="tooltip" title="{{$process_role->name}}">
+            {{mb_substr($process_role->name, 0, 50, 'utf-8')}}...
+          </div>
+        @else
+            {{$process_role->name}}
+        @endif
       </li>
     </td>
     <td>

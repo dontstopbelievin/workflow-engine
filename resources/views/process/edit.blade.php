@@ -124,9 +124,9 @@
                         </td>
                         <td>{{$template->doc->name}}</td>
                         <td>
-                          @if(strlen($template->role->name) > 60)
+                          @if(mb_strlen($template->role->name, 'utf-8') > 50)
                             <div href="#" data-toggle="tooltip" title="{{$template->role->name}}">
-                              {{substr($template->role->name, 0, 60)}}...
+                              {{mb_substr($template->role->name, 0, 50, 'utf-8')}}...
                             </div>
                           @else
                               {{$template->role->name}}
