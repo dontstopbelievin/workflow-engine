@@ -103,13 +103,10 @@ class TemplateController extends Controller
                 return Redirect::back()->with('failure', 'Таблица шаблона не найдена.');
             }
             $template_records = DB::table($template->table_name)->count();
-            $t_fields = TemplateField::where('template_id', $id)->count();
-            if($t_fields > 0){
-                return Redirect::back()->with('failure', 'В таблице есть поля.');
-            }
             if($template_records > 0){
                 return Redirect::back()->with('failure', 'В таблице шаблона есть записи.');
             }
+            TemplateField::where('template_id', $id)->delete();
             Schema::dropIfExists($template->table_name);
             $template->delete();
             DB::commit();

@@ -149,7 +149,7 @@ class ApplicationController extends Controller
 
     private function getFieldsForView($allApplications, $tableName){
       if (Schema::hasTable($tableName)) {
-        return $allApplications->select('processes.id as process_id', 'processes.name as process_name',  $tableName.'.name', $tableName.'.current_order', $tableName.'.statuses',  $tableName.'.surname',  $tableName.'.id as application_id', $tableName.'.updated_at')->get();
+        return $allApplications->select('processes.id as process_id', 'processes.name as process_name',  $tableName.'.first_name', $tableName.'.current_order', $tableName.'.statuses',  $tableName.'.surname',  $tableName.'.id as application_id', $tableName.'.updated_at')->get();
       }else{
         return collect();//return empty collection
       }
@@ -311,36 +311,42 @@ class ApplicationController extends Controller
             $template = Template::where('role_id', Auth::user()->role_id)->where('order', $application->current_order)->first();
             $comment = $request->comments;
 
-            // insertion of fields into template
-            if(!$this->insertTemplateFields($fieldValues, $request->application_id, $template)){
-                DB::rollBack();
-                return Redirect::to('docs')->with('error', 'insert template fields error');
-            }
-
-            $fields = DB::table($template->table_name)->select('*')->where('application_id', $application->id)->first();
-            $aFields = json_decode(json_encode($fields), true);
-
-            $updatedFields = [];
-            if ($aFields !== Null) {
-              foreach($aFields as $key => $field) {
-                  if ($key === 'id' || $key === 'application_id' || $key === '_token' || $key === 'pdf_url') {
-                      continue;
-                  }
-                  $updatedFields[$key] = $field;
+            $pathToView = 'PDFtemplates.empty';//to skip template doc creation if non template exist
+            if($template){
+              // insertion of fields into template
+              if(!$this->insertTemplateFields($fieldValues, $request->application_id, $template)){
+                  DB::rollBack();
+                  return Redirect::to('docs')->with('error', 'insert template fields error');
               }
+              $template_doc = TemplateDoc::find($template->template_doc_id);
+              $pathToView = $template_doc->pdf_path;
             }
 
-            $fileName = $this->generateRandomString();
-            $updatedFields["date"] = date('d-m-Y');
-            $updatedFields["id"] = $application->id;
-
-            $updatedFields = $this->get_test_values($updatedFields);
-            $userName = Auth::user()->name;
-            $roleName = Auth::user()->role->name;
-
-            $template_doc = TemplateDoc::find($template->template_doc_id);
-            $pathToView = $template_doc->pdf_path;
             if($pathToView != 'PDFtemplates.empty'){
+              $fields = DB::table($template->table_name)->select('*')->where('application_id', $application->id)->first();
+              $aFields = json_decode(json_encode($fields), true);
+
+              $updatedFields = [];
+              if ($aFields !== Null) {
+                foreach($aFields as $key => $field) {
+                    if ($key === 'id' || $key === 'application_id' || $key === '_token' || $key === 'pdf_url') {
+                        continue;
+                    }
+                    $updatedFields[$key] = $field;
+                }
+              }
+
+              $fileName = $this->generateRandomString();
+              $updatedFields["date"] = date('d-m-Y');
+              $updatedFields["id"] = $application->id;
+              $updatedFields["applicant_name"] = User::where('id', $application->user_id)->first()->name;
+              $updatedFields["applicant_address"] = $application->address_mestop_z_u;
+              $updatedFields["street"] = $application->address_mestop_z_u;
+              $updatedFields = $this->add_app_columns($updatedFields, $tableName, $application->id);
+              $updatedFields = $this->get_test_values($updatedFields);
+
+              $userName = Auth::user()->name;
+              $roleName = Auth::user()->role->name;
               $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
               $content = view($pathToView, compact('updatedFields', 'userName', 'roleName'))->render();
               $mpdf = new Mpdf();
@@ -777,21 +783,22 @@ class ApplicationController extends Controller
 
     public function get_test_values($updatedFields)
     {
-        $updatedFields["applicant_name"] = 'Аман';
-        $updatedFields["area"] = '114 га';
-        $updatedFields["area2"] = '114 га';
-        $updatedFields["flat_number"] = '114 га';
-        $updatedFields["square"] = 'Байконур';
-        $updatedFields["street"] = 'Кабанбай батыра';
-        $updatedFields["duration"] = '12';
-        $updatedFields["object_name"] = 'object_name';
-        $updatedFields["cadastral_number"] = '1146';
-        $updatedFields["construction_name_before"] = '1146';
-        $updatedFields["construction_name_after"] = '1146';
-        $updatedFields["area_number"] = '1146';
-        $updatedFields["construction_name_before"] = 'Строительство';
-        $updatedFields["construction_name_after"] = 'Делопроизводство';
-        $updatedFields["area_number"] = '1146';
+      $updatedFields["applicant_address"] = 'asdf';
+        // $updatedFields["applicant_name"] = 'Аман';
+        // $updatedFields["area"] = '114 га';
+        // $updatedFields["area2"] = '114 га';
+        // $updatedFields["flat_number"] = '114 га';
+        // $updatedFields["square"] = 'Байконур';
+        // $updatedFields["street"] = 'Кабанбай батыра';
+        // $updatedFields["duration"] = '12';
+        // $updatedFields["object_name"] = 'object_name';
+        // $updatedFields["cadastral_number"] = '1146';
+        // $updatedFields["construction_name_before"] = '1146';
+        // $updatedFields["construction_name_after"] = '1146';
+        // $updatedFields["area_number"] = '1146';
+        // $updatedFields["construction_name_before"] = 'Строительство';
+        // $updatedFields["construction_name_after"] = 'Делопроизводство';
+        // $updatedFields["area_number"] = '1146';
         return $updatedFields;
     }
 

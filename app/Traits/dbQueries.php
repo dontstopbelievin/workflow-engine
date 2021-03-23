@@ -184,6 +184,14 @@ trait dbQueries
         return $this->filterArray($tableColumns, $notInclude);
     }
 
+    public function add_app_columns($fields, $tableName, $application_id) {
+        $application = DB::table($tableName)->select($this->getColumns($tableName))->where('id', $application_id)->first();
+        foreach ($application as $key => $value) {
+            $fields[$key] = $value;
+        }
+        return $fields;
+    }
+
     public function getTableName($table) {
         $tableName = $this->translateSybmols($table);
         if (strlen($tableName) > 60) {
