@@ -19,7 +19,7 @@ class CreateDictionariesTable extends Migration
             $table->string('label_name');
             $table->foreignId('input_type_id')->nullable();
             $table->foreignId('insert_type_id')->nullable();
-            $table->integer('select_dic')->unsigned()->nullable();
+            $table->string('select_dic')->nullable();
             $table->timestamps();
         });
         Schema::table('dictionaries', function (Blueprint $table) 
