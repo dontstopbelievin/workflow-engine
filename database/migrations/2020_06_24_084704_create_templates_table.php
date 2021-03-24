@@ -25,7 +25,7 @@ class CreateTemplatesTable extends Migration
             $table->string('table_name');
             $table->boolean('accept_template');
             $table->boolean('to_citizen')->default(true);
-            $table->unique(['role_id', 'order']);
+            $table->unique(['process_id', 'role_id', 'order']);
             $table->timestamps();
         });
     }
