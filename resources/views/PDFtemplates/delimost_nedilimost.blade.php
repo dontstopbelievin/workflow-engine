@@ -47,8 +47,8 @@
                         </p>
                         <p style="text-indent: 2em;">
                             В этой связи, сообщаем, что земельный участок с кадастровым номером
-                            {{ $updatedFields['cadastral_number'] }}, расположенный по адресу: г. Нур-Султан, район «{{ $updatedFields['area'] }}»,
-                            улица {{ $updatedFields['street'] }}, предназначенный для строительства и эксплуатации
+                            {{ $updatedFields['cadastral_number'] }}, расположенный по адресу: г. Нур-Султан, район «{{ $updatedFields['region'] }}»,
+                            улица {{ $updatedFields['ulica_mestop_z_u'] }}, предназначенный для строительства и эксплуатации
                             {{ $updatedFields['object_name'] }} является {{ $updatedFields['division'] }}.
                         </p>
                         <p style="text-indent: 2em;">

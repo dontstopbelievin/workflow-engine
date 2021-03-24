@@ -13,8 +13,8 @@ class DictionarySeeder extends Seeder
     {
          DB::table('dictionaries')->insert([
             [
-                'name' => 'address',
-                'label_name' => 'Адрес',
+                'name' => 'applicant_address',
+                'label_name' => 'Адрес проживания(физ)/местонахождения(юр)',
                 'input_type_id' => 1,
                 'insert_type_id' => 1
             ],
@@ -301,8 +301,8 @@ class DictionarySeeder extends Seeder
                  'insert_type_id' => 6
              ],
              [
-                 'name' => 'address_mestop_z_u',
-                 'label_name' => 'Адрес (местоположение) земельного участка',
+                 'name' => 'ulica_mestop_z_u',
+                 'label_name' => 'Улица (местоположение) земельного участка',
                  'input_type_id' => 1,
                  'insert_type_id' => 1
              ],
@@ -324,6 +324,55 @@ class DictionarySeeder extends Seeder
                  'input_type_id' => 3,
                  'insert_type_id' => 1
              ],
+             [
+                 'name' => 'construction_name_before',
+                 'label_name' => 'Изменить с целевого назначения',
+                 'input_type_id' => 3,
+                 'insert_type_id' => 1
+             ],
+             [
+                 'name' => 'construction_name_after',
+                 'label_name' => 'Изменить на целевое назначение',
+                 'input_type_id' => 3,
+                 'insert_type_id' => 1
+             ],
+             [
+                 'name' => 'cadastral_number',
+                 'label_name' => 'Кадастровый номер',
+                 'input_type_id' => 1,
+                 'insert_type_id' => 1
+             ],
+             [
+                 'name' => 'pri4ina_i_c_n',
+                 'label_name' => 'Причина изменения целевого назначения',
+                 'input_type_id' => 1,
+                 'insert_type_id' => 1
+             ],
+             [
+                 'name' => 'pravoustan_doc',
+                 'label_name' => 'Правоустанавливающий документ №',
+                 'input_type_id' => 1,
+                 'insert_type_id' => 1
+             ],
+             [
+                 'name' => 'pravoustan_doc_date',
+                 'label_name' => 'Правоустанавливающий документ от(дата)',
+                 'input_type_id' => 1,
+                 'insert_type_id' => 1
+             ],
+             [
+                 'name' => 'identific_doc',
+                 'label_name' => 'Идентификационный документ №',
+                 'input_type_id' => 1,
+                 'insert_type_id' => 1
+             ],
+             [
+                 'name' => 'identific_doc_date',
+                 'label_name' => 'Идентификационный документ от(дата)',
+                 'input_type_id' => 1,
+                 'insert_type_id' => 1
+             ],
+             
         ]);
     }
 }

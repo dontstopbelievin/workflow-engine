@@ -340,8 +340,6 @@ class ApplicationController extends Controller
               $updatedFields["date"] = date('d-m-Y');
               $updatedFields["id"] = $application->id;
               $updatedFields["applicant_name"] = User::where('id', $application->user_id)->first()->name;
-              $updatedFields["applicant_address"] = $application->address_mestop_z_u;
-              $updatedFields["street"] = $application->address_mestop_z_u;
               $updatedFields = $this->add_app_columns($updatedFields, $tableName, $application->id);
               $updatedFields = $this->get_test_values($updatedFields);
 

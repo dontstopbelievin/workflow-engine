@@ -56,11 +56,11 @@
                         <p style="text-indent: 2em;">
                             1. Изменить {{ $updatedFields['applicant_name'] }} целевое назначение земельногоучастка с
                             кадастровым номером
-                            21-{{ $updatedFields['cadastral_number'] }}, площадью
+                            {{ $updatedFields['cadastral_number'] }}, площадью
                             {{ $updatedFields['area'] }} с « {{ $updatedFields['construction_name_before'] }}»
                             на
                             « {{  $updatedFields['construction_name_after'] }}», расположенный по адресу: город Нур-Султан,
-                            район «{{ $updatedFields['square'] }}», ул. {{ $updatedFields['street'] }}, участок № {{ $updatedFields['area_number'] }}.
+                            район «{{ $updatedFields['region'] }}», ул. {{ $updatedFields['ulica_mestop_z_u'] }}, участок № {{ $updatedFields['area_number'] }}.
                         </p>
                         <p style="text-indent: 2em;">
                             получить акт на право собственности на земельный участок;
