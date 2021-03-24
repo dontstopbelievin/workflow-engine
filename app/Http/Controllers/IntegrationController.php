@@ -31,8 +31,8 @@ class IntegrationController extends Controller
 
     public function test()
     {
-        DB::table('dictionaries')->where('name', 'construction_name_before')->update(['input_type_id' => 3]);
-        DB::table('dictionaries')->where('name', 'construction_name_after')->update(['input_type_id' => 3]);
+        \DB::table('dictionaries')->where('name', 'construction_name_before')->update(['input_type_id' => 3]);
+        \DB::table('dictionaries')->where('name', 'construction_name_after')->update(['input_type_id' => 3]);
         return 'done';
         $processes = Process::all();
         dd($processes);
