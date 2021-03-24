@@ -31,6 +31,13 @@ class IntegrationController extends Controller
 
     public function test()
     {
+        $d1 = \DB::table('dictionaries')->where('name', 'construction_name_before')->first();
+        $d1->input_type_id = 3;
+        $d1->save();
+        $d2 = \DB::table('dictionaries')->where('name', 'construction_name_after')->first();
+        $d2->input_type_id = 3;
+        $d2->save();
+        return 'done';
         $processes = Process::all();
         dd($processes);
         $fields = ['name', 'surname', 'address', 'attachment'];
