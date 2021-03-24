@@ -325,18 +325,6 @@ class DictionarySeeder extends Seeder
                  'insert_type_id' => 1
              ],
              [
-                 'name' => 'construction_name_before',
-                 'label_name' => 'Изменить с целевого назначения',
-                 'input_type_id' => 3,
-                 'insert_type_id' => 1
-             ],
-             [
-                 'name' => 'construction_name_after',
-                 'label_name' => 'Изменить на целевое назначение',
-                 'input_type_id' => 3,
-                 'insert_type_id' => 1
-             ],
-             [
                  'name' => 'cadastral_number',
                  'label_name' => 'Кадастровый номер',
                  'input_type_id' => 1,
@@ -372,7 +360,23 @@ class DictionarySeeder extends Seeder
                  'input_type_id' => 1,
                  'insert_type_id' => 1
              ],
-             
+        ]);
+
+        DB::table('dictionaries')->insert([
+            [
+                 'name' => 'construction_name_before',
+                 'label_name' => 'Изменить с целевого назначения',
+                 'input_type_id' => 1,
+                 'insert_type_id' => 1,
+                 'select_dic' => 'dictionary_purpose'
+            ],
+            [
+                 'name' => 'construction_name_after',
+                 'label_name' => 'Изменить на целевое назначение',
+                 'input_type_id' => 1,
+                 'insert_type_id' => 1,
+                 'select_dic' => 'dictionary_purpose'
+            ],
         ]);
     }
 }

@@ -221,10 +221,17 @@ trait dbQueries
     public function addOptionsToDictionary($dictionaries) {
         foreach($dictionaries as $dictionary) {
             if($dictionary->inputName === 'select') {
-                $dictionary->options = DB::table('select_options')
-                ->join('dictionaries', 'select_options.dictionary_id', '=', 'dictionaries.id')
-                ->select('name_rus')
-                ->where('dictionaries.name', $dictionary->name)->get();
+                if($dictionary->select_dic != null){
+                    $dictionary->options = DB::table('select_options')
+                        ->join('dictionaries', 'select_options.dictionary_id', '=', 'dictionaries.id')
+                        ->select('name_rus')
+                        ->where('dictionaries.name', $dictionary->name)->get();
+                }else{
+                    $dictionary->options = DB::table('select_options')
+                        ->join('dictionaries', 'select_options.dictionary_id', '=', 'dictionaries.id')
+                        ->select('name_rus')
+                        ->where('dictionaries.name', $dictionary->select_dic)->get();
+                }
             }
         }
         return $dictionaries;
