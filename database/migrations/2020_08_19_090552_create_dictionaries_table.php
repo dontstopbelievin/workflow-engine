@@ -20,8 +20,11 @@ class CreateDictionariesTable extends Migration
             $table->foreignId('input_type_id')->nullable();
             $table->foreignId('insert_type_id')->nullable();
             $table->integer('select_dic')->unsigned()->nullable();
-            $table->foreign('select_dic')->references('name')->on('dictionaries');
             $table->timestamps();
+        });
+        Schema::table('dictionaries', function (Blueprint $table) 
+        {
+            $table->foreign('select_dic')->references('name')->on('dictionaries');
         });
     }
 
