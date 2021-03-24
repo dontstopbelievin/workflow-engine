@@ -221,7 +221,7 @@ trait dbQueries
     public function addOptionsToDictionary($dictionaries) {
         foreach($dictionaries as $dictionary) {
             if($dictionary->inputName === 'select') {
-                if($dictionary->select_dic != null){
+                if($dictionary->select_dic == null){
                     $dictionary->options = DB::table('select_options')
                         ->join('dictionaries', 'select_options.dictionary_id', '=', 'dictionaries.id')
                         ->select('name_rus')
