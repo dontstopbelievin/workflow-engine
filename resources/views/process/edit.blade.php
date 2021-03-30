@@ -221,7 +221,7 @@
                                 <div class="pb-0">
                                   <label class="form-check-label py-0">
                                     <input type="checkbox" name="services[]" value="{{$service->id}}" class="form-check-input">
-                                    <span class="form-check-sign">{{$service->label}}</span>
+                                    <span class="form-check-sign">{{$service->name}}</span>
                                   </label>
                                 </div>
                               @endforeach
@@ -274,6 +274,7 @@
                               @endforeach
                             @endisset
                             </div>
+                            <input type="hidden" name="isRole" id="isRole" value="1">
                             <div style="text-align: center;">
                               <button type="submit" class="btn btn-success">Добавить</button>
                               <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
@@ -318,7 +319,7 @@
                                 <div class="pb-0">
                                   <label class="form-check-label py-0">
                                     <input type="checkbox" name="services[]" value="{{$service->id}}" class="form-check-input">
-                                    <span class="form-check-sign">{{$service->label}}</span>
+                                    <span class="form-check-sign">{{$service->name}}</span>
                                   </label>
                                 </div>
                               @endforeach
@@ -371,6 +372,7 @@
                               @endforeach
                           @endisset
                           </div>
+                          <input type="hidden" name="isRole2" id="isRole2" value="1">
                           <div style="text-align: center;">
                             <button type="submit" class="btn btn-success">Выбрать</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
@@ -409,7 +411,7 @@
                             <button type="submit" class="btn btn-success">Создать</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
                           </div>
-                        </form>   
+                        </form>
                       </div>
                       <div class="modal-footer">
                       </div>
@@ -435,6 +437,11 @@
           tablinks[i].className = tablinks[i].className.replace(" active", "");
       }
       document.getElementById(tabName).style.display = "block";
+      if(tabName == 'roles_tab'){
+          document.getElementById('isRole').value = '1';
+      }else{
+          document.getElementById('isRole').value = '0';
+      }
       evt.currentTarget.className += " active";
     }
     function openTab5(evt, tabName) {
@@ -449,6 +456,11 @@
           tablinks[i].className = tablinks[i].className.replace(" active", "");
       }
       document.getElementById(tabName).style.display = "block";
+      if(tabName == 'roles_tab'){
+          document.getElementById('isRole2').value = '1';
+      }else{
+          document.getElementById('isRole2').value = '0';
+      }
       evt.currentTarget.className += " active";
     }
 

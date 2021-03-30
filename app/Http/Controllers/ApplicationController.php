@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Schema;
 use PhpOffice\PhpWord\TemplateProcessor;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Integrations\shep\sender\ShepRequestSender;
 use Notification;
 use App\TemplateDoc;
 use App\Notifications\ApproveNotification;
@@ -58,6 +59,7 @@ class ApplicationController extends Controller
       $i = 0;
       $apps = [];
       // check if the user's id is in the "statuses" of every application of every process
+
       foreach ($allProcessesWithUser as $number => $process) {
 
         $tableName = $this->getTableName($process->name);
@@ -66,8 +68,14 @@ class ApplicationController extends Controller
                         ->where($tableName.'.current_order', '=', $process->order)
                         ->whereJsonContains('statuses', $user->role_id)
                         ->where($tableName.'.current_order', '!=', '0');
-        $apps = $this->getFieldsForView($allApplications, $tableName);
+        $allApplications = $this->getFieldsForView($allApplications, $tableName);
+        if(sizeof($allApplications) > 0){
+          foreach($allApplications as $app){
+            array_push($apps, $app);
+          }
+        }
       }
+      // dd($apps);
       return view('application.applications', compact('apps'));
     }
 
@@ -86,7 +94,12 @@ class ApplicationController extends Controller
                         ->where($tableName.'.current_order', '>=', $process->order)
                         ->whereJsonDoesntContain('statuses', $user->role_id)
                         ->where($tableName.'.current_order', '!=', '0');
-        $apps = $this->getFieldsForView($allApplications, $tableName);
+        $allApplications = $this->getFieldsForView($allApplications, $tableName);
+        if(sizeof($allApplications) > 0){
+          foreach($allApplications as $app){
+            array_push($apps, $app);
+          }
+        }
       }
       return view('application.applications', compact('apps'));
     }
@@ -250,17 +263,6 @@ class ApplicationController extends Controller
                 ->where('id', $request->application_id)
                 ->update(['statuses' => [$nextRoleId[0]], 'current_order' => $nextRoleId[1]]);
           }
-
-          // if ($application->to_revision === 0) {
-          //     DB::table($tableName)
-          //         ->where('id', $request->applicationId)
-          //         ->update(['status_id' => $status->id, 'index_main' => $index]);
-          // } else {
-          //     DB::table($tableName)
-          //         ->where('id', $request->applicationId)
-          //         ->update(['status_id' => $status->id, 'index_main' => $index,'to_revision' => 0 ]);
-          // }
-
           DB::commit();
       }catch (Exception $e) {
           DB::rollBack();
@@ -268,8 +270,7 @@ class ApplicationController extends Controller
       }
     }
 
-    public function approve(Request $request)
-    {
+    public function approve(Request $request) {
         try {
             DB::beginTransaction();
             $requestVal = $request->all();
@@ -296,43 +297,44 @@ class ApplicationController extends Controller
             $comment = $request->comments;
 
             // insertion of fields into template
-            if(!$this->insertTemplateFields($fieldValues, $request->application_id, $template)){
-                DB::rollBack();
-                return Redirect::to('docs')->with('error', 'insert template fields error');
-            }
+            // if(!$this->insertTemplateFields($fieldValues, $request->application_id, $template)){
+            //     DB::rollBack();
+            //     return Redirect::to('docs')->with('error', 'insert template fields error');
+            // }
+            //
+            // $fields = DB::table($template->table_name)->select('*')->where('application_id', $application->id)->first();
+            // $aFields = json_decode(json_encode($fields), true);
+            //
+            // $updatedFields = [];
+            // if ($aFields !== Null) {
+            //   foreach($aFields as $key => $field) {
+            //       if ($key === 'id' || $key === 'application_id' || $key === '_token' || $key === 'pdf_url') {
+            //           continue;
+            //       }
+            //       $updatedFields[$key] = $field;
+            //   }
+            // }
+            //
+            // $fileName = $this->generateRandomString();
+            // $updatedFields["date"] = date('d-m-Y');
+            // $updatedFields["id"] = $application->id;
+            // $updatedFields = $this->get_test_values($updatedFields);
+            // $userName = Auth::user()->name;
+            // $roleName = Auth::user()->role->name;
+            //
+            // $template_doc = TemplateDoc::find($template->template_doc_id);
+            // $pathToView = $template_doc->pdf_path;
+            // $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
+            //
+            // $content = view($pathToView, compact('updatedFields', 'userName', 'roleName'))->render();
+            // $mpdf = new Mpdf();
+            // $mpdf->WriteHTML($content);
+            // $mpdf->Output(storage_path(). $storagePathToPDF, \Mpdf\Output\Destination::FILE);
+            //
+            // $docPath = 'final_docs/'. $fileName . '.pdf';
+            // DB::table($template->table_name)->where('application_id', $request->application_id)
+            //     ->update(['pdf_url' => $docPath]);
 
-            $fields = DB::table($template->table_name)->select('*')->where('application_id', $application->id)->first();
-            $aFields = json_decode(json_encode($fields), true);
-
-            $updatedFields = [];
-            if ($aFields !== Null) {
-              foreach($aFields as $key => $field) {
-                  if ($key === 'id' || $key === 'application_id' || $key === '_token' || $key === 'pdf_url') {
-                      continue;
-                  }
-                  $updatedFields[$key] = $field;
-              }
-            }
-
-            $fileName = $this->generateRandomString();
-            $updatedFields["date"] = date('d-m-Y');
-            $updatedFields["id"] = $application->id;
-            $updatedFields = $this->get_test_values($updatedFields);
-            $userName = Auth::user()->name;
-            $roleName = Auth::user()->role->name;
-
-            $template_doc = TemplateDoc::find($template->template_doc_id);
-            $pathToView = $template_doc->pdf_path;
-            $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
-
-            $content = view($pathToView, compact('updatedFields', 'userName', 'roleName'))->render();
-            $mpdf = new Mpdf();
-            $mpdf->WriteHTML($content);
-            $mpdf->Output(storage_path(). $storagePathToPDF, \Mpdf\Output\Destination::FILE);
-
-            $docPath = 'final_docs/'. $fileName . '.pdf';
-            DB::table($template->table_name)->where('application_id', $request->application_id)
-                ->update(['pdf_url' => $docPath]);
 
             $currentRoleOrder = $process->roles()->select('order')->where('role_id', Auth::user()->role_id)->first()->order;
             $processRoles = $this->getProcessStatuses($tableName, $request->application_id);
@@ -341,19 +343,11 @@ class ApplicationController extends Controller
             $this->insertLogs(Auth::user()->role->name, 1, $table->id, $request->application_id, Auth::user()->role_id, $currentRoleOrder, 1, '',$comment);
 
             $processRoles = array_values($this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table->id, $request->application_id, 1, $tableName));
-
+            // dd($processRoles);
             DB::table($tableName)
                 ->where('id', $request->application_id)
                 ->update(['statuses' => $processRoles]);
-            // if ($application->to_revision === 0) {
-            //     DB::table($tableName)
-            //         ->where('id', $request->applicationId)
-            //         ->update(['status_id' => $status->id, 'index_main' => $index]);
-            // } else {
-            //     DB::table($tableName)
-            //         ->where('id', $request->applicationId)
-            //         ->update(['to_revision' => 0 ]);
-            // }
+
             DB::commit();
         }catch (Exception $e) {
             DB::rollBack();
@@ -362,31 +356,73 @@ class ApplicationController extends Controller
     }
 
     public function deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table_id, $appl_id, $answer, $tableName){
-        if(sizeof($children) > 0){
-            $processRoles = $this->deleteCurrentRoleFromStatuses($processRoles);
-            foreach($children as $child){
-                array_push($processRoles, $child->id);
-                $role = Role::select('name')->where('id', $child->id)->first();
-                $this->insertLogs($role->name, 4, $table_id, $appl_id, Auth::user()->role_id, $currentRoleOrder, $answer);
-            }
+      $response = array();
+      if(sizeof($children) > 0){
+        $children = array_column($children, 'role_id');
+        $proceededChildren = $this->checkArrayOfServicesOrRoles($children, $process, $currentRoleOrder, $table_id, $appl_id); // add arguments if needed
+        if(sizeof($processRoles) == 1 && sizeof($proceededChildren) == 0){ // when it is last user which have only services as children
+          return $this->deleteCurrentRoleAddChildren($process, $processRoles, [], $currentRoleOrder, $table_id, $appl_id, $answer, $tableName);
+        }else if(sizeof($processRoles) == 1){ // when it is last user but have other roles as children
+          $processRoles = $proceededChildren;
         }else{
-            if(sizeof($processRoles) == 1){
-                // the last one and has NO children
-                $processRoles = $this->get_roles_of_order($process->id, $currentRoleOrder+1)->toArray();
-                DB::table($tableName)
-                ->where('id', $appl_id)
-                ->update(['current_order' => $currentRoleOrder+1]);
-                //check if next order exist; if not send to citizen
-                foreach ($processRoles as $item) {
-                    $role = Role::select('name')->where('id', $item)->first();
-                    $this->insertLogs($role->name, 4, $table_id, $appl_id, Auth::user()->role_id, $currentRoleOrder, $answer);
-                }
-            }else{
-                // not the last one and has NO children => just delete current
-                $processRoles = $this->deleteCurrentRoleFromStatuses($processRoles);
+          if(sizeof($proceededChildren) != 0){ // when there are other roles on parallel
+            foreach($proceededChildren as $child){
+              array_push($processRoles, $child);
             }
+          }
+          $processRoles = $this->deleteCurrentRoleFromStatuses($processRoles);
         }
-        return $processRoles;
+      }else{
+        if(sizeof($processRoles) != 1){ // if NOT last one in array => just delete it from $processRoles (it does not have children)
+          $processRoles = $this->deleteCurrentRoleFromStatuses($processRoles);
+          $orderAfterDeleting = $currentRoleOrder;
+        }else{   // if the last one in array
+          while(1){ // stop when next roles are obtained(without sync services)
+            $processRoles = $this->get_roles_of_order($process->id, $currentRoleOrder+1)->toArray(); // find next roles
+            if(sizeof($processRoles) == 0){ // if maximum order is reached
+              // send to citizen
+              break;
+            }else{
+              $proceededRoles = $this->checkArrayOfServicesOrRoles($processRoles, $process, $currentRoleOrder+1, $table_id, $appl_id);
+              if(sizeof($proceededRoles) == 0){ // if all after are services
+                $currentRoleOrder++;
+                continue;
+              }else{ // if roles are after => return them
+                $processRoles = $proceededRoles;
+                $orderAfterDeleting = $currentRoleOrder+1;
+                break;
+              }
+            }
+          }
+          DB::table($tableName)
+              ->where('id', $appl_id)
+              ->update(['current_order' => $currentRoleOrder+1]);
+        }
+      }
+      // dd($processRoles);
+      return $processRoles;
+    }
+
+    public function checkArrayOfServicesOrRoles($servicesOrRoles, $process, $currentRoleOrder, $table_id, $appl_id){
+      $resultingRoles = [];
+      for ($key = 0; $key < sizeof($servicesOrRoles); $key++) {
+        $id = $servicesOrRoles[$key];
+        $role = Role::where('id', $id)->first();
+        if($role->isRole == 0 && $role->service_sync == 1){
+          // execute service
+          $this->insertLogs($role->name, 1, $table_id, $appl_id, $id, $currentRoleOrder, '');
+          $children = $process->roles()->where('parent_role_id', $id)->select('role_id')->get();
+          if(sizeof($children) != 0){
+            foreach($children as $child){
+              array_push($servicesOrRoles, $child->role_id);
+            }
+          }
+        }else{
+          array_push($resultingRoles, $id);
+          $this->insertLogs($role->name, 4, $table_id, $appl_id, Auth::user()->role_id, $currentRoleOrder, '');
+        }
+      }
+      return $resultingRoles;
     }
 
     public function create(Process $process)
@@ -417,28 +453,28 @@ class ApplicationController extends Controller
             }
             $process = Process::find($request->process_id);
 
-    //         $notifyUsers = $role->users;
-    // //        dd($notifyUsers, $role);
-    //         foreach($notifyUsers as $notifyUser) {
-    // //            dd($notifyUser);
-    //             $details = [
+          //         $notifyUsers = $role->users;
+          // //        dd($notifyUsers, $role);
+          //         foreach($notifyUsers as $notifyUser) {
+          // //            dd($notifyUser);
+          //             $details = [
 
-    //                 'greeting' => 'Привет' . ', ' . $notifyUser->name,
+          //                 'greeting' => 'Привет' . ', ' . $notifyUser->name,
 
-    //                 'body' => 'Это уведомление о том, что Вы должны согласовать заявку',
+          //                 'body' => 'Это уведомление о том, что Вы должны согласовать заявку',
 
-    //                 'thanks' => 'Пожалуйста, зайтите на портал и согласуйте услугу',
+          //                 'thanks' => 'Пожалуйста, зайтите на портал и согласуйте услугу',
 
-    //                 'actionText' => 'Workflow Engine',
-    // //
-    //                 'actionURL' => url('/services'),
-    // //
-    //                 'order_id' => 101
+          //                 'actionText' => 'Workflow Engine',
+          // //
+          //                 'actionURL' => url('/services'),
+          // //
+          //                 'order_id' => 101
 
-    //             ];
-    //             Notification::send($notifyUser, new ApproveNotification($details));
-    //         }
-    //        dd($notifyUsers);
+          //             ];
+          //             Notification::send($notifyUser, new ApproveNotification($details));
+          //         }
+          //        dd($notifyUsers);
 
             $tableName = $this->getTableName($process->name);
             $table = CreatedTable::where('name', $tableName)->first();
@@ -499,8 +535,7 @@ class ApplicationController extends Controller
         // $aData = ["coordindates" => "5645226",   "goal" => "123213213", "area" => "34123453", "processId" => $process->id];
         // $applicationTableFields["coordindates"] = $aData["coordindates"];
         // $applicationTableFields["goal"] = $aData["goal"];
-        // $applicationTableFields["area"] = $aData["area"];
-//        dd($aData, $applicationTableFields);
+        // $applicationTableFields["area"] = $aData["area"];  dd($aData, $applicationTableFields);
         // $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
         // $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
         // $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $arrRoutes[0]["id"]); // получить историю хода согласования
@@ -591,7 +626,6 @@ class ApplicationController extends Controller
 
             if($request->motiv_otkaz == 1){ // если у него мотивированный отказ есть => reject_reason заполнить, и дальше чисто согласование мотив отказа
                 $nextRoleId = $this->getNextUnparallelRoleId($process, $currentRoleOrder, $request->application_id,  $table->id);
-                // dd($nextRoleId);
                 if($nextRoleId[0] == 1){
                   DB::table($tableName)
                       ->where('id', $request->application_id)
@@ -604,7 +638,6 @@ class ApplicationController extends Controller
             }else{
                 $processRoles = $this->getProcessStatuses($tableName, $request->application_id);
                 $children = $this->getRoleChildren($process);
-
                 $processRoles = array_values($this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table->id, $request->application_id, 0, $tableName));
 
                 DB::table($tableName)

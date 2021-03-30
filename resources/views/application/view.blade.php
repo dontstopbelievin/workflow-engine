@@ -291,7 +291,7 @@
                                   @endif
                                 </div>
                             @endif
-                            <a href="{{ url('docs/'.request()->segment(2)) }}" class="btn btn-info float-left">Назад</a>
+                            <a href="{{ url('docs/services/'.request()->segment(3)) }}" class="btn btn-info float-left">Назад</a>
                         </div>
                     </div>
                 </div>
@@ -339,7 +339,7 @@
                 var application_id = $('#application_id').val();
                 console.log(rejectReason, processId, application_id)
                 $.post('/docs/reject', {'rejectReason':rejectReason,'motiv_otkaz':motiv_otkaz,'processId':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
-                    location.reload();
+                    //location.reload();
                 });
             });
 

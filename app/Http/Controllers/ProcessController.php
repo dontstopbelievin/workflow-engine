@@ -54,8 +54,8 @@ class ProcessController extends Controller
         try {
             $templates = Template::where('process_id', $process->id)->with('role')->with('doc')->get();
             $columns = $this->getAllDictionaries();
-            $roles = Role::where('name' ,'!=', 'Заявитель')->get();
-            $services = Service::all();
+            $roles = Role::where('name' ,'!=', 'Заявитель')->where('isRole', '=', '1')->get();
+            $services =  Role::where('isRole', '=', '0')->get();
             $tableColumns = $this->getColumns($process->table_name);
             $organizations = CityManagement::all();
             $nameMainOrg = CityManagement::find($process->main_organization_id)->name ?? '';
@@ -177,39 +177,59 @@ class ProcessController extends Controller
         try {
             $validator = Validator::make($request->all(),[
                 'order' => 'required|integer',
-                'roles'   => 'required|array',
+                'roles'   => 'array',
+                'services' => 'array',
                 'roles.*' => 'integer',
+                'services.*' => 'integer',
                 'reject'   => 'nullable|array',
                 'reject.*' => 'integer',
                 'revision'   => 'nullable|array',
                 'revision.*' => 'integer',
             ]);
             if ($validator->fails()) {
-                
                 return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', $validator->errors());
             }
             DB::beginTransaction();
-            if (sizeof($request->roles) === 1) {
-                $process->roles()->attach($request->roles[0], [
-                    'can_reject' => in_array($request->roles[0], $request->reject ?? []),
-                    'can_send_to_revision' => in_array($request->roles[0], $request->revision ?? []),
-                    'can_ecp_sign' => in_array($request->roles[0], $request->ecp_sign ?? []),
-                    'can_motiv_otkaz' => in_array($request->roles[0], $request->motiv_otkaz ?? []),
-                    'order' => $request->order
-                ]);
-                DB::commit();
-                return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Маршрут добавлен к процессу');
-            } else {
-               foreach ($request->roles as $id) {
-                   $process->roles()->attach($id, [
-                        'can_reject' => in_array($id, $request->reject ?? []),
-                        'can_send_to_revision' => in_array($id, $request->revision ?? []),
+            if($request->isRole == '1'){
+                if (sizeof($request->roles) === 1) {
+                    $process->roles()->attach($request->roles[0], [
+                        'can_reject' => in_array($request->roles[0], $request->reject ?? []),
+                        'can_send_to_revision' => in_array($request->roles[0], $request->revision ?? []),
+                        'can_ecp_sign' => in_array($request->roles[0], $request->ecp_sign ?? []),
+                        'can_motiv_otkaz' => in_array($request->roles[0], $request->motiv_otkaz ?? []),
                         'order' => $request->order
                     ]);
+                    DB::commit();
+                    return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Маршрут добавлен к процессу');
+                } else {
+                   foreach ($request->roles as $id) {
+                       $process->roles()->attach($id, [
+                            'can_reject' => in_array($id, $request->reject ?? []),
+                            'can_send_to_revision' => in_array($id, $request->revision ?? []),
+                            'order' => $request->order
+                        ]);
+                   }
+                   DB::commit();
+                   return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Маршрут добавлен к процессу');
                }
-               DB::commit();
-               return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Маршрут добавлен к процессу');
-           }
+            }else{
+                if (sizeof($request->services) === 1) {
+                  $process->roles()->attach($request->services[0], [
+                      'order' => $request->order
+                  ]);
+                  DB::commit();
+                  return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Сервис добавлен к процессу');
+                }else{
+                  foreach ($request->services as $id) {
+                      $process->roles()->attach($id, [
+                           'order' => $request->order
+                       ]);
+                  }
+                  DB::commit();
+                  return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Сервис добавлен к процессу');
+                }
+            }
+
         } catch (Exception $e) {
             DB::rollBack();
             return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', $e->getMessage());
@@ -221,44 +241,65 @@ class ProcessController extends Controller
             $validator = Validator::make($request->all(),[
                 'parent_role_id' => 'required|integer',
                 'order' => 'required|integer',
-                'roles'   => 'required|array',
+                'roles'   => 'array',
                 'roles.*' => 'integer',
+                'services'   => 'array',
+                'services.*' => 'integer',
                 'reject'   => 'nullable|array',
                 'reject.*' => 'integer',
                 'revision'   => 'nullable|array',
                 'revision.*' => 'integer',
             ]);
             if ($validator->fails()) {
-                
+
                 return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', $validator->errors());
             }
-
             DB::beginTransaction();
-            if (sizeof($request->roles) === 1) {
-                $process->roles()->attach($request->roles[0], [
-                    'parent_role_id' => $request->parent_role_id,
-                    'can_reject' => in_array($request->roles[0], $request->reject ?? []),
-                    'can_send_to_revision' => in_array($request->roles[0], $request->revision ?? []),
-                    'can_ecp_sign' => in_array($request->roles[0], $request->ecp_sign ?? []),
-                    'can_motiv_otkaz' => in_array($request->roles[0], $request->motiv_otkaz ?? []),
-                    'order' => $request->order
-                ]);
-                DB::commit();
-                return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Маршрут добавлен к процессу');
-            } else {
-               foreach ($request->roles as $id) {
-                   $process->roles()->attach($id, [
+            if($request->isRole2 == '1'){
+                if (sizeof($request->roles) === 1) {
+                    $process->roles()->attach($request->roles[0], [
                         'parent_role_id' => $request->parent_role_id,
-                        'can_reject' => in_array($id, $request->reject ?? []),
-                        'can_send_to_revision' => in_array($id, $request->revision ?? []),
-                        'can_ecp_sign' => in_array($id, $request->ecp_sign ?? []),
-                        'can_motiv_otkaz' => in_array($id, $request->motiv_otkaz ?? []),
+                        'can_reject' => in_array($request->roles[0], $request->reject ?? []),
+                        'can_send_to_revision' => in_array($request->roles[0], $request->revision ?? []),
+                        'can_ecp_sign' => in_array($request->roles[0], $request->ecp_sign ?? []),
+                        'can_motiv_otkaz' => in_array($request->roles[0], $request->motiv_otkaz ?? []),
                         'order' => $request->order
                     ]);
+                    DB::commit();
+                    return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Маршрут добавлен к процессу');
+                } else {
+                    foreach ($request->roles as $id) {
+                        $process->roles()->attach($id, [
+                             'parent_role_id' => $request->parent_role_id,
+                             'can_reject' => in_array($id, $request->reject ?? []),
+                             'can_send_to_revision' => in_array($id, $request->revision ?? []),
+                             'can_ecp_sign' => in_array($id, $request->ecp_sign ?? []),
+                             'can_motiv_otkaz' => in_array($id, $request->motiv_otkaz ?? []),
+                             'order' => $request->order
+                         ]);
+                    }
+                    DB::commit();
+                    return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Маршрут добавлен к процессу');
                }
-               DB::commit();
-               return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Маршрут добавлен к процессу');
-           }
+            }else{
+                if (sizeof($request->services) === 1) {
+                  $process->roles()->attach($request->services[0], [
+                      'parent_role_id' => $request->parent_role_id,
+                      'order' => $request->order
+                  ]);
+                  DB::commit();
+                  return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Сервис добавлен к процессу');
+                }else{
+                  foreach ($request->services as $id) {
+                      $process->roles()->attach($id, [
+                           'parent_role_id' => $request->parent_role_id,
+                           'order' => $request->order
+                       ]);
+                  }
+                  DB::commit();
+                  return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Сервис добавлен к процессу');
+                }
+            }
         } catch (Exception $e) {
             DB::rollBack();
             return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', $e->getMessage());
