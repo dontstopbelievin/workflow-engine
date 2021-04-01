@@ -189,7 +189,6 @@ class ProcessController extends Controller
                 'revision.*' => 'integer',
             ]);
             if ($validator->fails()) {
-                
                 return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', $validator->errors());
             }
             DB::beginTransaction();
@@ -208,6 +207,8 @@ class ProcessController extends Controller
                    $process->roles()->attach($id, [
                         'can_reject' => in_array($id, $request->reject ?? []),
                         'can_send_to_revision' => in_array($id, $request->revision ?? []),
+                        'can_ecp_sign' => in_array($id, $request->ecp_sign ?? []),
+                        'can_motiv_otkaz' => in_array($id, $request->motiv_otkaz ?? []),
                         'order' => $request->order
                     ]);
                }

@@ -34,12 +34,13 @@ class AuctionController extends Controller
 
     public function create()
     {
-        $aLandCategory = LandCategoryDictionary::all();
-        $aRightType = RightTypeDictionary::all();
-        $aTarget = TargetDictionary::all();
-        $aPurpose = PurposeDictionary::all();
-        $aLandDivisibility = LandDivisibilityDictionary::all();
-        return view('auction.create', compact('aLandCategory','aRightType','aTarget','aPurpose','aLandDivisibility'));
+        // $aLandCategory = LandCategoryDictionary::all();
+        // $aRightType = RightTypeDictionary::all();
+        // $aTarget = TargetDictionary::all();
+        // $aPurpose = PurposeDictionary::all();
+        // $aLandDivisibility = LandDivisibilityDictionary::all();
+        // return view('auction.create', compact('aLandCategory','aRightType','aTarget','aPurpose','aLandDivisibility'));
+        return view('auction.create');
     }
 
     public function store(Request $request)
