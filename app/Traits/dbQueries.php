@@ -119,7 +119,7 @@ trait dbQueries
     }
 
     private function getRoleChildren($process){
-        return $process->roles()->where('parent_role_id', Auth::user()->role_id)->get();
+        return $process->roles()->where('parent_role_id', Auth::user()->role_id)->select('role_id')->get()->toArray();
     }
 
     private function deleteCurrentRoleFromStatuses($currentRoles){
@@ -138,7 +138,7 @@ trait dbQueries
 
         while($maxOrder >= $currentRoleOrder){
             $rolesAfter = $process->roles()->where('order', $currentRoleOrder + 1)->get();
-            if(sizeof($rolesAfter) == 1){
+            if(sizeof($rolesAfter) == 1 && $rolesAfter[0]->isRole == 1){
                 break;
             }
             $currentRoleOrder++;
@@ -147,10 +147,6 @@ trait dbQueries
         if($currentRoleOrder > $maxOrder){
           return [1, 0];
         }else{
-            $role = Role::select('name')->where('id', $rolesAfter[0]->pivot['role_id'])->first();
-            $role_status = DB::table('role_statuses')->where('role_name', $role->name)->where('status_id', 4)->first();
-            $logsArray = app('App\Http\Controllers\ApplicationController')->getLogs($role_status->id, $table_id, $application_id, Auth::user()->role_id, $my_order, 0);
-            Log::insert($logsArray);
             return [$rolesAfter[0]->pivot['role_id'], $rolesAfter[0]->pivot['order']];
         }
 

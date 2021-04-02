@@ -16,8 +16,10 @@ class CreateRolesTable extends Migration
         Schema::create('roles', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
+            $table->string('service_label')->default('');
+            $table->boolean('service_sync')->nullable();
+            $table->boolean('isRole')->default(1);
             $table->foreignId('city_management_id')->nullable();
-            $table->boolean('sign_with_ecp')->default(0);
             $table->timestamps();
         });
     }
