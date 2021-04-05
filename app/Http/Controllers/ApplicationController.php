@@ -432,7 +432,7 @@ class ApplicationController extends Controller
         if($role->isRole == 0 && $role->service_sync == 1){
           // execute service
           $this->insertLogs($role->name, 1, $table_id, $appl_id, $id, $currentRoleOrder, '');
-          $children = $process->roles()->where('parent_role_id', $id)->select('role_id')->get();
+          $children = $process->roles()->where('parent_role_id', $id)->select('role_id')->get();//currentRoleOrder
           if(sizeof($children) != 0){
             foreach($children as $child){
               array_push($servicesOrRoles, $child->role_id);

@@ -201,36 +201,32 @@ class RoleSeeder extends Seeder
                 'service_label' => 'ais_gzk_get_relevance',
                 'service_sync' => 1,
                 'isRole' => 0,
-            ],
+            ]
+        ]);
+        DB::table('roles')->insert([
             [
                 'city_management_id' => 1,
                 'name' => 'Специалист Айкала', // 29
-                'sign_with_ecp' => 0,
             ],
             [
                 'city_management_id' => 1,
                 'name' => 'Специалист Акимата', // 30
-                'sign_with_ecp' => 0,
             ],
             [
                 'city_management_id' => 1,
                 'name' => 'Канцелярия Акимата', // 31
-                'sign_with_ecp' => 0,
             ],
             [
                 'city_management_id' => 1,
                 'name' => 'Гос Правовой отдел акимата', // 32
-                'sign_with_ecp' => 0,
             ],
             [
                 'city_management_id' => 1,
                 'name' => 'Заместитель акима', // 33
-                'sign_with_ecp' => 0,
             ],
             [
                 'city_management_id' => 1,
                 'name' => 'Руководитель отдела городского планирования',
-                'sign_with_ecp' => 1,
             ],
         ]);
     }
