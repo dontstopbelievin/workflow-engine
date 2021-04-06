@@ -41,7 +41,7 @@
                       @foreach($apps as $app)
                           <tr>
                               <td>{{$loop->iteration}}</td>
-                              <td>{{$app->name ?? '' }}</td>
+                              <td>{{$app->user_name ?? '' }}</td>
                               <td>{{$app->process_name ?? ''}}</td>
                               <td>{{$app->updated_at ?? ''}}</td>
                               <td>

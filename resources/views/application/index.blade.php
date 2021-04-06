@@ -48,7 +48,7 @@
                       @foreach($arrayApps as $app)
                           <tr>
                               <td>{{$loop->iteration}}</td>
-                              <td>{{$app->name ?? '' }}</td>
+                              <td>{{$app->user_name ?? '' }}</td>
                               <td>{{$app->last_status ?? ''}}</td>
                               <td>
                                 <button class="rounded-circle bg-white" onclick="window.location='{{url('docs/view', ['process_id' => $process["id"] , 'application_id' => $app->id])}}'">

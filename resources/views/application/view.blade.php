@@ -22,8 +22,8 @@
                     </div>
                     <div class="card-body" id="items">
                         <div class="tab">
-                            <button class="tablinks" id="mybutton" onclick="openTab(event, 'applicationInfo')">Входные данные</button>
-                            <button class="tablinks" onclick="openTab(event, 'specialistFields')">Выходные данные</button>
+                            <button class="tablinks" id="mybutton" onclick="openTab(event, 'applicationInfo')">Заявление</button>
+                            <button class="tablinks" onclick="openTab(event, 'specialistFields')">Ответы специалистов</button>
                             <button class="tablinks" onclick="openTab(event, 'logs')">Движение документа</button>
                         </div>
                         <div id="applicationInfo" class="tabcontent">
@@ -51,7 +51,7 @@
                                 @foreach($templateTableFields as $item)
                                 @if ((Auth::user()->role->name == 'Заявитель' && $item->to_citizen == 1) ||
                                     Auth::user()->role->name != 'Заявитель')
-                                Данные документа "{{$item->name}}":
+                                <b>{{$item->role_name}}</b>("{{$item->name}}"):
                                 <ul class="list-group" id="list">
                                     @if(count($item->fields) > 0)
                                         @foreach($item->fields as $key=>$value)
@@ -80,8 +80,8 @@
                             <table class="table" style="background: white;width: 100%;">
                                 <thead>
                                     <tr>
-                                        <th style="width: 30%;">Статус</th>
-                                        <th style="width: 30%;">Участник</th>
+                                        <th style="width: 30%;">Кто</th>
+                                        <th style="width: 30%;">Действие</th>
                                         <th style="width: 30%;">Комментарии</th>
                                         <th style="width: 10%;">Время</th>
                                     </tr>
@@ -90,8 +90,24 @@
                                 @isset($records)
                                     @foreach($records as $record)
                                         <tr>
-                                            <td>{{$record["name"]}}</td>
-                                            <td>{{$record["role"]}}</td>
+                                            <td>
+                                            @if(mb_strlen($record["role"], 'UTF-8') > 50)
+                                                <span data-toggle="tooltip" title="{{$record['role']}}">
+                                                      {{mb_substr($record["role"], 0, 50, 'utf-8')}}...
+                                                </span>
+                                            @else
+                                                {{ $record["role"] }}
+                                            @endif
+                                            </td>
+                                            <td>
+                                            @if(mb_strlen($record["name"], 'UTF-8') > 100)
+                                                <span data-toggle="tooltip" title="{{$record['name']}}">
+                                                      {{mb_substr($record["name"], 0, 100, 'utf-8')}}...
+                                                </span>
+                                            @else
+                                                {{ $record["name"] }}
+                                            @endif
+                                            </td>
                                             <td>{{$record["comment"]}}</td>
                                             <td>{{Carbon\Carbon::parse($record["created_at"])->format('d-m-Y h:i:s A')}}</td>
                                         </tr>

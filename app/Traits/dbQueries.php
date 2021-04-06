@@ -245,8 +245,10 @@ trait dbQueries
 
     public function get_templates($process_id, $application_id){
 
-        $templates = Template::select('templates.id', 'templates.table_name', 'template_docs.name', 'templates.to_citizen')
+        $templates = Template::select('templates.id', 'templates.table_name', 'template_docs.name', 'templates.to_citizen',
+            'roles.name as role_name')
             ->join('template_docs', 'templates.template_doc_id', '=', 'template_docs.id')
+            ->join('roles', 'templates.role_id', '=', 'roles.id')
             ->where('process_id', $process_id)->get();
         if($templates){
             foreach($templates as $item){
