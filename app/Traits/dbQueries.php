@@ -355,14 +355,23 @@ trait dbQueries
             ->get();
     }
 
-    public function getRecords($applicationId, $tableId) {
+    public function getRecords($applicationId, $tableId, $region = '') {
 
         $query = Log::join('roles', 'logs.role_id', '=', 'roles.id')
                       ->join('role_statuses', 'logs.status_id', '=', 'role_statuses.id')
                       ->select( 'role_statuses.string as name', 'logs.comment as comment', 'logs.created_at as created_at', 'roles.name as role')
                       ->where('application_id', $applicationId)
                       ->where('table_id', $tableId)
-                      ->get()->toArray();
+                      ->get();
+
+        foreach ($query as &$item) {
+            if($item->name == 'Отправлено руководителю отдела городского планирования' ||
+                $item->name == 'Одобрено руководителем отдела городского планирования' ||
+                $item->name == 'Подписано руководителем отдела городского планирования' ||
+                $item->name == 'Отклонено руководителем отдела городского планирования'){
+                $item->name .= '(район '.$region.')';
+            }
+        }
 
         return json_decode(json_encode($query), true);
     }

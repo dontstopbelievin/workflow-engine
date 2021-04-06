@@ -185,7 +185,7 @@ class ApplicationController extends Controller
             }
         }
 
-        $records = $this->getRecords($application->id, $table->id);
+        $records = $this->getRecords($application->id, $table->id, $application->region);
         $toCitizen = false;
 
         if(Auth::user()->role_id != 1){
