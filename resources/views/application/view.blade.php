@@ -342,7 +342,7 @@
                 var application_id = $('#application_id').val();
                 console.log(rejectReason, processId, application_id)
                 $.post('/docs/reject', {'rejectReason':rejectReason,'motiv_otkaz':motiv_otkaz,'processId':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
-                    //location.reload();
+                    location.reload();
                 });
             });
 

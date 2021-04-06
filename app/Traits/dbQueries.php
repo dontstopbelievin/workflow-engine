@@ -180,7 +180,7 @@ trait dbQueries
         $cols = DB::select(
           (new \Illuminate\Database\Schema\Grammars\MySqlGrammar)->compileColumnListing()
               .' order by ordinal_position',
-          ['workflow', $tableName]
+          [env('DB_DATABASE', 'workflow'), $tableName]
         );
         $result = [];
         foreach ($cols as $value) {
