@@ -174,10 +174,20 @@ trait dbQueries
         return preg_match('/[A-Za-z]/u', $text);
     }
 
-    public function getColumns($tableName) {
-        $notInclude = ['id', 'process_id', 'status_id', 'user_id', 'index_main', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at', 'statuses', 'current_order'];
-        $tableColumns = Schema::getColumnListing($tableName);
-        return $this->filterArray($tableColumns, $notInclude);
+    public function getColumns($tableName)
+    {
+        $notInclude = ['id', 'process_id', 'status_id', 'user_id', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at', 'statuses', 'current_order'];
+        $cols = DB::select(
+          (new \Illuminate\Database\Schema\Grammars\MySqlGrammar)->compileColumnListing()
+              .' order by ordinal_position',
+          ['workflow', $tableName]
+        );
+        $result = [];
+        foreach ($cols as $value) {
+            if(in_array($value->column_name, $notInclude)) continue;
+            array_push($result, $value->column_name);
+        }
+        return $result;
     }
 
     public function add_app_columns($fields, $tableName, $application_id) {
@@ -296,6 +306,19 @@ trait dbQueries
             ->whereIn('dictionaries.name', $to_search)
             ->get();
         }
+    }
+
+    public function get_dic_in_order($to_search = []) {
+        $result = [];
+        foreach ($to_search as $item) {
+            $result[] = DB::table('dictionaries')
+            ->join('input_types', 'dictionaries.input_type_id', '=', 'input_types.id')
+            ->join('insert_types', 'dictionaries.insert_type_id', '=', 'insert_types.id')
+            ->select('dictionaries.name','dictionaries.label_name as labelName', 'input_types.name as inputName', 'insert_types.name as insertName', 'dictionaries.select_dic')
+            ->where('dictionaries.name', $item)
+            ->first();
+        }
+        return $result;
     }
 
     public function get_field_options($fields) {

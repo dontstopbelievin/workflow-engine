@@ -70,11 +70,11 @@ class ApplicationController extends Controller
                         ->join('processes', 'processes.id', $tableName.'.process_id')
                         ->where($tableName.'.current_order', '=', $process->order)
                         ->whereJsonContains('statuses', $user->role_id)
-                        ->where($tableName.'.current_order', '!=', '0');
-                        // ->where(function($q) {
-                        //     $q->where($tableName.'.region', $user->region)
-                        //       ->orWhere($tableName.'.region', null);
-                        // });
+                        ->where($tableName.'.current_order', '!=', '0')
+                        ->where(function($q) use($tableName, $user){
+                            $q->where($tableName.'.region', $user->region)
+                              ->orWhere($tableName.'.region', null);
+                        });
 
         $allApplications = $this->getFieldsForView($allApplications, $tableName);
         if(sizeof($allApplications) > 0){
@@ -84,7 +84,6 @@ class ApplicationController extends Controller
         }
 
       }
-      // dd($apps);
       return view('application.applications', compact('apps'));
     }
 
@@ -291,9 +290,7 @@ class ApplicationController extends Controller
     public function approve(Request $request) {
         try {
             DB::beginTransaction();
-            $requestVal = $request->all();
-
-            $fieldValues = $requestVal;
+            $fieldValues = $request->all();
             if ($fieldValues) {
                 foreach($fieldValues as $key=>$val) {
                     if (is_file($val)) {
@@ -450,9 +447,8 @@ class ApplicationController extends Controller
     {
         $tableName = $this->getTableName($process->name);
         $tableColumns = $this->getColumns($tableName);
-        $dictionaries = $this->getAllDictionaries(array_values($tableColumns));
-        $dictionariesWithOptions = $this->addOptionsToDictionary($dictionaries);
-        $arrayToFront = $this->getAllDictionariesWithOptions($dictionariesWithOptions);
+        $dictionaries = $this->get_dic_in_order($tableColumns);
+        $arrayToFront = $this->addOptionsToDictionary($dictionaries);
         $roles = $this->get_roles_in_order($process->id);
         if(count($roles) == 0){
             return Redirect::action([ApplicationController::class, 'index'], [$process])->with('status', 'Создайте сперва маршрут!');
@@ -777,21 +773,6 @@ class ApplicationController extends Controller
       return false;
     }
 
-    // private function modifyApplicationTableFieldsWithStatus($applicationTableFields, $statusId, $userId)
-    // {
-    //     $applicationTableFields["status_id"] = $statusId;
-    //     $applicationTableFields["user_id"] = $userId;
-    //     $applicationTableFields["index_main"] = 1;
-    //     return $applicationTableFields;
-    // }
-    // private function modifyApplicationTableFieldsWithStatuses($applicationTableFields, $statuses, $userId)
-    // {
-    //     $applicationTableFields["statuses"] = $statuses;
-    //     $applicationTableFields["user_id"] = $userId;
-    //     $applicationTableFields["index_main"] = 1;
-    //     return $applicationTableFields;
-    // }
-
     private function insertTemplateFields($fieldValues, $applicationId, $template)
     {
         try {
@@ -815,7 +796,7 @@ class ApplicationController extends Controller
 
     public function get_test_values($updatedFields)
     {
-      $updatedFields["applicant_address"] = 'asdf';
+      // $updatedFields["applicant_address"] = 'asdf';
         // $updatedFields["applicant_name"] = 'Аман';
         // $updatedFields["area"] = '114 га';
         // $updatedFields["area2"] = '114 га';
@@ -855,16 +836,6 @@ class ApplicationController extends Controller
             $templateTable = substr($templateTable, 0, 57);
         }
         return $templateTable;
-    }
-
-    private function getAllDictionariesWithOptions($dictionariesWithOptions) {
-        $arrayToFront = [];
-        foreach($dictionariesWithOptions as $item) {
-            $replaced = str_replace(' ', '_', $item->name);
-            $item->name = $replaced;
-            array_push($arrayToFront, $item);
-        }
-        return $arrayToFront;
     }
 
     public function verification($p, $a, $t){

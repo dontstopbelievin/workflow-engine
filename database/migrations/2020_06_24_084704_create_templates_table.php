@@ -22,7 +22,7 @@ class CreateTemplatesTable extends Migration
             $table->integer('template_doc_id')->unsigned();
             $table->foreign('template_doc_id')->references('id')->on('template_docs');
             $table->integer('order')->unsigned();
-            $table->string('table_name');
+            $table->string('table_name')->unique();
             $table->boolean('accept_template');
             $table->boolean('to_citizen')->default(true);
             $table->unique(['process_id', 'role_id', 'order']);

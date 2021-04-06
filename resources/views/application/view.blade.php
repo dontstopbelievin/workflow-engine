@@ -294,7 +294,7 @@
                                   @endif
                                 </div>
                             @endif
-                            <a href="{{ url('docs/services/'.request()->segment(3)) }}" class="btn btn-info float-left">Назад</a>
+                            <a href="{{ url('docs/services/'.request()->segment(3)) }}" class="btn btn-info float-left" style="margin-top:15px">Назад</a>
                         </div>
                     </div>
                 </div>
