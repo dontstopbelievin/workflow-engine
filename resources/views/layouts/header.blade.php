@@ -16,10 +16,8 @@
     padding: 20px;
 }
 .nav_left_form li:hover{
+    cursor: pointer;
     background-color: #0057A8;
-}
-.nav_left_form a:hover{
-    text-decoration: none!important;
 }
 </style>
 <nav class="navbar navbar-header navbar-expand-lg fixed-top" style="background: #0067B8!important; height: 60px;box-shadow: 0 2px 1px -1px #999; color:white!important;padding-left: 0px;">
@@ -36,17 +34,14 @@
         </div>
         @if(Auth::check())
             <ul class="navbar-nav nav_left_form" style="margin-left: 20px;">
-                <li class="nav-item {{request()->segment(1) == 'docs' ? 'active' : ''}}">
-                    <a href="{{url('docs')}}" class="navbar-left navbar-form nav-search">
-                    <b>ДОКУМЕНТЫ</b></a>
+                <li onclick="window.location='{{url('docs')}}'" class="nav-item {{request()->segment(1) == 'docs' ? 'active' : ''}}">
+                    <b>ДОКУМЕНТЫ</b>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="navbar-left navbar-form nav-search">
-                    <b>ОТЧЕТЫ</b></a>
+                    <b>ОТЧЕТЫ</b>
                 </li>
-                <li class="nav-item {{(request()->segment(1) == 'process') || (request()->segment(1) == 'admin') ? 'active' : ''}}">
-                    <a href="{{url('admin/process')}}" class="navbar-left navbar-form nav-search">
-                    <b>АДМИНИСТРИРОВАНИЕ</b></a>
+                <li onclick="window.location='{{url('admin/process')}}'" class="nav-item {{(request()->segment(1) == 'process') || (request()->segment(1) == 'admin') ? 'active' : ''}}">
+                    <b>АДМИНИСТРИРОВАНИЕ</b>
                 </li>
             </ul>
         @endif
