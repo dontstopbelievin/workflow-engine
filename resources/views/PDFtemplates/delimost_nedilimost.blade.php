@@ -27,7 +27,7 @@
                             </td>
                             <td></td>
                             <td style="text-align: right;">
-                                <p style="text-align: right;">{{ $updatedFields['applicant_address'] }}</p>
+                                <!-- <p style="text-align: right;">{{ $updatedFields['applicant_address'] }}</p> -->
                             </td>
                         </tr>
                     </table>

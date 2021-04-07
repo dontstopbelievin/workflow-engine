@@ -72,9 +72,10 @@ class ApplicationController extends Controller
                         ->whereJsonContains('statuses', $user->role_id)
                         ->where($tableName.'.current_order', '!=', '0')
                         ->where(function($q) use($tableName, $user){
-                            if($user->region == null || $user->region == '') return;
-                            $q->where($tableName.'.region', $user->region);
+                            $q->where($tableName.'.region', $user->region)
+                              ->orWhere($tableName.'.region', null);
                         });
+
         $allApplications = $this->getFieldsForView($allApplications, $tableName);
         if(sizeof($allApplications) > 0){
           foreach($allApplications as $app){
@@ -131,7 +132,7 @@ class ApplicationController extends Controller
 
     public function drafts(){
       $apps = [];
-      return view('application.applications', compact('apps')); 
+      return view('application.applications', compact('apps'));
     }
 
     public function archive(){
@@ -188,7 +189,7 @@ class ApplicationController extends Controller
             }
         }
 
-        $records = $this->getRecords($application->id, $table->id, $application->region);
+        $records = $this->getRecords($application->id, $table->id);
         $toCitizen = false;
 
         if(Auth::user()->role_id != 1){
@@ -269,7 +270,7 @@ class ApplicationController extends Controller
 
           $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
 
-          $this->insertLogs($user->role->name, 2, $role_status->id, $table->id, $application->id, $user->role_id, $currentRoleOrder, 0, '', "Согласовал(а) отказ");
+          $this->insertLogs($user->role->name, 2, $table->id, $application->id, $user->role_id, $currentRoleOrder, 0, '', "Согласовал(а) отказ");
 
           $nextRoleId = $this->getNextUnparallelRoleId($process, $currentRoleOrder, $request->application_id, $table->id);
 
@@ -364,10 +365,15 @@ class ApplicationController extends Controller
 
             $processRoles = array_values($this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table->id, $request->application_id, 1, $tableName));
             // dd($processRoles);
-            DB::table($tableName)
-                ->where('id', $request->application_id)
-                ->update(['statuses' => $processRoles]);
-
+            if(sizeof($processRoles) == 0){
+              DB::table($tableName)
+                  ->where('id', $request->application_id)
+                  ->update(['status_id' => 33, 'statuses' => '[]', 'current_order' => 0]);
+            }else{
+              DB::table($tableName)
+                  ->where('id', $request->application_id)
+                  ->update(['statuses' => $processRoles]);
+            }
             DB::commit();
         }catch (Exception $e) {
             DB::rollBack();
@@ -400,7 +406,7 @@ class ApplicationController extends Controller
           while(1){ // stop when next roles are obtained(without sync services)
             $processRoles = $this->get_roles_of_order($process->id, $currentRoleOrder+1)->toArray(); // find next roles
             if(sizeof($processRoles) == 0){ // if maximum order is reached
-              // send to citizen
+              return [];
               break;
             }else{
               $proceededRoles = $this->checkArrayOfServicesOrRoles($processRoles, $process, $currentRoleOrder+1, $table_id, $appl_id);
@@ -658,10 +664,15 @@ class ApplicationController extends Controller
                 $processRoles = $this->getProcessStatuses($tableName, $request->application_id);
                 $children = $this->getRoleChildren($process);
                 $processRoles = array_values($this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table->id, $request->application_id, 0, $tableName));
-
-                DB::table($tableName)
-                    ->where('id', $request->application_id)
-                    ->update(['statuses' => $processRoles]);
+                if(sizeof($processRoles) == 0){
+                  DB::table($tableName)
+                      ->where('id', $request->application_id)
+                      ->update(['status_id' => 32, 'statuses' => '[]', 'current_order' => 0]);
+                }else{
+                  DB::table($tableName)
+                      ->where('id', $request->application_id)
+                      ->update(['statuses' => $processRoles]);
+                }
             }
 
             DB::commit();
