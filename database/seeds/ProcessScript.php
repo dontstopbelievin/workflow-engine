@@ -108,7 +108,7 @@ class ProcessScript extends Seeder
         app('App\Http\Controllers\TemplateFieldController')->store($request);
         //add template field
         $request = new \Illuminate\Http\Request();
-        $request->replace(['fieldName' => 'cadastral_number', 'labelName' => 'Кадастровым номер', 'inputItem' => 1, 'insertItem' => 1, 'temp_id' => $template->id]);
+        $request->replace(['fieldName' => 'cadastral_number', 'labelName' => 'Кадастровый номер', 'inputItem' => 1, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
         //add template field
         $request = new \Illuminate\Http\Request();

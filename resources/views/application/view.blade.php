@@ -49,9 +49,10 @@
                             <!-- <h4 class="text-center">Поля заполненные специалистами</h4> -->
                             @isset($templateTableFields)
                                 @foreach($templateTableFields as $item)
-                                @if ((Auth::user()->role->name == 'Заявитель' && $item->to_citizen == 1) ||
+                                @if ((Auth::user()->role->name == 'Заявитель' && $item->to_citizen == 1 &&
+                                    $application->status_id == 33) ||
                                     Auth::user()->role->name != 'Заявитель')
-                                <b>{{$item->role_name}}</b>("{{$item->name}}"):
+                                <div style="padding: 10px;"><b>{{$item->role_name}}</b>("{{$item->name}}"):</div>
                                 <ul class="list-group" id="list">
                                     @if(count($item->fields) > 0)
                                         @foreach($item->fields as $key=>$value)
@@ -82,7 +83,9 @@
                                     <tr>
                                         <th style="width: 30%;">Кто</th>
                                         <th style="width: 30%;">Действие</th>
-                                        <th style="width: 30%;">Комментарии</th>
+                                        @if((Auth::user()->role->name != 'Заявитель'))
+                                            <th style="width: 30%;">Комментарии</th>
+                                        @endif
                                         <th style="width: 10%;">Время</th>
                                     </tr>
                                 </thead>
@@ -108,7 +111,9 @@
                                                 {{ $record["name"] }}
                                             @endif
                                             </td>
-                                            <td>{{$record["comment"]}}</td>
+                                            @if((Auth::user()->role->name != 'Заявитель'))
+                                                <td>{{$record["comment"]}}</td>
+                                            @endif
                                             <td>{{Carbon\Carbon::parse($record["created_at"])->format('d-m-Y h:i:s A')}}</td>
                                         </tr>
                                     @endforeach

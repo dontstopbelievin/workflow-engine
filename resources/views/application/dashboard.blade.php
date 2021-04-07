@@ -5,8 +5,76 @@
         <div class="content">
             <div class="container-fluid">
                 <div class="card">
+                    @if ((Auth::user()->role->name == 'Заявитель'))
                     <div class="card-header">
-                        <h4 class="page-title text-center">Список услуг</h4>
+                        <h4 class="page-title text-center">СПИСОК ПРЕДОСТАВЛЯЕМЫХ УСЛУГ ПОРТАЛОМ</h4>
+                        @if (session('status'))
+                            <div class="alert alert-success" role="alert">
+                                {{ session('status') }}
+                            </div>
+                        @endif
+                    </div>
+                    <div class="card-body">
+                        @if(Auth::user()->has_not_accepted_agreement === 1 && Auth::user()->name !== 'Admin')
+                            <div id="acceptModalId" class="modal" data-backdrop="static">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Внимание!</h5>
+
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Ведется логирование вашей учетной записи. Ваши действия записываются в базу данных. За любые противоправные действия на Портале, вы несете ответственность в соответствии с законодательством Республики Казахстан.
+                                        </div>
+                                        <div class="modal-footer" style="display: flex;justify-content: space-between;">
+                                            <div class="pull-right">
+                                                <button type="submit" class="btn btn-info btn-lg" id="acceptModalButton">Я согласен</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        @endif
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>НАИМЕНОВАНИЕ УСЛУГИ</th>
+                                    <th>ДЕЙСТВИЯ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($processes as $process)
+                                    <tr class="p-3 mb-5 rounded">
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $process->name }}</td>
+                                        @if ($process->name == 'Выдача выписки об учетной записи договора о долевом участии в жилищном строительства')
+                                            <td class="text-center align-middle border">
+                                                <button class="btn btn-simple-primary px-0 py-0"
+                                                    style=" background-color: transparent;font-size:30px;"
+                                                    onclick="window.location='http://qazreestr.kz:8180/rddu/private/cabinet.jsp'">
+                                                    <i class="la la-arrow-circle-o-right"></i>
+                                                </button>
+                                            </td>
+                                        @else
+                                            <td class="text-center align-middle border">
+                                                <button class="btn btn-simple-primary px-0 py-0"
+                                                    style=" background-color: transparent;font-size:30px;"
+                                                    onclick="window.location='{{ url('docs/index', ['process' => $process]) }}'">
+                                                    <i class="la la-arrow-circle-o-right"></i>
+                                                </button>
+                                            </td>
+                                        @endif
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    @else
+                    <div class="card-header">
+                        <h4 class="page-title text-center">СПИСОК ПРЕДОСТАВЛЯЕМЫХ УСЛУГ ПОРТАЛОМ</h4>
                         @if (session('status'))
                             <div class="alert alert-success" role="alert">
                                 {{ session('status') }}
@@ -92,36 +160,12 @@
                                     </div>
                                 </div>
                             </div>
-
-                        @endif
-                        @if(Auth::user()->has_not_accepted_agreement === 1 && Auth::user()->name !== 'Admin')
-                            <div id="acceptModalId" class="modal" data-backdrop="static">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Внимание!</h5>
-
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>Ведется логирование вашей учетной записи. Ваши действия записываются в базу данных. За любые противоправные действия на Портале, вы несете ответственность в соответствии с законодательством Республики Казахстан.
-                                        </div>
-                                        <div class="modal-footer" style="display: flex;justify-content: space-between;">
-                                            <div class="pull-right">
-                                                <button type="submit" class="btn btn-info btn-lg" id="acceptModalButton">Я согласен</button>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                         @endif
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>№</th>
                                     <th>НАИМЕНОВАНИЕ УСЛУГИ</th>
-                                    <th>ДЕЙСТВИЯ</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -129,28 +173,12 @@
                                     <tr class="p-3 mb-5 rounded">
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $process->name }}</td>
-                                        @if ($process->name == 'Выдача выписки об учетной записи договора о долевом участии в жилищном строительства')
-                                            <td class="text-center align-middle border">
-                                                <button class="btn btn-simple-primary px-0 py-0"
-                                                    style=" background-color: transparent;font-size:30px;"
-                                                    onclick="window.location='http://qazreestr.kz:8180/rddu/private/cabinet.jsp'">
-                                                    <i class="la la-arrow-circle-o-right"></i>
-                                                </button>
-                                            </td>
-                                        @else
-                                            <td class="text-center align-middle border">
-                                                <button class="btn btn-simple-primary px-0 py-0"
-                                                    style=" background-color: transparent;font-size:30px;"
-                                                    onclick="window.location='{{ url('docs/index', ['process' => $process]) }}'">
-                                                    <i class="la la-arrow-circle-o-right"></i>
-                                                </button>
-                                            </td>
-                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>

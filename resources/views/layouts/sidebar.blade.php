@@ -4,6 +4,7 @@
       request()->segment(1) == 'user' || request()->segment(1) == 'password'
       || request()->segment(1) == 'policy')
       <ul class="nav">
+      @if ((Auth::user()->role->name == 'Заявитель'))
         <li class="nav-item text-center">
           <button class="btn btn-primary" onclick="location.href='{{url('docs')}}';">
             <i class="fa fa-plus"></i>
@@ -11,6 +12,7 @@
           </button>
           <br><hr>
         </li>
+      @else
         <li class="nav-item {{request()->segment(3) == 'incoming' ? 'active' : ''}}">
           <a href="{{ url('docs/services/incoming') }}">
               <i class="la la-sign-out"></i>
@@ -23,6 +25,8 @@
               <p>Исходящие</p>
           </a>
         </li>
+      @endif
+      @if ((Auth::user()->role->name == 'Заявитель'))
         <li class="nav-item {{request()->segment(3) == 'mydocs' ? 'active' : ''}}">
           <a href="{{ url('docs/services/mydocs') }}">
               <i class="fa fa-book"></i>
@@ -35,12 +39,14 @@
               <p>Черновики</p>
           </a>
         </li>
+      @else
         <li class="nav-item {{request()->segment(3) == 'archive' ? 'active' : ''}}">
           <a href="{{ url('docs/services/archive') }}">
               <i class="fa fa-archive"></i>
               <p>Архив документов</p>
           </a>
         </li>
+      @endif
       </ul>
     @else
       <ul class="nav">
