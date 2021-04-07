@@ -10,14 +10,23 @@
         <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <h4 class="page-title">
-                    <a href="{{ url('docs/index/'.$process->id) }}" class="btn btn-info" style="margin-right: 10px;">Назад</a>Создание заявки "{{$process->name}}"
-                </h4>
-                @if (session('status'))
-                    <div class="alert alert-success" role="alert">
-                        {{ session('status') }}
+                <div class="row">
+                    <div class="col-md-2">
+                        <h4 class="page-title">
+                            <a href="{{ url('docs') }}" class="btn btn-primary" style="margin-right: 10px;">Назад</a>
+                        </h4>
                     </div>
-                @endif
+                    <div class="col-md-8">
+                        <h4 class="page-title text-center">
+                            Создание заявки "{{$process->name}}"
+                        </h4>
+                        @if (session('status'))
+                            <div class="alert alert-success" role="alert">
+                                {{ session('status') }}
+                            </div>
+                        @endif
+                    </div>
+                </div>
             </div>
             <div class="card-body">
               <div class="col-md-6">
@@ -46,7 +55,7 @@
                     @endforeach
                     <input type="hidden" name="process_id" value = {{$process->id}}>
                     <div style="margin-top: 20px">
-                        <button type="Submit" class="btn btn-secondary">Создать</button>
+                        <button type="Submit" class="btn btn-primary">Создать</button>
                     </div>
                 </form>
               </div>

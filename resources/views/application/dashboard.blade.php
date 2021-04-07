@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('title')
+Государственные услуги
+@endsection
+
 @section('content')
     <div class="main-panel">
         <div class="content">
@@ -7,7 +11,7 @@
                 <div class="card">
                     @if ((Auth::user()->role->name == 'Заявитель'))
                     <div class="card-header">
-                        <h4 class="page-title text-center">СПИСОК ПРЕДОСТАВЛЯЕМЫХ УСЛУГ ПОРТАЛОМ</h4>
+                        <h4 class="page-title text-center">ГОСУДАРСТВЕННЫЕ УСЛУГИ</h4>
                         @if (session('status'))
                             <div class="alert alert-success" role="alert">
                                 {{ session('status') }}
@@ -42,7 +46,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>НАИМЕНОВАНИЕ УСЛУГИ</th>
-                                    <th>ДЕЙСТВИЯ</th>
+                                    <th style="text-align:center;">СОЗДАТЬ</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -55,15 +59,15 @@
                                                 <button class="btn btn-simple-primary px-0 py-0"
                                                     style=" background-color: transparent;font-size:30px;"
                                                     onclick="window.location='http://qazreestr.kz:8180/rddu/private/cabinet.jsp'">
-                                                    <i class="la la-arrow-circle-o-right"></i>
+                                                    <i class="fa fa-file-text" aria-hidden="true"></i>
                                                 </button>
                                             </td>
                                         @else
                                             <td class="text-center align-middle border">
                                                 <button class="btn btn-simple-primary px-0 py-0"
                                                     style=" background-color: transparent;font-size:30px;"
-                                                    onclick="window.location='{{ url('docs/index', ['process' => $process]) }}'">
-                                                    <i class="la la-arrow-circle-o-right"></i>
+                                                    onclick="window.location='{{ url('docs/create', ['process' => $process]) }}'">
+                                                    <i class="fa fa-file-text" aria-hidden="true"></i>
                                                 </button>
                                             </td>
                                         @endif

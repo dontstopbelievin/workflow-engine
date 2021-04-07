@@ -2,7 +2,7 @@
   <div class="scrollbar-inner sidebar-wrapper" style="padding-top: 0px;">
     @if(request()->segment(1) == 'applications' || request()->segment(1) == 'docs' ||
       request()->segment(1) == 'user' || request()->segment(1) == 'password'
-      || request()->segment(1) == 'policy')
+      || request()->segment(1) == 'policy' || request()->segment(1) == '')
       <ul class="nav">
       @if ((Auth::user()->role->name == 'Заявитель'))
         <li class="nav-item text-center">

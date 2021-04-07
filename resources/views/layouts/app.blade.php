@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{url('assets/css/demo.css')}}">
     <link rel="stylesheet" href="{{url('css/font_awesome/css/font-awesome.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{url('css/custom.css?v=1.13')}}">
+    <title>@yield('title')</title>
 </head>
 <body>
     @if(Auth::check())

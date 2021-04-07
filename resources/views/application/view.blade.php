@@ -8,10 +8,7 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-3">
-                                <a href="{{ url('docs/services/'.request()->segment(3)) }}" class="btn btn-info float-left">Назад</a>
-                            </div>
-                            <div class="col-md-6">
-                              <h2 class="card-title text-center" style="margin-bottom: 20px;">Просмотр заявки</h2>
+                                <a href="{{ url('docs/services/'.request()->segment(3)) }}" class="btn btn-primary float-left">Назад</a>
                             </div>
                         </div>
                         @if (session('status'))
@@ -315,7 +312,7 @@
                                   @endif
                                 </div>
                             @endif
-                            <a href="{{ url('docs/services/'.request()->segment(3)) }}" class="btn btn-info float-left" style="margin-top:15px">Назад</a>
+                            <a href="{{ url('docs/services/'.request()->segment(3)) }}" class="btn btn-primary float-left" style="margin-top:15px">Назад</a>
                         </div>
                     </div>
                 </div>

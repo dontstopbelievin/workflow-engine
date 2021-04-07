@@ -56,7 +56,7 @@ Route::middleware(['guest'])->group(function () {
 
 Route::group(['middleware' => ['auth']], function () {
 
-    Route::get('/', 'ApplicationController@incoming');
+    Route::get('/', function () {return redirect('/docs');});
     Route::post('agreement_accept', 'ApplicationController@acceptAgreement');
 
     Route::prefix('password')->group(function () {

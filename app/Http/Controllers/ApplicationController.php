@@ -459,7 +459,7 @@ class ApplicationController extends Controller
         $arrayToFront = $this->addOptionsToDictionary($dictionaries);
         $roles = $this->get_roles_in_order($process->id);
         if(count($roles) == 0){
-            return Redirect::action([ApplicationController::class, 'index'], [$process])->with('status', 'Создайте сперва маршрут!');
+            return Redirect::action([ApplicationController::class, 'service'])->with('status', 'Создайте сперва маршрут!');
         }
         return view('application.create', compact('process', 'arrayToFront'));
     }

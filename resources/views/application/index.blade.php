@@ -11,23 +11,23 @@
           <div class="card">
             <div class="card-header">
               <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-2">
                   @if (Auth::user()->role->name === 'Заявитель')
-                    <a href="{{ url('docs/create', ['process' => $process]) }}" class="btn btn-info mb-3">Создать Заявку</a>
-                    <form action="{{ url('docs/search')}}" method="POST">
+                    <a href="{{ url('docs/create', ['process' => $process]) }}" class="btn btn-primary" style="margin-bottom: 10px">Создать Заявку</a>
+                    <form action="{{ url('docs/search')}}" method="POST" style="margin-bottom: 10px">
                         @csrf
                         <input type="hidden" name="processId" value="{{$process->id}}">
-                        <button class="btn btn-info" type="submit">Обновить</button>
+                        <button class="btn btn-primary" type="submit">Обновить</button>
                     </form>
                   @endif
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-8">
                   <h4 class="page-title text-center">
-                    Заявки по услуге "{{$process->name}}" 
+                    {{strtoupper($process->name)}}
                   </h4>
                 </div>
               </div>
-              @if (session('status'))
+              @if(session('status'))
                 <div class="alert alert-success" role="alert">
                     {{ session('status') }}
                 </div>
@@ -39,9 +39,9 @@
                       <thead>
                           <tr>
                               <th style="width:7%;">№</th>
-                              <th style="width:20%;">Имя заявителя</th>
-                              <th style="width:60%;">Статус заявки</th>
-                              <th style="width:13%;">Действия</th>
+                              <th style="width:20%;">ИМЯ ЗАЯВИТЕЛЯ</th>
+                              <th style="width:60%;">СТАТУС ЗАЯВКИ</th>
+                              <th style="width:13%;">ДЕЙСТВИЯ</th>
                           </tr>
                       </thead>
                       <tbody>
