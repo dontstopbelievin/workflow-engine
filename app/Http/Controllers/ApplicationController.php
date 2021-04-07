@@ -72,8 +72,8 @@ class ApplicationController extends Controller
                         ->whereJsonContains('statuses', $user->role_id)
                         ->where($tableName.'.current_order', '!=', '0')
                         ->where(function($q) use($tableName, $user){
-                            $q->where($tableName.'.region', $user->region)
-                              ->orWhere($tableName.'.region', null);
+                          if($user->region == null || $user->region == '') return;
+                          $q->where($tableName.'.region', $user->region);
                         });
 
         $allApplications = $this->getFieldsForView($allApplications, $tableName);
@@ -189,7 +189,7 @@ class ApplicationController extends Controller
             }
         }
 
-        $records = $this->getRecords($application->id, $table->id);
+        $records = $this->getRecords($application->id, $table->id, $application->region);
         $toCitizen = false;
 
         if(Auth::user()->role_id != 1){
