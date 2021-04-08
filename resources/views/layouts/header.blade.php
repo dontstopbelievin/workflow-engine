@@ -19,6 +19,20 @@
     cursor: pointer;
     background-color: #0057A8;
 }
+.nav-auth{
+    padding: 20px;
+}
+.nav-auth2{
+    padding: 10px;
+}
+.nav-auth2:hover{
+    cursor: pointer;
+    background-color: #0057A8;   
+}
+.nav-auth:hover{
+    cursor: pointer;
+    background-color: #0057A8;   
+}
 </style>
 <nav class="navbar navbar-header navbar-expand-lg fixed-top" style="background: #0067B8!important; height: 60px;box-shadow: 0 2px 1px -1px #999; color:white!important;padding-left: 0px;">
     <div class="container-fluid" style="padding-left: 0px;">
@@ -47,23 +61,22 @@
         @endif
         <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
             @guest
-            <li class="nav-item">
-              <a href="{{ route('login') }}">АВТОРИЗАЦИЯ</a>
+            <li class="nav-item nav-auth" onclick="window.location='{{ route('login') }}'">
+              <b>АВТОРИЗАЦИЯ</b>
             </li>
             @else
-            <li class="nav-item dropdown">
-              <a class="dropdown-toggle profile-pic float-right" data-toggle="dropdown" href="#" aria-expanded="false" data-toggle="dropdown" aria-haspopup="true" style="line-height: 100%;margin-top: 10px;">
-                <span style="color:white!important">{{ Auth::user()->name }}</span><br>
+            <li class="nav-item dropdown nav-auth2" data-toggle="dropdown">
+                <span style="color:white!important"><b>{{ Auth::user()->name }}</b></span><br>
                 <small>
                     @if(mb_strlen(Auth::user()->role->name, 'UTF-8') > 25)
                         <span data-toggle="tooltip" title="{{Auth::user()->role->name}}" style="color:white!important;">
-                              ({{mb_substr(Auth::user()->role->name, 0, 25, 'utf-8')}}...)
+                              <b>({{mb_substr(Auth::user()->role->name, 0, 25, 'utf-8')}}...)</b>
                         </span>
                     @else
-                        ({{ Auth::user()->role->name }})
+                        <b>({{ Auth::user()->role->name }})</b>
                     @endif
                 </small>
-              </a>
+
               <ul class="dropdown-menu dropdown-user">
                 <li><a class="dropdown-item" href="{{ url('user/personal_area') }}">Мои данные</a></li>
                 <li><a class="dropdown-item" href="{{ url('user/edit', ['user' => Auth::user()]) }}">Редактировать данные</a></li>
