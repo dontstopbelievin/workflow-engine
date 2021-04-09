@@ -22,8 +22,7 @@ class AisGzkGetterFromMioService extends ShepService implements XmlBuilderInterf
         include_once app_path('Integrations/shep/arrays/gzk-getter-from-mio.php');
         $sUnsignedXml = ShepUtil::arrayToXML($aData);
         $sSignedBusinessDataXml = ShepUtil::signXmlJar('<wrapper>' . $sUnsignedXml . '</wrapper>');
-        print_r($sSignedBusinessDataXml); exit;
-        preg_match('/(<wrapper[^>]*>)(.*?)(<\/wrapper>)/', $sSignedBusinessDataXml, $aSignedBusinessDataXml);
+        preg_match('/(<wrapper[^>]*>)(.*?)(<\/wrapper>)/s', $sSignedBusinessDataXml, $aSignedBusinessDataXml);
         $sSignedBusinessDataXml = $aSignedBusinessDataXml[2];
         $sRequestXml = ShepXmlUtil::getSoapRequest(self::SERVICE_ID, $sSignedBusinessDataXml);
         $sRequestXml = str_replace('<data>', '<data xmlns:gzk="http://aisgzk.kz/integrations/v2019" xsi:type="gzk:GISendDataRequest">', $sRequestXml);
