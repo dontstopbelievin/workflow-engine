@@ -4,6 +4,7 @@ namespace App\Integrations\shep\sender;
 
 use App\Integrations\shep\sender\services\AisGzkGetDataService;
 use App\Integrations\shep\sender\services\AisGzkGetRelevanceService;
+use App\Integrations\shep\sender\services\AisGzkGetterFromMioService;
 use App\Integrations\shep\sender\services\EdsTempFilesService;
 use App\Integrations\shep\sender\services\EgknUniversalReceiveOrderService;
 use App\Integrations\shep\sender\services\EgknUniversalReceiveStatusService;
@@ -32,6 +33,8 @@ class ShepServiceFactory
                 return new AisGzkGetDataService();
             case 'ais_gzk_get_relevance':
                 return new AisGzkGetRelevanceService();
+            case 'ais_gzk_getter_from_mio':
+                return new AisGzkGetterFromMioService();
             default:
                 throw new \Exception('Не найден сервис ' . $sServiceName);
         }
