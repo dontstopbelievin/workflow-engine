@@ -17,7 +17,7 @@
 }
 .nav_left_form li:hover{
     cursor: pointer;
-    background-color: #0057A8;
+    background-color: #004798;
 }
 .nav-auth{
     padding: 20px;
@@ -27,11 +27,11 @@
 }
 .nav-auth2:hover{
     cursor: pointer;
-    background-color: #0057A8;   
+    background-color: #004798;   
 }
 .nav-auth:hover{
     cursor: pointer;
-    background-color: #0057A8;   
+    background-color: #004798;   
 }
 </style>
 <nav class="navbar navbar-header navbar-expand-lg fixed-top" style="background: #0067B8!important; height: 60px;box-shadow: 0 2px 1px -1px #999; color:white!important;padding-left: 0px;">

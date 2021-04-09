@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\View;
 
 Auth::routes();
 
+Route::get('/map', function () {return view('layouts.map');});
 Route::get('/policy', function () {return view('policy');});
 Route::get('/list', function () {return view('list.list');});
 Route::get('/verification/{p}/{a}/{t}', 'ApplicationController@verification');
