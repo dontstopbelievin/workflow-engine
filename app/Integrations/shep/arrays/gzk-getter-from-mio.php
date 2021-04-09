@@ -1,8 +1,8 @@
 <?php
 
 $aData = [
-    'PushId' => '',
-    'FromUser' => '',
+    'PushId' => 'PushId1',
+    'FromUser' => 'Геопортал города Нур-Султан',
     'PushFinish' => 'true', //Признак завершения выгрузки с одним PushId
     'BinaryData' => 'AAECAwQFBgcICQoLDA0ODw==', //shape-файл
     [
