@@ -18,7 +18,7 @@ class GeoportalGzkGetDataStrategy implements ShepServiceStrategyInterface
 
     public function receive()
     {
-        $aResponse = array(
+        $aResponse = [
             'PushId' => '221',
             'DataCount' => '',
             [
@@ -186,7 +186,7 @@ class GeoportalGzkGetDataStrategy implements ShepServiceStrategyInterface
                     'Size' => '10'
                 ]
             ]
-        );
+        ];
         $sResponseXml = ShepUtil::arrayToXML($aResponse);
         $sResponseXml = ShepXmlUtil::getSoapResponse('SCSS001', 'Запрос выполнен успешно', $sResponseXml);
         $sResponseXml = str_replace('<data>', '<data xmlns:gzk="http://aisgzk.kz/integrations/v2019" xsi:type="gzk:GIDataResponse">', $sResponseXml);
