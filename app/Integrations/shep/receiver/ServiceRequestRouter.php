@@ -3,6 +3,8 @@
 namespace App\Integrations\shep\receiver;
 
 use App\Integrations\shep\receiver\services\EgknGeoportalActualizationStrategy;
+use App\Integrations\shep\receiver\services\GeoportalGzkGetDataStrategy;
+use App\Integrations\shep\receiver\services\GeoportalGzkGetRelevanceStrategy;
 use App\Integrations\shep\receiver\services\GeoportalPEPAsyncRequestStrategy;
 use App\Integrations\shep\receiver\services\GetGeoDataFromGzkToGeoportalStrategy;
 use App\Integrations\shep\ShepUtil;
@@ -34,6 +36,12 @@ class ServiceRequestRouter
                     break;
                 case 'GetGeoDataFromGzkToGeoportal':
                     $oShepServiceStrategy = new GetGeoDataFromGzkToGeoportalStrategy($aResponseData);
+                    break;
+                case 'GeoportalGzkGetData':
+                    $oShepServiceStrategy = new GeoportalGzkGetDataStrategy($aResponseData);
+                    break;
+                case 'GeoportalGzkGetRelevance':
+                    $oShepServiceStrategy = new GeoportalGzkGetRelevanceStrategy($aResponseData);
                     break;
                 default:
                     throw new \SoapFault('Server', 'No service found');
