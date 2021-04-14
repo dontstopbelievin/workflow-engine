@@ -23,8 +23,8 @@ class EdsSignController extends Controller
         $oNca = new PhpNCANode\NCANodeClient('http://95.59.124.162:14579'); //95.59.124.162 когда локально
         $oPkcs12Info = $oNca->x509Info($replacedXml);
 
-        if ($oPkcs12Info->isLegalFix() === true) {
-            if ($oPkcs12Info->isExpiredFix($oDate) === false) {
+        if ($oPkcs12Info->isLegal() === true) {
+            if ($oPkcs12Info->isExpired($oDate) === false) {
                 $aCertRaws = $oPkcs12Info->getRaw();
                 if (isset($aCertRaws['subject']['iin'])) {
                     $sIin = $aCertRaws['subject']['iin'];

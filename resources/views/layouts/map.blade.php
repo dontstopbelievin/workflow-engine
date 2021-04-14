@@ -21,6 +21,9 @@
   	height: 100%!important;
   	width: 100%;
 }
+.esri-component.esri-editor{
+  width: 400px!important;
+}
 </style>
 <div class="main-panel">
   	<div class="content">
@@ -80,7 +83,7 @@
     ], function(esriConfig,Map, MapView, Graphic, GraphicsLayer, FeatureLayer, 
       Editor, LayerList, Sketch, GraphicsLayer, Fullscreen) {
 
-  var g_layer = new GraphicsLayer({});
+  // var g_layer = new GraphicsLayer({});
 
   const add_layer = (url, check = false) => {
     let layer = new FeatureLayer({
@@ -136,31 +139,48 @@
       },
       scale: 100000
   })
-  window.map.add(g_layer);
-  // let url = 'https://gis.esaulet.kz/server/rest/services/Hosted/Пустой_слой/FeatureServer'
-  let url = 'https://services5.arcgis.com/F4L2sw7TTOlSm1OJ/arcgis/rest/services/Слои_по_карте_земельных_отношений/FeatureServer'
+  // window.map.add(g_layer)
+  let url = 'https://gis.esaulet.kz/server/rest/services/Hosted/Пустой_слой/FeatureServer'
+  // // let url = 'https://services5.arcgis.com/F4L2sw7TTOlSm1OJ/arcgis/rest/services/Слои_по_карте_земельных_отношений/FeatureServer'
 
-  for (var i = 1; i < 7; i++){
-    if(i == 1){
-      add_layer(url+'/'+i, true)
-    }else{
-      add_layer(url+'/'+i)
-    }
+  // for (var i = 0; i < 1; i++){
+  //     add_layer(url+'/'+i)
+  // }
+  let land_layer = new FeatureLayer({
+      url: url+'/0',
+  })
+  var template = {
+      lastEditInfoEnabled: false,
+      title: land_layer.name,
+      content: get_fields(land_layer.fields)
   }
+  land_layer.popupTemplate = template
+  existLayerReplace(land_layer)
 
   let fullscreen = new Fullscreen({
     view: window.view
   });
-  window.view.ui.add(fullscreen, "top-left");
-  window.view.when(function() {
-    var layerList = new LayerList({
-      view: window.view
-    });
-    window.view.ui.add(layerList, "top-right");
-  });
+  window.view.ui.add(fullscreen, "top-right");
+
+  // window.view.when(function() {
+  //   var layerList = new LayerList({
+  //     view: window.view
+  //   });
+  //   window.view.ui.add(layerList, "top-right");
+  // });
 
   const editor = new Editor({
-    view: window.view
+    view: window.view,
+    layer: land_layer, // pass in the feature layer
+    fieldConfig: [ // Specify which fields to configure
+      {
+        name: "name",
+        label: "name"
+      },
+      {
+        name: "floor",
+        label: "floor"
+      }],
   });
   window.view.ui.add(editor, "top-right");
 
