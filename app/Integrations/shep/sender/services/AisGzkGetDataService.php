@@ -10,7 +10,7 @@ use App\Integrations\shep\ShepXmlUtil;
 class AisGzkGetDataService extends ShepService implements XmlBuilderInterface
 {
     const SERVICE_TYPE = 'sync';
-    const SERVICE_ID = 'GzkGetData';
+    const SERVICE_ID = 'GeoportalGzkGetData';
 
     public function __construct($sShepUrl = null)
     {
