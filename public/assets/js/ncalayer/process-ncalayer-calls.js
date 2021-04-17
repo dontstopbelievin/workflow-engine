@@ -8,7 +8,7 @@ function getActiveTokensBack(result) {
     if (result['code'] === "500") {
         alert(result['message']);
     } else if (result['code'] === "200") {
-        var listOfTokens = result['responseObject'];        
+        var listOfTokens = result['responseObject'];
         $('#storageSelect').empty();
         $('#storageSelect').append('<option value="PKCS12">PKCS12</option>');
         for (var i = 0; i < listOfTokens.length; i++) {
@@ -75,26 +75,82 @@ function signXmlCall() {
     var selectedStorage = $('#storageSelect').val();
 	blockScreen();
     signXml(selectedStorage, "SIGNATURE", xmlToSign, "signXmlBack");
-
 }
 
 function signXmlBack(result) {
-	unblockScreen();
-    if (result['code'] === "500") {
-        alert(result['message']);
-    } else if (result['code'] === "200") {
-        var res = result['responseObject'];
-        $("#notsignedXml").attr("disabled", true);
-        $.ajax( {
-            url        : '/testpage/xmlVerification',
-            method     : 'post',
-            data       : { "_token" : $('meta[name="csrf-token"]').attr('content'), signedXml: res, doc_id: $('#doc_id').val()},
-            success: function(response){
-                alert('Документ подписан!');
-            }
-        } );
-        $("#signedXml").val(res);
-    }
+ unblockScreen();
+   if (result['code'] === "500") {
+       alert(result['message']);
+   } else if (result['code'] === "200") {
+       var res = result['responseObject'];
+       var processId = $('#processId').val();
+       var application_id = $('#application_id').val();
+       var urlToSend = $('#urlToSend').val();
+
+
+       var determineApproveOrReject = urlToSend.split("/")[1];
+       // form the formData
+       let formData = new FormData();
+       let comments = $('#comments').val();
+       let inputs = $('#templateFieldsId :input');
+       var processId = $('#processId').val();
+       var application_id = $('#application_id').val();
+       var rejectReason = $('#rejectReason').val();
+       var motiv_otkaz = $('#motiv_otkaz').val();
+
+       if(determineApproveOrReject == 'reject'){
+         formData.append('rejectReason',rejectReason);
+         formData.append('motiv_otkaz',motiv_otkaz);
+         console.log("reject");
+         console.log(rejectReason);
+         console.log(motiv_otkaz);
+       }else if(determineApproveOrReject == 'approve'){
+         formData.append('comments', comments);
+         inputs.each(function() {
+             if ('files' in $(this)[0] && $(this)[0].files != null) {
+                 var file = $('input[type=file]')[0].files[0];
+                 if(file!==undefined) {
+                     formData.append(this.name, file);
+                 }
+             } else {
+                 formData.append(this.name, $(this).val());
+             }
+         });
+         console.log("approve");
+       }else if(determineApproveOrReject == 'toCitizen'){
+         formData.append('answer', $('#answer').val());
+         formData.append('comments', $('#lastComments').val());
+       }
+
+       formData.append('process_id', processId);
+       formData.append('application_id', application_id);
+       formData.append('_token', $('input[name=_token]').val());
+       // end of forming the formData
+
+
+       // create document
+       $.ajax({
+           url        : '/docs/xmlVerification',
+           method     : 'post',
+           data       : { "_token" : $('meta[name="csrf-token"]').attr('content'), signedXml: res, processId: processId, applicationId: application_id},
+           success: function(response){
+               alert('Документ подписан!');
+               // send to corresponding function of ApplicationController
+               var xhr = new XMLHttpRequest();
+               xhr.open("post", "/" + urlToSend, true);
+               xhr.setRequestHeader("Authorization", "Bearer " + $('input[name=_token]').val() );
+               xhr.onload = function () {
+                   if(xhr.status == 200){
+                       location.reload();
+                   }else{
+                       console.log(xhr.responseText);
+                   }
+               }.bind(this)
+               xhr.send(formData);
+           }
+         });
+
+     }
 }
 
 function signXmlsCall() {

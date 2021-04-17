@@ -388,4 +388,32 @@ trait dbQueries
 
         return 'wf_tt_'.$name;
     }
+
+    public function xmlGenerator($aData)
+    {
+        $xmlstr = "<?xml version='1.0' encoding='UTF-8' standalone='no'?><root><dataToSign>";
+        if (isset($aData) && count($aData)) {
+            foreach ($aData as $sKey => $sData) {
+              if(is_array($sData)){
+                // dd($sData);
+                $sData = $this->convertArrayToXmlString($sData);
+              }
+              $xmlstr .= "<".$sKey.">".$sData."</".$sKey.">";
+            }
+        }
+        $xmlstr .= "</dataToSign></root>";
+        return $xmlstr;
+    }
+
+    private function convertArrayToXmlString($aData){ // should return string
+      $xmlstr = "";
+      foreach ($aData as $sKey => $sData) {
+        if(is_array($sData)){
+          $sData = $this->convertArrayToXmlString($sData);
+        }
+        $xmlstr .= "<".$sKey.">".$sData."</".$sKey.">";
+      }
+      return $xmlstr;
+    }
+
 }
