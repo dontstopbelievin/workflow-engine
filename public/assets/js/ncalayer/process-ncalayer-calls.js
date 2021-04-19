@@ -18,17 +18,22 @@ function getActiveTokensBack(result) {
 }
 
 function getKeyInfoCall() {
+    alert('sula');
     blockScreen();
     var selectedStorage = $('#storageSelect').val();
     getKeyInfo(selectedStorage, "getKeyInfoBack");
+    console.log('end1')
 }
 
 function getKeyInfoBack(result) {
     unblockScreen();
+    console.log('start2')
     if (result['code'] === "500") {
         alert(result['message']);
     } else if (result['code'] === "200") {
+        console.log('start1')
         var res = result['responseObject'];
+        console.log(result)
 
         var alias = res['alias'];
         $("#alias").val(alias);
@@ -73,9 +78,9 @@ function getKeyInfoBack(result) {
 function signXmlCall() {
     var xmlToSign = $("#xmlToSign").val();
     var selectedStorage = $('#storageSelect').val();
+    console.log();
 	blockScreen();
-    signXml(selectedStorage, "SIGNATURE", xmlToSign, "signXmlBack");
-
+    let x = signXml(selectedStorage, "SIGNATURE", xmlToSign, "signXmlBack");
 }
 
 function signXmlBack(result) {
@@ -91,6 +96,7 @@ function signXmlBack(result) {
             data       : { "_token" : $('meta[name="csrf-token"]').attr('content'), signedXml: res, doc_id: $('#doc_id').val()},
             success: function(response){
                 alert('Документ подписан!');
+                get_alert();
             }
         } );
         $("#signedXml").val(res);

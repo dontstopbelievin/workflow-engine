@@ -30,7 +30,6 @@ class HomeController extends Controller
     }
 
     public function sendNotification()
-
     {
 
         $user = User::find(29);
@@ -60,7 +59,29 @@ class HomeController extends Controller
 
 
         dd('done');
-
     }
 
+    public function get_token(){
+        $client = new \GuzzleHttp\Client();
+        $url = 'https://gis.esaulet.kz/portal/sharing/rest/generateToken';
+        $user = 'b.amirzhan';
+        $response = $client->request(
+            'POST',
+            $url,
+            [
+                'form_params' => [
+                    'username' => $user,
+                    'password' => 'ewRKSXq8',
+                    'client' => 'referer',
+                    'ip' => '',
+                    'referer' => 'http://workflow.back',
+                    'expiration' => 1440,
+                    'f' => 'pjson',
+                ]
+            ]
+        );
+        $result = json_decode($response->getBody(), true);
+        $result['user'] = $user;
+        return $result;
+    }
 }

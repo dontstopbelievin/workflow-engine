@@ -59,6 +59,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/', function () {return redirect('/docs');});
     Route::post('agreement_accept', 'ApplicationController@acceptAgreement');
+    Route::get('/get_token', 'HomeController@get_token');
 
     Route::prefix('password')->group(function () {
         Route::get('/expired', 'Auth\ExpiredPasswordController@expired');
