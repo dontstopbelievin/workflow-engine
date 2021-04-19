@@ -78,7 +78,6 @@ function getKeyInfoBack(result) {
 function signXmlCall() {
     var xmlToSign = $("#xmlToSign").val();
     var selectedStorage = $('#storageSelect').val();
-    console.log();
 	blockScreen();
     signXml(selectedStorage, "SIGNATURE", xmlToSign, "signXmlBack");
 }

@@ -444,7 +444,6 @@
                     document.getElementById("urlToSend").value = "docs/approve";
                     signXmlCall();
                 });
-
             });
         });
     </script>

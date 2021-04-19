@@ -12,9 +12,9 @@ class File extends Model
 {
     public static function addXmlItem($name, $category, $url, $content)
     {
-        $file_name =$name;
+        $file_name = $name;
         $file_url = $url . '/' . $file_name . '.xml';
-        $hash = bcrypt($file_url . microtime());
+        $hash = bcrypt($file_name . microtime());
 
         // dd($file_url);
         Storage::put($file_url, $content);
