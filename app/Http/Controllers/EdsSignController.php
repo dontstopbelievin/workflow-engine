@@ -8,9 +8,12 @@ use App\FileCategory;
 use App\Libs\PhpNCANode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use App\Traits\dbQueries;
 
 class EdsSignController extends Controller
 {
+    use dbQueries;
+
     public function loginByCert(Request $request)
     {
 //        dd($request->all());
@@ -102,7 +105,6 @@ class EdsSignController extends Controller
         $oNca = new PhpNCANode\NCANodeClient('http://95.59.124.162:14579');
         $signedXml = $request->signedXml;
         $xmlVerification = $oNca->xmlVerify($signedXml);
-        $doc_id = $request->doc_id;
         if ($xmlVerification->isValid() === true) {
             $oCertInfo = $xmlVerification->getCert();
             if (!empty($oCertInfo)) {
@@ -126,8 +128,11 @@ class EdsSignController extends Controller
     public function signSave(Request $request)
     {
         $input = $request->all();
-
-        $file = File::addXmlItem('example_xml', FileCategory::XML, 'sign_files/' . $input['doc_id'], $input['signedXml']);
+        $application_id = $request->applicationId;
+        $process_id =  $request->processId;
+        $role_id = Auth::user()->role_id;
+        $path = 'sign_files/' . $process_id . '/' . $application_id;
+        $file = File::addXmlItem($role_id, FileCategory::XML, $path, $input['signedXml']);
 
         if (!$file) {
             throw new \Exception('Не удалось сохранить модель File');
@@ -135,16 +140,6 @@ class EdsSignController extends Controller
         return response (['message'=>'Документ подписан!'], 200);
     }
 
-    public function xmlGenerator($aData)
-    {
-        $xmlstr = "<?xml version='1.0' encoding='UTF-8' standalone='no'?><root><dataToSign>";
-        if (isset($aData) && count($aData)) {
-            foreach ($aData as $sKey => $sData) {
-                $xmlstr .= "<".$sKey.">".$sData."</".$sKey.">";
-            }
-        }
-        $xmlstr .= "</dataToSign></root>";
-        return $xmlstr;
-    }
+
 
 }

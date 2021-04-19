@@ -236,6 +236,36 @@ class ApplicationController extends Controller
         return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen', 'rolesToRevision', 'records', 'buttons', 'aRowNameRows','application_arr'));
     }
 
+    public function getXML(Request $request){
+      $process = Process::find($request->processId);
+      $tableName = $this->getTableName($process->name);
+      $application = DB::table($tableName)->where('id', $request->applicationId)->first();
+
+      $aApplicationRows = $this->getRowsForEcp($tableName, $request->processId, $request->applicationId, $application->current_order);
+      $aApplicationXmlRows = $this->xmlGenerator($aApplicationRows);
+
+      return $aApplicationXmlRows;
+    }
+
+    public function getRowsForEcp($tableName, $processId, $applicationId, $current_order){
+        $application = DB::table($tableName)->select($this->getColumns($tableName))->where('id', $applicationId)->first();
+        $application->application_id = $applicationId;
+        $application->process_id = $processId;
+        $application->role_id = Auth::user()->role_id;
+        $application->templates = [];
+        // get templates
+        $templates = Template::where('process_id', $processId)->get();
+        // $templates = Template::where('process_id', $processId)->where('order', '<=', $current_order)->get();
+
+        foreach ($templates as $key => $template) {
+            $template_table = $template->table_name;
+            $docs = DB::table($template_table)->get()->toArray();
+            $application->templates[$template_table] = $docs;
+        }
+        // dd($application);
+        return json_decode(json_encode($application), true);
+    }
+
     public function acceptAgreement(Request $request)
     {
         if ($request->accepted) {
@@ -261,7 +291,7 @@ class ApplicationController extends Controller
       try {
           DB::beginTransaction();
 
-          $process = Process::find($request->processId);
+          $process = Process::find($request->process_id);
           $tableName = $this->getTableName($process->name);
           $application = DB::table($tableName)->where('id', $request->application_id)->first();
           $table = CreatedTable::where('name', $tableName)->first();
@@ -590,7 +620,7 @@ class ApplicationController extends Controller
         return Redirect::to('docs')->with('status', 'Заявки Успешно созданы (' . $countApp . ')');
     }
 
-    public function toCitizen($id, Request $request)
+    public function toCitizen(Request $request)
     {
       try {
           DB::beginTransaction();
@@ -614,7 +644,7 @@ class ApplicationController extends Controller
           $statusId = ($approveOrReject == 0) ? 32 : 33;
           $status = Status::find($statusId);
           $affected = DB::table($tableName)
-              ->where('id', $id)
+              ->where('id', $applicationId)
               ->update(['status_id' => $statusId, 'current_order' => 0, 'statuses' => '[]']);
 
           DB::commit();
@@ -639,7 +669,7 @@ class ApplicationController extends Controller
     {
         try {
             DB::beginTransaction();
-            $process = Process::find($request->processId);
+            $process = Process::find($request->process_id);
             $tableName = $this->getTableName($process->name);
             $application = DB::table($tableName)->where('id', $request->application_id)->first();
             $table = CreatedTable::where('name', $tableName)->first();

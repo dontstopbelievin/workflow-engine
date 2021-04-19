@@ -75,10 +75,12 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/reject', 'ApplicationController@reject');
         Route::post('/revision', 'ApplicationController@revision');
         Route::post('/approveReject', 'ApplicationController@approveReject');
-        Route::post('/toCitizen/{application_id}', 'ApplicationController@toCitizen');
+        Route::post('/toCitizen', 'ApplicationController@toCitizen');
         Route::get('/download/{file}', 'ApplicationController@download');
         Route::get('/view/{process_id}/{application_id}', 'ApplicationController@view');
         Route::get('/create/{process}', 'ApplicationController@create');
+        Route::post('/getXML', 'ApplicationController@getXML');
+        Route::post('/xmlVerification', 'EdsSignController@signVerify');
         Route::prefix('services')->group(function () {
           Route::prefix('incoming')->group(function () {
             Route::get('/', 'ApplicationController@incoming');

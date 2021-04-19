@@ -200,6 +200,22 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- sign ecp -->
+                        <div class="form-group" style="display:none;">
+                            <label for="inputType">Выберите Тип Вводимого</label>
+                            <select id="storageSelect" name="inputType" class="form-control">
+                                <option value="PKCS12" selected>PKCS12</option>
+                            </select>
+                        </div>
+                        <div style="display:none;">
+                            <textarea class="form-control" id="xmlToSign" readonly placeholder="<xml>...</xml>" rows="3"></textarea>
+                        </div>
+                        <div style="display:none;">
+                            <textarea class="form-control" id="urlToSend" readonly rows="3"></textarea>
+                        </div>
+                        <!-- sign ecp -->
+
                         <div>
                             @if($canApprove)
                                 @if (isset($templateFields) && $application->reject_reason == null)
@@ -259,21 +275,18 @@
                                 <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
                                   @if($application->reject_reason == null)
                                       @if($toCitizen)
-                                          <form action="{{ url('docs/toCitizen', ['application_id' => $application->id]) }}" method="post">
-                                              @csrf
+                                              <input type="hidden" id="answer" value ="1">
                                               <input type="hidden" name="process_id" value = {{$process->id}}>
                                               <input type="hidden" name="application_id" value = {{$application->id}}>
-                                              <input type="hidden" name="answer" value = "1">
                                               <div class="form-group row">
                                                   <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Комментарий") }}</label>
                                                   <div class="col-md-6">
-                                                      <input type="text" id="comments" class="form-control" name="comments"  autocomplete="comments" autofocus>
+                                                      <input type="text" id="lastComments" class="form-control" name="lastComments"  autocomplete="comments" autofocus>
                                                   </div>
                                               </div>
                                               <div style="text-align: center">
-                                                  <button class="btn btn-success" style="margin-top: 30px;margin-bottom: 30px;" type="submit">Согласовать и отправить заявителю</button>
+                                                <button class="btn btn-success" data-dismiss="modal" id="toCitizen">Согласовать и отправить заявителю</button>
                                               </div>
-                                          </form>
                                       @else
                                           <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
                                       @endif
@@ -289,21 +302,18 @@
                                       @endif
                                   @else
                                     @if($toCitizen)
-                                      <form action="{{ url('docs/toCitizen', ['application_id' => $application->id]) }}" method="post">
-                                          @csrf
+                                          <input type="hidden" id="answer" value ="0">
                                           <input type="hidden" name="process_id" value = {{$process->id}}>
                                           <input type="hidden" name="application_id" value = {{$application->id}}>
-                                          <input type="hidden" name="answer" value = "0">
                                           <div class="form-group row">
                                               <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Комментарий") }}</label>
                                               <div class="col-md-6">
-                                                  <input type="text" id="comments" class="form-control" name="comments"  autocomplete="comments" autofocus>
+                                                  <input type="text" id="lastComments" class="form-control" name="lastComments"  autocomplete="comments" autofocus>
                                               </div>
                                           </div>
                                           <div style="text-align: center">
-                                              <button class="btn btn-danger" style="margin-top: 30px;margin-bottom: 30px;" type="submit">Отправить заявителю с отказом</button>
+                                            <button class="btn btn-danger" data-dismiss="modal" id="toCitizen">Отправить заявителю с отказом</button>
                                           </div>
-                                      </form>
                                     @else
                                         <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
                                         <input type="hidden" id="application_id" name="application_id" value = {{$application->id}}>
@@ -358,19 +368,55 @@
                 var motiv_otkaz = $('#motiv_otkaz').val();
                 var processId = $('#processId').val();
                 var application_id = $('#application_id').val();
-                console.log(rejectReason, processId, application_id)
-                $.post('/docs/reject', {'rejectReason':rejectReason,'motiv_otkaz':motiv_otkaz,'processId':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
-                    location.reload();
-                });
+
+                if(motiv_otkaz == 1){
+                  $.ajax({
+                    method: "POST",
+                    url: "/docs/getXML",
+                    data: { 'processId':processId,'applicationId':application_id,'_token':$('input[name=_token]').val() }
+                  }).then(function(data){
+                      document.getElementById("xmlToSign").value = data;
+                      document.getElementById("urlToSend").value = "docs/reject";
+                      signXmlCall();
+                  });
+                } else{
+                  $.post('/docs/reject', {'rejectReason':rejectReason,'motiv_otkaz':motiv_otkaz,'processId':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
+                      location.reload();
+                  });
+                }
+
             });
 
             $('#approveReject').click(function(event) {
                 var processId = $('#processId').val();
                 var application_id = $('#application_id').val();
-                console.log(processId, application_id)
-                $.post('/docs/approveReject', {'processId':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
-                    location.reload();
+
+                $.ajax({
+                  method: "POST",
+                  url: "/docs/getXML",
+                  data: { 'processId':processId,'applicationId':application_id,'_token':$('input[name=_token]').val() }
+                }).then(function(data){
+                    document.getElementById("xmlToSign").value = data;
+                    document.getElementById("urlToSend").value = "docs/approveReject";
+                    signXmlCall();
                 });
+
+            });
+
+            $('#toCitizen').click(function(event) {
+                var processId = $('#processId').val();
+                var application_id = $('#application_id').val();
+
+                $.ajax({
+                  method: "POST",
+                  url: "/docs/getXML",
+                  data: { 'processId':processId,'applicationId':application_id,'_token':$('input[name=_token]').val() }
+                }).then(function(data){
+                    document.getElementById("xmlToSign").value = data;
+                    document.getElementById("urlToSend").value = "docs/toCitizen";
+                    signXmlCall();
+                });
+
             });
 
             $('#revisionButton').click(function(event) {
@@ -384,37 +430,21 @@
             });
 
             $('#commentButton').click(function(event) {
-                // event.preventDefault();
-                let formData = new FormData();
-                let comments = $('#comments').val();
-                let inputs = $('#templateFieldsId :input');
-                formData.append('comments', comments);
-                formData.append('process_id', $('#processId').val())
-                formData.append('application_id', $('#application_id').val())
-                inputs.each(function() {
-                    if ('files' in $(this)[0] && $(this)[0].files != null) {
-                        var file = $('input[type=file]')[0].files[0];
-                        if(file!==undefined) {
-                            formData.append(this.name, file);
-                        }
-                    } else {
-                        formData.append(this.name, $(this).val());
-                    }
+
+                var processId = $('#processId').val();
+                var application_id = $('#application_id').val();
+
+                // get xml and sendXmlCall: processId, applicationId
+                $.ajax({
+                  method: "POST",
+                  url: "/docs/getXML",
+                  data: { 'processId':processId,'applicationId':application_id,'_token':$('input[name=_token]').val() }
+                }).then(function(data){
+                    document.getElementById("xmlToSign").value = data;
+                    document.getElementById("urlToSend").value = "docs/approve";
+                    signXmlCall();
                 });
 
-
-                formData.append('_token', $('input[name=_token]').val());
-                var xhr = new XMLHttpRequest();
-                xhr.open("post", "{{url('docs/approve')}}", true);
-                xhr.setRequestHeader("Authorization", "Bearer " + "{{csrf_token()}}");
-                xhr.onload = function () {
-                    if(xhr.status == 200){
-                        location.reload();
-                    }else{
-                        console.log(xhr.responseText);
-                    }
-                }.bind(this)
-                xhr.send(formData);
             });
         });
     </script>
