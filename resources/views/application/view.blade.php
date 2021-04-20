@@ -214,6 +214,13 @@
                         <div style="display:none;">
                             <textarea class="form-control" id="urlToSend" readonly rows="3"></textarea>
                         </div>
+                        @if($buttons[0] && $buttons[0]->can_ecp_sign == 1)
+                          <input type="hidden" id="can_ecp_sign" name="can_ecp_sign" value = "1">
+                        @else
+                          @if($buttons[0] && $buttons[0]->can_ecp_sign == 0)
+                            <input type="hidden" id="can_ecp_sign" name="can_ecp_sign" value = "0">
+                          @endif
+                        @endif
                         <!-- sign ecp -->
 
                         <div>
@@ -368,8 +375,9 @@
                 var motiv_otkaz = $('#motiv_otkaz').val();
                 var processId = $('#processId').val();
                 var application_id = $('#application_id').val();
+                var can_ecp_sign = $('#can_ecp_sign').val();
 
-                if(motiv_otkaz == 1){
+                if(motiv_otkaz == 1 && can_ecp_sign == 1){
                   $.ajax({
                     method: "POST",
                     url: "/docs/getXML",
@@ -390,32 +398,49 @@
             $('#approveReject').click(function(event) {
                 var processId = $('#processId').val();
                 var application_id = $('#application_id').val();
+                var can_ecp_sign = $('#can_ecp_sign').val();
 
-                $.ajax({
-                  method: "POST",
-                  url: "/docs/getXML",
-                  data: { 'processId':processId,'applicationId':application_id,'_token':$('input[name=_token]').val() }
-                }).then(function(data){
-                    document.getElementById("xmlToSign").value = data;
-                    document.getElementById("urlToSend").value = "docs/approveReject";
-                    signXmlCall();
-                });
+                if(can_ecp_sign == 1){
+                  $.ajax({
+                    method: "POST",
+                    url: "/docs/getXML",
+                    data: { 'processId':processId,'applicationId':application_id,'_token':$('input[name=_token]').val() }
+                  }).then(function(data){
+                      document.getElementById("xmlToSign").value = data;
+                      document.getElementById("urlToSend").value = "docs/approveReject";
+                      signXmlCall();
+                  });
+                }else{
+                  $.post('/docs/approveReject', {'process_id':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
+                      location.reload();
+                  });
+                }
+
 
             });
 
             $('#toCitizen').click(function(event) {
                 var processId = $('#processId').val();
                 var application_id = $('#application_id').val();
+                var can_ecp_sign = $('#can_ecp_sign').val();
 
-                $.ajax({
-                  method: "POST",
-                  url: "/docs/getXML",
-                  data: { 'processId':processId,'applicationId':application_id,'_token':$('input[name=_token]').val() }
-                }).then(function(data){
-                    document.getElementById("xmlToSign").value = data;
-                    document.getElementById("urlToSend").value = "docs/toCitizen";
-                    signXmlCall();
-                });
+                if(can_ecp_sign == 1){
+                  $.ajax({
+                    method: "POST",
+                    url: "/docs/getXML",
+                    data: { 'processId':processId,'applicationId':application_id,'_token':$('input[name=_token]').val() }
+                  }).then(function(data){
+                      document.getElementById("xmlToSign").value = data;
+                      document.getElementById("urlToSend").value = "docs/toCitizen";
+                      signXmlCall();
+                  });
+                }else{
+                  $.post('/docs/toCitizen', {'answer':$('#answer').val(),'process_id':processId,'application_id':application_id, 'comments': $('#lastComments').val(), '_token':$('input[name=_token]').val()}, function(data){
+                    location.reload();
+                  });
+                }
+
+
 
             });
 
@@ -431,19 +456,51 @@
 
             $('#commentButton').click(function(event) {
 
+                let formData = new FormData();
                 var processId = $('#processId').val();
                 var application_id = $('#application_id').val();
-
-                // get xml and sendXmlCall: processId, applicationId
-                $.ajax({
-                  method: "POST",
-                  url: "/docs/getXML",
-                  data: { 'processId':processId,'applicationId':application_id,'_token':$('input[name=_token]').val() }
-                }).then(function(data){
-                    document.getElementById("xmlToSign").value = data;
-                    document.getElementById("urlToSend").value = "docs/approve";
-                    signXmlCall();
+                var can_ecp_sign = $('#can_ecp_sign').val();
+                let comments = $('#comments').val();
+                let inputs = $('#templateFieldsId :input');
+                formData.append('process_id', processId);
+                formData.append('application_id', application_id);
+                formData.append('comments', comments);
+                inputs.each(function() {
+                    if ('files' in $(this)[0] && $(this)[0].files != null) {
+                        var file = $('input[type=file]')[0].files[0];
+                        if(file!==undefined) {
+                            formData.append(this.name, file);
+                        }
+                    } else {
+                     formData.append(this.name, $(this).val());
+                    }
                 });
+                formData.append('_token', $('input[name=_token]').val());
+
+                if(can_ecp_sign == 1){
+                  // get xml and sendXmlCall: processId, applicationId
+                  $.ajax({
+                    method: "POST",
+                    url: "/docs/getXML",
+                    data: { 'processId':processId,'applicationId':application_id,'_token':$('input[name=_token]').val() }
+                  }).then(function(data){
+                      document.getElementById("xmlToSign").value = data;
+                      document.getElementById("urlToSend").value = "docs/approve";
+                      signXmlCall();
+                  });
+                }else{
+                  var xhr = new XMLHttpRequest();
+                  xhr.open("post", "{{url('docs/approve')}}", true);
+                  xhr.setRequestHeader("Authorization", "Bearer " + "{{csrf_token()}}");
+                  xhr.onload = function () {
+                      if(xhr.status == 200){
+                          location.reload();
+                      }else{
+                          console.log(xhr.responseText);
+                      }
+                  }.bind(this)
+                  xhr.send(formData);
+                }
             });
         });
     </script>
