@@ -66,9 +66,6 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $usertype = NULL;
-        if ($data['name'] === 'Admin') {
-            $usertype = 'admin';
-        }
         $iin = Null;
         $bin = Null;
         if ($data['iin'] !== Null) {

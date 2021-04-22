@@ -42,13 +42,17 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validator = Validator::make( $request->all(),[
-            'name' => ['required', 'string', 'max:255'],
+            'sur_name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'middle_name' => ['nullable', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:10', 'min:10'],
         ]);
         if ($validator->fails()) {
             return Redirect::back()->with('status', 'Введите правильные данные');
         }
-        $user->name = $request->name;
+        $user->sur_name = $request->sur_name;
+        $user->first_name = $request->first_name;
+        $user->middle_name = $request->middle_name;
         $user->phone = $request->phone;
         $user->update();
         return Redirect::to('user/personal_area')->with('status', 'Данные успешно обновлены');

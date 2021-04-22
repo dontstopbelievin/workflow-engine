@@ -83,7 +83,7 @@ class LoginController extends Controller
                         $user = auth()->guard('web')->user();
                         $mytime = Carbon::now()->toDateTimeString();
 
-                        $txt = $mytime . ' ' . $user->name . ' '. $user->email . ' ' . "Попытка параллельного входа в систему\r\n";
+                        $txt = $mytime . ' ' . $user->sur_name.' '.$user->first_name.' '.$user->middle_name. ' '. $user->email . ' ' . "Попытка параллельного входа в систему\r\n";
                         file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
                     }
                 }
@@ -110,33 +110,22 @@ class LoginController extends Controller
             $user = auth()->guard('web')->user();
             $mytime = Carbon::now()->toDateTimeString();
 
-            $txt = $mytime . ' ' . $user->name . ' ' . $user->email . ' ' . "Успешный вход в систему\r\n";
+            $txt = $mytime . ' ' . $user->sur_name.' '.$user->first_name.' '.$user->middle_name. ' ' . $user->email . ' ' . "Успешный вход в систему\r\n";
             file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
-            $userType = Null;
 
-            if (Auth::user()->name === 'Admin' || Auth::user()->name === 'Абаев Анзор' || Auth::user()->name === 'Шегенов Ринат') {
-                $userType = 'admin';
-            }
             $user->update([
                 'last_login_at' => $user->current_login_at,
                 'current_login_at' => Carbon::now()->toDateTimeString(),
                 'last_login_ip' => $request->getClientIp(),
-                'usertype' => $userType,
             ]);
             $processes = Process::all();
-
-            if (Auth::user()->name === 'Admin') {
-
-                $modalPopup = User::where('name', 'Admin')->first()->has_not_accepted_agreement;
-                Redirect::to('/docs');
-            }
             return Redirect::to('/docs');
         }
         \Session::put('login_error', 'Ваша почта или пароль неверно введены!');
 
         $failedUser = User::find($user->id);
         $mytime = Carbon::now()->toDateTimeString();
-        $txt = $mytime . ' ' . $user->name . ' ' . $user->email . ' ' .  "Неудачный вход в систему\r\n";
+        $txt = $mytime . ' ' . $user->sur_name.' '.$user->first_name.' '.$user->middle_name . ' ' . $user->email . ' ' .  "Неудачный вход в систему\r\n";
         file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
 
         $failedUser->update([
@@ -154,7 +143,7 @@ class LoginController extends Controller
         \Session::flush();
         \Session::put('success', 'Вы успешно вышли из системы');
         $mytime = Carbon::now()->toDateTimeString();
-        $txt = $mytime . ' ' . $user->name . ' ' . $user->email . ' ' . "Успешный выход из системы\r\n";
+        $txt = $mytime . ' ' . $user->sur_name.' '.$user->first_name.' '.$user->middle_name . ' ' . $user->email . ' ' . "Успешный выход из системы\r\n";
         file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
 
         return redirect()->to('/login');

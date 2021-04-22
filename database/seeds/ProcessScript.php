@@ -26,10 +26,11 @@ class ProcessScript extends Seeder
         //org name
         $org = CityManagement::where('name', 'Управление архитектуры, градостроительства и земельных отношений города Нур-Султан')->first();
         $process->main_organization_id = $org->id;
+        $process->need_map = 1;
         $process->save();
         //create process application table
         $request = new \Illuminate\Http\Request();
-        $request->replace(['fields' => ['applicant_address', 'first_name', 'middle_name', 'surname', 'region', 'ulica_mestop_z_u', 'dictionary_purpose', 'dictionary_right_type', 'cel_razdela']]);
+        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'applicant_address', 'region', 'ulica_mestop_z_u', 'dictionary_purpose', 'dictionary_right_type', 'cel_razdela']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Руководитель архитектурно-планировочного отдела')->first();

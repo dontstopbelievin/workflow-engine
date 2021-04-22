@@ -19,7 +19,7 @@
                     @endif
                     <div class="card-body" id="items">
 
-                        <p>Имя: {{$user->name}}</p>
+                        <p>ФИО: {{$user->sur_name}} {{$user->first_name}} {{$user->middle_name}}</p>
                         <p>Роль: {{$user->role->name}}</p>
                         <p>Номер Телефона: {{$user->phone}}</p>
                         <p>Почтовый адрес: {{$user->email}}</p>

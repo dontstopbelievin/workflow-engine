@@ -38,7 +38,7 @@ class HomeController extends Controller
 
         $details = [
 
-            'greeting' => 'Привет' . ', ' . $user->name,
+            'greeting' => 'Привет, '.$user->sur_name.' '.$user->first_name.' '.$user->middle_name,
 
             'body' => 'Это уведомление о том, что Вы должны согласовать заявку',
 

@@ -4,7 +4,7 @@
         @if($item->inputName === 'file')
             <input type="file" name={{$item->name}} class="form-control" multiple>
         @elseif($item->inputName === 'text')
-            <input type="text" name={{$item->name}} id={{$item->name}} value="{{$egkn->firstname ?? ''}}" class="form-control">
+            <input type="text" name={{$item->name}} id={{$item->name}} value="{{Auth::user()->{$item->name} ?? ''}}" class="form-control">
         @elseif($item->inputName === 'url')
             <input type="text" name={{$item->name}} id={{$item->name}} class="form-control">
         @elseif($item->inputName === 'image')

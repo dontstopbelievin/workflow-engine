@@ -55,21 +55,6 @@
 
 @section('scripts')
 <script type="text/javascript">
-    // let fData = new FormData();
-    // fData.append('kadNum', 21318094825);
-    // var xhr = new XMLHttpRequest();
-    // xhr.open("post", "http://www.aisgzk.kz/aisgzk/Index/FindObjInfoForMap", true);
-    // // xhr.setRequestHeader("Authorization", "Bearer " + $('input[name=_token]').val());
-    // xhr.onload = function () {
-    //     if(xhr.status == 200){
-    //         console.log(xhr.responseText);
-    //         // location.reload();
-    //     }else{
-    //         console.log(xhr.responseText);
-    //         alert('Ошибка');
-    //     }
-    // }.bind(this)
-    // xhr.send(fData);
 
     const create_applic = () => {
         // form the formData
@@ -106,13 +91,25 @@
     }
 
     const show_hide_map = () => {
-        if(document.getElementById('viewDiv').style.height == '0px'){
-            document.getElementById('viewDiv').style.height = '400px';
-            document.getElementById('s_h_but').innerHTML = 'Скрыть карту';
-        }else{
-            document.getElementById('viewDiv').style.height = '0px';
-            document.getElementById('s_h_but').innerHTML = 'Показать карту';
-        }
+        @if($process->name == 'Определение делимости и неделимости земельных участков')
+            if(document.getElementById('viewDiv').style.height == '0px'){
+              document.getElementById('viewDiv').style.height = '400px';
+              document.getElementById('s_h_but').innerHTML = 'Скрыть карту';
+              document.getElementById('s_point').style.display = 'inline-block';
+            }else{
+              document.getElementById('viewDiv').style.height = '0px';
+              document.getElementById('s_h_but').innerHTML = 'Показать карту';
+              document.getElementById('s_point').style.display = 'none';
+            }
+        @else
+            if(document.getElementById('viewDiv').style.height == '0px'){
+                document.getElementById('viewDiv').style.height = '400px';
+                document.getElementById('s_h_but').innerHTML = 'Скрыть карту';
+            }else{
+                document.getElementById('viewDiv').style.height = '0px';
+                document.getElementById('s_h_but').innerHTML = 'Показать карту';
+            }
+        @endif
     }
 </script>
 @if($process->need_map)

@@ -17,7 +17,7 @@
                         <div id="user" class="tabcontent" style="display: block;">
                             <ul class="list-group" id="list">
                                 Данные заявителя:
-                                <li class="list-group-item">Имя: {{$user->name}}</li>
+                                <li class="list-group-item">ФИО: {{$user->sur_name}} {{$user->first_name}} {{$user->middle_name}}</li>
                                 <li class="list-group-item">Телефон:{{$user->phone}}</li>
                                 <li class="list-group-item">Email: {{$user->email}}</li>
                                 @if(isset($user->iin))

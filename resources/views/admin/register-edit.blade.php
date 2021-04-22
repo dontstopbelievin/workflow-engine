@@ -20,14 +20,21 @@
                               <form action="{{ url('admin/user_role/update', ['user' => $user]) }}" method="POST">
                                   @csrf
                                   {{ method_field('PUT') }}
-                                  <div class="form-group">
-                                      <label>Имя пользователя</label>
-                                      <input type="text" name="username" value="{{ $user->name}}" class="form-control" required>
+                                  <div class="form-group" style="padding: 0px">
+                                      <label>Фамилия</label>
+                                      <input type="text" name="sur_name" value="{{$user->sur_name}}" class="form-control" required>
                                   </div>
-                                  <div class="form-group">
+                                  <div class="form-group" style="padding: 0px">
+                                      <label>Имя</label>
+                                      <input type="text" name="first_name" value="{{$user->first_name}}" class="form-control" required>
+                                  </div>
+                                  <div class="form-group" style="padding: 0px">
+                                      <label>Отчество</label>
+                                      <input type="text" name="middle_name" value="{{$user->middle_name}}" class="form-control" required>
+                                  </div>
+                                  <div class="form-group" style="padding: 0px 0px 10px 0px">
                                       <label>Прикрепить роль</label>
                                       <select name="role_id" class="form-control">
-
                                           @isset($user->role)
                                               <option value="{{$user->role->id}}" selected>{{$user->role->name}}</option>
                                           @endisset

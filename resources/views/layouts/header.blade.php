@@ -66,7 +66,7 @@
             </li>
             @else
             <li class="nav-item dropdown nav-auth2" data-toggle="dropdown">
-                <span style="color:white!important"><b>{{ Auth::user()->name }}</b></span><br>
+                <span style="color:white!important"><b>{{Auth::user()->sur_name}} {{Auth::user()->first_name}}</b></span><br>
                 <small>
                     @if(mb_strlen(Auth::user()->role->name, 'UTF-8') > 25)
                         <span data-toggle="tooltip" title="{{Auth::user()->role->name}}" style="color:white!important;">
@@ -78,11 +78,10 @@
                 </small>
 
               <ul class="dropdown-menu dropdown-user">
-                <li><a class="dropdown-item" href="{{ url('user/personal_area') }}">Мои данные</a></li>
-                <li><a class="dropdown-item" href="{{ url('user/edit', ['user' => Auth::user()]) }}">Редактировать данные</a></li>
-                <li><a class="dropdown-item" href="{{url('password/reset')}}">Cменить пароль</a></li>
-                <li><a class="dropdown-item" href="{{url('policy')}}">
-                    Правила информационной без...</a></li>
+                <li class="dropdown-item" onclick="window.location='{{ url('user/personal_area') }}'">Мои данные</li>
+                <li class="dropdown-item" onclick="window.location='{{ url('user/edit', ['user' => Auth::user()]) }}'">Редактировать данные</li>
+                <li class="dropdown-item" onclick="window.location='{{ url('password/reset') }}'">Cменить пароль</li>
+                <li class="dropdown-item" onclick="window.location='{{ url('policy') }}'">Правила информационной без...</li>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item"href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();">
                     <i class="fa fa-power-off"></i>

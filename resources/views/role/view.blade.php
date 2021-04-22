@@ -30,7 +30,7 @@
                                 <thead>
                                     <tr class="rounded text-secondary">
                                         <th class="text-center border-0">№</th>
-                                        <th class="text-left border-0">Имя</th>
+                                        <th class="text-left border-0">ФИО</th>
                                         <th class="text-left border-0">Телефон</th>
                                         <th class="text-left border-0">Почта</th>
                                     </tr>
@@ -39,7 +39,7 @@
                                     @foreach($role->users as $user)
                                     <tr class="rounded">
                                         <td class="text-center align-middle border">{{$loop->iteration}}</td>
-                                        <td class="text-left align-middle border">{{$user->name}}</td>
+                                        <td class="text-left align-middle border">{{$user->sur_name}} {{$user->first_name}} {{$user->middle_name}}</td>
                                         <td class="text-left align-middle border">{{$user->phone}}</td>
                                         <td class="text-left align-middle border">{{$user->email}}</td>
                                     </tr>   

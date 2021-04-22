@@ -39,7 +39,7 @@ class ApplicationController extends Controller
     public function service()
     {
         $processes = Process::all();
-        $modalPopup = User::where('name', 'Admin')->first()->has_not_accepted_agreement;
+        $modalPopup = User::where('usertype', 'admin')->first()->has_not_accepted_agreement;
 
         return view('application.dashboard', compact('processes', 'modalPopup'));
     }
@@ -370,13 +370,14 @@ class ApplicationController extends Controller
               }
 
               $fileName = $this->generateRandomString();
+              $applicant = User::where('id', $application->user_id)->first();
               $updatedFields["date"] = date('d-m-Y');
               $updatedFields["id"] = $application->id;
-              $updatedFields["applicant_name"] = User::where('id', $application->user_id)->first()->name;
+              $updatedFields["applicant_name"] = $applicant->sur_name.' '.$applicant->first_name.' '.$applicant->middle_name;
               $updatedFields = $this->add_app_columns($updatedFields, $tableName, $application->id);
               $updatedFields = $this->get_test_values($updatedFields);
 
-              $userName = Auth::user()->name;
+              $userName = Auth::user()->sur_name.' '.Auth::user()->first_name.' '.Auth::user()->middle_name;
               $roleName = Auth::user()->role->name;
               $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
               $content = view($pathToView, compact('updatedFields', 'userName', 'roleName'))->render();

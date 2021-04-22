@@ -29,7 +29,7 @@
               <thead>
                 <tr>
                   <th style="width: 7%">№</th>
-                  <th style="width: 20%">ИМЯ</th>
+                  <th style="width: 20%">ФИО</th>
                   <th style="width: 15%">ТЕЛЕФОН</th>
                   <th style="width: 15%">ПОЧТА</th>
                   <th style="width: 30%">РОЛЬ</th>
@@ -40,7 +40,7 @@
                 @foreach($users as $user)
                     <tr>
                         <td>{{$loop->iteration}}</td>
-                        <td>{{$user->name}}</td>
+                        <td>{{$user->sur_name}} {{$user->first_name}} {{$user->middle_name}}</td>
                         <td>{{$user->phone}}</td>
                         <td>{{$user->email}}</td>
                         @if ($user->role)

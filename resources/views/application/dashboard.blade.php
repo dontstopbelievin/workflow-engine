@@ -19,7 +19,7 @@
                         @endif
                     </div>
                     <div class="card-body">
-                        @if(Auth::user()->has_not_accepted_agreement === 1 && Auth::user()->name !== 'Admin')
+                        @if(Auth::user()->has_not_accepted_agreement == 1 && Auth::user()->usertype !== 'admin')
                             <div id="acceptModalId" class="modal" data-backdrop="static">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -86,7 +86,7 @@
                         @endif
                     </div>
                     <div class="card-body">
-                        @if ($modalPopup && Auth::user()->name === 'Admin')
+                        @if (Auth::user()->has_not_accepted_agreement && Auth::user()->usertype == 'admin')
                             <div id="acceptModal" class="modal" data-backdrop="static">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -141,7 +141,7 @@
                                 </div>
                             </div>
                         @endif
-                        @if (Auth::user()->has_not_accepted_agreement === 1 && Auth::user()->name !== 'Admin')
+                        @if (Auth::user()->has_not_accepted_agreement === 1 && Auth::user()->usertype !== 'admin')
                             <div id="acceptModalId" class="modal" data-backdrop="static">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
