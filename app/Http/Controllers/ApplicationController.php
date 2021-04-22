@@ -232,7 +232,7 @@ class ApplicationController extends Controller
         }
 
         $application_arr = json_decode(json_encode($application), true);
-
+        // dd($buttons);
         return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen', 'rolesToRevision', 'records', 'buttons', 'aRowNameRows','application_arr'));
     }
 

@@ -97,8 +97,6 @@ function signXmlBack(result) {
         let formData = new FormData();
         let comments = $('#comments').val();
         let inputs = $('#templateFieldsId :input');
-        var processId = $('#processId').val();
-        var application_id = $('#application_id').val();
         var rejectReason = $('#rejectReason').val();
         var motiv_otkaz = $('#motiv_otkaz').val();
 
