@@ -110,14 +110,13 @@
         ]});
         searchWidget.on("search-complete", function(event){
           // The results are stored in the event Object[]
-          console.log("Results of the search: ", event);
+          // console.log("Results of the search: ", event);
           if(event.results[0] && event.results[0].results[0]){
             let res = event.results[0].results[0].feature.attributes
             z_objectid = res.objectid
             z_address = res.fulladdress
             z_purpose = res.purpose
             z_area = res.areasquare
-
             z_category = res.category
             z_kad_nomer = res.kad_nomer
             z_name = res.name
@@ -285,6 +284,10 @@
 
   const save_point = () => {
     document.getElementById('ulica_mestop_z_u').value = z_address
+    document.getElementById('pravo_ru').value = z_policy
+    document.getElementById('object_name').value = z_name
+    document.getElementById('cadastral_number').value = z_kad_nomer
+    document.getElementById('object_id').value = z_objectid
 
     document.getElementById('viewDiv').style.height = '0px';
     document.getElementById('s_h_but').innerHTML = 'Показать карту';

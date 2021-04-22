@@ -104,7 +104,7 @@ class DictionarySeeder extends Seeder
             ],
             [
                 'name' => 'pravo_ru',
-                'label_name' => 'Вид права (рус)',
+                'label_name' => 'Вид права',
                 'input_type_id' => 1,
                 'insert_type_id' => 1
             ],
@@ -358,6 +358,18 @@ class DictionarySeeder extends Seeder
                  'name' => 'identific_doc_date',
                  'label_name' => 'Идентификационный документ от(дата)',
                  'input_type_id' => 1,
+                 'insert_type_id' => 1
+             ],
+             [
+                 'name' => 'object_name',
+                 'label_name' => 'Наименование объекта',
+                 'input_type_id' => 1,
+                 'insert_type_id' => 1
+             ],
+             [
+                 'name' => 'object_id',
+                 'label_name' => 'object_id',
+                 'input_type_id' => 5,
                  'insert_type_id' => 1
              ],
         ]);

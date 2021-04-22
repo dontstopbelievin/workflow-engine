@@ -1,15 +1,15 @@
 <div class="col-md-6" id="templateFieldsId">
     @foreach($arrayToFront as $item)
-        <label>{{$item->labelName}}</label>
         @if($item->inputName === 'file')
+            <label>{{$item->labelName}}</label>
             <input type="file" name={{$item->name}} class="form-control" multiple>
         @elseif($item->inputName === 'text')
+            <label>{{$item->labelName}}</label>
             <input type="text" name={{$item->name}} id={{$item->name}} value="{{Auth::user()->{$item->name} ?? ''}}" class="form-control">
-        @elseif($item->inputName === 'url')
-            <input type="text" name={{$item->name}} id={{$item->name}} class="form-control">
-        @elseif($item->inputName === 'image')
-            <input type="file" name={{$item->name}} id={{$item->name}} class="form-control">
-        @else
+        @elseif($item->inputName === 'hidden')
+            <input type="hidden" name={{$item->name}} id={{$item->name}} class="form-control">
+        @elseif($item->inputName === 'select')
+            <label>{{$item->labelName}}</label>
             <select name="{{$item->name}}" id="{{$item->name}}" class="form-control">
                 <label>$item->name</label>
                 <option selected disabled>Выберите Ниже</option>
@@ -17,6 +17,8 @@
                     <option value="{{$val->name_rus}}">{{$val->name_rus}}</option>
                 @endforeach
             </select>
+        @else
+            ne eby
         @endif
     @endforeach
     <input type="hidden" name="process_id" value={{$process->id}}>

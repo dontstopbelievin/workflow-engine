@@ -176,8 +176,7 @@ trait dbQueries
 
     public function getColumns($tableName)
     {
-        $notInclude = ['id', 'process_id', 'status_id', 'user_id', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at', 'statuses', 'current_order',
-            'objectId'];
+        $notInclude = ['id', 'process_id', 'status_id', 'user_id', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at', 'statuses', 'current_order'];
         $cols = DB::select(
           (new \Illuminate\Database\Schema\Grammars\MySqlGrammar)->compileColumnListing()
               .' order by ordinal_position',

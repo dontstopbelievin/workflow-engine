@@ -74,7 +74,7 @@ class HomeController extends Controller
                     'password' => 'CREadminas21',
                     'client' => 'referer',
                     'ip' => '',
-                    'referer' => 'http://workflow.back',
+                    'referer' => env('APP_URL', 'http://workflow.back'),
                     'expiration' => 1440,
                     'f' => 'pjson',
                 ]

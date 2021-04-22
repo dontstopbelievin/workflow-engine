@@ -30,7 +30,7 @@ class ProcessScript extends Seeder
         $process->save();
         //create process application table
         $request = new \Illuminate\Http\Request();
-        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'applicant_address', 'region', 'ulica_mestop_z_u', 'dictionary_purpose', 'dictionary_right_type', 'cel_razdela']]);
+        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'applicant_address', 'region', 'ulica_mestop_z_u', 'dictionary_purpose', 'pravo_ru', 'object_name', 'cadastral_number', 'cel_razdela']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Руководитель архитектурно-планировочного отдела')->first();
@@ -104,13 +104,13 @@ class ProcessScript extends Seeder
         $request->replace(['fieldName' => 'pdp_name', 'labelName' => 'Наименование ПДП', 'inputItem' => 1, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
         //add template field
-        $request = new \Illuminate\Http\Request();
-        $request->replace(['fieldName' => 'object_name', 'labelName' => 'Наименование объекта', 'inputItem' => 1, 'insertItem' => 1, 'temp_id' => $template->id]);
-        app('App\Http\Controllers\TemplateFieldController')->store($request);
+        // $request = new \Illuminate\Http\Request();
+        // $request->replace(['fieldName' => 'object_name', 'labelName' => 'Наименование объекта', 'inputItem' => 1, 'insertItem' => 1, 'temp_id' => $template->id]);
+        // app('App\Http\Controllers\TemplateFieldController')->store($request);
         //add template field
-        $request = new \Illuminate\Http\Request();
-        $request->replace(['fieldName' => 'cadastral_number', 'labelName' => 'Кадастровый номер', 'inputItem' => 1, 'insertItem' => 1, 'temp_id' => $template->id]);
-        app('App\Http\Controllers\TemplateFieldController')->store($request);
+        // $request = new \Illuminate\Http\Request();
+        // $request->replace(['fieldName' => 'cadastral_number', 'labelName' => 'Кадастровый номер', 'inputItem' => 1, 'insertItem' => 1, 'temp_id' => $template->id]);
+        // app('App\Http\Controllers\TemplateFieldController')->store($request);
         //add template field
         $request = new \Illuminate\Http\Request();
         $select_dic = Dictionary::where('name', 'dictionary_land_divisibility')->first();

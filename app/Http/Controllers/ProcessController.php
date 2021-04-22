@@ -145,8 +145,8 @@ class ProcessController extends Controller
                 $dbQueryString = "ALTER TABLE $tableName ADD current_order INT";
                 DB::statement($dbQueryString);
             }
-            if (!Schema::hasColumn($tableName, 'objectId')) {
-                $dbQueryString = "ALTER TABLE $tableName ADD  objectId INT";
+            if (!Schema::hasColumn($tableName, 'object_id')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD  object_id INT";
                 DB::statement($dbQueryString);
             }
             if (!Schema::hasColumn($tableName, 'reject_reason')) {

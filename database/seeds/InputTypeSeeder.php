@@ -25,6 +25,9 @@ class InputTypeSeeder extends Seeder
             [
                 'name' => 'textarea' //4
             ],
+            [
+                'name' => 'hidden' //4
+            ],
         ]);
     }
 }
