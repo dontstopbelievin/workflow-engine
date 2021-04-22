@@ -19,6 +19,7 @@ class CreateProcessesTable extends Migration
             $table->string('table_name');
             $table->integer('deadline')->comment('Количество дней на заявку');
             $table->integer('main_organization_id')->unsigned()->nullable();
+            $table->boolean('need_map')->default(0);
             $table->timestamps();
         });
     }

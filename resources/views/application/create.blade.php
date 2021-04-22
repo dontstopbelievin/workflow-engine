@@ -4,6 +4,18 @@
     Создание Заявки
 @endsection
 
+@if($process->need_map)
+    <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/css/main.css">
+    <style type="text/css">
+    #viewDiv{
+        padding: 0;
+        margin: 0;
+        height: 400px;
+        width: 100%;
+    }
+    </style>
+@endif
+
 @section('content')
 <div class="main-panel">
     <div class="content">
@@ -29,39 +41,86 @@
                 </div>
             </div>
             <div class="card-body">
-              <div class="col-md-6">
-                <form action="{{ url('docs/store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @foreach($arrayToFront as $item)
-                        <label>{{$item->labelName}}</label>
-                        @if($item->inputName === 'file')
-                            <input type="file" name={{$item->name}} class="form-control" multiple>
-                        @elseif($item->inputName === 'text')
-                            {{--{{dd($egkn)}}--}}
-                            <input type="text" name={{$item->name}} id={{$item->name}} value="{{$egkn->firstname ?? ''}}" class="form-control">
-                        @elseif($item->inputName === 'url')
-                            <input type="text" name={{$item->name}} id={{$item->name}} class="form-control">
-                        @elseif($item->inputName === 'image')
-                            <input type="file" name={{$item->name}} id={{$item->name}} class="form-control">
-                        @else
-                            <select name="{{$item->name}}" id="{{$item->name}}" class="form-control">
-                                <label>$item->name</label>
-                                <option selected disabled>Выберите Ниже</option>
-                                @foreach($item->options as $val)
-                                    <option value="{{$val->name_rus}}">{{$val->name_rus}}</option>
-                                @endforeach
-                            </select>
-                        @endif
-                    @endforeach
-                    <input type="hidden" name="process_id" value = {{$process->id}}>
-                    <div style="margin-top: 20px">
-                        <button type="Submit" class="btn btn-primary">Создать</button>
-                    </div>
-                </form>
-              </div>
+                @if($process->name == 'Определение делимости и неделимости земельных участков')
+                    @include('application.create_application.delimost')
+                @else
+                    @include('application.create_application.standard')
+                @endif
             </div>
         </div>
       </div>
     </div>
 </div>
 @endsection
+
+@section('scripts')
+<script type="text/javascript">
+    // let fData = new FormData();
+    // fData.append('kadNum', 21318094825);
+    // var xhr = new XMLHttpRequest();
+    // xhr.open("post", "http://www.aisgzk.kz/aisgzk/Index/FindObjInfoForMap", true);
+    // // xhr.setRequestHeader("Authorization", "Bearer " + $('input[name=_token]').val());
+    // xhr.onload = function () {
+    //     if(xhr.status == 200){
+    //         console.log(xhr.responseText);
+    //         // location.reload();
+    //     }else{
+    //         console.log(xhr.responseText);
+    //         alert('Ошибка');
+    //     }
+    // }.bind(this)
+    // xhr.send(fData);
+
+    const create_applic = () => {
+        // form the formData
+        let formData = new FormData();
+        formData.append('_token', $('input[name=_token]').val());
+        let inputs = $('#templateFieldsId :input');
+
+        inputs.each(function() {
+            if ('files' in $(this)[0] && $(this)[0].files != null) {
+                var file = $('input[type=file]')[0].files[0];
+                if(file!==undefined) {
+                    formData.append(this.name, file);
+                }
+            } else {
+             formData.append(this.name, $(this).val());
+            }
+        });
+        // end of forming the formData
+
+        // send to corresponding function of ApplicationController
+        var xhr = new XMLHttpRequest();
+        xhr.open("post", "/docs/store", true);
+        xhr.setRequestHeader("Authorization", "Bearer " + $('input[name=_token]').val());
+        xhr.onload = function () {
+            if(xhr.status == 200){
+                // console.log(xhr.responseText);
+                location.reload();
+            }else{
+                console.log(xhr.responseText);
+                alert('Ошибка');
+            }
+        }.bind(this)
+        xhr.send(formData);
+    }
+
+    const show_hide_map = () => {
+        if(document.getElementById('viewDiv').style.height == '0px'){
+            document.getElementById('viewDiv').style.height = '400px';
+            document.getElementById('s_h_but').innerHTML = 'Скрыть карту';
+        }else{
+            document.getElementById('viewDiv').style.height = '0px';
+            document.getElementById('s_h_but').innerHTML = 'Показать карту';
+        }
+    }
+</script>
+@if($process->need_map)
+    @if($process->name == 'Определение делимости и неделимости земельных участков')
+        @include('application.maps.map_find')
+    @else
+        @include('layouts.map')
+    @endif
+@endif
+
+@append

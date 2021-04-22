@@ -145,6 +145,10 @@ class ProcessController extends Controller
                 $dbQueryString = "ALTER TABLE $tableName ADD current_order INT";
                 DB::statement($dbQueryString);
             }
+            if (!Schema::hasColumn($tableName, 'objectId')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD  objectId INT";
+                DB::statement($dbQueryString);
+            }
             if (!Schema::hasColumn($tableName, 'reject_reason')) {
                 $dbQueryString = "ALTER TABLE $tableName ADD reject_reason varchar(255)";
                 DB::statement($dbQueryString);
@@ -373,6 +377,19 @@ class ProcessController extends Controller
         }
         $process->delete();
         return Redirect::to('process')->with('status', 'Процесс успешно удален');
+    }
+
+    public function map(Request $request, Process $process)
+    {
+        $validator = Validator::make($request->all(),[
+            'need_map' => 'required|integer',
+        ]);
+        if ($validator->fails()) {
+            return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', $validator->errors());
+        }
+        $process->need_map = $request->need_map;
+        $process->update();
+        return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Успешно изменен.');
     }
 
     public function logs()

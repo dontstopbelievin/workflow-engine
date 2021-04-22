@@ -128,9 +128,9 @@ class LoginController extends Controller
             if (Auth::user()->name === 'Admin') {
 
                 $modalPopup = User::where('name', 'Admin')->first()->has_not_accepted_agreement;
-                return view('application.dashboard', compact('processes', 'modalPopup'));
+                Redirect::to('/docs');
             }
-            return redirect($this->redirectTo());
+            return Redirect::to('/docs');
         }
         \Session::put('login_error', 'Ваша почта или пароль неверно введены!');
 
@@ -143,7 +143,7 @@ class LoginController extends Controller
             'last_failed_login_at' => Carbon::now()->toDateTimeString(),
             'last_failed_login_ip' => $request->getClientIp()
         ]);
-        return Redirect::to('/');
+        return Redirect::to('/docs');
     }
 
     public function logout(Request $request)

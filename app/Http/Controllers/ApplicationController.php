@@ -499,6 +499,7 @@ class ApplicationController extends Controller
         try {
             DB::beginTransaction();
             $input = $request->input();
+            // return response()->json(['data'=>$input], 200);
             if ($request->hasFile('attachment')) {
                 $input["attachment"] = $request->file('attachment')->store('applicant-attachments','public');
             }

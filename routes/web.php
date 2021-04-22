@@ -219,6 +219,7 @@ Route::group(['prefix' => '/admin', 'middleware' => ['admin', 'auth']], function
         Route::post('/add_role/{process}', 'ProcessController@addRole');
         Route::post('/add_sub_role/{process}', 'ProcessController@add_sub_role');
         Route::delete('/delete/{process}', 'ProcessController@delete');
+        Route::post('/map/{process}', 'ProcessController@map');
     });
 
     Route::prefix('process_role')->group(function () {

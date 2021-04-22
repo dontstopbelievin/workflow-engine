@@ -64,14 +64,14 @@ class HomeController extends Controller
     public function get_token(){
         $client = new \GuzzleHttp\Client();
         $url = 'https://gis.esaulet.kz/portal/sharing/rest/generateToken';
-        $user = 'b.amirzhan';
+        $user = 'admin';
         $response = $client->request(
             'POST',
             $url,
             [
                 'form_params' => [
                     'username' => $user,
-                    'password' => 'ewRKSXq8',
+                    'password' => 'CREadminas21',
                     'client' => 'referer',
                     'ip' => '',
                     'referer' => 'http://workflow.back',

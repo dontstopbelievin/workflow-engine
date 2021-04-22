@@ -31,6 +31,7 @@
               <button class="tablinks3" onclick="openTab3(event, 'creat_table')">Создать таблицу</button>
               <button class="tablinks3" onclick="openTab3(event, 'create_roles')">Создание маршрута</button>
               <button class="tablinks3" onclick="openTab3(event, 'create_template')">Создание шаблонов</button>
+              <button class="tablinks3" onclick="openTab3(event, 'create_map')">Карта</button>
             </div>
             <div id="about_process" class="tabcontent3">
               <form action="{{ url('admin/process/update', ['process' => $process]) }}" method="POST">
@@ -199,6 +200,27 @@
                     <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Создать</button>
                 </form>
               </div>
+            </div>
+            <div id="create_map" class="tabcontent3" style="display: none;">
+              <b>Карта: </b>
+              @if($process->need_map)
+              <b>включена.</b>
+              @else
+              <b>не включена.</b>
+              @endif
+              <form action="{{ url('admin/process/map', ['process' => $process]) }}" method="POST">
+                {{ csrf_field( )}}
+                <div class="form-group">
+                  <label class="form-check-label py-0">
+                    <input type="hidden" id="hidden_map_check" name="need_map" value="0" class="form-check-input">
+                    <input type="checkbox" id="map_check" name="need_map" value="1" class="form-check-input">
+                    <span class="form-check-sign">включить карту</span>
+                  </label>
+                </div>
+                <div class="form-group-row">
+                    <button button type="submit" class="btn btn-primary mx-2">Изменить</button>
+                </div>
+              </form>
             </div>
             <div class="modal fade" id="routeModal" role="dialog">
                   <div class="modal-dialog">
@@ -490,7 +512,13 @@
       }
       evt.currentTarget.className += " active";
     }
-
+    $('#map_check').click(function(event) {
+      if(document.getElementById("map_check").checked) {
+        document.getElementById('hidden_map_check').disabled = true;
+      }else{
+        document.getElementById('hidden_map_check').disabled = false;
+      }
+    });
     $(document).ready(function() {
         $('.AddButton').click(function(event) {
             $('#parent_role_id').val($(this).attr('data-id'));

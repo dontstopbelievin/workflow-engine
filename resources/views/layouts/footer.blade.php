@@ -10,6 +10,7 @@
 	<script src="{{url('assets/demo/demo.js')}}"></script>
     <script src="{{url('js/jquery_3.6.js')}}"></script>
     <script src="{{url('js/jquery_migrate_1.2.1.js')}}"></script>
+    <!-- <script src="{{url('js/jquery_migrate_3.3.2.js')}}"></script> -->
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{{url('assets/js/ncalayer/jquery.blockUI.js')}}" charset="utf-8"></script>
     <script type="text/javascript" src="{{url('assets/js/ncalayer/ncalayer.js')}}" charset="utf-8"></script>
