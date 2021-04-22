@@ -164,7 +164,7 @@ class ApplicationController extends Controller
     private function getFieldsForView($allApplications, $tableName){
       if (Schema::hasTable($tableName)) {
         return $allApplications->select('processes.id as process_id', 'processes.name as process_name', $tableName.'.current_order', $tableName.'.statuses',  $tableName.'.id as application_id', $tableName.'.updated_at',
-          'users.name as user_name')
+          'users.first_name', 'users.sur_name', 'users.middle_name')
           ->join('users', $tableName.'.user_id', '=', 'users.id')->get();
         //  $tableName.'.first_name',  $tableName.'.surname',
       }else{

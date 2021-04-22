@@ -1,4 +1,26 @@
 @extends('layouts.app')
+
+@if($process->need_map)
+    <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/css/main.css">
+    <style type="text/css">
+    #viewDiv{
+        padding: 0;
+        margin: 0;
+        min-height: 400px!important;
+        height: 100%!important;
+        width: 100%;
+    }
+    </style>
+@endif
+<style type="text/css">
+    .card-body{
+        font-size: 16px!important;
+    }
+    .table td,th{
+        font-size: 16px!important;   
+    }
+</style>
+
 @section('content')
     <title>Просмотр Заявки</title>
     <div class="main-panel">
@@ -25,21 +47,33 @@
                         </div>
                         <div id="applicationInfo" class="tabcontent">
                             <!-- <h4 class="text-center">Информация о заявителе</h4> -->
-                            <ul class="list-group" id="list">
-
-                                <li class="list-group-item">Название услуги: {{$process->name}}</li>
-                                @isset($aRowNameRows)
-                                   @foreach ($aRowNameRows as $aRowNameRow)
-                                        @if (array_key_exists($aRowNameRow->name, $application_arr))
-                                            @if($aRowNameRow->inputName == 'file')
-                                                <li class="list-group-item">{{$aRowNameRow->labelName}}: <a href="{{url('storage/' .$application_arr[$aRowNameRow->name])}}" target="_blank">Просмотр</a></li>
-                                            @else
-                                                <li class="list-group-item">{{$aRowNameRow->labelName}}: {{$application_arr[$aRowNameRow->name]}}</li>
+                            <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-group" id="list">
+                                    <li class="list-group-item"><b>Название услуги:</b> {{$process->name}}</li>
+                                    @isset($aRowNameRows)
+                                       @foreach ($aRowNameRows as $aRowNameRow)
+                                            @if (array_key_exists($aRowNameRow->name, $application_arr))
+                                                @if($aRowNameRow->inputName == 'file')
+                                                    <li class="list-group-item"><b>{{$aRowNameRow->labelName}}:</b> <a href="{{url('storage/' .$application_arr[$aRowNameRow->name])}}" target="_blank">Просмотр</a></li>
+                                                @else
+                                                    @if($aRowNameRow->inputName == 'hidden')
+                                                        <div id="{{$aRowNameRow->name}}" style="display: none;">{{$application_arr[$aRowNameRow->name]}}</div>
+                                                    @else
+                                                        <li class="list-group-item"><b>{{$aRowNameRow->labelName}}:</b> {{$application_arr[$aRowNameRow->name]}}</li>
+                                                    @endif
+                                                @endif
                                             @endif
-                                        @endif
-                                   @endforeach
-                                @endisset
-                            </ul>
+                                       @endforeach
+                                    @endisset
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                @if($process->need_map)
+                                    <div id="viewDiv" style="height: 0px"></div>
+                                @endif
+                            </div>
+                        </div>
                         </div>
 
                         <div id="specialistFields" class="tabcontent">
@@ -78,7 +112,7 @@
                             <table class="table" style="background: white;width: 100%;">
                                 <thead>
                                     <tr>
-                                        <th style="width: 30%;">Кто</th>
+                                        <th style="width: 30%;">Роль</th>
                                         <th style="width: 30%;">Действие</th>
                                         @if((Auth::user()->role->name != 'Заявитель'))
                                             <th style="width: 30%;">Комментарии</th>
@@ -214,10 +248,10 @@
                         <div style="display:none;">
                             <textarea class="form-control" id="urlToSend" readonly rows="3"></textarea>
                         </div>
-                        @if($buttons[0] && $buttons[0]->can_ecp_sign == 1)
+                        @if($buttons && $buttons[0] && $buttons[0]->can_ecp_sign == 1)
                           <input type="hidden" id="can_ecp_sign" name="can_ecp_sign" value = "1">
                         @else
-                          @if($buttons[0] && $buttons[0]->can_ecp_sign == 0)
+                          @if($buttons && $buttons[0] && $buttons[0]->can_ecp_sign == 0)
                             <input type="hidden" id="can_ecp_sign" name="can_ecp_sign" value = "0">
                           @endif
                         @endif
@@ -338,9 +372,12 @@
     </div>
 @endsection
 @section('scripts')
+    @if($process->need_map)
+        @include('application.maps.map_spec')
+    @endif
     <script>
         document.addEventListener("DOMContentLoaded", function(event) {
-        document.getElementById("mybutton").click();
+            document.getElementById("mybutton").click();
         });
         function openTab(evt, tabName) {
         // Declare all variables

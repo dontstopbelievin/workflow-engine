@@ -3,7 +3,11 @@
 @section('title')
 Государственные услуги
 @endsection
-
+<style type="text/css">
+  .table td{
+    font-size: 16px!important;
+  }
+</style>
 @section('content')
     <div class="main-panel">
         <div class="content">

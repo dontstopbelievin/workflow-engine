@@ -1,3 +1,8 @@
+<style type="text/css">
+    .nav-item a,p{
+        font-size: 16px!important;
+    }
+</style>
 <div class="sidebar" style="margin-top: 60px;">
   <div class="scrollbar-inner sidebar-wrapper" style="padding-top: 0px;">
     @if(request()->segment(1) == 'applications' || request()->segment(1) == 'docs' ||

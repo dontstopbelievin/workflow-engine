@@ -1,18 +1,12 @@
 <script src="https://js.arcgis.com/4.18/"></script>
 <script>
-  var z_objectid = null
-  var z_address = null
-  var z_purpose = null
-  var z_area = null
-  var z_category = null
-  var z_kad_nomer = null
-  var z_name = null
-  var z_policy = null
+
+  var oldPoint = null
   var land_layer = null
   var query_layer = null
-  var oldPoint = []
   var layer_url = "https://gis.esaulet.kz/server/rest/services/Hosted/Административные_объекты_14042021/FeatureServer"
   var layer_id = 9
+  var lyrView
 
   require([
     "esri/config",
@@ -39,6 +33,10 @@
       ui: {
           components: [ "attribution" ]
       },
+      highlightOptions: {
+	    color: [255,69,0],
+	    fillOpacity: 0.4
+	  },
       scale: 100000
   })
 
@@ -55,9 +53,7 @@
   const load_layer = () => {
     require([
       "esri/layers/FeatureLayer",
-      "esri/widgets/Sketch",
-      'esri/widgets/Search',
-    ], function(FeatureLayer, Sketch, Search) {
+    ], function(FeatureLayer) {
       let url = layer_url+'/'+layer_id
 
       land_layer = new FeatureLayer({
@@ -65,6 +61,11 @@
         visible: true,
       })
       existLayerReplace(land_layer)
+
+    window.view.whenLayerView(land_layer).then(function(layerView) {
+      lyrView = layerView;
+      queryLayer().then(displayResults)
+    });
 
       land_layer.when(() => {
         var template = {
@@ -74,70 +75,27 @@
         }
         land_layer.popupTemplate = template
         existLayerReplace(land_layer)
-
-        const save_object = document.createElement("button");
-          save_object.className = "btn btn-primary";
-          save_object.innerHTML = "Сохранить объект";
-          save_object.onclick = function () {
-            save_point()
-      };
-        view.ui.add(save_object,{
-           position: "top-right"
-        });
-
-        var searchWidget = new Search({
-        view: window.view,
-        includeDefaultSources: false,
-        sources: [{
-            layer: land_layer,
-            searchFields: ["kad_nomer"],
-            displayField: "kad_nomer",
-            exactMatch: false,
-            outFields: ["*"],
-            name: "Кадастровый номер",
-            placeholder: "Введите кадастровый номер",
-            maxResults: 6,
-            maxSuggestions: 6,
-            enableSuggestions: true,
-          },
-          {
-            layer: land_layer,
-            searchFields: ["fulladdress"],
-            displayField: "fulladdress",
-            exactMatch: false,
-            outFields: ["*"],
-            name: "Поиск по адресу",
-            placeholder: "Введите адрес",
-            maxResults: 6,
-            maxSuggestions: 6,
-            enableSuggestions: true,
-          }
-        ]});
-        searchWidget.on("search-complete", function(event){
-          // The results are stored in the event Object[]
-          // console.log("Results of the search: ", event);
-          if(event.results[0] && event.results[0].results[0]){
-            let res = event.results[0].results[0].feature.attributes
-            z_objectid = res.objectid
-            z_address = res.fulladdress
-            z_purpose = res.purpose
-            z_area = res.areasquare
-            z_category = res.category
-            z_kad_nomer = res.kad_nomer
-            z_name = res.name
-            z_policy = res.policy
-          }
-        });
-        window.view.ui.add(searchWidget, {
-          position: "top-left"
+        const show_object = document.createElement("button");
+        show_object.className = "btn btn-primary";
+        show_object.innerHTML = "Показать объект";
+        show_object.onclick = function () {
+		    queryLayer().then(displayResults)
+		};
+        view.ui.add(show_object,{
+           position: "top-left"
         });
       })
     })
   }
 
+  const find_kadastr = () => {
+    queryLayer().then(displayResults);
+  }
+
   const queryLayer = (results) => {
     var query = land_layer.createQuery();
-    query.where = "kad_nomer = '21318095233'";
+    let objectid = document.getElementById('object_id').innerHTML.trim()
+    query.where = "objectid = '"+objectid+"'";
     return land_layer.queryFeatures(query)
   }
 
@@ -146,54 +104,11 @@
     console.log('displayResults')
     // console.log(results)
     if(results.features[0]){
+	  lyrView.highlight(results.features[0]);
       let longitude = results.features[0].geometry.centroid.longitude
       let latitude = results.features[0].geometry.centroid.latitude
-      showPoint(latitude, longitude)
-    }
-  }
-
-  const showPoint = (latitude, longitude) => {
-    require([
-    "esri/Graphic"
-    ], function(Graphic) {
       window.view.center = [longitude.toFixed(5), latitude.toFixed(5)];
-      window.view.scale = 10000;
-      // document.getElementById("objectId").innerHTML = '';
-
-      var point = {
-        type: "point",
-        longitude: longitude.toFixed(5),
-        latitude: latitude.toFixed(5)
-      };
-
-      var markerSymbol = {
-        type: "simple-marker",
-        color: [226, 119, 40],
-        outline: {
-          color: [255, 255, 255],
-          width: 2
-        }
-      };
-
-      var pointGraphic = new Graphic({
-        geometry: point,
-        symbol: markerSymbol
-      });
-
-      query_layer.remove(oldPoint);
-      query_layer.add(pointGraphic);
-
-      oldPoint = pointGraphic;
-    });
-  }
-
-  const add_land = () => {
-    let url = 'https://gis.esaulet.kz/server/rest/services/Hosted/Пустой_слой/FeatureServer'
-    for(var i=0; i<window.map.layers.items.length; i++){
-        if(window.map.layers.items[i]['layerId'] == 0 &&
-            window.map.layers.items[i]['url'] == url){
-            check_login(insert_item, window.map.layers.items[i])
-        }
+      window.view.scale = 3000;
     }
   }
 
@@ -201,7 +116,7 @@
     require([
     "esri/identity/IdentityManager"
     ], function(IdentityManager) {
-      IdentityManager.registerToken({
+              IdentityManager.registerToken({
         "userId": data.user,
         "token": data.token,
         "server": "https://gis.esaulet.kz/portal/sharing/rest",
@@ -285,17 +200,5 @@
       }
       window.map.add(layer)
       return false;
-  }
-
-  const save_point = () => {
-    document.getElementById('ulica_mestop_z_u').value = z_address
-    document.getElementById('pravo_ru').value = z_policy
-    document.getElementById('object_name').value = z_name
-    document.getElementById('cadastral_number').value = z_kad_nomer
-    document.getElementById('object_id').value = z_objectid
-
-    // document.getElementById('viewDiv').style.height = '0px';
-    // document.getElementById('s_h_but').innerHTML = 'Показать карту';
-    // document.getElementById('s_point').style.display = 'none';
   }
 </script>

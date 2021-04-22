@@ -10,11 +10,17 @@
     #viewDiv{
         padding: 0;
         margin: 0;
-        height: 400px;
+        min-height: 400px;
+        height: 100%!important;
         width: 100%;
     }
     </style>
 @endif
+<style type="text/css">
+    .in_label{
+        font-weight: bold!important;
+    }
+</style>
 
 @section('content')
 <div class="main-panel">
@@ -90,27 +96,27 @@
         xhr.send(formData);
     }
 
-    const show_hide_map = () => {
-        @if($process->name == 'Определение делимости и неделимости земельных участков')
-            if(document.getElementById('viewDiv').style.height == '0px'){
-              document.getElementById('viewDiv').style.height = '400px';
-              document.getElementById('s_h_but').innerHTML = 'Скрыть карту';
-              document.getElementById('s_point').style.display = 'inline-block';
-            }else{
-              document.getElementById('viewDiv').style.height = '0px';
-              document.getElementById('s_h_but').innerHTML = 'Показать карту';
-              document.getElementById('s_point').style.display = 'none';
-            }
-        @else
-            if(document.getElementById('viewDiv').style.height == '0px'){
-                document.getElementById('viewDiv').style.height = '400px';
-                document.getElementById('s_h_but').innerHTML = 'Скрыть карту';
-            }else{
-                document.getElementById('viewDiv').style.height = '0px';
-                document.getElementById('s_h_but').innerHTML = 'Показать карту';
-            }
-        @endif
-    }
+    // const show_hide_map = () => {
+    //     @if($process->name == 'Определение делимости и неделимости земельных участков')
+    //         if(document.getElementById('viewDiv').style.height == '0px'){
+    //           document.getElementById('viewDiv').style.height = '400px';
+    //           document.getElementById('s_h_but').innerHTML = 'Скрыть карту';
+    //           document.getElementById('s_point').style.display = 'inline-block';
+    //         }else{
+    //           document.getElementById('viewDiv').style.height = '0px';
+    //           document.getElementById('s_h_but').innerHTML = 'Показать карту';
+    //           document.getElementById('s_point').style.display = 'none';
+    //         }
+    //     @else
+    //         if(document.getElementById('viewDiv').style.height == '0px'){
+    //             document.getElementById('viewDiv').style.height = '400px';
+    //             document.getElementById('s_h_but').innerHTML = 'Скрыть карту';
+    //         }else{
+    //             document.getElementById('viewDiv').style.height = '0px';
+    //             document.getElementById('s_h_but').innerHTML = 'Показать карту';
+    //         }
+    //     @endif
+    // }
 </script>
 @if($process->need_map)
     @if($process->name == 'Определение делимости и неделимости земельных участков')

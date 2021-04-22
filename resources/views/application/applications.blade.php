@@ -3,7 +3,11 @@
 @section('title')
     Входящие
 @endsection
-
+<style type="text/css">
+  .table td{
+    font-size: 16px!important;
+  }
+</style>
 @section('content')
     <div class="main-panel">
       <div class="content">
@@ -33,7 +37,7 @@
                         @foreach($apps as $app)
                             <tr>
                                 <td>{{$loop->iteration}}</td>
-                                <td>{{$app->user_name ?? '' }}</td>
+                                <td>{{$app->sur_name ?? '' }} {{$app->first_name ?? '' }} {{$app->middle_name ?? '' }}</td>
                                 <td>{{$app->process_name ?? ''}}</td>
                                 <td>{{$app->updated_at ?? ''}}</td>
                                 <td style="text-align:center;">
