@@ -17,7 +17,10 @@
         font-size: 16px!important;
     }
     .table td,th{
-        font-size: 16px!important;   
+        font-size: 16px!important;
+    }
+    #templateFieldsId label{
+        font-size: 16px!important;
     }
 </style>
 
@@ -44,6 +47,7 @@
                             <button class="tablinks" id="mybutton" onclick="openTab(event, 'applicationInfo')">Заявление</button>
                             <button class="tablinks" onclick="openTab(event, 'specialistFields')">Ответы специалистов</button>
                             <button class="tablinks" onclick="openTab(event, 'logs')">Движение документа</button>
+                            <button class="tablinks" onclick="openTab(event, 'spec_answ')">Ваш ответ</button>
                         </div>
                         <div id="applicationInfo" class="tabcontent">
                             <!-- <h4 class="text-center">Информация о заявителе</h4> -->
@@ -153,6 +157,121 @@
                             </table>
                         </div>
 
+                        <div id="spec_answ" class="tabcontent">
+                            @if($canApprove)
+                                @if (isset($templateFields) && $application->reject_reason == null)
+                                    <!-- <div id = "templateFieldsId"> -->
+                                    <ul class="list-group" id="templateFieldsId">
+                                        @foreach($templateFields as $item)
+                                            <!-- <div class="form-group row"> -->
+                                            <li class="list-group-item">
+                                                <div class="row">
+                                                <div class="col-md-3">
+                                                <label for="{{$item->name}}" class="col-form-label">{{ __($item->label_name) }}</label>
+                                                </div>
+                                        @switch($item->input_type_id)
+                                            @case(1)
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" id="{{$item->name}}"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
+                                                </div>
+                                                @break
+                                            @case(2)
+                                                <div class="col-md-6">
+                                                    <input type="file" class="form-control" id="{{$item->name}}"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
+                                                </div>
+                                                @break
+                                            @case(3)
+                                                <div class="col-md-6">
+                                                    <select name="{{$item->name}}" id="{{$item->name}}" class="form-control" required>
+                                                        <option selected disabled>Выберите {{$item->label_name}}</option>
+                                                        @foreach($item->options as $option)
+                                                            <option value="{{$option->name_rus}}">{{$option->name_rus}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                @break
+                                            @case(4)
+                                                <div class="col-md-6">
+                                                    @if($item->def_values)
+                                                        <select id="select_{{$item->id}}" class="form-control">
+                                                            <option selected disabled>Выберите {{$item->label_name}}</option>
+                                                            @foreach($item->def_values as $val)
+                                                                <option value="{{$val->text}}">{{$val->title}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        @section('scripts')
+                                                        <script type="text/javascript">
+                                                            $('#select_{{$item->id}}').on('change', function() {
+                                                                $('#{{$item->name}}').val(this.value);
+                                                            });
+                                                        </script>
+                                                        @append
+                                                    @endif
+                                                    <textarea name="{{$item->name}}" rows="3" class="form-control" id="{{$item->name}}" required></textarea>
+                                                </div>
+                                                @break
+                                            @default
+                                        @endswitch
+                                                <!-- </div> -->
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    <!-- </div> -->
+                                    </ul>
+                                @endif
+
+                                <div style="margin: 10px 0px;">
+                                  @if($application->reject_reason == null)
+                                      @if($toCitizen)
+                                              <input type="hidden" id="answer" value ="1">
+                                              <input type="hidden" name="process_id" value = {{$process->id}}>
+                                              <input type="hidden" name="application_id" value = {{$application->id}}>
+                                              <div class="form-group row">
+                                                  <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Комментарий") }}</label>
+                                                  <div class="col-md-6">
+                                                      <input type="text" id="lastComments" class="form-control" name="lastComments"  autocomplete="comments" autofocus>
+                                                  </div>
+                                              </div>
+                                              <div style="text-align: center">
+                                                <button class="btn btn-success" data-dismiss="modal" id="toCitizen">Согласовать и отправить заявителю</button>
+                                              </div>
+                                      @else
+                                          <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
+                                      @endif
+                                      @if($buttons[0] && $buttons[0]->can_motiv_otkaz == 1)
+                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
+                                      @else
+                                        @if($buttons[0] && $buttons[0]->can_reject == 1)
+                                          <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Отказ</button>
+                                        @endif
+                                      @endif
+                                      @if($buttons[0] && $buttons[0]->can_send_to_revision == 1)
+                                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
+                                      @endif
+                                  @else
+                                    @if($toCitizen)
+                                          <input type="hidden" id="answer" value ="0">
+                                          <input type="hidden" name="process_id" value = {{$process->id}}>
+                                          <input type="hidden" name="application_id" value = {{$application->id}}>
+                                          <div class="form-group row">
+                                              <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Комментарий") }}</label>
+                                              <div class="col-md-6">
+                                                  <input type="text" id="lastComments" class="form-control" name="lastComments"  autocomplete="comments" autofocus>
+                                              </div>
+                                          </div>
+                                          <div style="text-align: center">
+                                            <button class="btn btn-danger" data-dismiss="modal" id="toCitizen">Отправить заявителю с отказом</button>
+                                          </div>
+                                    @else
+                                        <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
+                                        <input type="hidden" id="application_id" name="application_id" value = {{$application->id}}>
+                                        <button class="btn btn-danger" data-dismiss="modal" id="approveReject">Согласовать отказ</button>
+                                    @endif
+                                  @endif
+                                </div>
+                            @endif
+                        </div>
+
                         <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
                             <div class="modal-dialog" role="document">
                                 <!-- Modal content-->
@@ -258,111 +377,6 @@
                         <!-- sign ecp -->
 
                         <div>
-                            @if($canApprove)
-                                @if (isset($templateFields) && $application->reject_reason == null)
-                                    <h4 class="card-title text-center" style="margin-top:50px;">Поля Шаблона</h4>
-                                    <div id = "templateFieldsId">
-                                        @foreach($templateFields as $item)
-                                            <div class="form-group row">
-                                                <label for="{{$item->name}}" class="col-md-4 col-form-label text-md-right">{{ __($item->label_name) }}</label>
-                                        @switch($item->input_type_id)
-                                            @case(1)
-                                                <div class="col-md-6">
-                                                    <input type="text" class="form-control" id="{{$item->name}}"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
-                                                </div>
-                                                @break
-                                            @case(2)
-                                                <div class="col-md-6">
-                                                    <input type="file" class="form-control" id="{{$item->name}}"  name="{{$item->name}}" required autocomplete="{{$item->name}}" autofocus>
-                                                </div>
-                                                @break
-                                            @case(3)
-                                                <div class="col-md-6">
-                                                    <select name="{{$item->name}}" id="{{$item->name}}" class="form-control" required>
-                                                        <option selected disabled>Выберите {{$item->label_name}}</option>
-                                                        @foreach($item->options as $option)
-                                                            <option value="{{$option->name_rus}}">{{$option->name_rus}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                @break
-                                            @case(4)
-                                                <div class="col-md-6">
-                                                    @if($item->def_values)
-                                                        <select id="select_{{$item->id}}" class="form-control">
-                                                            <option selected disabled>Выберите {{$item->label_name}}</option>
-                                                            @foreach($item->def_values as $val)
-                                                                <option value="{{$val->text}}">{{$val->title}}</option>
-                                                            @endforeach
-                                                        </select>
-                                                        @section('scripts')
-                                                        <script type="text/javascript">
-                                                            $('#select_{{$item->id}}').on('change', function() {
-                                                                $('#{{$item->name}}').val(this.value);
-                                                            });
-                                                        </script>
-                                                        @append
-                                                    @endif
-                                                    <textarea name="{{$item->name}}" rows="3" class="form-control" id="{{$item->name}}" required></textarea>
-                                                </div>
-                                                @break
-                                            @default
-                                        @endswitch
-                                                </div>
-                                        @endforeach
-                                    </div>
-                                @endif
-
-                                <div style="text-align:center; margin-top: 100px; margin-bottom:70px;">
-                                  @if($application->reject_reason == null)
-                                      @if($toCitizen)
-                                              <input type="hidden" id="answer" value ="1">
-                                              <input type="hidden" name="process_id" value = {{$process->id}}>
-                                              <input type="hidden" name="application_id" value = {{$application->id}}>
-                                              <div class="form-group row">
-                                                  <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Комментарий") }}</label>
-                                                  <div class="col-md-6">
-                                                      <input type="text" id="lastComments" class="form-control" name="lastComments"  autocomplete="comments" autofocus>
-                                                  </div>
-                                              </div>
-                                              <div style="text-align: center">
-                                                <button class="btn btn-success" data-dismiss="modal" id="toCitizen">Согласовать и отправить заявителю</button>
-                                              </div>
-                                      @else
-                                          <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
-                                      @endif
-                                      @if($buttons[0] && $buttons[0]->can_motiv_otkaz == 1)
-                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Мотивированный отказ</button>
-                                      @else
-                                        @if($buttons[0] && $buttons[0]->can_reject == 1)
-                                          <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Отказ</button>
-                                        @endif
-                                      @endif
-                                      @if($buttons[0] && $buttons[0]->can_send_to_revision == 1)
-                                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">Отправить на доработку</button>
-                                      @endif
-                                  @else
-                                    @if($toCitizen)
-                                          <input type="hidden" id="answer" value ="0">
-                                          <input type="hidden" name="process_id" value = {{$process->id}}>
-                                          <input type="hidden" name="application_id" value = {{$application->id}}>
-                                          <div class="form-group row">
-                                              <label for="comments" class="col-md-4 col-form-label text-md-right">{{ __("Комментарий") }}</label>
-                                              <div class="col-md-6">
-                                                  <input type="text" id="lastComments" class="form-control" name="lastComments"  autocomplete="comments" autofocus>
-                                              </div>
-                                          </div>
-                                          <div style="text-align: center">
-                                            <button class="btn btn-danger" data-dismiss="modal" id="toCitizen">Отправить заявителю с отказом</button>
-                                          </div>
-                                    @else
-                                        <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
-                                        <input type="hidden" id="application_id" name="application_id" value = {{$application->id}}>
-                                        <button class="btn btn-danger" data-dismiss="modal" id="approveReject">Согласовать отказ</button>
-                                    @endif
-                                  @endif
-                                </div>
-                            @endif
                             <a href="{{ url('docs/services/'.request()->segment(3)) }}" class="btn btn-primary float-left" style="margin-top:15px">Назад</a>
                         </div>
                     </div>

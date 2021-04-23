@@ -398,7 +398,11 @@ trait dbQueries
                 // dd($sData);
                 $sData = $this->convertArrayToXmlString($sData);
               }
-              $xmlstr .= "<".$sKey.">".$sData."</".$sKey.">";
+              if(is_int($sKey)){
+                    $xmlstr .= "<Arr".$sKey.">".$sData."</Arr".$sKey.">";
+                }else{
+                    $xmlstr .= "<".$sKey.">".$sData."</".$sKey.">";
+                }
             }
         }
         $xmlstr .= "</dataToSign></root>";
@@ -411,7 +415,11 @@ trait dbQueries
         if(is_array($sData)){
           $sData = $this->convertArrayToXmlString($sData);
         }
-        $xmlstr .= "<".$sKey.">".$sData."</".$sKey.">";
+        if(is_int($sKey)){
+            $xmlstr .= "<Arr".$sKey.">".$sData."</Arr".$sKey.">";
+        }else{
+            $xmlstr .= "<".$sKey.">".$sData."</".$sKey.">";
+        }
       }
       return $xmlstr;
     }

@@ -76,6 +76,7 @@ function getKeyInfoBack(result) {
 }
 
 function signXmlCall() {
+    console.log('start signing')
     var xmlToSign = $("#xmlToSign").val();
     var selectedStorage = $('#storageSelect').val();
 	blockScreen();

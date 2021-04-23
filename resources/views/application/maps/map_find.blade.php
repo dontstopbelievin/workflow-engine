@@ -1,4 +1,9 @@
 <script src="https://js.arcgis.com/4.18/"></script>
+<style type="text/css">
+  .esri-search{
+    width: 400px!important;
+  }
+</style>
 <script>
   var z_objectid = null
   var z_address = null
@@ -88,6 +93,8 @@
         var searchWidget = new Search({
         view: window.view,
         includeDefaultSources: false,
+        allPlaceholder: "Найти по кадастру или адресу",
+        label: "kk",
         sources: [{
             layer: land_layer,
             searchFields: ["kad_nomer"],
