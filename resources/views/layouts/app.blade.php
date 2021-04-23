@@ -13,6 +13,21 @@
     <link rel="stylesheet" type="text/css" href="{{url('css/custom.css?v=1.13')}}">
     <title>@yield('title')</title>
     @yield('styles')
+    <style type="text/css">
+        .btn-success{
+            background: #1a9f29!important;
+        }
+        .btn-danger{
+            background: #D52702!important;
+        }
+        .btn-success, .btn-primary, .btn-info, .btn-warning, .btn-danger{
+            font-weight: bold!important;
+        }
+        .btn-link{
+            border: 0 !important;
+            background: transparent!important;
+        }
+    </style>
 </head>
 <body>
     @if(Auth::check())

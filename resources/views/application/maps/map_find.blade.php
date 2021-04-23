@@ -94,7 +94,6 @@
         view: window.view,
         includeDefaultSources: false,
         allPlaceholder: "Найти по кадастру или адресу",
-        label: "kk",
         sources: [{
             layer: land_layer,
             searchFields: ["kad_nomer"],

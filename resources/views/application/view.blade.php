@@ -23,7 +23,6 @@
         font-size: 16px!important;
     }
 </style>
-
 @section('content')
     <title>Просмотр Заявки</title>
     <div class="main-panel">
@@ -47,7 +46,9 @@
                             <button class="tablinks" id="mybutton" onclick="openTab(event, 'applicationInfo')">Заявление</button>
                             <button class="tablinks" onclick="openTab(event, 'specialistFields')">Ответы специалистов</button>
                             <button class="tablinks" onclick="openTab(event, 'logs')">Движение документа</button>
-                            <button class="tablinks" onclick="openTab(event, 'spec_answ')">Ваш ответ</button>
+                            @if(Auth::user()->role->name != 'Заявитель')
+                                <button class="tablinks" onclick="openTab(event, 'spec_answ')">Ваш ответ</button>
+                            @endif
                         </div>
                         <div id="applicationInfo" class="tabcontent">
                             <!-- <h4 class="text-center">Информация о заявителе</h4> -->
@@ -232,9 +233,7 @@
                                                       <input type="text" id="lastComments" class="form-control" name="lastComments"  autocomplete="comments" autofocus>
                                                   </div>
                                               </div>
-                                              <div style="text-align: center">
-                                                <button class="btn btn-success" data-dismiss="modal" id="toCitizen">Согласовать и отправить заявителю</button>
-                                              </div>
+                                            <button class="btn btn-success" data-dismiss="modal" id="toCitizen">Согласовать и отправить заявителю</button>
                                       @else
                                           <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal3">Согласовать</button>
                                       @endif
