@@ -22,14 +22,14 @@
                                 </div>
                                 <h5 class="mb-4 text-center text-xl font-semibold text-gray-700 dark:text-gray-200"
                                 style="margin:40px;">
-                                    Вход без ЭЦП
+                                    Авторизация с ЭЦП
                                 </h5>
                                 <div id="errorDiv" style="background: orange"></div>
                                 @csrf
                                 <div class="g-recaptcha mt-4 text-sm" data-sitekey="6LcOIv4ZAAAAAOH6sKrJvbkej4SoRlrOI6dw0yeU" data-size="invisible"></div>
                                 <div class="text-center pb-2">
                                     <button id="myBtn" onclick="buttonClick()" type="submit" class="btn btn-primary mb-4 text-center">
-                                        Авторизоваться
+                                        Выбрать сертификат
                                     </button>
                                     <div>
                                         <a class="flex flex-wrap text-sm font-medium text-blue-800 hover:underline"
