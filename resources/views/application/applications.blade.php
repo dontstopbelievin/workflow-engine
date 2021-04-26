@@ -51,6 +51,7 @@
                       </tbody>
                     </table>
                   </div>
+                  @include('layouts.user_policies')
                 </div>
               </div>
             </div>
