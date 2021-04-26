@@ -13,7 +13,7 @@
         <li class="nav-item text-center">
           <button class="btn btn-primary" onclick="location.href='{{url('docs')}}';">
             <i class="fa fa-plus"></i>
-            <span style="margin-left: 5px;">Создать документ</span>
+            <span style="margin-left: 5px;">Подать заявку</span>
           </button>
           <br><hr>
         </li>
