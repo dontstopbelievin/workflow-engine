@@ -38,12 +38,12 @@
               <p>Мои документы</p>
           </a>
         </li>
-        <li class="nav-item {{request()->segment(3) == 'drafts' ? 'active' : ''}}">
+        {{-- <li class="nav-item {{request()->segment(3) == 'drafts' ? 'active' : ''}}">
           <a href="{{ url('docs/services/drafts') }}">
               <i class="fa fa-file-text"></i>
               <p>Черновики</p>
           </a>
-        </li>
+        </li> --}}
       @else
         <li class="nav-item {{request()->segment(3) == 'archive' ? 'active' : ''}}">
           <a href="{{ url('docs/services/archive') }}">

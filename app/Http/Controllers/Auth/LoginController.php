@@ -119,7 +119,9 @@ class LoginController extends Controller
                 'last_login_ip' => $request->getClientIp(),
             ]);
             $processes = Process::all();
-            return Redirect::to('/docs');
+            if(Auth::user()->role->name != 'Заявитель'){
+                return Redirect::to('/docs/services/incoming');
+            }            
         }
         \Session::put('login_error', 'Ваша почта или пароль неверно введены!');
 
