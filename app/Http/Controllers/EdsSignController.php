@@ -40,7 +40,8 @@ class EdsSignController extends Controller
                     Auth::login($aUser);
                     return Redirect::to('docs');
                 } else {
-                    return response(['message'=>'Пользователь не существует в системе! Обратитесь администратору!'], 409);
+                    return response(['aCertRaws' => ['commonName' => $aCertRaws['subject']['commonName'], 'iin' => $aCertRaws['subject']['iin'], 'surname' => $aCertRaws['subject']['surname']]]);
+//                    return response(['message'=>'Польз ователь не существует в системе! Обратитесь администратору!'], 409);
                 }
             } else {
                 return response(['message'=>'Ваш сертификат просрочен! Пожалуйста обновите сертификат!'], 401);

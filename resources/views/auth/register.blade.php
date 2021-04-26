@@ -112,6 +112,16 @@
                 </div>
             </div>
         </div>
+        <script>
+            var url_string = window.location.href;
+            var url = new URL(url_string);
+            console.log(url);
+            var iin = url.searchParams.get("iin");
+            document.getElementById("iin").value = iin;
+            var commonName = url.searchParams.get("commonName");
+            document.getElementById("name").value = commonName;
+            console.log(iin, commonName);
+        </script>
     </body>
 
     </html>

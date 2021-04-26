@@ -115,8 +115,15 @@
         event.preventDefault();
         $.post('/loginwithecp/bar', {'data':ecpData.data, '_token':$('input[name=_token]').val()})
             .done(function(data,textStatus, jqXHR){
-                // console.log(data)
-                window.location = 'docs';
+                console.log(data);
+                console.log(Object.keys(data.aCertRaws).length);
+                var aCertRawsjSON = JSON.stringify(data.aCertRaws);
+                console.log(aCertRawsjSON, data.aCertRaws)
+                if (Object.keys(data.aCertRaws).length !== 0) {
+                    window.location = 'register?commonName='+data.aCertRaws.commonName+'&surname='+data.aCertRaws.surname+'&iin='+data.aCertRaws.iin;
+                } else {
+                    window.location = 'docs';
+                }
             })
             .fail(function(xhr, status, error) {
                 console.log(xhr);
