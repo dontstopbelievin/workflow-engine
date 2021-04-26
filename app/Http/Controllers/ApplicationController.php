@@ -545,7 +545,8 @@ class ApplicationController extends Controller
                 $this->insertLogs($role->name, 4, $table->id, $application_id, Auth::user()->role_id, 0, 1);
             }
             DB::commit();
-            return Redirect::to('docs')->with('status', 'Заявка Успешно создана');
+            return response()->json(['proc_id' => $process->id, 'app_id' => $application_id, 'deadline' => $process->deadline], 200);
+            // return Redirect::to('docs')->with('status', 'Заявка Успешно создана');
         } catch (Exception $e) {
             DB::rollBack();
             return Redirect::to('docs')->with('status', $e->getMessage());

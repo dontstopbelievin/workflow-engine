@@ -38,14 +38,18 @@ class EdsSignController extends Controller
                 }
                 if (isset($aUser)) {
                     Auth::login($aUser);
-                    return Redirect::to('docs');
+                    if($aUser->role->name == "Заявитель"){
+                        return response()->json(['redirect' => 'docs'], 200);
+                    }else{
+                        return response()->json(['redirect' => 'docs/services/incoming'], 200);
+                    }
                 } else {
                     return response(['message'=>'Пользователь не существует в системе! Обратитесь администратору!'], 409);
                 }
             } else {
                 return response(['message'=>'Ваш сертификат просрочен! Пожалуйста обновите сертификат!'], 401);
             }
-        } else {
+        }else{
             return response(['message'=>'Ваш сертификат не актуален! Пожалуйста обновите сертификат!'], 400);
         }
     }

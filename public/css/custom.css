@@ -38,3 +38,16 @@ border: 1px solid #ccc;
 border-top: none;
 padding: 30px;
 }
+.esri_btn_custom{
+	background: white!important;
+	border:white!important;
+	color:black!important;
+	font-weight: bold;
+	padding: 8px 16px;
+	font-size: 14px;
+	opacity: 0.9;
+	border-radius: 3px;
+}
+.esri_btn_custom:hover{
+	background: #f3f3f3!important;
+}

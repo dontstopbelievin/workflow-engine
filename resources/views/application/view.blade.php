@@ -10,6 +10,31 @@
         height: 100%!important;
         width: 100%;
     }
+    .esri-search{
+        width: 400px!important;
+    }
+    .esri-popup__main-container{
+        resize: horizontal;
+        max-height: 666px!important;
+        overflow: scroll;
+    }
+    .esri-view-width-xlarge .esri-popup__main-container,
+    .esri-view-width-large .esri-popup__main-container,
+    .esri-view-width-medium .esri-popup__main-container,
+    .esri-view-height-less-than-medium .esri-popup__main-container{
+        height: 300px;
+        width: 466px;
+    }
+    .esri-popup__content{
+        margin: 0px 0px 0px 10px!important;
+        overflow: visible!important;
+    }
+    .esri-popup__footer{
+        display:none!important;
+    }
+    .attrName {
+        font-weight: bold;
+    }
     </style>
 @endif
 <style type="text/css">
@@ -46,7 +71,7 @@
                             <button class="tablinks" id="mybutton" onclick="openTab(event, 'applicationInfo')">Заявление</button>
                             <button class="tablinks" onclick="openTab(event, 'specialistFields')">Ответы специалистов</button>
                             <button class="tablinks" onclick="openTab(event, 'logs')">Движение документа</button>
-                            @if(Auth::user()->role->name != 'Заявитель')
+                            @if(Auth::user()->role->name != 'Заявитель' && $canApprove)
                                 <button class="tablinks" onclick="openTab(event, 'spec_answ')">Ваш ответ</button>
                             @endif
                         </div>
@@ -352,6 +377,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="modal fade" id="created_modal" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            Ваша заявка успешна подана!<br/>
+                                            Срок выполнения заявки <span id="created_deadline"></span> дней.<br/>
+                                            <button type="button" class="btn btn-primary float-right" data-dismiss="modal">Закрыть</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- sign ecp -->
                         <div class="form-group" style="display:none;">
@@ -389,6 +428,20 @@
         @include('application.maps.map_spec')
     @endif
     <script>
+        var created_deadline = null;
+        let tmp = [];
+        location.search
+            .substr(1)
+            .split("&")
+            .forEach(function (item) {
+              tmp = item.split("=");
+              if (tmp[0] == 'deadline'){
+                created_deadline = decodeURIComponent(tmp[1]);
+                document.getElementById("created_deadline").innerHTML = created_deadline;
+                $('#created_modal').modal('show');
+              }
+            });
+
         document.addEventListener("DOMContentLoaded", function(event) {
             document.getElementById("mybutton").click();
         });

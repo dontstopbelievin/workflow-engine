@@ -37,8 +37,11 @@ class LoginController extends Controller
 
     protected function redirectTo()
     {
-
-        return 'docs';
+        if(Auth::user()->role->name == "Заявитель"){
+            return 'docs';
+        }else{
+            return 'docs/services/incoming';
+        }
     }
 
     /**
@@ -91,22 +94,6 @@ class LoginController extends Controller
 
             \DB::table('users')->where('id', $user->id)->update(['session_id' => $new_sessid]);
 
-
-            if(isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response']))
-            {
-                  $secret = '6LcOIv4ZAAAAAPJ6Gj6X_5kG368Ck-YZ0LclzNUI';
-                  $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$_POST['g-recaptcha-response']);
-                  $responseData = json_decode($verifyResponse);
-                  if($responseData->success)
-                  {
-                      $succMsg = 'Успешно';
-                  }
-                  else
-                  {
-                      $errMsg = 'Попробуйте снова';
-                  }
-             }
-
             $user = auth()->guard('web')->user();
             $mytime = Carbon::now()->toDateTimeString();
 
@@ -118,11 +105,14 @@ class LoginController extends Controller
                 'current_login_at' => Carbon::now()->toDateTimeString(),
                 'last_login_ip' => $request->getClientIp(),
             ]);
-            $processes = Process::all();
-            return Redirect::to('/docs');
+
+            if(Auth::user()->role->name == "Заявитель"){
+                return Redirect::to('docs');
+            }else{
+                return Redirect::to('docs/services/incoming');
+            }
         }
         \Session::put('login_error', 'Ваша почта или пароль неверно введены!');
-
         $failedUser = User::find($user->id);
         $mytime = Carbon::now()->toDateTimeString();
         $txt = $mytime . ' ' . $user->sur_name.' '.$user->first_name.' '.$user->middle_name . ' ' . $user->email . ' ' .  "Неудачный вход в систему\r\n";
@@ -132,7 +122,7 @@ class LoginController extends Controller
             'last_failed_login_at' => Carbon::now()->toDateTimeString(),
             'last_failed_login_ip' => $request->getClientIp()
         ]);
-        return Redirect::to('/docs');
+        return Redirect::to('/login');
     }
 
     public function logout(Request $request)

@@ -1,9 +1,4 @@
 <script src="https://js.arcgis.com/4.18/"></script>
-<style type="text/css">
-  .esri-search{
-    width: 400px!important;
-  }
-</style>
 <script>
   var z_objectid = null
   var z_address = null
@@ -42,7 +37,7 @@
       map: window.map,
       center: [71.423, 51.148],
       ui: {
-          components: [ "attribution" ]
+          components: []
       },
       scale: 100000
   })
@@ -81,7 +76,7 @@
         existLayerReplace(land_layer)
 
         const save_object = document.createElement("button");
-          save_object.className = "btn btn-primary";
+          save_object.className = "esri_btn_custom";
           save_object.innerHTML = "Сохранить объект";
           save_object.onclick = function () {
             save_point()
@@ -137,6 +132,7 @@
         window.view.ui.add(searchWidget, {
           position: "top-left"
         });
+        window.view.ui.components=["zoom"];
       })
     })
   }

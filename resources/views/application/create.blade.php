@@ -5,8 +5,8 @@
 @endsection
 
 @if($process->need_map)
-    <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/css/main.css">
-    <style type="text/css">
+<link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/css/main.css">
+<style type="text/css">
     #viewDiv{
         padding: 0;
         margin: 0;
@@ -14,7 +14,32 @@
         height: 100%!important;
         width: 100%;
     }
-    </style>
+    .esri-search{
+        width: 400px!important;
+    }
+    .esri-popup__main-container{
+        resize: horizontal;
+        max-height: 666px!important;
+        overflow: scroll;
+    }
+    .esri-view-width-xlarge .esri-popup__main-container,
+    .esri-view-width-large .esri-popup__main-container,
+    .esri-view-width-medium .esri-popup__main-container,
+    .esri-view-height-less-than-medium .esri-popup__main-container{
+        height: 300px;
+        width: 466px;
+    }
+    .esri-popup__content{
+        margin: 0px 0px 0px 10px!important;
+        overflow: visible!important;
+    }
+    .esri-popup__footer{
+        display:none!important;
+    }
+    .attrName {
+        font-weight: bold;
+    }
+</style>
 @endif
 <style type="text/css">
     .in_label{
@@ -86,8 +111,9 @@
         xhr.setRequestHeader("Authorization", "Bearer " + $('input[name=_token]').val());
         xhr.onload = function () {
             if(xhr.status == 200){
-                // console.log(xhr.responseText);
-                location.reload();
+                let res = JSON.parse(xhr.responseText);
+                location.replace("http://workflow.back/docs/services/mydocs/view/"+res.proc_id+"/"+res.app_id+"?deadline="+res.deadline);
+                // location.reload();
             }else{
                 console.log(xhr.responseText);
                 alert('Ошибка');

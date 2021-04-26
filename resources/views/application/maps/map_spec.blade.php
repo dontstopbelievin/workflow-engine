@@ -31,7 +31,7 @@
       map: window.map,
       center: [71.423, 51.148],
       ui: {
-          components: [ "attribution" ]
+          components: []
       },
       highlightOptions: {
 	    color: [255,69,0],
@@ -76,14 +76,15 @@
         land_layer.popupTemplate = template
         existLayerReplace(land_layer)
         const show_object = document.createElement("button");
-        show_object.className = "btn btn-primary";
+        show_object.className = "esri_btn_custom";
         show_object.innerHTML = "Показать объект";
         show_object.onclick = function () {
-		    queryLayer().then(displayResults)
-		};
+  		    queryLayer().then(displayResults)
+		    };
         view.ui.add(show_object,{
            position: "top-left"
         });
+        window.view.ui.components=["zoom"];
       })
     })
   }

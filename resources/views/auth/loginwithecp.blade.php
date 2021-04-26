@@ -115,8 +115,8 @@
         event.preventDefault();
         $.post('/loginwithecp/bar', {'data':ecpData.data, '_token':$('input[name=_token]').val()})
             .done(function(data,textStatus, jqXHR){
-                // console.log(data)
-                window.location = 'docs';
+                console.log(data)
+                window.location = data.redirect;
             })
             .fail(function(xhr, status, error) {
                 console.log(xhr);
