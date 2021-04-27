@@ -23,7 +23,7 @@ class EdsSignController extends Controller
 
         $replacedXml = str_replace("\r\n", '', $x509Info[1]);
 
-        $oNca = new PhpNCANode\NCANodeClient('http://95.59.124.162:14579'); //95.59.124.162 когда локально
+        $oNca = new PhpNCANode\NCANodeClient(env('NCA_NODE_IP', 'http://95.59.124.162:14579')); //95.59.124.162 когда локально
         $oPkcs12Info = $oNca->x509Info($replacedXml);
 
         if ($oPkcs12Info->isLegal() === true) {

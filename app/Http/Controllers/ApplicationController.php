@@ -232,7 +232,7 @@ class ApplicationController extends Controller
         }
 
         $application_arr = json_decode(json_encode($application), true);
-        // dd($buttons);
+
         return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen', 'rolesToRevision', 'records', 'buttons', 'aRowNameRows','application_arr'));
     }
 
@@ -262,7 +262,7 @@ class ApplicationController extends Controller
             $docs = DB::table($template_table)->get()->toArray();
             $application->templates[$template_table] = $docs;
         }
-        // dd($application);
+
         return json_decode(json_encode($application), true);
     }
 
@@ -395,7 +395,7 @@ class ApplicationController extends Controller
             $this->insertLogs(Auth::user()->role->name, 1, $table->id, $request->application_id, Auth::user()->role_id, $currentRoleOrder, 1, '',$comment);
 
             $processRoles = array_values($this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table->id, $request->application_id, 1, $tableName));
-            // dd($processRoles);
+
             if(sizeof($processRoles) == 0){
               DB::table($tableName)
                   ->where('id', $request->application_id)
@@ -456,7 +456,7 @@ class ApplicationController extends Controller
               ->update(['current_order' => $currentRoleOrder+1]);
         }
       }
-      // dd($processRoles);
+
       return $processRoles;
     }
 
@@ -511,9 +511,7 @@ class ApplicationController extends Controller
             $process = Process::find($request->process_id);
 
           //         $notifyUsers = $role->users;
-          // //        dd($notifyUsers, $role);
           //         foreach($notifyUsers as $notifyUser) {
-          // //            dd($notifyUser);
           //             $details = [
 
           //                 'greeting' => 'Привет' . ', ' . $notifyUser->name,
@@ -531,13 +529,13 @@ class ApplicationController extends Controller
           //             ];
           //             Notification::send($notifyUser, new ApproveNotification($details));
           //         }
-          //        dd($notifyUsers);
 
             $tableName = $this->getTableName($process->name);
             $table = CreatedTable::where('name', $tableName)->first();
             $applicationTableFields["statuses"] = $this->get_roles_of_order($process->id, 1);
             $applicationTableFields["current_order"] = 1;
             $applicationTableFields["user_id"] = Auth::user()->id;
+            // return response()->json(['error' => $applicationTableFields], 500);
             $application_id = DB::table($tableName)->insertGetId($applicationTableFields);
 
             foreach ($applicationTableFields["statuses"] as $value) {
@@ -549,7 +547,7 @@ class ApplicationController extends Controller
             // return Redirect::to('docs')->with('status', 'Заявка Успешно создана');
         } catch (Exception $e) {
             DB::rollBack();
-            return Redirect::to('docs')->with('status', $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
@@ -593,7 +591,7 @@ class ApplicationController extends Controller
         // $aData = ["coordindates" => "5645226",   "goal" => "123213213", "area" => "34123453", "processId" => $process->id];
         // $applicationTableFields["coordindates"] = $aData["coordindates"];
         // $applicationTableFields["goal"] = $aData["goal"];
-        // $applicationTableFields["area"] = $aData["area"];  dd($aData, $applicationTableFields);
+        // $applicationTableFields["area"] = $aData["area"];
         // $modifiedApplicationTableFields = $this->modifyApplicationTableFields($applicationTableFields, $status->id, $user->id);
         // $applicationId = DB::table($tableName)->insertGetId( $modifiedApplicationTableFields);
         // $logsArray = $this->getFirstLogs($status->id, $table->id, $applicationId, $arrRoutes[0]["id"]); // получить историю хода согласования
@@ -731,13 +729,12 @@ class ApplicationController extends Controller
 
           $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
           $sendingRoleOrder = $process->roles()->select('order')->where('role_id', $to_role->id)->first()->order;
-          //dd($currentRoleOrder);
+
           if($currentRoleOrder == $sendingRoleOrder){
             $processRoles = $this->getProcessStatuses($tableName, $request->application_id);
-            //dd($processRoles);
             $processRoles = array_values($this->deleteCurrentRoleFromStatuses($processRoles));
             array_push($processRoles, $to_role->id);
-            // dd($processRoles);
+
             DB::table($tableName)
                     ->where('id', $request->application_id)
                     ->update(['statuses' => $processRoles, 'current_order' => $sendingRoleOrder, 'revision_reason' => $request->revisionReason, 'revision_reason_from_spec_id' =>  $user->role_id, 'revision_reason_to_spec_id' => $to_role->id]);
