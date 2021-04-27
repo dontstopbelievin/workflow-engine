@@ -105,7 +105,6 @@ class LoginController extends Controller
                 'current_login_at' => Carbon::now()->toDateTimeString(),
                 'last_login_ip' => $request->getClientIp(),
             ]);
-
             if(Auth::user()->role->name == "Заявитель"){
                 return Redirect::to('docs');
             }else{
