@@ -106,7 +106,7 @@ class EdsSignController extends Controller
 
     public function signVerify(Request $request)
     {
-        $oNca = new PhpNCANode\NCANodeClient('http://95.59.124.162:14579');
+        $oNca = new PhpNCANode\NCANodeClient(env('NCA_NODE_IP', 'http://95.59.124.162:14579'));
         $signedXml = $request->signedXml;
         $xmlVerification = $oNca->xmlVerify($signedXml);
         if ($xmlVerification->isValid() === true) {
