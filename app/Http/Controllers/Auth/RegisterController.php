@@ -50,10 +50,17 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:10', 'min:10'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'regex:/^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!$#%]).*$/', 'min:8', 'confirmed'],
+            'firstname' => 'required|string',
+            'surname' => 'required|string',
+            'lastname' => 'required|string',
+            'iin' => 'required_without_all:bin',
+            'bin' => 'required_without_all:iin',
+            'phone' => 'nullable|string',
+            // 'password' => 'required|password|regex:/^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!$#%]).*$/|min:8|confirmed',
+            'password' => 'required|confirmed',
+            'password_confirmation' => 'required',
+            'policy' => 'required|integer',
         ]);
     }
 
@@ -74,14 +81,18 @@ class RegisterController extends Controller
         if ($data['bin'] !== Null) {
             $bin = $data['bin'];
         }
+
         return User::create([
-            'name' => $data['name'],
+            'first_name' => $data['firstname'],
+            'sur_name' => $data['surname'],
+            'middle_name' => $data['lastname'],
             'phone' => $data['phone'],
             'iin' => $iin,
             'bin' => $bin,
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'usertype' => $usertype,
+            'role_id' => 1,
         ]);
     }
 }

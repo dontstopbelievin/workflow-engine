@@ -12,7 +12,7 @@
         <div class="my_message alert alert-danger alert-block">
             <button type="button" class="close" data-dismiss="alert">×</button>
             @foreach($message as $m)
-                <strong>{{ $m }}</strong>
+                <strong>{{ $m }}</strong><br/>
             @endforeach
         </div>
     @else

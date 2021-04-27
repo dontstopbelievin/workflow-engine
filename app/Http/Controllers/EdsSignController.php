@@ -44,7 +44,7 @@ class EdsSignController extends Controller
                         return response()->json(['redirect' => 'docs/services/incoming'], 200);
                     }
                 } else {
-                    return response(['message'=>'Пользователь не существует в системе! Обратитесь администратору!'], 409);
+                    return response()->json(['name' => explode(' ', $aCertRaws['subject']['commonName'])[1], 'surname' => $aCertRaws['subject']['surname'], 'lastname' => $aCertRaws['subject']['lastName'], 'iin' => $aCertRaws['subject']['iin'], 'email' => $aCertRaws['subject']['email']], 200);
                 }
             } else {
                 return response(['message'=>'Ваш сертификат просрочен! Пожалуйста обновите сертификат!'], 401);

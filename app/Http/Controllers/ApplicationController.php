@@ -123,7 +123,7 @@ class ApplicationController extends Controller
             $tableName = $process->table_name;
             $allApplications = DB::table($tableName)
                               ->join('processes', 'processes.id', $tableName.'.process_id')
-                              ->where($tableName.'.user_id', '=', $user->role_id);
+                              ->where($tableName.'.user_id', '=', $user->id);
             $allApplications = $this->getFieldsForView($allApplications, $tableName);
             $apps = array_merge($apps, $allApplications->toArray());
         }

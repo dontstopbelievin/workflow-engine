@@ -3,116 +3,147 @@
 @section('title')
     Регистрация
 @endsection
-
+<style>
+    .reg_form{
+        text-align:left;
+        padding: 15px 20px;
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.05)!important;
+    }
+    .form-control{
+        margin: auto;
+        width: 90%!important;
+    }
+</style>
 @section('content')
-
-    <html :class="{ 'theme-dark': dark } bg-gray-50 dark:bg-gray-900" x-data="data()" lang="en">
-
-    <head>
-        <title>Регистрация</title>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-            rel="stylesheet" />
-        <link rel="stylesheet" href="../assets/css/tailwind.output.css" />
-    </head>
-
-    <body class="pt-8">
-        <div class="flex items-center min-h-screen p-6">
-            <div class="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
-                <div class="flex flex-col overflow-y-auto md:flex-row">
-                    <div class="h-32 md:h-auto md:w-1/2">
-                        <img aria-hidden="true" class="object-cover w-full h-full dark:hidden"
-                            src="../assets/img/create-account-office.jpeg" alt="Office" />
-                        <img aria-hidden="true" class="hidden object-cover w-full h-full dark:block"
-                            src="../assets/img/create-account-office-dark.jpeg" alt="Office" />
-                    </div>
-                    <div class="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
-                        <div class="w-full">
-                            <div class="flex justify-center md:justify-start">
-                                <a href="#" class="p-4"><img src="/images/astana-logo.png"></a>
-                            </div>
-                            <h1 class="mb-4 text-center text-xl font-semibold text-gray-700 dark:text-gray-200">
-                                Регистрация
-                            </h1>
-                            <form class="flex flex-col pt-3 md:pt-8" action="/register" method="POST">
+<div class="main-panel" style="width: 100%">
+    <div class="content">
+        <div class="row justify-content-center">
+            <div class="card" style="width: 50%; text-align:center;">
+                <div class="card-body" style="padding:0px; margin:0px;">
+                    <div class="row">
+                        <div class="col-md-6" style="white-space: nowrap;padding:0px; margin: 0px; overflow: hidden;">
+                            <img aria-hidden="true" class="object-cover w-full h-full dark:hidden"
+                            src="../assets/img/create-account-office.jpeg" style="height: 100%;" alt="Office" />
+                        </div>
+                        <div class="col-md-6" style="padding: 30px;">
+                            <div>
+                                <div>
+                                    <a href="#" class="p-4"><img src="/images/astana-logo.png"></a>
+                                </div>
+                                <h5 class="text-center" style="margin-top: 30px;">
+                                    Регистрация
+                                </h5>
+                                <div id="errorDiv" style="background: orange"></div>
+                                <form class="flex flex-col pt-3 md:pt-8" action="/register" method="POST">
                                 @csrf
-                                <label class="block text-sm">
-                                    <span for="name" class="text-gray-700 dark:text-gray-400">ФИО</label>
-                                <input type="text" id="name" name="name" placeholder="Кайсаров Кайсар Кайсарулы"
-                                    class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
-                                </label>
-                                <label class="block mt-4 text-sm">
-                                    <span for="name" class="text-gray-700 dark:text-gray-400">Телефон</label>
-                                <input type="text" id="phone" name="phone" pattern="[0-9]{10}" title="Введите 10 цифр вашего номера" placeholder="10 цифр вашего номера. Пример: 7077007777"
-                                    class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input form-control @error('email') border-red-500 @enderror">
-                                </label>
-                                <label class="block mt-4 text-sm">
-                                    <span for="iin" class="text-gray-700 dark:text-gray-400">ИИН</label>
-                                <input type="text" id="iin" name="iin" pattern="[0-9]{12}" placeholder="950206886596"
-                                    class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
-                                </label>
-                                <label class="block mt-4 text-sm">
-                                    <span for="bin" class="text-gray-700 dark:text-gray-400">БИН</label>
-                                <input type="text" id="bin" name="bin" pattern="[0-9]{12}" placeholder="950206886596"
-                                    class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input">
-                                </label>
-                                <label for="email" class="block mt-4 text-sm">
-                                    <span class="text-gray-700 dark:text-gray-400">Ваш email</span>
-                                    <input type="email" id="email" name="email" value="{{ old('email') }}" required autocomplete="email"
-                                           class="@error('email') is-invalid @enderror shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
-
-                                    @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </label>
-                                <label for="password" class="block mt-4 text-sm">
-                                    <span class="text-gray-700 dark:text-gray-400">Придумайте пароль</span>
-                                    <input type="password" id="password" name="password"  required autocomplete="new-password"
-                                           class="@error('password') is-invalid @enderror shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
-                                    <small id="emailHelp" class="form-text text-muted">1.Длина пароля должна быть не менее 8 символов</small>
-                                    <small id="emailHelp" class="form-text text-muted">2.Пароль должен состоять из букв латинского алфавита (A-z) и арабских цифр (0-9)</small>
-                                    <small id="emailHelp" class="form-text text-muted">3. Пароль должен содержать не менее одного из следующих символов:( !$#% ).</small>
-                                    @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </label>
-                                <label for="confirm-password" class="block mt-4 text-sm">
-                                    <span class="text-gray-700 dark:text-gray-400">
-                                        Повторите пароль
-                                    </span>
-                                    <input
-                                        class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                                        placeholder="***************" type="password" id="confirm-password"  name="password_confirmation" />
-                                </label>
-
-                                <div class="flex mt-6 text-sm">
-                                    <label class="flex items-center dark:text-gray-400">
-                                        <input type="checkbox"
-                                            class="text-purple-600 form-checkbox focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray" />
-                                        <span class="ml-2">
+                                <div class="md-form md-outline reg_form">
+                                    <label data-error="wrong" data-success="right" for="surname"><b>Фамилия</b></label><br/>
+                                    <input type="text" name="surname" id="surname" required value="" readonly="readonly" class="form-control"/>
+                                </div>
+                                <div class="md-form md-outline reg_form">
+                                    <label data-error="wrong" data-success="right" for="firstname"><b>Имя</b></label><br/>
+                                    <input type="text" name="firstname" id="firstname" required readonly="readonly" value="" class="form-control"/>
+                                </div>
+                                <div class="md-form md-outline reg_form">
+                                    <label data-error="wrong" data-success="right" for="lastname"><b>Отчество</b></label><br/>
+                                    <input type="text" name="lastname" id="lastname" required readonly="readonly" value="" class="form-control"/>
+                                </div>
+                                <div class="md-form md-outline reg_form">
+                                    <label data-error="wrong" data-success="right" for="phone"><b>Телефон</b></label><br/>
+                                    <input type="text" id="phone" name="phone" pattern="[0-9]{10}" title="Введите 10 цифр вашего номера" class="form-control"/>
+                                </div>
+                                <div class="md-form md-outline reg_form">
+                                    <label data-error="wrong" data-success="right" for="iin"><b>ИИН</b></label><br/>
+                                    <input type="text" id="iin" name="iin" readonly="readonly" pattern="[0-9]{12}" class="form-control"/>
+                                </div>
+                                <div class="md-form md-outline reg_form">
+                                    <label data-error="wrong" data-success="right" for="bin"><b>БИН</b></label><br/>
+                                    <input type="text" id="bin" name="bin" readonly="readonly" pattern="[0-9]{12}" class="form-control"/>
+                                </div>
+                                <div class="md-form md-outline reg_form">
+                                    <label data-error="wrong" data-success="right" for="email"><b>Email</b></label><br/>
+                                    <input type="email" id="email" name="email" value="" required autocomplete="email" class="form-control"/>
+                                </div>
+                                <div class="md-form md-outline reg_form">
+                                    <label data-error="wrong" data-success="right" for="password"><b>Придумайте пароль</b></label><br/>
+                                    <input type="password" id="password" name="password" required autocomplete="new-password" class="form-control"/ style="margin: 0px;width: 80%!important;">
+                                    <small id="emailHelp" class="form-text text-muted" style="text-align: left;">1.Длина пароля должна быть не менее 8 символов</small>
+                                    <small id="emailHelp" class="form-text text-muted" style="text-align: left;">2.Пароль должен состоять из букв латинского алфавита (A-z) и арабских цифр (0-9)</small>
+                                    <small id="emailHelp" class="form-text text-muted" style="text-align: left;">3. Пароль должен содержать не менее одного из следующих символов:( !$#% ).</small>
+                                </div>
+                                <div class="md-form md-outline reg_form">
+                                    <label data-error="wrong" data-success="right" for="confirm_password"><b>Повторите пароль</b></label>
+                                    <input class="form-control" placeholder="***************" type="password" required id="confirm_password"  name="password_confirmation" / style="display: inline-block;width: 80%!important;">
+                                    <img id="check_pass" src="" style="width: 0px;margin-left: 10px;"/>
+                                </div>
+                                <div class="md-form md-outline reg_form" style="padding: 25px;">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" id="policy" value="1" name="policy" class="form-check-input">
+                                        <span class="form-check-sign" style="float: left;">
                                             Я согласен
-                                            <span class="underline"> с условиями пользования</span>
+                                            <span class="underline"> с <a href="policy" target="_blank">условиями пользования</a></span>
                                         </span>
                                     </label>
                                 </div>
-                                <button type="submit"
-                                        class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                                    {{ __('Зарегистрироваться') }}
-                                </button>
-
-                            <a class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                                href="/login">
-                                Уже есть аккаунт? Авторизуйтесь
-                            </a>
+                                <div class="text-center pb-2 reg_form">
+                                    <button type="submit" class="btn btn-primary form-control">{{ __('Зарегистрироваться') }}</button>
+                                    <div>
+                                        <a class="flex flex-wrap text-sm font-medium text-blue-800 hover:underline"
+                                       href="/login">
+                                        Уже есть аккаунт? Авторизуйтесь
+                                        </a> 
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </body>
-
-    </html>
+    </div>
+</div>
 @endsection
+@section('scripts')
+<script>
+    const check_pass = () => {
+        var x = document.getElementById("password").value;
+        var y = document.getElementById("confirm_password").value;
+        if(y.length > 0){
+            document.getElementById("check_pass").style.width = "25px";
+            if(x == y){
+                document.getElementById("check_pass").src = "images/done.png"
+            }else{
+                document.getElementById("check_pass").src = "images/warning.png"
+            }
+        }else{
+            document.getElementById("check_pass").style.width = "0px";
+        }
+    }
+
+    let source = document.getElementById("confirm_password");
+    source.addEventListener('input', check_pass);
+    source.addEventListener('propertychange', check_pass);
+    let source2 = document.getElementById("password");
+    source2.addEventListener('input', check_pass);
+    source2.addEventListener('propertychange', check_pass);
+
+    var url_string = window.location.href;
+    var url = new URL(url_string);
+    var first_name = url.searchParams.get("name");
+    var last_name = url.searchParams.get("lastname");
+    var sur_name = url.searchParams.get("surname");
+    var iin = url.searchParams.get("iin");
+    var bin = url.searchParams.get("bin");
+    var email = url.searchParams.get("email");
+    if(iin){
+        document.getElementById("iin").value = iin;
+    }
+    if(bin){
+        document.getElementById("bin").value = bin;   
+    }
+    document.getElementById("firstname").value = first_name;
+    document.getElementById("surname").value = sur_name;
+    document.getElementById("lastname").value = last_name;
+    document.getElementById("email").value = email;
+</script>
+@append

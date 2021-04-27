@@ -50,6 +50,17 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if( $exception instanceof \Illuminate\Validation\ValidationException){
+            $messages = $exception->errors();
+            $res = [];
+            foreach ($messages as $key => $value) {
+                foreach ($value as $k => $v) {
+                    $res[] = $v;
+                }
+            }
+            return redirect()->back()->with('error', $res, 422);
+        }
+
         return parent::render($request, $exception);
     }
 }

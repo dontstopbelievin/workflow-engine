@@ -59,7 +59,6 @@
     // Get the <span> element that closes the modal
     // When the user clicks on the button, open the modal
     function buttonClick() {
-        console.log('button');
         handleSend();
     }
     // When the user clicks on <span> (x), close the modal
@@ -108,15 +107,19 @@
             console.log('type is string');
             sendRequest()
         }
-        console.log('tut', ecpData.data);
+        console.log('tut');
     };
 
     function sendRequest() {
         event.preventDefault();
         $.post('/loginwithecp/bar', {'data':ecpData.data, '_token':$('input[name=_token]').val()})
             .done(function(data,textStatus, jqXHR){
-                console.log(data)
-                window.location = data.redirect;
+                console.log(data);
+                if (data.redirect) {
+                    window.location = data.redirect;
+                } else {
+                    window.location = 'register?name='+data.name+'&surname='+data.surname+'&lastname='+data.lastname+'&iin='+data.iin+'&email='+data.email+'&birth_date='+data.birth_date;
+                }
             })
             .fail(function(xhr, status, error) {
                 console.log(xhr);

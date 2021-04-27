@@ -24,6 +24,8 @@ class CreateUsersTable extends Migration
             $table->string('iin')->nullable();
             $table->string('bin')->nullable();
             $table->string('region')->nullable();
+            $table->integer('role_id')->unsigned()->nullable();
+            $table->foreign('role_id')->references('id')->on('roles');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->timestamp('password_changed_at')->nullable();

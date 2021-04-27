@@ -13,7 +13,7 @@
     }
 
     .navbar-nav .active {
-        background-color: #004798;
+        background-color: #1a9f29;
     }
 
     .nav_left_form li {
@@ -22,7 +22,7 @@
 
     .nav_left_form li:hover {
         cursor: pointer;
-        background-color: #004798;
+        background-color: #1a9f29;
     }
 
     .nav-auth {
@@ -35,17 +35,24 @@
 
     .nav-auth2:hover {
         cursor: pointer;
-        background-color: #004798;
+        background-color: #1a9f29;
     }
 
     .nav-auth:hover {
         cursor: pointer;
-        background-color: #004798;
+        background-color: #1a9f29;
     }
-
+    .btn-primary{
+        background-color: #0a8323!important;
+        border-color: #0a8323!important;
+    }
+    .btn-primary:hover{
+        background-color: #1a9f29!important;
+        border-color: #0a8323!important;
+    }
 </style>
 <nav class="navbar navbar-header navbar-expand-lg fixed-top"
-    style="background: #0067B8!important; height: 60px;box-shadow: 0 2px 1px -1px #999; color:white!important;padding-left: 0px;">
+    style="background: #0a8323!important; height: 60px;box-shadow: 0 2px 1px -1px #999; color:white!important;padding-left: 0px;">
     <div class="container-fluid" style="padding-left: 0px;">
         <div class="navbar-header">
             <div>
