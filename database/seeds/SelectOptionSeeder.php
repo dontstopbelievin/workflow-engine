@@ -156,5 +156,29 @@ class SelectOptionSeeder extends Seeder
                 'name_rus' => 'Байконыр' //4
             ],
         ]);
+
+        $d_id = Dictionary::where('name', 'zakaz4ik_drugoi')->first()->id;
+        DB::table('select_options')->insert([
+            [
+            	'dictionary_id' => $d_id,
+                'name_rus' => 'Заявитель является Заказчиком'
+            ],
+            [
+            	'dictionary_id' => $d_id,
+                'name_rus' => 'Заказчик другое лицо'
+            ],
+        ]);
+
+        $d_id = Dictionary::where('name', 'zakaz4ik_fiz_ur')->first()->id;
+        DB::table('select_options')->insert([
+            [
+            	'dictionary_id' => $d_id,
+                'name_rus' => 'Заказчик физическое лицо'
+            ],
+            [
+            	'dictionary_id' => $d_id,
+                'name_rus' => 'Заказчик юридическое лицо'
+            ],
+        ]);
     }
 }

@@ -26,7 +26,10 @@ class InputTypeSeeder extends Seeder
                 'name' => 'textarea' //4
             ],
             [
-                'name' => 'hidden' //4
+                'name' => 'hidden' //5
+            ],
+            [
+                'name' => 'radio_button' //6
             ],
         ]);
     }

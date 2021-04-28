@@ -146,7 +146,7 @@
         // });
         const save_object = document.createElement("button");
         save_object.className = "esri_btn_custom float-left";
-        save_object.innerHTML = "Сохранить объект";
+        save_object.innerHTML = "Выбрать объект";
         save_object.style.height = "32px";
         save_object.style.padding = "0px 10px";
         save_object.onclick = function () {
@@ -240,11 +240,18 @@
   }
 
   const save_point = () => {
+    if(document.getElementById('ulica_mestop_z_u'))
     document.getElementById('ulica_mestop_z_u').value = z_address
-    document.getElementById('pravo_ru').value = z_policy
-    document.getElementById('object_name').value = z_name
-    document.getElementById('cadastral_number').value = z_kad_nomer
-    document.getElementById('object_id').value = z_objectid
+    if(document.getElementById('object_address'))
+      document.getElementById('object_address').value = z_address
+    if(document.getElementById('pravo_ru'))
+      document.getElementById('pravo_ru').value = z_policy
+    if(document.getElementById('object_name'))
+      document.getElementById('object_name').value = z_name
+    if(document.getElementById('cadastral_number'))
+      document.getElementById('cadastral_number').value = z_kad_nomer
+    if(document.getElementById('object_id'))
+      document.getElementById('object_id').value = z_objectid
 
     // document.getElementById('viewDiv').style.height = '0px';
     // document.getElementById('s_h_but').innerHTML = 'Показать карту';

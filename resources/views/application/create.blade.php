@@ -22,12 +22,13 @@
         max-height: 666px!important;
         overflow: scroll;
     }
+    .esri-view-width-less-than-medium .esri-popup__main-container,
     .esri-view-width-xlarge .esri-popup__main-container,
     .esri-view-width-large .esri-popup__main-container,
     .esri-view-width-medium .esri-popup__main-container,
     .esri-view-height-less-than-medium .esri-popup__main-container{
-        height: 300px;
-        width: 466px;
+        height: 300px!important;
+        width: 466px!important;
     }
     .esri-popup__content{
         margin: 0px 0px 0px 10px!important;
@@ -176,11 +177,7 @@
     // }
 </script>
 @if($process->need_map)
-    @if($process->name == 'Определение делимости и неделимости земельных участков')
-        @include('application.maps.map_find')
-    @else
-        @include('layouts.map')
-    @endif
+    @include('application.maps.map_find')
 @endif
 
 @append

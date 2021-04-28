@@ -7,6 +7,20 @@
   .table td{
     font-size: 16px!important;
   }
+  .gos_tabs{
+    display: none;
+    height: 90px;
+    width: 390px;
+    padding: 0px!important;
+    margin: 0px!important;
+  }
+  .gos_content{
+    width: 100%;
+    height:100%;
+    text-align: center;
+    border: 1px solid black;
+    margin: 0px;
+  }
 </style>
 @section('content')
     <div class="main-panel">
@@ -32,6 +46,23 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <div class="row">
+                                    <div class="col-md-4 gos_tabs">
+                                        <div class="gos_content">
+                                            asdf
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 gos_tabs">
+                                        <div class="gos_content">
+                                            asdf
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 gos_tabs">
+                                        <div class="gos_content">
+                                            asdf
+                                        </div>
+                                    </div>
+                                </div>
                                 @foreach ($processes as $process)
                                     <tr class="p-3 mb-5 rounded">
                                         <td>{{ $loop->iteration }}</td>

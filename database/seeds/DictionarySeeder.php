@@ -14,7 +14,7 @@ class DictionarySeeder extends Seeder
          DB::table('dictionaries')->insert([
             [
                 'name' => 'applicant_address',
-                'label_name' => 'Адрес проживания(физ)/местонахождения(юр)',
+                'label_name' => 'Адрес заявителя',
                 'input_type_id' => 1,
                 'insert_type_id' => 1
             ],
@@ -49,7 +49,7 @@ class DictionarySeeder extends Seeder
                 'insert_type_id' => 1
             ],
             [
-                'name' => 'IIN',
+                'name' => 'iin',
                 'label_name' => 'ИИН',
                 'input_type_id' => 1,
                 'insert_type_id' => 1
@@ -242,7 +242,7 @@ class DictionarySeeder extends Seeder
             ],
             [
                 'name' => 'telephone',
-                'label_name' => 'Телефон',
+                'label_name' => 'Телефон заявителя',
                 'input_type_id' => 1,
                 'insert_type_id' => 1
             ],
@@ -270,108 +270,162 @@ class DictionarySeeder extends Seeder
                 'input_type_id' => 1,
                 'insert_type_id' => 1
             ],
-             [
-                 'name' => 'dictionary_target',
-                 'label_name' => 'Справочник цель использования',
-                 'input_type_id' => 3,
-                 'insert_type_id' => 6
-             ],
-             [
-                 'name' => 'dictionary_purpose',
-                 'label_name' => 'Целевое назначение земельного участка',
-                 'input_type_id' => 3,
-                 'insert_type_id' => 6
-             ],
-             [
-                 'name' => 'dictionary_right_type',
-                 'label_name' => 'Вид права использования',
-                 'input_type_id' => 3,
-                 'insert_type_id' => 6
-             ],
-             [
-                 'name' => 'dictionary_land_category',
-                 'label_name' => 'Справочник категория земель',
-                 'input_type_id' => 3,
-                 'insert_type_id' => 6
-             ],
-             [
-                 'name' => 'dictionary_land_divisibility',
-                 'label_name' => 'Делимость земель',
-                 'input_type_id' => 3,
-                 'insert_type_id' => 6
-             ],
-             [
-                 'name' => 'ulica_mestop_z_u',
-                 'label_name' => 'Улица (местоположение) земельного участка',
-                 'input_type_id' => 1,
-                 'insert_type_id' => 1
-             ],
-             [
-                 'name' => 'area',
-                 'label_name' => 'Площадь(в гектарах)',
-                 'input_type_id' => 1,
-                 'insert_type_id' => 1
-             ],
-             [
-                 'name' => 'cel_razdela',
-                 'label_name' => 'Цель раздела',
-                 'input_type_id' => 1,
-                 'insert_type_id' => 1
-             ],
-             [
-                 'name' => 'region',
-                 'label_name' => 'Район',
-                 'input_type_id' => 3,
-                 'insert_type_id' => 1
-             ],
-             [
-                 'name' => 'cadastral_number',
-                 'label_name' => 'Кадастровый номер',
-                 'input_type_id' => 1,
-                 'insert_type_id' => 1
-             ],
-             [
-                 'name' => 'pri4ina_i_c_n',
-                 'label_name' => 'Причина изменения целевого назначения',
-                 'input_type_id' => 1,
-                 'insert_type_id' => 1
-             ],
-             [
-                 'name' => 'pravoustan_doc',
-                 'label_name' => 'Правоустанавливающий документ №',
-                 'input_type_id' => 1,
-                 'insert_type_id' => 1
-             ],
-             [
-                 'name' => 'pravoustan_doc_date',
-                 'label_name' => 'Правоустанавливающий документ от(дата)',
-                 'input_type_id' => 1,
-                 'insert_type_id' => 1
-             ],
-             [
-                 'name' => 'identific_doc',
-                 'label_name' => 'Идентификационный документ №',
-                 'input_type_id' => 1,
-                 'insert_type_id' => 1
-             ],
-             [
-                 'name' => 'identific_doc_date',
-                 'label_name' => 'Идентификационный документ от(дата)',
-                 'input_type_id' => 1,
-                 'insert_type_id' => 1
-             ],
-             [
-                 'name' => 'object_name',
-                 'label_name' => 'Наименование объекта',
-                 'input_type_id' => 1,
-                 'insert_type_id' => 1
-             ],
-             [
-                 'name' => 'object_id',
-                 'label_name' => 'object_id',
-                 'input_type_id' => 5,
-                 'insert_type_id' => 1
-             ],
+            [
+                'name' => 'dictionary_target',
+                'label_name' => 'Справочник цель использования',
+                'input_type_id' => 3,
+                'insert_type_id' => 6
+            ],
+            [
+                'name' => 'dictionary_purpose',
+                'label_name' => 'Целевое назначение земельного участка',
+                'input_type_id' => 3,
+                'insert_type_id' => 6
+            ],
+            [
+                'name' => 'dictionary_right_type',
+                'label_name' => 'Вид права использования',
+                'input_type_id' => 3,
+                'insert_type_id' => 6
+            ],
+            [
+                'name' => 'dictionary_land_category',
+                'label_name' => 'Справочник категория земель',
+                'input_type_id' => 3,
+                'insert_type_id' => 6
+            ],
+            [
+                'name' => 'dictionary_land_divisibility',
+                'label_name' => 'Делимость земель',
+                'input_type_id' => 3,
+                'insert_type_id' => 6
+            ],
+            [
+                'name' => 'ulica_mestop_z_u',
+                'label_name' => 'Улица (местоположение) земельного участка',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'area',
+                'label_name' => 'Площадь(в гектарах)',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'cel_razdela',
+                'label_name' => 'Цель раздела',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'region',
+                'label_name' => 'Район',
+                'input_type_id' => 3,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'cadastral_number',
+                'label_name' => 'Кадастровый номер',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'pri4ina_i_c_n',
+                'label_name' => 'Причина изменения целевого назначения',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'pravoustan_doc',
+                'label_name' => 'Правоустанавливающий документ №',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'pravoustan_doc_date',
+                'label_name' => 'Правоустанавливающий документ от(дата)',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'identific_doc',
+                'label_name' => 'Идентификационный документ №',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'identific_doc_date',
+                'label_name' => 'Идентификационный документ от(дата)',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'object_name',
+                'label_name' => 'Наименование объекта',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'object_id',
+                'label_name' => '',
+                'input_type_id' => 5,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'zakaz4ik_drugoi',
+                'label_name' => '',
+                'input_type_id' => 6,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'zakaz4ik_fiz_ur',
+                'label_name' => '',
+                'input_type_id' => 6,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'bin',
+                'label_name' => 'БИН',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'name_organization',
+                'label_name' => 'Наименование организации заказчика',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'designer',
+                'label_name' => 'Проектировщик',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'gsl_number',
+                'label_name' => 'Номер лицензии ГСЛ',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'gsl_date',
+                'label_name' => 'Дата выдачи лицензии ГСЛ',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'object_address',
+                'label_name' => 'Адрес объекта',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'eskiz_proekt',
+                'label_name' => 'Эскизный проект',
+                'input_type_id' => 2,
+                'insert_type_id' => 1
+            ],
         ]);
 
         DB::table('dictionaries')->insert([
