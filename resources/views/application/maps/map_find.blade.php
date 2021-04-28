@@ -75,18 +75,29 @@
         land_layer.popupTemplate = template
         existLayerReplace(land_layer)
 
-        const save_object = document.createElement("button");
-          save_object.className = "esri_btn_custom";
-          save_object.innerHTML = "Сохранить объект";
-          save_object.onclick = function () {
-            save_point()
-      };
-        view.ui.add(save_object,{
-           position: "top-right"
+        const w_cont = document.createElement("div");
+        w_cont.id = "w_cont";
+        w_cont.style.width = "600px";
+        w_cont.style.boxShadow = "none"
+        window.view.ui.add(w_cont,{
+           position: "top-left",
+           index:0,
         });
+        const wid_1 = document.createElement("div");
+        wid_1.id = "wid_1";
+        wid_1.style.display = "inline-block";
+        wid_1.style.verticalAlign = "top";
+        const wid_2 = document.createElement("div");
+        wid_2.style.display = "inline-block";
+        wid_2.id = "wid_2";
+        wid_2.style.verticalAlign = "top";
+        wid_2.style.marginLeft = "15px";
+        document.getElementById('w_cont').appendChild(wid_1);
+        document.getElementById('w_cont').appendChild(wid_2);
 
         var searchWidget = new Search({
         view: window.view,
+        container: "wid_1",
         includeDefaultSources: false,
         allPlaceholder: "Найти по кадастру или адресу",
         sources: [{
@@ -129,74 +140,30 @@
             z_policy = res.policy
           }
         });
-        window.view.ui.add(searchWidget, {
-          position: "top-left"
-        });
-        window.view.ui.components=["zoom"];
+        // window.view.ui.add(searchWidget, {
+        //   position: "top-left",
+        //   index: 0,
+        // });
+        const save_object = document.createElement("button");
+        save_object.className = "esri_btn_custom float-left";
+        save_object.innerHTML = "Сохранить объект";
+        save_object.style.height = "32px";
+        save_object.style.padding = "0px 10px";
+        save_object.onclick = function () {
+            save_point()
+        };
+        document.getElementById('wid_2').appendChild(save_object);
+        // window.view.ui.add(save_object,{
+        //    position: "top-left",
+        //    index:2,
+        // });
+        window.view.ui.add([{
+          component: "zoom",
+          position: "top-left",
+          index: 1
+        }])
       })
     })
-  }
-
-  const queryLayer = (results) => {
-    var query = land_layer.createQuery();
-    query.where = "kad_nomer = '21318095233'";
-    return land_layer.queryFeatures(query)
-  }
-
-  const displayResults = (results) => {
-    query_layer.removeAll();
-    console.log('displayResults')
-    // console.log(results)
-    if(results.features[0]){
-      let longitude = results.features[0].geometry.centroid.longitude
-      let latitude = results.features[0].geometry.centroid.latitude
-      showPoint(latitude, longitude)
-    }
-  }
-
-  const showPoint = (latitude, longitude) => {
-    require([
-    "esri/Graphic"
-    ], function(Graphic) {
-      window.view.center = [longitude.toFixed(5), latitude.toFixed(5)];
-      window.view.scale = 10000;
-      // document.getElementById("objectId").innerHTML = '';
-
-      var point = {
-        type: "point",
-        longitude: longitude.toFixed(5),
-        latitude: latitude.toFixed(5)
-      };
-
-      var markerSymbol = {
-        type: "simple-marker",
-        color: [226, 119, 40],
-        outline: {
-          color: [255, 255, 255],
-          width: 2
-        }
-      };
-
-      var pointGraphic = new Graphic({
-        geometry: point,
-        symbol: markerSymbol
-      });
-
-      query_layer.remove(oldPoint);
-      query_layer.add(pointGraphic);
-
-      oldPoint = pointGraphic;
-    });
-  }
-
-  const add_land = () => {
-    let url = 'https://gis.esaulet.kz/server/rest/services/Hosted/Пустой_слой/FeatureServer'
-    for(var i=0; i<window.map.layers.items.length; i++){
-        if(window.map.layers.items[i]['layerId'] == 0 &&
-            window.map.layers.items[i]['url'] == url){
-            check_login(insert_item, window.map.layers.items[i])
-        }
-    }
   }
 
   const register_token = (data) => {
@@ -236,23 +203,6 @@
       }
     }.bind(this)
     xhr.send();
-  }
-
-  const check_login = (callback, layer) => {
-    require([
-    "esri/identity/IdentityManager"
-    ], function(IdentityManager) {
-      IdentityManager
-      .checkSignInStatus("https://gis.esaulet.kz/portal/sharing")
-      .then(function() {
-        console.log("success login")
-        callback(layer)
-      })
-      .catch(function(){
-        console.log("trying login")
-        arcgis_login()
-      });
-    })
   }
 
   const get_fields = (fields) => {
