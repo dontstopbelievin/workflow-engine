@@ -25,7 +25,7 @@
                           <tr>
                               <th style="width:7%;">№</th>
                               <th style="width:20%;">ИМЯ ЗАЯВИТЕЛЯ</th>
-                              <th style="width:50%;">ГОСУДАРСТВЕННАЯ УСЛУГА</th>
+                              <th style="width:50%;">НАЗВАНИЕ ГОС УСЛУГИ</th>
                               <th style="width:13%;">ДАТА</th>
                               <th style="width:10%;text-align:center;">ПЕРЕЙТИ</th>
                           </tr>
