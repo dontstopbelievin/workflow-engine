@@ -492,6 +492,7 @@ class DictionarySeeder extends Seeder
                 'input_type_id' => 1,
                 'insert_type_id' => 1
             ],
+            [
                 'name' => 'vypiska_protokola',
                 'label_name' => 'Выписка из протокола',
                 'input_type_id' => 2,

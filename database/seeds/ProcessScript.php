@@ -81,7 +81,7 @@ class ProcessScript extends Seeder
         $request->replace(['template_state' => 1, 'table_name' => 'p5_shema_i_zaklu4', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role1->id, 'order' => 1, 'to_citizen' => 0]);
         app('App\Http\Controllers\TemplateController')->store($request);
         //add template field
-        $template = Template::where('table_name', 'wf_tt_p5_shema_i_zaklu4')->first();
+        $template = Template::where('table_name', 'p5_shema_i_zaklu4')->first();
         $request = new \Illuminate\Http\Request();
         $request->replace(['fieldName' => 'shema_i_zaklu4', 'labelName' => 'Схема и Заключение', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
@@ -92,7 +92,7 @@ class ProcessScript extends Seeder
         $request->replace(['template_state' => 1, 'table_name' => 'p5_spravka', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role2->id, 'order' => 2, 'to_citizen' => 0]);
         app('App\Http\Controllers\TemplateController')->store($request);
         //add template field
-        $template = Template::where('table_name', 'wf_tt_p5_spravka')->first();
+        $template = Template::where('table_name', 'p5_spravka')->first();
         $request = new \Illuminate\Http\Request();
         $request->replace(['fieldName' => 'spravka', 'labelName' => 'Справка для отдела заключения договоров', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
@@ -103,7 +103,7 @@ class ProcessScript extends Seeder
         $request->replace(['template_state' => 1, 'table_name' => 'p5_file_bez_fila', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role3->id, 'order' => 3, 'to_citizen' => 0]);
         app('App\Http\Controllers\TemplateController')->store($request);
         //add template field
-        $template = Template::where('table_name', 'wf_tt_p5_file_bez_fila')->first();
+        $template = Template::where('table_name', 'p5_file_bez_fila')->first();
         $request = new \Illuminate\Http\Request();
         $request->replace(['fieldName' => 'file_bez_fila', 'labelName' => 'Дополнительный файл', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
@@ -371,7 +371,7 @@ class ProcessScript extends Seeder
         app('App\Http\Controllers\TemplateController')->store($request);
         //add template field
         $request = new \Illuminate\Http\Request();
-        $template = Template::where('table_name', 'wf_tt_p8_shema_i_zaklu4')->first();
+        $template = Template::where('table_name', 'p8_shema_i_zaklu4')->first();
         $request->replace(['fieldName' => 'shema_i_zaklu4', 'labelName' => 'Схема и Заключение', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
         //create template 2
@@ -380,7 +380,7 @@ class ProcessScript extends Seeder
         app('App\Http\Controllers\TemplateController')->store($request);
         //add template field
         $request = new \Illuminate\Http\Request();
-        $template = Template::where('table_name', 'wf_tt_p8_zaklu4')->first();
+        $template = Template::where('table_name', 'p8_zaklu4')->first();
         $request->replace(['fieldName' => 'zaklu4', 'labelName' => 'Заключение', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
         //create template 3
@@ -388,7 +388,7 @@ class ProcessScript extends Seeder
         $template_doc = TemplateDoc::where('name', 'Шаблон определение делимости')->first();
         $request->replace(['template_state' => 1, 'table_name' => 'p8_pismo', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role3->id, 'order' => 3, 'to_citizen' => 1]);
         app('App\Http\Controllers\TemplateController')->store($request);
-        $template = Template::where('table_name', 'wf_tt_p8_pismo')->first();
+        $template = Template::where('table_name', 'p8_pismo')->first();
         //add template field
         $request = new \Illuminate\Http\Request();
         $request->replace(['fieldName' => 'pdp_name', 'labelName' => 'Наименование ПДП', 'inputItem' => 1, 'insertItem' => 1, 'temp_id' => $template->id]);
@@ -478,7 +478,7 @@ class ProcessScript extends Seeder
         
         //add template field
         $request = new \Illuminate\Http\Request();
-        $template = Template::where('table_name', 'wf_tt_p7_files_apo')->first();
+        $template = Template::where('table_name', 'p7_files_apo')->first();
         $request->replace(['fieldName' => 'files_apo', 'labelName' => 'Файлы', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
         
@@ -490,7 +490,7 @@ class ProcessScript extends Seeder
         
         //add template field
         $request = new \Illuminate\Http\Request();
-        $template = Template::where('table_name', 'wf_tt_p7_files_monitoring')->first();
+        $template = Template::where('table_name', 'p7_files_monitoring')->first();
         $request->replace(['fieldName' => 'files_monitoring', 'labelName' => 'Файлы', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
         
@@ -572,7 +572,7 @@ class ProcessScript extends Seeder
         
         //add template field
         $request = new \Illuminate\Http\Request();
-        $template = Template::where('table_name', 'wf_tt_p17_vypiska')->first();
+        $template = Template::where('table_name', 'p17_vypiska')->first();
         $request->replace(['fieldName' => 'vypiska', 'labelName' => 'Выписка', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
 
@@ -584,7 +584,7 @@ class ProcessScript extends Seeder
         
         //add template field
         $request = new \Illuminate\Http\Request();
-        $template = Template::where('table_name', 'wf_tt_p17_agreement')->first();
+        $template = Template::where('table_name', 'p17_agreement')->first();
         $request->replace(['fieldName' => 'agreement', 'labelName' => 'Договор', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
         

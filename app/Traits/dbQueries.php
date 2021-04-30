@@ -360,11 +360,6 @@ trait dbQueries
         return json_decode(json_encode($query), true);
     }
 
-    public function modifyTemplateTable($name) {
-
-        return 'wf_tt_'.$name;
-    }
-
     public function xmlGenerator($aData)
     {
         $xmlstr = "<?xml version='1.0' encoding='UTF-8' standalone='no'?><root><dataToSign>";
