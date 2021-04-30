@@ -211,18 +211,22 @@
       }
       let temp = '<table style="width:100%">'
       for (var i = 0; i < fields.length; i++) {
-          if(fields[i].name == 'objectid' || fields[i].name == 'SHAPE__Length' ||
-            fields[i].name == 'created_user' || fields[i].name == 'created_date' ||
-            fields[i].name == 'last_edited_user' || fields[i].name == 'last_edited_date' || fields[i].name == 'globalid'){
-            continue;
-          }
-          if(i%2){
-              temp += '<tr style="background-color: rgba(0, 0, 255, 0.05);">'
-              temp += '<td class="attrName">'+fields[i].alias+':</td>  <td class="attrValue">{'+fields[i].name+'}</td></tr>'
-          }else{
-              temp += '<tr style="background-color: rgba(0, 255, 0, 0.05);">'
-              temp += '<td class="attrName">'+fields[i].alias+':</td>  <td class="attrValue">{'+fields[i].name+'}</td></tr>'
-          }
+        let label = fields[i].alias
+        if(fields[i].alias.split('.')[0] == 'db_2dqxx'){
+          label = fields[i].alias.split('.').pop()
+        }
+        if(fields[i].name == 'objectid' || fields[i].name == 'SHAPE__Length' || fields[i].name == 'SHAPE__Area'
+          || fields[i].name == 'created_user' || fields[i].name == 'created_date' ||
+          fields[i].name == 'last_edited_user' || fields[i].name == 'last_edited_date' || fields[i].name == 'globalid'){
+          continue;
+        }
+        if(i%2){
+            temp += '<tr style="background-color: rgba(0, 0, 255, 0.05);">'
+            temp += '<td class="attrName">'+label+':</td>  <td class="attrValue">{'+fields[i].name+'}</td></tr>'
+        }else{
+            temp += '<tr style="background-color: rgba(0, 255, 0, 0.05);">'
+            temp += '<td class="attrName">'+label+':</td>  <td class="attrValue">{'+fields[i].name+'}</td></tr>'
+        }
       }
       return temp += '</table>'
   }

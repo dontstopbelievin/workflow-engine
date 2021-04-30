@@ -280,7 +280,7 @@ class DictionarySeeder extends Seeder
                 'name' => 'dictionary_purpose',
                 'label_name' => 'Целевое назначение земельного участка',
                 'input_type_id' => 3,
-                'insert_type_id' => 6
+                'insert_type_id' => 1
             ],
             [
                 'name' => 'dictionary_right_type',

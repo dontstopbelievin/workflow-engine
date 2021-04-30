@@ -277,16 +277,6 @@ class ApplicationController extends Controller
         return response()->json(['message' => false], 200);
     }
 
-    private function checkIfCurrentUserRoleInParallel($process)
-    {
-        $role = Auth::user();
-        if($role->id == 1) return 0;
-        $order = $process->roles()->select('order')->where('role_id', $role->role_id)->first()->toArray();
-        $parallelRoles = $process->roles()->where('order', $order['order'])->get()->toArray();
-
-        return sizeof($parallelRoles) != 0;
-    }
-
     public function approveReject(Request $request){
       try {
           DB::beginTransaction();

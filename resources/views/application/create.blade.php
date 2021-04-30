@@ -84,6 +84,15 @@
                                 <input type="text" name={{$item->name}} id={{$item->name}} value="{{Auth::user()->{$item->name} ?? ''}}" class="form-control">
                             @elseif($item->inputName === 'hidden')
                                 <input type="hidden" name={{$item->name}} id={{$item->name}} class="form-control">
+                            @elseif($item->inputName === 'radio_button')
+                                <div style="padding-top:10px;">
+                                @foreach($item->options as $key => $val)
+                                    <label class="form-radio-label">
+                                        <input class="form-radio-input" type="radio" name="{{$item->name}}" value="">
+                                        <span class="form-radio-sign">{{$val->name_rus}}</span>
+                                    </label>
+                                @endforeach
+                                </div>
                             @elseif($item->inputName === 'select')
                                 <label class="in_label">{{$item->labelName}}</label>
                                 <select name="{{$item->name}}" id="{{$item->name}}" class="form-control">
@@ -99,7 +108,11 @@
                         @endforeach
                         <input type="hidden" name="process_id" value={{$process->id}}>
                         <div style="margin-top: 20px">
-                            <button type="submit" onclick="create_applic()" class="btn btn-primary">Подать заявку</button>
+                            @if($process->name == 'Предоставление земельного участка для строительства объекта в черте населенного пункта')
+                                <button type="submit" onclick="submit_form()" class="btn btn-primary">Подать заявку</button>
+                            @else
+                                <button type="submit" onclick="create_applic()" class="btn btn-primary">Подать заявку</button>
+                            @endif
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -118,6 +131,10 @@
 
 @section('scripts')
 <script type="text/javascript">
+
+    const submit_form = () => {
+        add_land()
+    }
 
     const create_applic = () => {
         // form the formData
@@ -177,7 +194,11 @@
     // }
 </script>
 @if($process->need_map)
-    @include('application.maps.map_find')
+    @if($process->name == 'Предоставление земельного участка для строительства объекта в черте населенного пункта')
+        @include('application.maps.map_draw_polygon')
+    @else
+        @include('application.maps.map_find')
+    @endif
 @endif
 
 @append

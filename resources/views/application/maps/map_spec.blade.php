@@ -4,8 +4,15 @@
   var oldPoint = null
   var land_layer = null
   var query_layer = null
-  var layer_url = "https://gis.esaulet.kz/server/rest/services/Hosted/Административные_объекты_14042021/FeatureServer"
-  var layer_id = 9
+  @if($process->name == 'Предоставление земельного участка для строительства объекта в черте населенного пункта')
+    var layer_url = "https://gis.esaulet.kz/server/rest/services/Hosted/Пустой_слой/FeatureServer"
+    var layer_id = 0
+    var layer_query_attr = "fid"
+  @else
+    var layer_url = "https://gis.esaulet.kz/server/rest/services/Hosted/Административные_объекты_14042021/FeatureServer"
+    var layer_id = 9
+    var layer_query_attr = "objectid"
+  @endif
   var lyrView
 
   require([
@@ -96,14 +103,14 @@
   const queryLayer = (results) => {
     var query = land_layer.createQuery();
     let objectid = document.getElementById('object_id').innerHTML.trim()
-    query.where = "objectid = '"+objectid+"'";
+    query.where = layer_query_attr+" = '"+objectid+"'";
     return land_layer.queryFeatures(query)
   }
 
   const displayResults = (results) => {
     query_layer.removeAll();
     console.log('displayResults')
-    // console.log(results)
+    console.log(results)
     if(results.features[0]){
 	  lyrView.highlight(results.features[0]);
       let longitude = results.features[0].geometry.centroid.longitude
@@ -175,18 +182,22 @@
       }
       let temp = '<table style="width:100%">'
       for (var i = 0; i < fields.length; i++) {
-          if(fields[i].name == 'objectid' || fields[i].name == 'SHAPE__Length' ||
-            fields[i].name == 'created_user' || fields[i].name == 'created_date' ||
-            fields[i].name == 'last_edited_user' || fields[i].name == 'last_edited_date' || fields[i].name == 'globalid'){
-            continue;
-          }
-          if(i%2){
-              temp += '<tr style="background-color: rgba(0, 0, 255, 0.05);">'
-              temp += '<td class="attrName">'+fields[i].alias+':</td>  <td class="attrValue">{'+fields[i].name+'}</td></tr>'
-          }else{
-              temp += '<tr style="background-color: rgba(0, 255, 0, 0.05);">'
-              temp += '<td class="attrName">'+fields[i].alias+':</td>  <td class="attrValue">{'+fields[i].name+'}</td></tr>'
-          }
+        let label = fields[i].alias
+        if(fields[i].alias.split('.')[0] == 'db_2dqxx'){
+          label = fields[i].alias.split('.').pop()
+        }
+        if(fields[i].name == 'objectid' || fields[i].name == 'SHAPE__Length' || fields[i].name == 'SHAPE__Area'
+          || fields[i].name == 'created_user' || fields[i].name == 'created_date' ||
+          fields[i].name == 'last_edited_user' || fields[i].name == 'last_edited_date' || fields[i].name == 'globalid'){
+          continue;
+        }
+        if(i%2){
+            temp += '<tr style="background-color: rgba(0, 0, 255, 0.05);">'
+            temp += '<td class="attrName">'+label+':</td>  <td class="attrValue">{'+fields[i].name+'}</td></tr>'
+        }else{
+            temp += '<tr style="background-color: rgba(0, 255, 0, 0.05);">'
+            temp += '<td class="attrName">'+label+':</td>  <td class="attrValue">{'+fields[i].name+'}</td></tr>'
+        }
       }
       return temp += '</table>'
   }

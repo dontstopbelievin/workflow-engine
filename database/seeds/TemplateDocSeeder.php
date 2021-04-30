@@ -53,6 +53,10 @@ class TemplateDocSeeder extends Seeder
                 'pdf_path' => 'PDFtemplates.2_priobretenie_prav_na_zu' //1
             ],
             [
+                'name' => 'Предоставление ЗУ в черте населенного пункта', 
+                'pdf_path' => 'PDFtemplates.predostavlenie_v_cherte.blade' //1
+            ],
+            [
                 'name' => 'Без шаблона', 
                 'pdf_path' => 'PDFtemplates.empty' //1
             ],

@@ -18,6 +18,7 @@
         max-height: 666px!important;
         overflow: scroll;
     }
+    .esri-view-width-less-than-medium .esri-popup__main-container,
     .esri-view-width-xlarge .esri-popup__main-container,
     .esri-view-width-large .esri-popup__main-container,
     .esri-view-width-medium .esri-popup__main-container,

@@ -19,6 +19,54 @@ class ProcessScript extends Seeder
     {
         $this->create_delimost();
         $this->create_eskiz();
+        $this->create_u4astok_v_nas_punkte();
+    }
+
+    public function create_u4astok_v_nas_punkte(){
+        //Согласование эскизного проекта
+        $process = Process::where('name', 'Предоставление земельного участка для строительства объекта в черте населенного пункта')->first();
+        //org name
+        $org = CityManagement::where('name', 'Управление архитектуры, градостроительства и земельных отношений города Нур-Султан')->first();
+        $process->main_organization_id = $org->id;
+        $process->need_map = 1;
+        $process->save();
+        //create process application table
+        $request = new \Illuminate\Http\Request();
+
+        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'applicant_address', 'region', 'iin', 'bin', 'telephone', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'name_organization', 'object_address', 'object_name', 'area', 'dictionary_purpose']]);
+        app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
+        //add process roles
+        $role1 = Role::where('name', 'Специалист отдела выдачи разрешительных документов на реконструкцию, градостроительного кадастра и учета введенных в эксплуатацию объектов, договоров долевого участия')->first();
+        $process->roles()->attach($role1->id, [
+            'can_reject' => 1,
+            'can_send_to_revision' => 0,
+            'can_ecp_sign' => 1,
+            'can_motiv_otkaz' => 0,
+            'order' => 1
+        ]);
+        $role2 = Role::where('name', 'Заместитель директора ТОО "Астанагорархитектура"')->first();
+        $process->roles()->attach($role2->id, [
+            'can_reject' => 0,
+            'can_send_to_revision' => 1,
+            'can_ecp_sign' => 1,
+            'can_motiv_otkaz' => 0,
+            'order' => 3
+        ]);
+        //'parent_role_id' => $request->parent_role_id,
+        $role3 = Role::where('name', 'Руководитель отдела городского планирования')->first();
+        $process->roles()->attach($role3->id, [
+            'can_reject' => 0,
+            'can_send_to_revision' => 1,
+            'can_ecp_sign' => 1,
+            'can_motiv_otkaz' => 1,
+            'order' => 2
+        ]);
+
+        //create template 1
+        $request = new \Illuminate\Http\Request();
+        $template_doc = TemplateDoc::where('name', 'Предоставление ЗУ в черте населенного пункта')->first();
+        $request->replace(['template_state' => 1, 'table_name' => 'p9_pred_zem_v_4erte', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role2->id, 'order' => 2, 'to_citizen' => 1]);
+        app('App\Http\Controllers\TemplateController')->store($request);
     }
 
     public function create_eskiz(){
@@ -100,7 +148,7 @@ class ProcessScript extends Seeder
         $process->roles()->attach($role1->id, [
             'can_reject' => 1,
             'can_send_to_revision' => 0,
-            'can_ecp_sign' => 0,
+            'can_ecp_sign' => 1,
             'can_motiv_otkaz' => 0,
             'order' => 1
         ]);
@@ -109,7 +157,7 @@ class ProcessScript extends Seeder
         $process->roles()->attach($role2->id, [
             'can_reject' => 1,
             'can_send_to_revision' => 1,
-            'can_ecp_sign' => 0,
+            'can_ecp_sign' => 1,
             'can_motiv_otkaz' => 0,
             'order' => 2
         ]);
@@ -125,7 +173,7 @@ class ProcessScript extends Seeder
         $process->roles()->attach($role4->id, [
             'can_reject' => 0,
             'can_send_to_revision' => 1,
-            'can_ecp_sign' => 0,
+            'can_ecp_sign' => 1,
             'can_motiv_otkaz' => 0,
             'order' => 4
         ]);
@@ -133,7 +181,7 @@ class ProcessScript extends Seeder
         $process->roles()->attach($role5->id, [
             'can_reject' => 0,
             'can_send_to_revision' => 1,
-            'can_ecp_sign' => 0,
+            'can_ecp_sign' => 1,
             'can_motiv_otkaz' => 0,
             'order' => 5
         ]);
