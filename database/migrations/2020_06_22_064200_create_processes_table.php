@@ -16,7 +16,7 @@ class CreateProcessesTable extends Migration
         Schema::create('processes', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->comment('Наименоваие процесса');
-            $table->string('table_name');
+            $table->string('table_name')->unique();
             $table->integer('deadline')->comment('Количество дней на заявку');
             $table->integer('main_organization_id')->unsigned()->nullable();
             $table->boolean('need_map')->default(0);

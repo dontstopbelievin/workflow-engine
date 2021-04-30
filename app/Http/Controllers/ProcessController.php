@@ -92,23 +92,16 @@ class ProcessController extends Controller
                 return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', 'Пожалуйста, выберите поля');
             }
 
-            $tableName = $this->getTableName($process->name);
+            $tableName = $process->table_name;
             $table = new CreatedTable();
             $table->name = $tableName;
             $table->save();
-
-            $process->table_name = $tableName;
-            $process->save();
 
             if (!Schema::hasTable($tableName)) {
                 $dbQueryString = "CREATE TABLE $tableName (id INT PRIMARY KEY AUTO_INCREMENT)";
                 DB::statement($dbQueryString);
             }
             foreach($request->fields as $fieldName) {
-                if($this->isRussian($fieldName)) {
-                    $fieldName = $this->translateSybmols($fieldName);
-                }
-                $fieldName = $this->checkForWrongCharacters($fieldName);
                 if (Schema::hasColumn($tableName, $fieldName)) {
                     continue;
                 } else {
@@ -367,8 +360,7 @@ class ProcessController extends Controller
 
     public function delete(Process $process)
     {
-        $tableName = $this->getTableName($process->name);
-        if(DB::table($tableName)->count() > 0){
+        if(DB::table($process->table_name)->count() > 0){
             return  Redirect::to('process')->with('failure', 'Не удалось удалить процесс, удалите данные.');
         }
         $true = Schema::dropIfExists($tableName);

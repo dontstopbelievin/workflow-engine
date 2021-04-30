@@ -152,28 +152,6 @@ trait dbQueries
 
     }
 
-    public function translateSybmols($text) {
-
-        $rus=array('А','Б','В','Г','Д','Е','Ё','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ъ','Ы','Ь','Э','Ю','Я','а','б','в','г','д','е','ё','ж','з','и','й','к','л','м','н','о','п','р','с','т','у','ф','х','ц','ч','ш','щ','ъ','ы','ь','э','ю','я',' ');
-        $lat=array('a','b','v','g','d','e','e','gh','z','i','y','k','l','m','n','o','p','r','s','t','u','f','h','c','ch','sh','sch','y','y','y','e','yu','ya','a','b','v','g','d','e','e','gh','z','i','y','k','l','m','n','o','p','r','s','t','u','f','h','c','ch','sh','sch','y','y','y','e','yu','ya',' ');
-        return str_replace($rus, $lat, $text);
-    }
-    public function translateSybmolsBack($text) {
-
-        $rus=array('А','Б','В','Г','Д','Е','Ё','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ъ','Ы','Ь','Э','Ю','Я','а','б','в','г','д','е','ё','ж','з','и','й','к','л','м','н','о','п','р','с','т','у','ф','х','ц','ч','ш','щ','ъ','ы','ь','э','ю','я',' ');
-        $lat=array('a','b','v','g','d','e','e','gh','z','i','y','k','l','m','n','o','p','r','s','t','u','f','h','c','ch','sh','sch','y','y','y','e','yu','ya','a','b','v','g','d','e','e','gh','z','i','y','k','l','m','n','o','p','r','s','t','u','f','h','c','ch','sh','sch','y','y','y','e','yu','ya',' ');
-        return str_replace($lat, $rus,  $text);
-    }
-
-    public function isRussian($text) {
-
-        return preg_match('/[А-Яа-яЁё]/u', $text);
-    }
-    public function isEnglish($text) {
-
-        return preg_match('/[A-Za-z]/u', $text);
-    }
-
     public function getColumns($tableName)
     {
         $notInclude = ['id', 'process_id', 'status_id', 'user_id', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at', 'statuses', 'current_order'];
@@ -196,15 +174,6 @@ trait dbQueries
             $fields[$key] = $value;
         }
         return $fields;
-    }
-
-    public function getTableName($table) {
-        $tableName = $this->translateSybmols($table);
-        if (strlen($tableName) > 60) {
-            $tableName = substr($tableName, 0, 60);
-        }
-        $tableName = 'wf_'.$tableName;
-        return $this->checkForWrongCharacters($tableName);
     }
 
     public function filterArray($array, $columns) {
@@ -389,12 +358,6 @@ trait dbQueries
         }
 
         return json_decode(json_encode($query), true);
-    }
-
-    public function checkForWrongCharacters($name) {
-
-        $chars = array('!', ' ', '-', '?');
-        return str_replace($chars, '_', $name);
     }
 
     public function modifyTemplateTable($name) {

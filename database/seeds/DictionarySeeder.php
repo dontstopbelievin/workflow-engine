@@ -338,6 +338,12 @@ class DictionarySeeder extends Seeder
             ],
             [
                 'name' => 'pravoustan_doc',
+                'label_name' => 'Правоустанавливающий документ',
+                'input_type_id' => 2,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'pravoustan_doc_num',
                 'label_name' => 'Правоустанавливающий документ №',
                 'input_type_id' => 1,
                 'insert_type_id' => 1
@@ -350,6 +356,12 @@ class DictionarySeeder extends Seeder
             ],
             [
                 'name' => 'identific_doc',
+                'label_name' => 'Идентификационный документ',
+                'input_type_id' => 2,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'identific_doc_num',
                 'label_name' => 'Идентификационный документ №',
                 'input_type_id' => 1,
                 'insert_type_id' => 1
@@ -444,11 +456,40 @@ class DictionarySeeder extends Seeder
                 'input_type_id' => 1,
                 'insert_type_id' => 1
             ],
-            
             [
                 'name' => 'shema_isprash_u4astka',
                 'label_name' => 'Схема (план) испрашиваемого земельного участка',
                 'input_type_id' => 2,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'act_opred_oceno4_stoim',
+                'label_name' => 'Акт определения оценочной стоимости',
+                'input_type_id' => 2,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'gosakt',
+                'label_name' => 'Госакт',
+                'input_type_id' => 2,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'postanovlenie',
+                'label_name' => 'Постановление',
+                'input_type_id' => 2,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'dogovor_kup_prodaj',
+                'label_name' => 'Договор купли продажи',
+                'input_type_id' => 2,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'name_organization',
+                'label_name' => 'Наименование организации',
+                'input_type_id' => 1,
                 'insert_type_id' => 1
             ],
         ]);

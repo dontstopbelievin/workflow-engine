@@ -45,7 +45,7 @@ class TemplateController extends Controller
             if ($validator->fails()) {
                 return Redirect::back()->with('failure', $validator->errors());
             }
-            $t_name = app('App\Http\Controllers\ApplicationController')->getTemplateTableName($request->table_name);
+            $t_name = $request->table_name;
             if (!Schema::hasTable($t_name)) {
                 $dbQueryString = "CREATE TABLE $t_name (id INT PRIMARY KEY AUTO_INCREMENT)";
                 DB::statement($dbQueryString);

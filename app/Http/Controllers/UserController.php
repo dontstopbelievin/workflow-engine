@@ -78,7 +78,7 @@ class UserController extends Controller
       }
 
       $user = Auth::user();
-      $tableName = $this->getTableName($process_id);
+      $tableName = $process->table_name;
 
       $tableId = CreatedTable::select('id')->where('name', $tableName)->first()->toArray();
 

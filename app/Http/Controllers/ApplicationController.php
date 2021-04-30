@@ -45,7 +45,7 @@ class ApplicationController extends Controller
     }
 
     public function index(Process $process) {
-        $tableName = $this->getTableName($process->name);
+        $tableName = $process->table_name;
         $table = CreatedTable::where('name', $tableName)->first();
         if(!$table){
           return redirect()->back()->with('error', 'Услуга не существует.');
@@ -65,7 +65,7 @@ class ApplicationController extends Controller
 
       foreach ($allProcessesWithUser as $number => $process) {
 
-        $tableName = $this->getTableName($process->name);
+        $tableName = $process->table_name;
         $allApplications = DB::table($tableName)
                         ->join('processes', 'processes.id', $tableName.'.process_id')
                         ->where($tableName.'.current_order', '=', $process->order)
@@ -96,7 +96,7 @@ class ApplicationController extends Controller
       $apps = [];
       // check if the user's id is NOT in the "statuses" of every application of every process
       foreach ($allProcessesWithUser as $number => $process) {
-        $tableName = $this->getTableName($process->name);
+        $tableName = $process->table_name;
         $allApplications = DB::table($tableName)
                         ->join('processes', 'processes.id', $tableName.'.process_id')
                         ->where($tableName.'.current_order', '>=', $process->order)
@@ -143,7 +143,7 @@ class ApplicationController extends Controller
         $apps = [];
         // check if the applications in each process the user engaged is finished
         foreach ($allProcessesWithUser as $number => $process) {
-            $tableName = $this->getTableName($process->name);
+            $tableName = $process->table_name;
             $allApplications = DB::table($tableName)
                               ->join('processes', 'processes.id', $tableName.'.process_id')
                               ->where($tableName.'.current_order', '=', '0');
@@ -175,9 +175,8 @@ class ApplicationController extends Controller
     public function view($processId, $applicationId)
     {
         $process = Process::find($processId);
-        $tableName = $this->getTableName($process->name);
-        $table = CreatedTable::where('name', $tableName)->first();
-        $application = DB::table($tableName)->where('id', $applicationId)->first();
+        $table = CreatedTable::where('name', $process->table_name)->first();
+        $application = DB::table($process->table_name)->where('id', $applicationId)->first();
 
         $canApprove = false;
 
@@ -199,13 +198,13 @@ class ApplicationController extends Controller
             }
             $children = $process->roles()->where('parent_role_id', Auth::user()->role_id)->get();
             $maxOrder = $process->roles()->max('order');
-            $currentRoles = $this->getProcessStatuses($tableName, $application->id);
+            $currentRoles = $this->getProcessStatuses($process->table_name, $application->id);
             if (sizeof($currentRoles) == 1 && sizeof($children)==0 && $maxOrder == $application->current_order) {
                 $toCitizen = true; // если заявку подписывает последний специалист в обороте, заявка идет обратно к заявителю
             }
         }
 
-        $tableColumns = $this->getColumns($tableName);
+        $tableColumns = $this->getColumns($process->table_name);
         $aRowNameRows = $this->getAllDictionaries(array_values($tableColumns));
 
         $template = Template::where('role_id', Auth::user()->role_id)->where('order', $application->current_order)->first();
@@ -238,7 +237,7 @@ class ApplicationController extends Controller
 
     public function getXML(Request $request){
       $process = Process::find($request->processId);
-      $tableName = $this->getTableName($process->name);
+      $tableName = $process->table_name;
       $application = DB::table($tableName)->where('id', $request->applicationId)->first();
 
       $aApplicationRows = $this->getRowsForEcp($tableName, $request->processId, $request->applicationId, $application->current_order);
@@ -282,7 +281,7 @@ class ApplicationController extends Controller
           DB::beginTransaction();
 
           $process = Process::find($request->process_id);
-          $tableName = $this->getTableName($process->name);
+          $tableName = $process->table_name;
           $application = DB::table($tableName)->where('id', $request->application_id)->first();
           $table = CreatedTable::where('name', $tableName)->first();
 
@@ -328,7 +327,7 @@ class ApplicationController extends Controller
             }
 
             $process = Process::find($request->process_id);
-            $tableName = $this->getTableName($process->name);
+            $tableName = $process->table_name;
             $table = CreatedTable::where('name', $tableName)->first();
             $application = DB::table($tableName)->where('id', $request->application_id)->first();
             $template = Template::where('role_id', Auth::user()->role_id)->where('order', $application->current_order)->first();
@@ -474,7 +473,7 @@ class ApplicationController extends Controller
 
     public function create(Process $process)
     {
-        $tableName = $this->getTableName($process->name);
+        $tableName = $process->table_name;
         $tableColumns = $this->getColumns($tableName);
         $dictionaries = $this->get_dic_in_order($tableColumns);
         $arrayToFront = $this->addOptionsToDictionary($dictionaries);
@@ -520,7 +519,7 @@ class ApplicationController extends Controller
           //             Notification::send($notifyUser, new ApproveNotification($details));
           //         }
 
-            $tableName = $this->getTableName($process->name);
+            $tableName = $process->table_name;
             $table = CreatedTable::where('name', $tableName)->first();
             $applicationTableFields["statuses"] = $this->get_roles_of_order($process->id, 1);
             $applicationTableFields["current_order"] = 1;
@@ -574,7 +573,7 @@ class ApplicationController extends Controller
         $routes = $this->getRolesWithoutParent($process->id);
         $arrRoutes = json_decode($routes, true);
         $status = Status::find($arrRoutes[0]["id"]);
-        $tableName = $this->getTableName($process->name);
+        $tableName = $process->table_name;
         $table = CreatedTable::where('name', $tableName)->first();
         $user = Auth::user();
 
@@ -619,13 +618,11 @@ class ApplicationController extends Controller
           $role = Auth::user()->role;
           $applicationId = $request->application_id;
           $process = Process::find($request->process_id);
-          $tableName = $this->getTableName($process->name);
+          $tableName = $process->table_name;
           $table = CreatedTable::where('name', $tableName)->first();
           $approveOrReject = $request->answer;
           $comment = (isset($request->comments)) ? $request->comments : "";
           $user = Auth::user();
-          $tableName = $this->getTableName($process->name);
-          $table = CreatedTable::where('name', $tableName)->first();
           $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
 
           $this->insertLogs($user->role->name, ($approveOrReject == 0) ? 2 : 1, $table->id, $applicationId, $user->role_id, $currentRoleOrder, $approveOrReject,'', $comment);
@@ -661,7 +658,7 @@ class ApplicationController extends Controller
         try {
             DB::beginTransaction();
             $process = Process::find($request->process_id);
-            $tableName = $this->getTableName($process->name);
+            $tableName = $process->table_name;
             $application = DB::table($tableName)->where('id', $request->application_id)->first();
             $table = CreatedTable::where('name', $tableName)->first();
 
@@ -711,7 +708,7 @@ class ApplicationController extends Controller
 
           $roleToRevise = $request->roleToRevise; //Роль, которому форма отправляется на доработку
           $process = Process::find($request->processId);
-          $tableName = $this->getTableName($process->name);
+          $tableName = $process->table_name;
           $user = Auth::user();
           $to_role = Role::where('name', $roleToRevise)->first();
           $table = CreatedTable::where('name', $tableName)->first();
@@ -858,17 +855,6 @@ class ApplicationController extends Controller
         }
         $templateTableColumns["application_id"] = $applicationId;
         return $templateTableColumns;
-    }
-
-    public function getTemplateTableName($templateName)
-    {
-        $templateTable = $this->translateSybmols($templateName);
-        $templateTable = $this->checkForWrongCharacters($templateTable);
-        $templateTable = $this->modifyTemplateTable($templateTable);
-        if (strlen($templateTable) > 57) {
-            $templateTable = substr($templateTable, 0, 57);
-        }
-        return $templateTable;
     }
 
     public function verification($p, $a, $t){
