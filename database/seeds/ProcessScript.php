@@ -21,7 +21,6 @@ class ProcessScript extends Seeder
         $this->create_eskiz();
         $this->create_u4astok_v_nas_punkte_1();
         $this->create_u4astok_v_nas_punkte_2();
-        $this->create_izmen_cel_nazna4();
         $this->create_bez_torgov1();
     }
 
