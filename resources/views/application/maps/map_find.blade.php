@@ -256,6 +256,8 @@
       document.getElementById('cadastral_number').value = z_kad_nomer
     if(document.getElementById('object_id'))
       document.getElementById('object_id').value = z_objectid
+    if(document.getElementById('area'))
+      document.getElementById('area').value = z_area/10000
 
     // document.getElementById('viewDiv').style.height = '0px';
     // document.getElementById('s_h_but').innerHTML = 'Показать карту';
