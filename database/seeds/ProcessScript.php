@@ -21,7 +21,6 @@ class ProcessScript extends Seeder
         $this->create_eskiz();
         $this->create_u4astok_v_nas_punkte_1();
         $this->create_u4astok_v_nas_punkte_2();
-        $this->create_izmen_cel_nazna4();
         $this->create_bez_torgov1();
     }
 
@@ -300,7 +299,7 @@ class ProcessScript extends Seeder
         app('App\Http\Controllers\TemplateController')->store($request);
         $template = Template::where('table_name', 'wf_tt_p8_pismo')->first();
         //add template field
-        $request = new \Illuminate\Http\Request()
+        $request = new \Illuminate\Http\Request();
         $request->replace(['fieldName' => 'pdp_name', 'labelName' => 'Наименование ПДП', 'inputItem' => 1, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
         //add template field
