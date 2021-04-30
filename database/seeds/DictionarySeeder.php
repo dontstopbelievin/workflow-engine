@@ -443,11 +443,16 @@ class DictionarySeeder extends Seeder
                 'label_name' => 'ФИО заказчика',
                 'input_type_id' => 1,
                 'insert_type_id' => 1
-            ],
-            
+            ],            
             [
                 'name' => 'shema_isprash_u4astka',
                 'label_name' => 'Схема (план) испрашиваемого земельного участка',
+                'input_type_id' => 2,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'vypiska_protokola',
+                'label_name' => 'Выписка из протокола',
                 'input_type_id' => 2,
                 'insert_type_id' => 1
             ],
