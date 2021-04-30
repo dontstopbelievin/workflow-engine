@@ -391,7 +391,7 @@ class DictionarySeeder extends Seeder
                 'insert_type_id' => 1
             ],
             [
-                'name' => 'name_organization',
+                'name' => 'name_ur_zakaz4ika',
                 'label_name' => 'Наименование организации заказчика',
                 'input_type_id' => 1,
                 'insert_type_id' => 1
@@ -423,6 +423,31 @@ class DictionarySeeder extends Seeder
             [
                 'name' => 'eskiz_proekt',
                 'label_name' => 'Эскизный проект',
+                'input_type_id' => 2,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'bin_zakaz4ika',
+                'label_name' => 'БИН заказчика',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'iin_zakaz4ika',
+                'label_name' => 'ИИН заказчика',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'name_fiz_zakaz4ika',
+                'label_name' => 'ФИО заказчика',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
+            
+            [
+                'name' => 'shema_isprash_u4astka',
+                'label_name' => 'Схема (план) испрашиваемого земельного участка',
                 'input_type_id' => 2,
                 'insert_type_id' => 1
             ],

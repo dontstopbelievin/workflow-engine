@@ -20,6 +20,7 @@ class ProcessScript extends Seeder
         $this->create_delimost();
         $this->create_eskiz();
         $this->create_u4astok_v_nas_punkte();
+        $this->create_bez_torgov1();
     }
 
     public function create_u4astok_v_nas_punkte(){
@@ -80,7 +81,7 @@ class ProcessScript extends Seeder
         //create process application table
         $request = new \Illuminate\Http\Request();
 
-        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'applicant_address', 'region', 'iin', 'telephone', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'bin', 'name_organization', 'designer', 'gsl_number', 'gsl_date', 'object_address', 'object_name', 'cadastral_number', 'eskiz_proekt']]);
+        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'applicant_address', 'region', 'iin', 'telephone', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'designer', 'gsl_number', 'gsl_date', 'object_address', 'object_name', 'cadastral_number', 'eskiz_proekt']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Руководитель отдела рассмотрения эскизных проектов и наружной рекламы')->first();
@@ -227,5 +228,98 @@ class ProcessScript extends Seeder
         $select_dic = Dictionary::where('name', 'dictionary_land_divisibility')->first();
         $request->replace(['fieldName' => 'division', 'labelName' => 'Делимость', 'inputItem' => 3, 'insertItem' => 1, 'temp_id' => $template->id, 'select_dic' => $select_dic->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
+    }
+    public function create_bez_torgov1(){
+        //Согласование эскизного проекта
+        $process = Process::where('name', 'Приобретение прав на земельные участки которые находятся в государственной собственности не требующее проведения торгов')->first();
+        //org name
+        $org = CityManagement::where('name', 'Управление архитектуры, градостроительства и земельных отношений города Нур-Султан')->first();
+        $process->main_organization_id = $org->id;
+        $process->need_map = 1;
+        $process->save();
+        //create process application table
+        $request = new \Illuminate\Http\Request();
+
+        $request->replace(['fields' => ['region', 'first_name', 'middle_name', 'sur_name', 'iin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number', 'shema_isprash_u4astka']]);
+        app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
+        //add process roles
+        $role1 = Role::where('name', 'Заместитель директора ТОО "Астанагорархитектура"')->first();
+        $process->roles()->attach($role1->id, [
+            'can_reject' => 1,
+            'can_send_to_revision' => 0,
+            'can_ecp_sign' => 1,
+            'can_motiv_otkaz' => 0,
+            'order' => 1
+        ]);
+        //'parent_role_id' => $request->parent_role_id,
+        $role2 = Role::where('name', 'Руководитель архитектурно-планировочного отдела')->first();
+        $process->roles()->attach($role2->id, [
+            'can_reject' => 0,
+            'can_send_to_revision' => 1,
+            'can_ecp_sign' => 1,
+            'can_motiv_otkaz' => 1,
+            'order' => 2
+        ]);
+        $role3 = Role::where('name', 'Руководитель отдела мониторинга ТОО "Астанагорархитектура"')->first();
+        $process->roles()->attach($role3->id, [
+            'can_reject' => 0,
+            'can_send_to_revision' => 1,
+            'can_ecp_sign' => 1,
+            'can_motiv_otkaz' => 0,
+            'order' => 3
+        ]);
+        $role4 = Role::where('name', 'Заместитель директора ТОО "Астанагорархитектура"')->first();
+        $process->roles()->attach($role4->id, [
+            'can_reject' => 0,
+            'can_send_to_revision' => 1,
+            'can_ecp_sign' => 1,
+            'can_motiv_otkaz' => 0,
+            'order' => 4
+        ]);
+        $role5 = Role::where('name', 'Руководитель отдела организации работы земельной комиссии')->first();
+        $process->roles()->attach($role5->id, [
+            'can_reject' => 0,
+            'can_send_to_revision' => 1,
+            'can_ecp_sign' => 1,
+            'can_motiv_otkaz' => 0,
+            'order' => 5
+        ]);
+        $role6 = Role::where('name', 'Заместитель руководителя управления архитектуры, градостроительства и земельных отношений города Нур-Султан')->first();
+        $process->roles()->attach($role6->id, [
+            'can_reject' => 0,
+            'can_send_to_revision' => 1,
+            'can_ecp_sign' => 1,
+            'can_motiv_otkaz' => 0,
+            'order' => 6
+        ]);
+        //create template
+        $request = new \Illuminate\Http\Request();
+        $template_doc = TemplateDoc::where('name', 'Без шаблона')->first();
+        $request->replace(['template_state' => 1, 'table_name' => 'p7_files_apo', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role2->id, 'order' => 2, 'to_citizen' => 1]);
+        app('App\Http\Controllers\TemplateController')->store($request);
+        
+        //add template field
+        $request = new \Illuminate\Http\Request();
+        $template = Template::where('table_name', 'wf_tt_p7_files_apo')->first();
+        $request->replace(['fieldName' => 'files_apo', 'labelName' => 'Файлы', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
+        app('App\Http\Controllers\TemplateFieldController')->store($request);
+        
+        //create template
+        $request = new \Illuminate\Http\Request();
+        $template_doc = TemplateDoc::where('name', 'Без шаблона')->first();
+        $request->replace(['template_state' => 1, 'table_name' => 'p7_files_monitoring', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role3->id, 'order' => 3, 'to_citizen' => 1]);
+        app('App\Http\Controllers\TemplateController')->store($request);
+        
+        //add template field
+        $request = new \Illuminate\Http\Request();
+        $template = Template::where('table_name', 'wf_tt_p7_files_monitoring')->first();
+        $request->replace(['fieldName' => 'files_monitoring', 'labelName' => 'Файлы', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
+        app('App\Http\Controllers\TemplateFieldController')->store($request);
+        
+        //final doc template
+        $request = new \Illuminate\Http\Request();
+        $template_doc = TemplateDoc::where('name', 'Шаблон 1 часть приобретение прав на ЗУ')->first();
+        $request->replace(['template_state' => 1, 'table_name' => 'p7_vypiska_protokola', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role5->id, 'order' => 5, 'to_citizen' => 1]);
+        app('App\Http\Controllers\TemplateController')->store($request);
     }
 }
