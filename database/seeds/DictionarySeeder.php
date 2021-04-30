@@ -455,11 +455,7 @@ class DictionarySeeder extends Seeder
                 'label_name' => 'ФИО заказчика',
                 'input_type_id' => 1,
                 'insert_type_id' => 1
-<<<<<<< HEAD
-            ],
-=======
             ],            
->>>>>>> 88031999c559c4215263b52fe3732d348d44fbfd
             [
                 'name' => 'shema_isprash_u4astka',
                 'label_name' => 'Схема (план) испрашиваемого земельного участка',
@@ -467,7 +463,6 @@ class DictionarySeeder extends Seeder
                 'insert_type_id' => 1
             ],
             [
-<<<<<<< HEAD
                 'name' => 'act_opred_oceno4_stoim',
                 'label_name' => 'Акт определения оценочной стоимости',
                 'input_type_id' => 2,
@@ -497,13 +492,11 @@ class DictionarySeeder extends Seeder
                 'input_type_id' => 1,
                 'insert_type_id' => 1
             ],
-=======
                 'name' => 'vypiska_protokola',
                 'label_name' => 'Выписка из протокола',
                 'input_type_id' => 2,
                 'insert_type_id' => 1
             ],
->>>>>>> 88031999c559c4215263b52fe3732d348d44fbfd
         ]);
 
         DB::table('dictionaries')->insert([
