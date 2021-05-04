@@ -498,6 +498,12 @@ class DictionarySeeder extends Seeder
                 'input_type_id' => 2,
                 'insert_type_id' => 1
             ],
+            [
+                'name' => 'area_nedelimyi',
+                'label_name' => 'Доля площади(неделимый)',
+                'input_type_id' => 1,
+                'insert_type_id' => 1
+            ],
         ]);
 
         DB::table('dictionaries')->insert([

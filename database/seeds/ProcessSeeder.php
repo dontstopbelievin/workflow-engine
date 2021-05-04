@@ -14,7 +14,7 @@ class ProcessSeeder extends Seeder
     {
         DB::table('processes')->insert([
             [
-                'deadline' => 12,
+                'deadline' => 4,
                 'name' => 'Утверждение землеустроительных проектов по формированию земельных участков',//1,
                 'table_name' => 'pt1_utverjdenie_zem_proekt_form_zu',
             ],
