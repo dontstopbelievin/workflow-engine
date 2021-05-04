@@ -219,20 +219,27 @@ class ApplicationController extends Controller
         $buttons = DB::table('process_role')
                   ->where('process_id', $process->id)
                   ->where('role_id', Auth::user()->role_id)
+                  ->where('order', $application->current_order)
                   ->get()
                   ->toArray();
 
         if(isset($buttons[0]) && $application->reject_reason != null){
           $buttons[0]->can_reject = 0;
         }
+
         $rolesToRevision = [];
         if(isset($buttons[0]) && $buttons[0]->can_send_to_revision == 1){
             $rolesToRevision = $this->get_roles_before($process, $application->current_order, Auth::user()->role_id);
         }
 
+        $rolesToSelect = [];
+        if(isset($buttons[0])){
+            $rolesToSelect = $this->get_roles_for_select($process, $application->current_order, Auth::user()->role_id);
+        }
+
         $application_arr = json_decode(json_encode($application), true);
 
-        return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen', 'rolesToRevision', 'records', 'buttons', 'aRowNameRows','application_arr'));
+        return view('application.view', compact('application','templateTableFields','templateFields', 'process','canApprove', 'toCitizen', 'rolesToRevision', 'records', 'buttons', 'aRowNameRows','application_arr', 'rolesToSelect'));
     }
 
     public function getXML(Request $request){
@@ -287,11 +294,15 @@ class ApplicationController extends Controller
 
           $user = Auth::user();
 
-          $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
+          $currentRoleOrder = $application->current_order;
 
           $this->insertLogs($user->role->name, 2, $table->id, $application->id, $user->role_id, $currentRoleOrder, 0, '', "Согласовал(а) отказ");
 
-          $nextRoleId = $this->getNextUnparallelRoleId($process, $currentRoleOrder, $request->application_id, $table->id);
+          if($request->roleToSelect){
+            $nextRoleId = [(int)$request->roleToSelect, $currentRoleOrder];
+          }else{
+            $nextRoleId = $this->getNextUnparallelRoleId($process, $currentRoleOrder, $request->application_id,  $table->id);
+          }
 
           if($nextRoleId[0] == 1){
             DB::table($tableName)
@@ -320,7 +331,7 @@ class ApplicationController extends Controller
                         $fieldValues[$key] = $path;
                     }
                     if ($key === 'id' || $key === 'application_id' || $key === '_token' || $key === 'pdf_url'
-                    || $key == 'process_id' || $key == 'comments') {
+                    || $key == 'process_id' || $key == 'comments' || $key == 'roleToSelect') {
                       unset($fieldValues[$key]);
                     }
                 }
@@ -378,23 +389,31 @@ class ApplicationController extends Controller
                 ->update(['pdf_url' => $docPath]);
             }
 
-            $currentRoleOrder = $process->roles()->select('order')->where('role_id', Auth::user()->role_id)->first()->order;
+            $currentRoleOrder = $application->current_order;
             $processRoles = $this->getProcessStatuses($tableName, $request->application_id);
             $children = $this->getRoleChildren($process);
             $this->insertLogs(Auth::user()->role->name, 1, $table->id, $request->application_id, Auth::user()->role_id, $currentRoleOrder, 1, '',$comment);
 
             $processRoles = array_values($this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table->id, $request->application_id, 1, $tableName));
 
+            //PROVERKA KOMM SLUZHB
+
+            //proverka na select
+            if($request->roleToSelect){
+              $processRoles = $this->remove_unselected($processRoles, $request->roleToSelect, $process, $currentRoleOrder, Auth::user()->role_id);
+            }
+
             if(sizeof($processRoles) == 0){
               DB::table($tableName)
-                  ->where('id', $request->application_id)
-                  ->update(['status_id' => 33, 'statuses' => '[]', 'current_order' => 0]);
+                ->where('id', $request->application_id)
+                ->update(['status_id' => 33, 'statuses' => '[]', 'current_order' => 0]);
             }else{
               DB::table($tableName)
                   ->where('id', $request->application_id)
                   ->update(['statuses' => $processRoles]);
             }
             DB::commit();
+            return response()->json(['success' => 'true'], 200);
         }catch (Exception $e) {
             DB::rollBack();
             return Redirect::to('docs')->with('status', $e->getMessage());
@@ -623,7 +642,8 @@ class ApplicationController extends Controller
           $approveOrReject = $request->answer;
           $comment = (isset($request->comments)) ? $request->comments : "";
           $user = Auth::user();
-          $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
+          $application = DB::table($tableName)->where('id', $request->application_id)->first();
+          $currentRoleOrder = $application->current_order;
 
           $this->insertLogs($user->role->name, ($approveOrReject == 0) ? 2 : 1, $table->id, $applicationId, $user->role_id, $currentRoleOrder, $approveOrReject,'', $comment);
           $this->insertLogs('Заявитель', 4, $table->id, $applicationId, $user->role_id, $currentRoleOrder, $approveOrReject,'');
@@ -663,12 +683,16 @@ class ApplicationController extends Controller
             $table = CreatedTable::where('name', $tableName)->first();
 
             $user = Auth::user();
-            $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
+            $currentRoleOrder = $application->current_order;
 
             $this->insertLogs(Auth::user()->role->name, 2, $table->id, $application->id, $user->role_id, $currentRoleOrder, 0, '', $request->rejectReason);
 
             if($request->motiv_otkaz == 1){ // если у него мотивированный отказ есть => reject_reason заполнить, и дальше чисто согласование мотив отказа
-                $nextRoleId = $this->getNextUnparallelRoleId($process, $currentRoleOrder, $request->application_id,  $table->id);
+                if($request->roleToSelect){
+                  $nextRoleId = [(int)$request->roleToSelect, $currentRoleOrder];
+                }else{
+                  $nextRoleId = $this->getNextUnparallelRoleId($process, $currentRoleOrder, $request->application_id,  $table->id);
+                }
                 if($nextRoleId[0] == 1){
                   DB::table($tableName)
                       ->where('id', $request->application_id)
@@ -682,6 +706,12 @@ class ApplicationController extends Controller
                 $processRoles = $this->getProcessStatuses($tableName, $request->application_id);
                 $children = $this->getRoleChildren($process);
                 $processRoles = array_values($this->deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table->id, $request->application_id, 0, $tableName));
+                
+                //proverka na select
+                if($request->roleToSelect){
+                  $processRoles = $this->remove_unselected($processRoles, $request->roleToSelect, $process, $currentRoleOrder, Auth::user()->role_id);
+                }
+
                 if(sizeof($processRoles) == 0){
                   DB::table($tableName)
                       ->where('id', $request->application_id)
@@ -714,7 +744,7 @@ class ApplicationController extends Controller
           $table = CreatedTable::where('name', $tableName)->first();
           $application = DB::table($tableName)->where('id', $request->application_id)->first();
 
-          $currentRoleOrder = $process->roles()->select('order')->where('role_id', $user->role_id)->first()->order;
+          $currentRoleOrder = $application->current_order;
           $sendingRoleOrder = $process->roles()->select('order')->where('role_id', $to_role->id)->first()->order;
 
           if($currentRoleOrder == $sendingRoleOrder){

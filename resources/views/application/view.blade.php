@@ -248,7 +248,7 @@
                                 @endif
 
                                 <div style="margin: 10px 0px;">
-                                  @if($application->reject_reason == null)
+                                  @if($application->reject_reason_from_spec_id == null)
                                       @if($toCitizen)
                                               <input type="hidden" id="answer" value ="1">
                                               <input type="hidden" name="process_id" value = {{$process->id}}>
@@ -290,6 +290,16 @@
                                     @else
                                         <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
                                         <input type="hidden" id="application_id" name="application_id" value = {{$application->id}}>
+                                        @if($rolesToSelect)
+                                        <div class="form-group row">
+                                            <select name="roleToSelect" id="roleToSelect" class="form-control">
+                                                <option selected disabled value="-1">Выберите Ниже</option>
+                                                @foreach($rolesToSelect as $role)
+                                                    <option value="{{$role['id']}}">{{$role['name']}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        @endif
                                         <button class="btn btn-danger" data-dismiss="modal" id="approveReject">Согласовать отказ</button>
                                     @endif
                                   @endif
@@ -302,7 +312,11 @@
                                 <!-- Modal content-->
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h4 class="modal-title text-center">Форма Мотивированного отказа</h4>
+                                        @if($buttons && $buttons[0]->can_motiv_otkaz == 1)
+                                            <h4 class="modal-title text-center">Форма Мотивированного отказа</h4>
+                                        @else
+                                            <h4 class="modal-title text-center">Форма отказа</h4>
+                                        @endif
                                     </div>
                                     <div class="modal-body">
                                         <div class="form-group">
@@ -319,6 +333,16 @@
                                             @endif
                                             <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
                                             <input type="hidden" id="application_id" name="application_id" value = {{$application->id}}>
+                                            @if($rolesToSelect)
+                                            <div class="form-group row">
+                                                <select name="roleToSelect" id="roleToSelect" class="form-control">
+                                                    <option selected disabled value="-1">Выберите Ниже</option>
+                                                    @foreach($rolesToSelect as $role)
+                                                        <option value="{{$role['id']}}">{{$role['name']}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            @endif
                                             <button class="btn btn-info" style="float:center" data-dismiss="modal" id="rejectButton">Отправить</button>
                                         </div>
                                     </div>
@@ -342,6 +366,16 @@
                                             </div>
                                             <input type="hidden" id="processId" name="process_id" value = {{$process->id}}>
                                             <input type="hidden" id="application_id" name="application_id" value = {{$application->id}}>
+                                            @if($rolesToSelect)
+                                            <div class="form-group row">
+                                                <select name="roleToSelect" id="roleToSelect" class="form-control">
+                                                    <option selected disabled value="-1">Выберите Ниже</option>
+                                                    @foreach($rolesToSelect as $role)
+                                                        <option value="{{$role['id']}}">{{$role['name']}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            @endif
                                             <button class="btn btn-info" data-dismiss="modal" id="commentButton">Отправить</button>
                                         </div>
                                     </div>
@@ -480,6 +514,17 @@
                 var processId = $('#processId').val();
                 var application_id = $('#application_id').val();
                 var can_ecp_sign = $('#can_ecp_sign').val();
+                var roleToSelect = $("#roleToSelect").val();
+                var payload = {
+                    'rejectReason': rejectReason,
+                    'motiv_otkaz': motiv_otkaz,
+                    'process_id': processId,
+                    'application_id': application_id,
+                    '_token': $('input[name=_token]').val()
+                };
+                if(roleToSelect && roleToSelect != '-1'){
+                    payload['roleToSelect'] = roleToSelect;
+                }
 
                 if(motiv_otkaz == 1 && can_ecp_sign == 1){
                   $.ajax({
@@ -492,7 +537,7 @@
                       signXmlCall();
                   });
                 } else{
-                  $.post('/docs/reject', {'rejectReason':rejectReason,'motiv_otkaz':motiv_otkaz,'processId':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
+                  $.post('/docs/reject', payload, function(data){
                       location.reload();
                   });
                 }
@@ -503,6 +548,15 @@
                 var processId = $('#processId').val();
                 var application_id = $('#application_id').val();
                 var can_ecp_sign = $('#can_ecp_sign').val();
+                var roleToSelect = $("#roleToSelect").val();
+                var payload = {
+                    'process_id': processId,
+                    'application_id': application_id,
+                    '_token': $('input[name=_token]').val()
+                };
+                if(roleToSelect && roleToSelect != '-1'){
+                    payload['roleToSelect'] = roleToSelect;
+                }
 
                 if(can_ecp_sign == 1){
                   $.ajax({
@@ -515,7 +569,8 @@
                       signXmlCall();
                   });
                 }else{
-                  $.post('/docs/approveReject', {'process_id':processId,'application_id':application_id, '_token':$('input[name=_token]').val()}, function(data){
+                  $.post('/docs/approveReject', payload, function(data){
+                    // console.log(data)
                       location.reload();
                   });
                 }
@@ -566,6 +621,10 @@
                 var can_ecp_sign = $('#can_ecp_sign').val();
                 let comments = $('#comments').val();
                 let inputs = $('#templateFieldsId :input');
+                var roleToSelect = $("#roleToSelect").val();
+                if(roleToSelect && roleToSelect != '-1'){
+                    formData.append('roleToSelect', roleToSelect);
+                }
                 formData.append('process_id', processId);
                 formData.append('application_id', application_id);
                 formData.append('comments', comments);

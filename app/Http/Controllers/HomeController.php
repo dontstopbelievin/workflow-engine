@@ -71,7 +71,7 @@ class HomeController extends Controller
             [
                 'form_params' => [
                     'username' => $user,
-                    'password' => 'CREadminas21',
+                    'password' => 'ERCadminas21',
                     'client' => 'referer',
                     'ip' => '',
                     'referer' => env('APP_URL', 'http://workflow.back'),

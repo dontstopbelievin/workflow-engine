@@ -178,6 +178,7 @@ class ProcessController extends Controller
         try {
             $validator = Validator::make($request->all(),[
                 'order' => 'required|integer',
+                'is_selection' => 'nullable|integer',
                 'roles'   => 'array',
                 'services' => 'array',
                 'roles.*' => 'integer',
@@ -191,7 +192,6 @@ class ProcessController extends Controller
                 return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', $validator->errors());
             }
             DB::beginTransaction();
-
             if($request->isRole == '1'){
                 if (sizeof($request->roles) === 1) {
                     $process->roles()->attach($request->roles[0], [
@@ -199,7 +199,8 @@ class ProcessController extends Controller
                         'can_send_to_revision' => in_array($request->roles[0], $request->revision ?? []),
                         'can_ecp_sign' => in_array($request->roles[0], $request->ecp_sign ?? []),
                         'can_motiv_otkaz' => in_array($request->roles[0], $request->motiv_otkaz ?? []),
-                        'order' => $request->order
+                        'order' => $request->order,
+                        'is_selection' => $request->is_selection ?? 0
                     ]);
                     DB::commit();
                     return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Маршрут добавлен к процессу');
@@ -210,7 +211,8 @@ class ProcessController extends Controller
                             'can_send_to_revision' => in_array($id, $request->revision ?? []),
                             'can_ecp_sign' => in_array($id, $request->ecp_sign ?? []),
                             'can_motiv_otkaz' => in_array($id, $request->motiv_otkaz ?? []),
-                            'order' => $request->order
+                            'order' => $request->order,
+                            'is_selection' => $request->is_selection ?? 0
                         ]);
                    }
                    DB::commit();
@@ -267,7 +269,8 @@ class ProcessController extends Controller
                         'can_send_to_revision' => in_array($request->roles[0], $request->revision ?? []),
                         'can_ecp_sign' => in_array($request->roles[0], $request->ecp_sign ?? []),
                         'can_motiv_otkaz' => in_array($request->roles[0], $request->motiv_otkaz ?? []),
-                        'order' => $request->order
+                        'order' => $request->order,
+                        'is_selection' => $request->is_selection ?? 0
                     ]);
                     DB::commit();
                     return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Маршрут добавлен к процессу');
@@ -279,7 +282,8 @@ class ProcessController extends Controller
                              'can_send_to_revision' => in_array($id, $request->revision ?? []),
                              'can_ecp_sign' => in_array($id, $request->ecp_sign ?? []),
                              'can_motiv_otkaz' => in_array($id, $request->motiv_otkaz ?? []),
-                             'order' => $request->order
+                             'order' => $request->order,
+                             'is_selection' => $request->is_selection ?? 0
                          ]);
                     }
                     DB::commit();

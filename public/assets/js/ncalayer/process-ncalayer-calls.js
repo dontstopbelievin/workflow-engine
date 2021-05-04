@@ -100,6 +100,10 @@ function signXmlBack(result) {
         let inputs = $('#templateFieldsId :input');
         var rejectReason = $('#rejectReason').val();
         var motiv_otkaz = $('#motiv_otkaz').val();
+        var roleToSelect = $("#roleToSelect").val();
+        if(roleToSelect && roleToSelect != '-1'){
+            formData.append('roleToSelect', roleToSelect);
+        }
 
         if(determineApproveOrReject == 'reject'){
             formData.append('rejectReason',rejectReason);

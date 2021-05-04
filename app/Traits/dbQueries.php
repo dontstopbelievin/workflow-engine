@@ -64,6 +64,37 @@ trait dbQueries
         return $rolesWithLowerOrder;
     }
 
+    public function remove_unselected($process_roles, $selected, $process, $order, $role_id){
+        $roles_for_select = $process->roles()
+            ->where('order', '=', $order)
+            ->where('is_selection', '=', '1')
+            ->where('parent_role_id', '=', $role_id)
+            ->get();
+        $result = [];
+        for ($i=0; $i < count($process_roles); $i++) {
+            $check = true;
+            foreach ($roles_for_select as $item) {
+                if($process_roles[$i] == $item->pivot->role_id){
+                    $check = false;
+                }
+            }
+            if($check){
+                $result[] = (int)$process_roles[$i];
+            }
+        }
+        $result[] = (int)$selected;
+        return $result;
+    }
+
+    public function get_roles_for_select($process, $order, $role_id){
+        return $process->roles()
+            ->where('order', '=', $order)
+            ->where('is_selection', '=', '1')
+            ->where('parent_role_id', '=', $role_id)
+            ->get()
+            ->toArray();
+    }
+
     public function get_roles_for_edit($process_id){
 
         $without_parents = DB::table('roles')
@@ -75,23 +106,24 @@ trait dbQueries
             ->get();
 
         foreach($without_parents as $value) {
-            $value->child = $this->add_child($process_id, $value->role_id);
+            $value->child = $this->add_child($process_id, $value->role_id, $value->order);
         }
         return $without_parents;
     }
 
-    public function add_child($process_id, $role_id){
+    public function add_child($process_id, $role_id, $order){
 
         $roles = DB::table('roles')
             ->join('process_role', 'roles.id','=','process_role.role_id')
             ->select('process_role.id', 'roles.id as role_id', 'roles.name','process_role.order')
             ->where('process_role.process_id', $process_id)
+            ->where('process_role.order', $order)
             ->where('process_role.parent_role_id', $role_id)
             ->orderBy('process_role.order', 'asc')
             ->get();
 
         foreach($roles as $value) {
-            $value->child = $this->add_child($process_id, $value->role_id);
+            $value->child = $this->add_child($process_id, $value->role_id, $value->order);
         }
         return $roles;
     }

@@ -240,6 +240,12 @@
                                 <label>Очередность:</label>
                                 <input type="number" name="order">
                               </div>
+                              <div class="form-group" style="padding: 0px">
+                                <label class="form-check-label py-0">
+                                  <input type="checkbox" name="is_selection" value="1" class="form-check-input">
+                                  <span class="form-check-sign" style="color: black;">Маршрут для выборки</span>
+                                </label>
+                              </div>
                               <div class="tab">
                                 <button class="tablinks4 active" onclick="openTab4(event, 'roles_tab')">Роли</button>
                                 <button class="tablinks4" onclick="openTab4(event, 'services_tab')">Сервисы</button>
@@ -332,6 +338,12 @@
                             <div class="form-group" style="padding: 0px;">
                               <label>Очередность:</label>
                               <input type="number" name="order">
+                            </div>
+                            <div class="form-group" style="padding: 0px">
+                              <label class="form-check-label py-0">
+                                <input type="checkbox" name="is_selection" value="1" class="form-check-input">
+                                <span class="form-check-sign" style="color: black;">Маршрут для выборки</span>
+                              </label>
                             </div>
                             <div class="form-group" style="padding: 0px;">
                               <label>Parent:</label>

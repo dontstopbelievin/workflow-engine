@@ -25,6 +25,7 @@ class CreateProcessRoleTable extends Migration
             $table->integer('can_send_to_revision')->default(0);
             $table->integer('can_motiv_otkaz')->default(0);
             $table->integer('can_ecp_sign')->default(0);
+            $table->integer('is_selection')->default(0);
             $table->integer('order')->unsigned();
             $table->timestamps();
         });
