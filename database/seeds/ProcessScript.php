@@ -25,6 +25,7 @@ class ProcessScript extends Seeder
         $this->create_bez_torgov2();
         $this->create_izmen_cel_nazna4();
         $this->create_formirovanie_zu();
+        $this->create_provedenie_izyskatelskih();
     }
 
     public function create_izmen_cel_nazna4(){
@@ -597,7 +598,7 @@ class ProcessScript extends Seeder
         //create process application table
         $request = new \Illuminate\Http\Request();
 
-        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'iin', 'telephone', 'applicant_address', 'object_address', 'area', 'area_nedelimyi', 'region', 'dictionary_purpose', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number']]);
+        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'iin', 'telephone', 'applicant_address', 'object_address', 'area', 'region', 'dictionary_purpose', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Специалист отдела земельного кадастра')->first();
@@ -630,6 +631,131 @@ class ProcessScript extends Seeder
         $request = new \Illuminate\Http\Request();
         $template_doc = TemplateDoc::where('name', 'Шаблон утверждение зем проекта')->first();
         $request->replace(['template_state' => 1, 'table_name' => 'p1_utverjdenie_zem_proekta', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role1->id, 'order' => 1, 'to_citizen' => 1]);
+        app('App\Http\Controllers\TemplateController')->store($request);
+
+        //add template field
+        $request = new \Illuminate\Http\Request();
+        $template = Template::where('table_name', 'p1_utverjdenie_zem_proekta')->first();
+        $request->replace(['fieldName' => 'area_nedelimyi', 'labelName' => 'Доля площади (неделимый)', 'inputItem' => 1, 'insertItem' => 1, 'temp_id' => $template->id]);
+        app('App\Http\Controllers\TemplateFieldController')->store($request);
+
+    }
+
+    public function create_provedenie_izyskatelskih(){
+        //Разрешение на проведение изыскательских и проектных работ
+        $process = Process::where('name', 'Разрешение на проведение изыскательских и проектных работ')->first();
+        //org name
+        $org = CityManagement::where('name', 'Управление архитектуры, градостроительства и земельных отношений города Нур-Султан')->first();
+        $process->main_organization_id = $org->id;
+        $process->need_map = 1;
+        $process->save();
+        //create process application table
+        $request = new \Illuminate\Http\Request();
+
+        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'iin', 'bin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number']]);
+        app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
+        //add process roles
+        $role1 = Role::where('name', 'Заместитель директора ТОО "Астанагорархитектура"')->first();
+        $process->roles()->attach($role1->id, [
+            'can_reject' => 1,
+            'can_send_to_revision' => 0,
+            'can_ecp_sign' => 1,
+            'can_motiv_otkaz' => 0,
+            'order' => 1
+        ]);
+        //'parent_role_id' => $request->parent_role_id,
+        $role2 = Role::where('name', 'Руководитель архитектурно-планировочного отдела')->first();
+        $process->roles()->attach($role2->id, [
+            'can_reject' => 0,
+            'can_send_to_revision' => 0,
+            'can_ecp_sign' => 1,
+            'can_motiv_otkaz' => 1,
+            'order' => 2
+        ]);
+        $role3 = Role::where('name', 'Руководитель отдела мониторинга ТОО "Астанагорархитектура"')->first();
+        $process->roles()->attach($role3->id, [
+            'can_reject' => 0,
+            'can_send_to_revision' => 0,
+            'can_ecp_sign' => 1,
+            'can_motiv_otkaz' => 1,
+            'order' => 3
+        ]);
+        $role4 = Role::where('name', 'Заместитель директора ТОО "Астанагорархитектура"')->first();
+        $process->roles()->attach($role4->id, [
+            'can_reject' => 1,
+            'can_send_to_revision' => 1,
+            'can_ecp_sign' => 1,
+            'can_motiv_otkaz' => 0,
+            'order' => 4
+        ]);
+        $role5 = Role::where('name', 'Специалист отдела выдачи разрешительных документов на реконструкцию, градостроительного кадастра и учета введенных в эксплуатацию объектов, договоров долевого участия')->first();
+        $process->roles()->attach($role5->id, [
+            'can_reject' => 0,
+            'can_send_to_revision' => 0,
+            'can_ecp_sign' => 0,
+            'can_motiv_otkaz' => 1,
+            'order' => 5
+        ]);
+        $role6 = Role::where('name', 'Руководитель отдела выдачи разрешительных документов на реконструкцию, градостроительного кадастра и учета введенных в эксплуатацию объектов, договоров долевого участия')->first();
+        $process->roles()->attach($role6->id, [
+            'can_reject' => 0,
+            'can_send_to_revision' => 1,
+            'can_ecp_sign' => 1,
+            'can_motiv_otkaz' => 0,
+            'order' => 6
+        ]);
+        //create template
+        $request = new \Illuminate\Http\Request();
+        $template_doc = TemplateDoc::where('name', 'Без шаблона')->first();
+        $request->replace(['template_state' => 1, 'table_name' => 'p6_shema_apo', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role2->id, 'order' => 2, 'to_citizen' => 1]);
+        app('App\Http\Controllers\TemplateController')->store($request);
+        
+        //add template field
+        $request = new \Illuminate\Http\Request();
+        $template = Template::where('table_name', 'p6_shema_apo')->first();
+        $request->replace(['fieldName' => 'shema_apo', 'labelName' => 'Схема', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
+        app('App\Http\Controllers\TemplateFieldController')->store($request);
+        
+        //create template
+        $request = new \Illuminate\Http\Request();
+        $template_doc = TemplateDoc::where('name', 'Без шаблона')->first();
+        $request->replace(['template_state' => 1, 'table_name' => 'p6_spravka_apo', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role2->id, 'order' => 2, 'to_citizen' => 1]);
+        app('App\Http\Controllers\TemplateController')->store($request);
+        
+        //add template field
+        $request = new \Illuminate\Http\Request();
+        $template = Template::where('table_name', 'p6_spravka_apo')->first();
+        $request->replace(['fieldName' => 'spravka_apo', 'labelName' => 'Справка', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
+        app('App\Http\Controllers\TemplateFieldController')->store($request);
+
+        //create template
+        $request = new \Illuminate\Http\Request();
+        $template_doc = TemplateDoc::where('name', 'Без шаблона')->first();
+        $request->replace(['template_state' => 1, 'table_name' => 'p6_shema_monitoring', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role3->id, 'order' => 3, 'to_citizen' => 1]);
+        app('App\Http\Controllers\TemplateController')->store($request);
+        
+        //add template field
+        $request = new \Illuminate\Http\Request();
+        $template = Template::where('table_name', 'p6_shema_monitoring')->first();
+        $request->replace(['fieldName' => 'shema_monitoring', 'labelName' => 'Схема', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
+        app('App\Http\Controllers\TemplateFieldController')->store($request);
+
+        //create template
+        $request = new \Illuminate\Http\Request();
+        $template_doc = TemplateDoc::where('name', 'Без шаблона')->first();
+        $request->replace(['template_state' => 1, 'table_name' => 'p6_spravka_monitoring', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role3->id, 'order' => 3, 'to_citizen' => 1]);
+        app('App\Http\Controllers\TemplateController')->store($request);
+        
+        //add template field
+        $request = new \Illuminate\Http\Request();
+        $template = Template::where('table_name', 'p6_spravka_monitoring')->first();
+        $request->replace(['fieldName' => 'spravka_monitoring', 'labelName' => 'Справка', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
+        app('App\Http\Controllers\TemplateFieldController')->store($request);
+        
+        //final doc template
+        $request = new \Illuminate\Http\Request();
+        $template_doc = TemplateDoc::where('name', 'Шаблон изыскательных работ')->first();
+        $request->replace(['template_state' => 1, 'table_name' => 'p6_izyskatelskih_rabot', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role5->id, 'order' => 5, 'to_citizen' => 1]);
         app('App\Http\Controllers\TemplateController')->store($request);
     }
 }
