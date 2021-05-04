@@ -102,8 +102,15 @@
                                         <option value="{{$val->name_rus}}">{{$val->name_rus}}</option>
                                     @endforeach
                                 </select>
+                            @elseif($item->inputName === 'checkbox')
+                            <div class="form-group" style="padding-left: 0px;">
+                                <label class="form-check-label py-0">
+                                    <input type="checkbox" id="{{$item->name}}" name="{{$item->name}}" value="1" class="form-check-input">
+                                    <span class="form-check-sign" style="color: black;">{{$item->labelName ?? ''}}</span>
+                                </label>
+                            </div>
                             @else
-                                ne eby
+                                Неправильный формат поля
                             @endif
                         @endforeach
                         <input type="hidden" name="process_id" value={{$process->id}}>

@@ -504,6 +504,42 @@ class DictionarySeeder extends Seeder
                 'input_type_id' => 1,
                 'insert_type_id' => 1
             ],
+            [
+                'name' => 'need_water',
+                'label_name' => 'ТУ для водоснобжения',
+                'input_type_id' => 7,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'need_electricity',
+                'label_name' => 'ТУ для электричества',
+                'input_type_id' => 7,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'need_gas',
+                'label_name' => 'ТУ для газа',
+                'input_type_id' => 7,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'need_heat',
+                'label_name' => 'ТУ для отопления',
+                'input_type_id' => 7,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'need_phone',
+                'label_name' => 'ТУ для телефонизации',
+                'input_type_id' => 7,
+                'insert_type_id' => 1
+            ],
+            [
+                'name' => 'need_sewage',
+                'label_name' => 'ТУ для канализации',
+                'input_type_id' => 7,
+                'insert_type_id' => 1
+            ],
         ]);
 
         DB::table('dictionaries')->insert([

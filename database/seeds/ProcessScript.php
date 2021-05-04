@@ -25,7 +25,7 @@ class ProcessScript extends Seeder
         $this->create_bez_torgov2();
         $this->create_izmen_cel_nazna4();
         $this->create_formirovanie_zu();
-        $this->create_provedenie_izyskatelskih();
+        // $this->create_provedenie_izyskatelskih();
     }
 
     public function create_izmen_cel_nazna4(){
@@ -642,8 +642,8 @@ class ProcessScript extends Seeder
     }
 
     public function create_provedenie_izyskatelskih(){
-        //Разрешение на проведение изыскательских и проектных работ
-        $process = Process::where('name', 'Разрешение на проведение изыскательских и проектных работ')->first();
+        //Выдача разрешения на использование земельного участка для изыскательских работ
+        $process = Process::where('name', 'Выдача разрешения на использование земельного участка для изыскательских работ')->first();
         //org name
         $org = CityManagement::where('name', 'Управление архитектуры, градостроительства и земельных отношений города Нур-Султан')->first();
         $process->main_organization_id = $org->id;

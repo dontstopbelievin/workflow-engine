@@ -31,6 +31,9 @@ class InputTypeSeeder extends Seeder
             [
                 'name' => 'radio_button' //6
             ],
+            [
+                'name' => 'checkbox' //7
+            ],
         ]);
     }
 }
