@@ -59,7 +59,6 @@ class ApplicationController extends Controller
 
       // get all processes where the user is engaged
       $allProcessesWithUser = $this->processesOfUser($user->role_id);
-      $i = 0;
       $apps = [];
       // check if the user's id is in the "statuses" of every application of every process
 
@@ -92,7 +91,6 @@ class ApplicationController extends Controller
 
       // get all processes where the user is engaged
       $allProcessesWithUser = $this->processesOfUser($user->role_id);
-      $i = 0;
       $apps = [];
       // check if the user's id is NOT in the "statuses" of every application of every process
       foreach ($allProcessesWithUser as $number => $process) {
@@ -117,7 +115,6 @@ class ApplicationController extends Controller
         // get all processes
         $allProcesses = Process::get();
         // check if the user's id is equal to 'user_id' for all processes
-        $i = 0;
         $apps = [];
         foreach ($allProcesses as $number => $process) {
             $tableName = $process->table_name;
@@ -139,7 +136,6 @@ class ApplicationController extends Controller
         $user = Auth::user();
         // get all processes where the user is engaged
         $allProcessesWithUser = $this->processesOfUser($user->role_id);
-        $i = 0;
         $apps = [];
         // check if the applications in each process the user engaged is finished
         foreach ($allProcessesWithUser as $number => $process) {
@@ -153,7 +149,7 @@ class ApplicationController extends Controller
         return view('application.applications', compact('apps'));
     }
 
-    private function processesOfUser($role_id){
+    public function processesOfUser($role_id){
       return DB::table('process_role')
                 ->join('processes', 'processes.id', '=', 'process_role.process_id')
                 ->where('role_id', $role_id)

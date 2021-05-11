@@ -22,12 +22,14 @@
           <a href="{{ url('docs/services/incoming') }}">
               <i class="la la-sign-out"></i>
               <p>Входящие</p>
+              <span class="badge badge-count">{{ $counter_incoming }}</span>
           </a>
         </li>
         <li class="nav-item {{request()->segment(3) == 'outgoing' ? 'active' : ''}}">
           <a href="{{ url('docs/services/outgoing') }}">
               <i class="la la-sign-in"></i>
               <p>Исходящие</p>
+              <span class="badge badge-count">{{ $counter_outgoing }}</span>
           </a>
         </li>
       @endif
@@ -36,6 +38,7 @@
           <a href="{{ url('docs/services/mydocs') }}">
               <i class="fa fa-book"></i>
               <p>Мои документы</p>
+              <span class="badge badge-count">{{ $counter_my_docs }}</span>
           </a>
         </li>
         {{-- <li class="nav-item {{request()->segment(3) == 'drafts' ? 'active' : ''}}">
@@ -49,6 +52,7 @@
           <a href="{{ url('docs/services/archive') }}">
               <i class="fa fa-archive"></i>
               <p>Архив документов</p>
+              <span class="badge badge-count">{{ $counter_archive }}</span>
           </a>
         </li>
       @endif

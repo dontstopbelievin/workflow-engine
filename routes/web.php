@@ -108,6 +108,64 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/edit/{user}', 'UserController@edit');
         Route::put('/update/{user}', 'UserController@update');
     });
+
+    View::composer(['*'], function($view) {
+        $user = Auth::user();
+        $counter_my_docs = 0;
+        $counter_incoming = 0;
+        $counter_outgoing = 0;
+        $counter_archive = 0;
+        if($user){
+            if($user->role->name == 'Заявитель'){
+                $allProcesses = Process::get();
+                foreach ($allProcesses as $number => $process) {
+                    $tableName = $process->table_name;
+                    if(!Schema::hasTable($tableName)){
+                        continue;
+                    }
+                    $apps = DB::table($tableName)
+                                      ->join('processes', 'processes.id', $tableName.'.process_id')
+                                      ->where($tableName.'.user_id', '=', $user->id)->count();
+                    $counter_my_docs += $apps;
+                }
+            }else{
+                $allProcessesWithUser = app('App\Http\Controllers\ApplicationController')->processesOfUser($user->role_id);
+                foreach ($allProcessesWithUser as $number => $process) {
+
+                    $tableName = $process->table_name;
+                    $apps = DB::table($tableName)
+                                    ->join('processes', 'processes.id', $tableName.'.process_id')
+                                    ->where($tableName.'.current_order', '=', $process->order)
+                                    ->whereJsonContains('statuses', $user->role_id)
+                                    ->where($tableName.'.current_order', '!=', '0')
+                                    ->where(function($q) use($tableName, $user){
+                                      if($user->region == null || $user->region == '') return;
+                                      $q->where($tableName.'.region', $user->region);
+                                    })->count();
+
+                    $counter_incoming += $apps;
+                }
+                foreach ($allProcessesWithUser as $number => $process) {
+                    $tableName = $process->table_name;
+                    $apps = DB::table($tableName)
+                        ->join('processes', 'processes.id', $tableName.'.process_id')
+                        ->where($tableName.'.current_order', '>=', $process->order)
+                        ->whereJsonDoesntContain('statuses', $user->role_id)
+                        ->where($tableName.'.current_order', '!=', '0')
+                        ->count();
+                    $counter_outgoing += $apps;
+                }
+                foreach ($allProcessesWithUser as $number => $process) {
+                    $tableName = $process->table_name;
+                    $apps = DB::table($tableName)
+                                      ->join('processes', 'processes.id', $tableName.'.process_id')
+                                      ->where($tableName.'.current_order', '=', '0')->count();
+                    $counter_archive += $apps;
+                }
+            }
+        }
+        $view->with(compact('counter_my_docs', 'counter_incoming', 'counter_outgoing','counter_archive'));
+    });
 });
 
 Route::group(['prefix' => '/admin', 'middleware' => ['admin', 'auth']], function () {

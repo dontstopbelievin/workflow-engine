@@ -28,7 +28,7 @@
                               <th style="width:43%;">НАЗВАНИЕ ГОС УСЛУГИ</th>
                               <th style="width:10%;" class="text-center">ПОДАНА</th>
                               <th style="width:10%;" class="text-center">СРОК</th>
-                              <th style="width:10%;text-align:center;">ПЕРЕЙТИ</th>
+                              <th style="width:10%;text-align:center;">ПЕРЕЙТИ2</th>
                           </tr>
                       </thead>
                       <tbody>
@@ -40,12 +40,12 @@
                               $date=date_create($app->created_at);
                               $date2=date_create($app->deadline_date);
                               $opac = 1 - $date2->diff(date_create(date("Y-m-d")))->days / $date->diff($date2)->days;
-                              $deadline_color = '#1abf29';
+                              $deadline_color = '#1a9f29';
                               if($opac > 0.4 && $opac < 0.7){
-                                $deadline_color = '#ff6';
+                                $deadline_color = 'yellow';
                               }
                               if($opac > 0.7){
-                                $deadline_color = '#f33';
+                                $deadline_color = 'red';
                               }
                             ?>
                                 <td>{{$loop->iteration}}</td>
