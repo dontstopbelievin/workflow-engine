@@ -168,7 +168,7 @@
         xhr.onload = function () {
             if(xhr.status == 200){
                 let res = JSON.parse(xhr.responseText);
-                location.replace("http://workflow.back/docs/services/mydocs/view/"+res.proc_id+"/"+res.app_id+"?deadline="+res.deadline);
+                location.replace(window.location.origin+"/docs/services/mydocs/view/"+res.proc_id+"/"+res.app_id+"?deadline="+res.deadline);
                 // location.reload();
             }else{
                 console.log(xhr.responseText);
