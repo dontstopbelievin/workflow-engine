@@ -29,7 +29,7 @@ class IntegrationController extends Controller
         exit;
     }
 
-    public function test()
+    public function test() // HERE!!! 
     {
         \DB::table('dictionaries')->where('name', 'construction_name_before')->update(['input_type_id' => 3]);
         \DB::table('dictionaries')->where('name', 'construction_name_after')->update(['input_type_id' => 3]);

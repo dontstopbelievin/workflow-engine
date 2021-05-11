@@ -33,7 +33,7 @@ class ProcessController extends Controller
         return view('process.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request) // HERE!!!
     {
         $validator = Validator::make($request->all(),[
             'name' => 'required',
@@ -68,7 +68,7 @@ class ProcessController extends Controller
         }
     }
 
-    public function update(Request $request, Process $process)
+    public function update(Request $request, Process $process) // HERE!!!
     {
         $records = $request->all();
         $validator = Validator::make( $records,[
@@ -172,7 +172,7 @@ class ProcessController extends Controller
             DB::rollBack();
             return response()->json(['message' => $e->getMessage()], 500);
         }
-    }
+    } // HERE!!!
 
     public function addRole(Request $request, Process $process) {
         try {
@@ -312,9 +312,9 @@ class ProcessController extends Controller
             DB::rollBack();
             return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', $e->getMessage());
         }
-    }
+    } // attach???
 
-    public function addOrganization(Request $request, Process $process)
+    public function addOrganization(Request $request, Process $process) // HERE!!!!
     {
         if (!$request->mainOrganization) {
             echo 'Пожалуйста, выберите организацию';
@@ -325,7 +325,7 @@ class ProcessController extends Controller
         return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Организация успешно изменена.');
     }
 
-    public function update_process_role(Request $request, Process $process)
+    public function update_process_role(Request $request, Process $process) // HERE!!!
     {
         try {
             $validator = Validator::make($request->all(),[
@@ -344,7 +344,7 @@ class ProcessController extends Controller
         }
     }
 
-    public function delete_process_role(Request $request, Process $process)
+    public function delete_process_role(Request $request, Process $process) // HERE!!!
     {
         try {
             $validator = Validator::make($request->all(),[
@@ -362,7 +362,7 @@ class ProcessController extends Controller
         }
     }
 
-    public function delete(Process $process)
+    public function delete(Process $process) // HERE!!!
     {
         if(DB::table($process->table_name)->count() > 0){
             return  Redirect::to('process')->with('failure', 'Не удалось удалить процесс, удалите данные.');
@@ -375,7 +375,7 @@ class ProcessController extends Controller
         return Redirect::to('process')->with('status', 'Процесс успешно удален');
     }
 
-    public function map(Request $request, Process $process)
+    public function map(Request $request, Process $process) // HERE!!!
     {
         $validator = Validator::make($request->all(),[
             'need_map' => 'required|integer',

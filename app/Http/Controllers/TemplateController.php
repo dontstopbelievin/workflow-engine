@@ -76,7 +76,7 @@ class TemplateController extends Controller
             DB::rollBack();
             return response()->json(['message' => $e->getMessage()], 500);
         }
-    }
+    } // HERE!!!
 
     public function edit(Template $template) {
 
@@ -93,7 +93,7 @@ class TemplateController extends Controller
         }
 
         return 'Шаблон успешно обновлен';
-    }
+    } // HERE!!!
 
     public function delete($id) {
         try {
@@ -115,5 +115,5 @@ class TemplateController extends Controller
             DB::rollBack();
             return Redirect::back()->with('errors', $e->getMessage());
         }
-    }
+    } // HERE!!!
 }

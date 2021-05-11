@@ -188,6 +188,9 @@
                             @if($canApprove)
                                 @if (isset($templateFields) && $application->reject_reason == null)
                                     <!-- <div id = "templateFieldsId"> -->
+                                    <div class="alert alert-danger" id="error_box" style="display:none;">
+                                      <!-- errors HERE -->
+                                    </div>
                                     <ul class="list-group" id="templateFieldsId">
                                         @foreach($templateFields as $item)
                                             <!-- <div class="form-group row"> -->
@@ -657,9 +660,17 @@
                   xhr.setRequestHeader("Authorization", "Bearer " + "{{csrf_token()}}");
                   xhr.onload = function () {
                       if(xhr.status == 200){
+                          $('#error_box').hide('400');
                           location.reload();
                       }else{
-                          console.log(xhr.responseText);
+                          console.log(xhr);
+                          var errors = JSON.parse(xhr.responseText);
+                          var errorString = '';
+                          $.each(errors.error, function( key, value) {
+                              errorString += '<li>' + value + '</li>';
+                          });
+                          document.getElementById("error_box").innerHTML = errorString;
+                          $('#error_box').show('400');
                       }
                   }.bind(this)
                   xhr.send(formData);

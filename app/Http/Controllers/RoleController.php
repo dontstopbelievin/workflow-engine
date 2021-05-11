@@ -28,7 +28,7 @@ class RoleController extends Controller
         return view('role.create', compact('cityManagements'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request) // HERE!!!
     {
         $request->validate([
             'name'=>'required',
@@ -52,7 +52,7 @@ class RoleController extends Controller
         return view('role.edit', compact('role','cityManagements'));
     }
 
-    public function update(Request $request, Role $role)
+    public function update(Request $request, Role $role) // HERE!!!
     {
         $request->validate([
             'name'=>'required',
@@ -64,7 +64,7 @@ class RoleController extends Controller
         return Redirect::to('admin/role')->with('status','Роль успешно обновлена');
     }
 
-    public function delete(Role $role)
+    public function delete(Role $role) // HERE!!!
     {
         try {
             DB::beginTransaction();

@@ -25,8 +25,8 @@
               <tr>
                 <th style="width:7%;">#</th>
                 <th style="width:20%;">НАИМЕНОВАНИЕ УСЛУГИ</th>
-                                      <th style="width:20%;">ТИП ВВОДИМОГО</th>
-                                      <th style="width:20%;">ТИП СОХРАНЯЕМОГО</th>
+                <th style="width:20%;">ТИП ВВОДИМОГО</th>
+                <th style="width:20%;">ТИП СОХРАНЯЕМОГО</th>
                 <th style="width:13%;">Действия</th>
               </tr>
             </thead>

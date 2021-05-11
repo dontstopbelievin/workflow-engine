@@ -13,7 +13,7 @@ class ListController extends Controller
         return view('list.list', compact('items'));
     }
 
-    public function create(Request $request)
+    public function create(Request $request) // HERE!!!
     {
         $item = new Item;
         $item->item = $request->text;
@@ -24,7 +24,7 @@ class ListController extends Controller
     public function delete(Request $request) {
 
         Item::where('id', $request->id)->delete();
-    }
+    } // HERE!!!
 
     public function update(Request $request) {
 
@@ -32,7 +32,7 @@ class ListController extends Controller
         $item->item = $request->value;
         $item->update();
         return $request->all();
-    }
+    } // HERE!!!
 
     public function search(Request $request) {
         $term = $request->term;
