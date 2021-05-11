@@ -163,8 +163,8 @@ class ApplicationController extends Controller
 
     private function getFieldsForView($allApplications, $tableName){
       if (Schema::hasTable($tableName)) {
-        return $allApplications->select('processes.id as process_id', 'processes.name as process_name', $tableName.'.current_order', $tableName.'.statuses',  $tableName.'.id as application_id', $tableName.'.updated_at',
-          'users.first_name', 'users.sur_name', 'users.middle_name')
+        return $allApplications->select('processes.id as process_id', 'processes.name as process_name', $tableName.'.current_order', $tableName.'.statuses',  $tableName.'.id as application_id', $tableName.'.created_at',
+          'users.first_name', 'users.sur_name', 'users.middle_name', $tableName.'.deadline_date')
           ->join('users', $tableName.'.user_id', '=', 'users.id')->get();
         //  $tableName.'.first_name',  $tableName.'.surname',
       }else{
@@ -543,6 +543,7 @@ class ApplicationController extends Controller
             $applicationTableFields["statuses"] = $this->get_roles_of_order($process->id, 1);
             $applicationTableFields["current_order"] = 1;
             $applicationTableFields["user_id"] = Auth::user()->id;
+            $applicationTableFields["deadline_date"] = $this->holiday_diff_in_date($process->deadline);
             // return response()->json(['error' => $applicationTableFields], 500);
             $application_id = DB::table($tableName)->insertGetId($applicationTableFields);
 

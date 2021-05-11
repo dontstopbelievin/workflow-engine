@@ -142,6 +142,10 @@ class ProcessController extends Controller
                 $dbQueryString = "ALTER TABLE $tableName ADD  object_id INT";
                 DB::statement($dbQueryString);
             }
+            if (!Schema::hasColumn($tableName, 'deadline_date')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD deadline_date TIMESTAMP NOT NULL";
+                DB::statement($dbQueryString);
+            }
             if (!Schema::hasColumn($tableName, 'reject_reason')) {
                 $dbQueryString = "ALTER TABLE $tableName ADD reject_reason varchar(255)";
                 DB::statement($dbQueryString);
@@ -160,6 +164,10 @@ class ProcessController extends Controller
             }
             if (!Schema::hasColumn($tableName, 'revision_reason_to_spec_id')) {
                 $dbQueryString = "ALTER TABLE $tableName ADD revision_reason_to_spec_id varchar(255)";
+                DB::statement($dbQueryString);
+            }
+            if (!Schema::hasColumn($tableName, 'created_at')) {
+                $dbQueryString = "ALTER TABLE $tableName ADD created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP";
                 DB::statement($dbQueryString);
             }
             if (!Schema::hasColumn($tableName, 'updated_at')) {

@@ -5,12 +5,14 @@ namespace App\Traits;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use App\Dictionary;
 use App\Log;
 use App\Role;
 use App\Status;
 use App\Template;
 use App\TemplateField;
+use App\HolidayCalendar;
 
 trait dbQueries
 {
@@ -186,7 +188,8 @@ trait dbQueries
 
     public function getColumns($tableName)
     {
-        $notInclude = ['id', 'process_id', 'status_id', 'user_id', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at', 'statuses', 'current_order'];
+        $notInclude = ['id', 'process_id', 'status_id', 'user_id', 'reject_reason', 'reject_reason_from_spec_id', 'to_revision', 'revision_reason', 'revision_reason_from_spec_id', 'revision_reason_to_spec_id', 'updated_at', 'statuses', 'current_order',
+        'created_at', 'deadline_date'];
         $cols = DB::select(
           (new \Illuminate\Database\Schema\Grammars\MySqlGrammar)->compileColumnListing()
               .' order by ordinal_position',
@@ -255,6 +258,23 @@ trait dbQueries
             }
         }
         return $dictionaries;
+    }
+
+    function holiday_diff_in_date($add_days = 0) {
+        $dt = Carbon::parse(date('Y-m-d'));
+        $holiday_list = HolidayCalendar::pluck('holiday')->toArray();
+
+        if ($add_days) {
+            for ($i = 1; $i <= $add_days; $i++) {
+                $dt = $dt->addDay();
+
+                if (in_array($dt->format('Y-m-d'), $holiday_list)) {
+                    $add_days++;
+                }
+            }
+        }
+        $dt->setTime(16, 00);
+        return $dt;
     }
 
     public function get_templates($process_id, $application_id){

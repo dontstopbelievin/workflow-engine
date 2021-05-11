@@ -14,11 +14,10 @@
     "esri/views/MapView",
     "esri/layers/GraphicsLayer",
     "esri/widgets/LayerList",
-    "esri/layers/GraphicsLayer",
     "esri/widgets/Fullscreen",
     "esri/identity/IdentityManager",
     ], function(esriConfig,Map, MapView, GraphicsLayer, 
-      LayerList, GraphicsLayer, Fullscreen, IdentityManager) {
+      LayerList, Fullscreen, IdentityManager) {
 
   esriConfig.portalUrl = "https://gis.esaulet.kz/arcgis";
   g_layer = new GraphicsLayer({});
