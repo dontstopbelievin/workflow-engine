@@ -1152,19 +1152,19 @@ class ProcessScript extends Seeder
         //create template
         $request = new \Illuminate\Http\Request();
         $template_doc = TemplateDoc::where('name', 'Без шаблона')->first();
-        $request->replace(['template_state' => 1, 'table_name' => 'p11_shema_monitoring', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role4->id, 'order' => 4, 'to_citizen' => 1]);
+        $request->replace(['template_state' => 1, 'table_name' => 'p2_shema_monitoring', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role4->id, 'order' => 4, 'to_citizen' => 1]);
         app('App\Http\Controllers\TemplateController')->store($request);
         
         //add template field
         $request = new \Illuminate\Http\Request();
-        $template = Template::where('table_name', 'p11_shema_monitoring')->first();
+        $template = Template::where('table_name', 'p2_shema_monitoring')->first();
         $request->replace(['fieldName' => 'shema_monitoring', 'labelName' => 'Схема', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
 
         //final doc template
         $request = new \Illuminate\Http\Request();
         $template_doc = TemplateDoc::where('name', 'Шаблон продажа ЗУ единовременно')->first();
-        $request->replace(['template_state' => 1, 'table_name' => 'p11_vypiska_iz_postanovleni9', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role6->id, 'order' => 6, 'to_citizen' => 1]);
+        $request->replace(['template_state' => 1, 'table_name' => 'p2_vypiska_iz_postanovleni9', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role6->id, 'order' => 6, 'to_citizen' => 1]);
         app('App\Http\Controllers\TemplateController')->store($request);
     }
 }
