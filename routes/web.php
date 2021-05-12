@@ -172,6 +172,8 @@ Route::group(['prefix' => '/admin', 'middleware' => ['admin', 'auth']], function
 
     Route::get('send', 'HomeController@sendNotification');
     Route::get('logs', 'ProcessController@logs');
+    Route::get('report', 'HomeController@report');
+    Route::post('report', 'HomeController@get_report');
 
     Route::prefix('dictionary')->group(function () {
         Route::get('/', 'DictionaryController@index');

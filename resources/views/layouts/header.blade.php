@@ -75,8 +75,12 @@
                 </li> --}}
                 @if (Auth::check() && Auth::user()->usertype === 'admin')
                     <li onclick="window.location='{{ url('admin/process') }}'"
-                        class="nav-item {{ request()->segment(1) == 'process' || request()->segment(1) == 'admin' ? 'active' : '' }}">
+                        class="nav-item {{ request()->segment(2) == 'process' ? 'active' : '' }}">
                         <b>АДМИНИСТРИРОВАНИЕ</b>
+                    </li>
+                    <li onclick="window.location='{{ url('admin/report') }}'"
+                        class="nav-item {{ request()->segment(2) == 'report' ? 'active' : '' }}">
+                        <b>ОТЧЕТ</b>
                     </li>
                 @endif
             </ul>

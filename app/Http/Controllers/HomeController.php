@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Process;
+use App\Dictionary;
+use App\Role;
 use Notification;
 use App\Notifications\ApproveNotification;
+use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
 {
@@ -59,6 +63,12 @@ class HomeController extends Controller
 
 
         dd('done');
+    }
+
+    public function report(){
+        $processes = Process::all();
+        $roles = Role::all();
+        return view('application.reports', compact('processes', 'roles'));
     }
 
     public function get_token(){

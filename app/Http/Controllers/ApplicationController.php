@@ -538,6 +538,7 @@ class ApplicationController extends Controller
             $table = CreatedTable::where('name', $tableName)->first();
             $applicationTableFields["statuses"] = $this->get_roles_of_order($process->id, 1);
             $applicationTableFields["current_order"] = 1;
+            $applicationTableFields["status_id"] = 0;
             $applicationTableFields["user_id"] = Auth::user()->id;
             $applicationTableFields["deadline_date"] = $this->holiday_diff_in_date($process->deadline);
             // return response()->json(['error' => $applicationTableFields], 500);
