@@ -49,8 +49,8 @@
                                     <input type="text" name="lastname" id="lastname" required readonly="readonly" value="" class="form-control"/>
                                 </div>
                                 <div class="md-form md-outline reg_form">
-                                    <label data-error="wrong" data-success="right" for="phone"><b>Телефон</b></label><br/>
-                                    <input type="text" id="phone" name="phone" pattern="[0-9]{10}" title="Введите 10 цифр вашего номера" class="form-control"/>
+                                    <label data-error="wrong" data-success="right" for="telephone"><b>Телефон</b></label><br/>
+                                    <input type="text" id="telephone" name="telephone" pattern="[0-9]{10}" title="Введите 10 цифр вашего номера" class="form-control"/>
                                 </div>
                                 <div class="md-form md-outline reg_form">
                                     <label data-error="wrong" data-success="right" for="iin"><b>ИИН</b></label><br/>
