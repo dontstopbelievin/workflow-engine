@@ -79,6 +79,7 @@
         w_cont.id = "w_cont";
         w_cont.style.width = "600px";
         w_cont.style.boxShadow = "none"
+        w_cont.style.zIndex = "99"
         window.view.ui.add(w_cont,{
            position: "top-left",
            index:0,
