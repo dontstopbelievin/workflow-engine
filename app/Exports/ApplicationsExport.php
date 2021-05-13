@@ -56,16 +56,16 @@ class ApplicationsExport implements FromArray, WithHeadings
 	    $columns[] = $tableName.'.created_at';
 
 	    $query = DB::table($tableName)
-	    	->select($columns);
+        ->select($columns);
+      if($role_id){
+        $query->join('process_role', 'process_role.process_id', '=', $tableName.'.process_id')
+        ->where('process_role.role_id', '=', $role_id);
+      }
 	    if($date_from){
-	    	$query->where('created_at', '>=', $date_from);
+	    	$query->where($tableName.'.created_at', '>=', $date_from);
 	    }
 	    if($date_to){
-	    	$query->where('created_at', '<=', $date_to);
-	    }
-	    if($role_id){
-    		$query->leftJoin('process_role', 'process_role.process_id', '=', $tableName.'.process_id')
-	      	->where('process_role.role_id', '=', $role_id);
+	    	$query->where($tableName.'.created_at', '<=', $date_to);
 	    }
 	    if($status_id){
 	    	$query->where('status_id', '=', $status_id);
