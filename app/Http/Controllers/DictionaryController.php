@@ -31,13 +31,20 @@ class DictionaryController extends Controller
         $processId = $request->processId;
         $selectOptions = $request->selectedOptions;
 
-        $validatedData = $request->validate([
-            'fieldName' => 'required',
-            'labelName' => 'required',
-            'inputItem' => 'required',
-            'insertItem' => 'required',
-            'processId' => 'required',
+        $validator = Validator::make($request->all(),[
+          'fieldName' => 'required',
+          'labelName' => 'required',
+          'inputItem' => 'required',
+          'insertItem' => 'required',
+          'processId' => 'required',
         ]);
+
+        if ($validator->fails()) {
+          return Response::json(array(
+              'error' => $validator->getMessageBag()->toArray()
+          ), 400);
+        }
+
         $dictionaries = Dictionary::all();
         foreach($dictionaries as $spr) {
             if ($spr->name === $fieldName) {
@@ -62,7 +69,7 @@ class DictionaryController extends Controller
                 $optn->save();
             }
         }
-    }
+    } // HERE!!!
 
     public function createFields() {
 

@@ -29,7 +29,7 @@ class EgknServiceController extends Controller
         return Redirect::back();
     }
 
-    public function status(Request $request)
+    public function status(Request $request) // HERE!!!
     {
         $aField = EgknService::where('id', $request->id)->first();
         $aField->egkn_status = 'Зарегистрировано';
@@ -40,7 +40,7 @@ class EgknServiceController extends Controller
     public function act(Request $request)
     {
         $egkn = EgknService::find($request->id);
-// try to do this by using ddd
+        // try to do this by using ddd
         $process = Process::find(17);
         $tableName = $this->getTableName($process->name);
         $tableColumns = $this->getColumns($tableName);

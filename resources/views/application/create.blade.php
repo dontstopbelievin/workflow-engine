@@ -71,6 +71,9 @@
                         @endif
                     </div>
                 </div>
+                <div class="alert alert-danger" id="error_box" style="display:none;">
+                  <!-- errors HERE -->
+                </div>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -88,7 +91,7 @@
                                 <div style="padding-top:10px;">
                                 @foreach($item->options as $key => $val)
                                     <label class="form-radio-label">
-                                        <input class="form-radio-input" type="radio" name="{{$item->name}}" value="">
+                                        <input class="form-radio-input" type="radio" name="{{$item->name}}" value="{{$val->name_rus}}">
                                         <span class="form-radio-sign">{{$val->name_rus}}</span>
                                     </label>
                                 @endforeach
@@ -155,7 +158,21 @@
                 if(file!==undefined) {
                     formData.append(this.name, file);
                 }
-            } else {
+            }else if(this.type === 'radio') {
+              // console.log(this.value);
+              if(!formData.has(this.name)){
+                if(this.checked){
+                  formData.append(this.name, this.value);
+                } else {
+                  formData.append(this.name, "");
+                }
+              }else{
+                if(formData.get(this.name) == "" && this.checked){
+                  formData.set(this.name, this.value);
+                }
+              }
+
+            }else{
              formData.append(this.name, $(this).val());
             }
         });
@@ -169,10 +186,17 @@
             if(xhr.status == 200){
                 let res = JSON.parse(xhr.responseText);
                 location.replace(window.location.origin+"/docs/services/mydocs/view/"+res.proc_id+"/"+res.app_id+"?deadline="+res.deadline);
+                $('#error_box').hide('400');
                 // location.reload();
             }else{
-                console.log(xhr.responseText);
-                alert('Ошибка');
+              console.log(xhr);
+              var errors = JSON.parse(xhr.responseText);
+              var errorString = '';
+              $.each(errors.error, function( key, value) {
+                  errorString += '<li>' + value + '</li>';
+              });
+              document.getElementById("error_box").innerHTML = errorString;
+              $('#error_box').show('400');
             }
         }.bind(this)
         xhr.send(formData);

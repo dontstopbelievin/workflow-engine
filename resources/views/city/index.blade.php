@@ -18,6 +18,9 @@
                 <h4 class="page-title text-center">Организации</h4>
               </div>
             </div>
+            <div class="alert alert-danger" id="error_box" style="display:none;">
+              <!-- errors HERE -->
+            </div>
 		      </div>
 					<div class="card-body">
 						<table class="table table-hover">
@@ -109,32 +112,64 @@
         $('#AddButton').click(function(event) {
             var text = $('#addItem').val();
 
-            if (text == '') {
-                alert('Введите название');
-            }
-            $.post('admin/city', {'text':text, '_token':$('input[name=_token]').val()}, function(data){
-                console.log(data);
-                $('#items').load(location.href + ' #items');
-            });
+            $.post('/admin/city', {'text':text, '_token':$('input[name=_token]').val()})
+                .done( function(data) {
+                    console.log(data);
+                    $('#error_box').hide('400');
+                    $('#items').load(location.href + ' #items');
+                 })
+                .fail( function(xhr, textStatus, errorThrown) {
+                  var response = JSON.parse(xhr.responseText);
+                  var errorString = '';
+                  $.each( response.error, function( key, value) {
+                      errorString += '<li>' + value + '</li>';
+                  });
+                  console.log(errorString);
+                  document.getElementById("error_box").innerHTML = errorString;
+                  $('#error_box').show('400');
+                });
         });
 
         $('#delete').click(function(event) {
             var id = $('#idDel').val();
-            $.post('admin/city/delete', {'id':id, '_token':$('input[name=_token]').val()}, function(data){
-                console.log(data);
-                $('#items').load(location.href + ' #items');
-            });
+            $.post('/admin/city/delete', {'id':id, '_token':$('input[name=_token]').val()})
+                .done( function(data) {
+                    console.log(data);
+                    $('#error_box').hide('400');
+                    $('#items').load(location.href + ' #items');
+                 })
+                .fail( function(xhr, textStatus, errorThrown) {
+                  var response = JSON.parse(xhr.responseText);
+                  var errorString = '';
+                  $.each( response.error, function( key, value) {
+                      errorString += '<li>' + value + '</li>';
+                  });
+                  console.log(errorString);
+                  document.getElementById("error_box").innerHTML = errorString;
+                  $('#error_box').show('400');
+                });
         });
         $('#saveChanges').click(function(event) {
             var id = $('#id').val();
             var value = $('#addItem').val();
-            $.post('admin/city/update ', {'id':id, 'value':value,'_token':$('input[name=_token]').val()}, function(data){
-                console.log(data);
-                $('#items').load(location.href + ' #items');
-            });
+            $.post('/admin/city/update ', {'id':id, 'value':value,'_token':$('input[name=_token]').val()})
+                .done( function(data) {
+                    console.log(data);
+                    $('#error_box').hide('400');
+                    $('#items').load(location.href + ' #items');
+                 })
+                .fail( function(xhr, textStatus, errorThrown) {
+                  var response = JSON.parse(xhr.responseText);
+                  var errorString = '';
+                  $.each( response.error, function( key, value) {
+                      errorString += '<li>' + value + '</li>';
+                  });
+                  console.log(errorString);
+                  document.getElementById("error_box").innerHTML = errorString;
+                  $('#error_box').show('400');
+                });
         });
         $( function() {
-
             $( "#searchItem" ).autocomplete({
                 source: 'http://127.0.0.1:8000/list/search'
             });
@@ -142,6 +177,3 @@
     });
 </script>
 @append
-
-
-

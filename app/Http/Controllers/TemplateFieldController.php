@@ -69,7 +69,7 @@ class TemplateFieldController extends Controller
             DB:rollBack();
             return response()->json(['message' => $e->getMessage()], 500);
         }
-    }
+    } // HERE!!!
 
     public function def_value($field_id) {
 
@@ -99,16 +99,16 @@ class TemplateFieldController extends Controller
         } catch (Exception $e) {
             return Redirect::back()->with('error', $e->getMessage());
         }
-    }
+    } // HERE!!!
 
-    public function delete($id)
+    public function delete($id)  // HERE!!!
     {
         try {
             $item = DictDefaultValues::find($id);
             $item->delete();
-            return Redirect::back()->with('status', 'Значение успешно удалено.');   
+            return Redirect::back()->with('status', 'Значение успешно удалено.');
         } catch (Exception $e) {
-            return Redirect::back()->with('error', $e->getMessage());   
+            return Redirect::back()->with('error', $e->getMessage());
         }
     }
 }
