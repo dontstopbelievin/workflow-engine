@@ -28,7 +28,6 @@
         border: 1px solid black;
         height: 90px!important;
         width: 33%;
-        font-weight: bold;
         cursor: pointer;
     }
     .table_gos_list td:hover .td_1 {
@@ -46,6 +45,7 @@
         text-align: center;
         vertical-align: middle;
         background: #f1f1f1;
+        color: #424944;
     }
     .td_2{
         padding: 15px;
