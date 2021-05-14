@@ -21,6 +21,40 @@
     border: 1px solid black;
     margin: 0px;
   }
+    .table_gos_list{
+        border-collapse: separate;
+    }
+    .table_gos_list td {
+        border: 1px solid black;
+        height: 90px!important;
+        width: 33%;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .table_gos_list td:hover .td_1 {
+        background-color: #31a93f;
+    }
+    .table_gos_list td:hover .td_2 {
+        background-color: #1a9f29;
+        color: white;
+    }
+    .td_1{
+        padding: 15px;
+        height: 100%;
+        width: 90px;
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+        background: #f1f1f1;
+    }
+    .td_2{
+        padding: 15px;
+        height: 100%;
+        width: calc(100% - 90px);
+        display: inline-block;
+        vertical-align: middle;
+        background: #ebebeb;
+    }
 </style>
 @section('content')
     <div class="main-panel">
@@ -37,56 +71,23 @@
                         @endif
                     </div>
                     <div class="card-body">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>НАИМЕНОВАНИЕ УСЛУГИ</th>
-                                    <th style="text-align:center;">СОЗДАТЬ</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <div class="row">
-                                    <div class="col-md-4 gos_tabs">
-                                        <div class="gos_content">
-                                            asdf
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 gos_tabs">
-                                        <div class="gos_content">
-                                            asdf
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 gos_tabs">
-                                        <div class="gos_content">
-                                            asdf
-                                        </div>
-                                    </div>
-                                </div>
-                                @foreach ($processes as $process)
-                                    <tr class="p-3 mb-5 rounded">
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $process->name }}</td>
-                                        @if ($process->name == 'Выдача выписки об учетной записи договора о долевом участии в жилищном строительства')
-                                            <td class="text-center align-middle border">
-                                                <button class="btn btn-simple-primary px-0 py-0"
-                                                    style=" background-color: transparent;font-size:30px;"
-                                                    onclick="window.location='http://qazreestr.kz:8180/rddu/private/cabinet.jsp'">
-                                                    <i class="fa fa-file-text" aria-hidden="true"></i>
-                                                </button>
-                                            </td>
-                                        @else
-                                            <td class="text-center align-middle border">
-                                                <button class="btn btn-simple-primary px-0 py-0"
-                                                    style=" background-color: transparent;font-size:30px;"
-                                                    onclick="window.location='{{ url('docs/create', ['process' => $process]) }}'">
-                                                    <i class="fa fa-file-text" aria-hidden="true"></i>
-                                                </button>
-                                            </td>
-                                        @endif
-                                    </tr>
-                                @endforeach
-                            </tbody>
+                        <table class="table table_gos_list">
+                            <tr>
+                            @foreach ($processes as $process)
+                                @if ($process->name == 'Выдача выписки об учетной записи договора о долевом участии в жилищном строительства')
+                                    <?php $td_url = 'http://qazreestr.kz:8180/rddu/private/cabinet.jsp'; ?>
+                                @else
+                                    <?php $td_url = url('docs/create', ['process' => $process]); ?>
+                                @endif
+                                @if($loop->iteration%3 == 0)
+                                    <td style="padding: 0px!important;" onclick="window.location='{{$td_url}}'">
+                                    <div class="td_1"><img src="images/house.png" class="td_image"></div><div class="td_2">{{mb_strtoupper($process->name)}}</div></td>
+                                    </tr><tr>
+                                @else
+                                    <td style="padding: 0px!important;" onclick="window.location='{{$td_url}}'">
+                                        <div class="td_1"><img src="images/house.png" class="td_image"></div><div class="td_2">{{mb_strtoupper($process->name)}}</div></td>
+                                @endif
+                            @endforeach
                         </table>
                     </div>
                     @else

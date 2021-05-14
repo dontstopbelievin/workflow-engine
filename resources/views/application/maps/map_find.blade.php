@@ -32,12 +32,6 @@
   window.map = new Map({
       basemap: "streets"
   });
-  // let map_server = 'https://gis.esaulet.kz/server/rest/services/Hosted/1_20/MapServer'
-  // const layer = new MapImageLayer({
-  //   url: "https://gis.esaulet.kz/server/rest/services/Hosted/1_20/MapServer",
-    
-  // });
-  // window.map = new Map({ layers: [layer] });
 
   window.view = new MapView({
       container: "viewDiv",
