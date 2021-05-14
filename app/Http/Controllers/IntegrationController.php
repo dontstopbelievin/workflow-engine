@@ -31,18 +31,6 @@ class IntegrationController extends Controller
 
     public function test() // HERE!!! 
     {
-        \DB::table('dictionaries')->where('name', 'construction_name_before')->update(['input_type_id' => 3]);
-        \DB::table('dictionaries')->where('name', 'construction_name_after')->update(['input_type_id' => 3]);
-        return 'done';
-        $processes = Process::all();
-        dd($processes);
-        $fields = ['name', 'surname', 'address', 'attachment'];
-        $request = new \Illuminate\Http\Request();
-        $request->replace(['fields' => $fields]);
-        // foreach ($processes as $process) {
-        //     app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
-        // }
-        return view('test');
         $response = array();
         $response['egkn_receive_status'] = ShepRequestSender::send('egkn_receive_status', $_GET);
         $response['egkn_receive_order'] = ShepRequestSender::send('egkn_receive_order', $_GET);
