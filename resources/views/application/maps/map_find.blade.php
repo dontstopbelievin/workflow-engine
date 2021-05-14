@@ -21,9 +21,10 @@
     "esri/layers/GraphicsLayer",
     "esri/widgets/LayerList",
     "esri/widgets/Fullscreen",
+    "esri/layers/MapImageLayer",
     "esri/identity/IdentityManager",
     ], function(esriConfig, Map, MapView, GraphicsLayer, 
-      LayerList, Fullscreen, IdentityManager) {
+      LayerList, Fullscreen, MapImageLayer, IdentityManager) {
 
   esriConfig.portalUrl = "https://gis.esaulet.kz/portal";
   query_layer = new GraphicsLayer({});
@@ -31,6 +32,12 @@
   window.map = new Map({
       basemap: "streets"
   });
+  // let map_server = 'https://gis.esaulet.kz/server/rest/services/Hosted/1_20/MapServer'
+  // const layer = new MapImageLayer({
+  //   url: "https://gis.esaulet.kz/server/rest/services/Hosted/1_20/MapServer",
+    
+  // });
+  // window.map = new Map({ layers: [layer] });
 
   window.view = new MapView({
       container: "viewDiv",
