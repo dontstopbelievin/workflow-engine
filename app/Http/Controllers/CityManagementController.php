@@ -19,7 +19,7 @@ class CityManagementController extends Controller
     public function create(Request $request) {
 
         $validator = Validator::make($request->all(),[
-            'text' => 'required|unique:App\CityManagement,name|max:191',
+            'text' => ['required', 'unique:App\CityManagement,name','max:191'],
         ]);
         if ($validator->fails()) {
           return Response::json(array(
@@ -48,8 +48,8 @@ class CityManagementController extends Controller
     public function update(Request $request) {
         $maxID = CityManagement::max('id');
         $validator = Validator::make($request->all(),[
-            'id' => 'required|max:'.$maxID,
-            'value' => 'required|unique:App\CityManagement,name|max:191',
+            'id' => ['required', 'max:'.$maxID ],
+            'value' => ['required', 'unique:App\CityManagement,name','max:191'],
         ]);
 
         if ($validator->fails()) {

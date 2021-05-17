@@ -10,6 +10,8 @@ use App\Traits\dbQueries;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Response;
 
 class DictionaryController extends Controller
 {
@@ -32,8 +34,8 @@ class DictionaryController extends Controller
         $selectOptions = $request->selectedOptions;
 
         $validator = Validator::make($request->all(),[
-          'fieldName' => 'required',
-          'labelName' => 'required',
+          'fieldName' => 'required|unique:App\Dictionary,name',
+          'labelName' => 'required|unique:App\Dictionary,label_name',
           'inputItem' => 'required',
           'insertItem' => 'required',
           'processId' => 'required',
@@ -69,7 +71,7 @@ class DictionaryController extends Controller
                 $optn->save();
             }
         }
-    } // HERE!!!
+    }
 
     public function createFields() {
 

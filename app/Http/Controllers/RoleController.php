@@ -6,7 +6,11 @@ use App\Role;
 use App\CityManagement;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Response;
 
 class RoleController extends Controller
 {
@@ -28,7 +32,7 @@ class RoleController extends Controller
         return view('role.create', compact('cityManagements'));
     }
 
-    public function store(Request $request) // HERE!!!
+    public function store(Request $request)
     {
         $request->validate([
             'name'=>'required',
@@ -38,7 +42,7 @@ class RoleController extends Controller
         $role->name = $request->input('name');
         $role->city_management_id = $request->input('city_management_id');
         $role->save();
-        return Redirect::route('role.index')->with('status', 'Роль успешно создана');
+        return Redirect::to('admin/role')->with('status', 'Роль успешно создана');
     }
 
     public function edit(Role $role)
@@ -52,7 +56,7 @@ class RoleController extends Controller
         return view('role.edit', compact('role','cityManagements'));
     }
 
-    public function update(Request $request, Role $role) // HERE!!!
+    public function update(Request $request, Role $role)
     {
         $request->validate([
             'name'=>'required',
@@ -64,7 +68,7 @@ class RoleController extends Controller
         return Redirect::to('admin/role')->with('status','Роль успешно обновлена');
     }
 
-    public function delete(Role $role) // HERE!!!
+    public function delete(Role $role)
     {
         try {
             DB::beginTransaction();

@@ -270,8 +270,16 @@ class ApplicationController extends Controller
         return json_decode(json_encode($application), true);
     }
 
-    public function acceptAgreement(Request $request) //HERE!!!
+    public function acceptAgreement(Request $request)
     {
+        $validator = Validator::make($request->all(),[
+            'accepted' => ['required'],
+        ]);
+        if ($validator->fails()) {
+          return Response::json(array(
+              'error' => $validator->getMessageBag()->toArray()
+          ), 400);
+        }
         if ($request->accepted) {
             $user = Auth::user();
             $user->has_not_accepted_agreement = false;
@@ -284,6 +292,16 @@ class ApplicationController extends Controller
     public function approveReject(Request $request){
       try {
           DB::beginTransaction();
+
+          $validator = Validator::make($request->all(),[
+              'application_id' => ['required'],
+              'process_id' => ['required'],
+          ]);
+          if ($validator->fails()) {
+            return Response::json(array(
+                'error' => $validator->getMessageBag()->toArray()
+            ), 400);
+          }
 
           $process = Process::find($request->process_id);
           $tableName = $process->table_name;
@@ -316,11 +334,23 @@ class ApplicationController extends Controller
           DB::rollBack();
           return Redirect::to('docs')->with('status', $e->getMessage());
       }
-    } //HERE!!!
+    }
 
     public function approve(Request $request) {
         try {
             DB::beginTransaction();
+
+            $validator = Validator::make($request->all(),[
+                'application_id' => ['required'],
+                'process_id' => ['required'],
+                'comments' => ['required', 'min:3'],
+            ]);
+            if ($validator->fails()) {
+              return Response::json(array(
+                  'error' => $validator->getMessageBag()->toArray()
+              ), 400);
+            }
+
             $fieldValues = $request->all();
             if ($fieldValues) {
                 foreach($fieldValues as $key=>$val) {
@@ -356,50 +386,50 @@ class ApplicationController extends Controller
             $template = Template::where('role_id', Auth::user()->role_id)->where('order', $application->current_order)->first();
             $comment = $request->comments;
 
-            // $pathToView = 'PDFtemplates.empty';//to skip template doc creation if non template exist
-            // if($template){
-            //   // insertion of fields into template
-            //   if(!$this->insertTemplateFields($fieldValues, $request->application_id, $template)){
-            //       DB::rollBack();
-            //       return Redirect::to('docs')->with('error', 'insert template fields error');
-            //   }
-            //   $template_doc = TemplateDoc::find($template->template_doc_id);
-            //   $pathToView = $template_doc->pdf_path;
-            // }
-            //
-            // if($pathToView != 'PDFtemplates.empty'){
-            //   $fields = DB::table($template->table_name)->select('*')->where('application_id', $application->id)->first();
-            //   $aFields = json_decode(json_encode($fields), true);
-            //
-            //   $updatedFields = [];
-            //   if ($aFields !== Null) {
-            //     foreach($aFields as $key => $field) {
-            //         if ($key === 'id' || $key === 'application_id' || $key === '_token' || $key === 'pdf_url') {
-            //             continue;
-            //         }
-            //         $updatedFields[$key] = $field;
-            //     }
-            //   }
-            //
-            //   $fileName = $this->generateRandomString();
-            //   $applicant = User::where('id', $application->user_id)->first();
-            //   $updatedFields["date"] = date('d-m-Y');
-            //   $updatedFields["id"] = $application->id;
-            //   $updatedFields["applicant_name"] = $applicant->sur_name.' '.$applicant->first_name.' '.$applicant->middle_name;
-            //   $updatedFields = $this->add_app_columns($updatedFields, $tableName, $application->id);
-            //   $updatedFields = $this->get_test_values($updatedFields);
-            //
-            //   $userName = Auth::user()->sur_name.' '.Auth::user()->first_name.' '.Auth::user()->middle_name;
-            //   $roleName = Auth::user()->role->name;
-            //   $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
-            //   $content = view($pathToView, compact('updatedFields', 'userName', 'roleName'))->render();
-            //   $mpdf = new Mpdf();
-            //   $mpdf->WriteHTML($content);
-            //   $mpdf->Output(storage_path(). $storagePathToPDF, \Mpdf\Output\Destination::FILE);
-            //   $docPath = 'final_docs/'. $fileName . '.pdf';
-            //   DB::table($template->table_name)->where('application_id', $request->application_id)
-            //     ->update(['pdf_url' => $docPath]);
-            // }
+            $pathToView = 'PDFtemplates.empty';//to skip template doc creation if non template exist
+            if($template){
+              // insertion of fields into template
+              if(!$this->insertTemplateFields($fieldValues, $request->application_id, $template)){
+                  DB::rollBack();
+                  return Redirect::to('docs')->with('error', 'insert template fields error');
+              }
+              $template_doc = TemplateDoc::find($template->template_doc_id);
+              $pathToView = $template_doc->pdf_path;
+            }
+
+            if($pathToView != 'PDFtemplates.empty'){
+              $fields = DB::table($template->table_name)->select('*')->where('application_id', $application->id)->first();
+              $aFields = json_decode(json_encode($fields), true);
+
+              $updatedFields = [];
+              if ($aFields !== Null) {
+                foreach($aFields as $key => $field) {
+                    if ($key === 'id' || $key === 'application_id' || $key === '_token' || $key === 'pdf_url') {
+                        continue;
+                    }
+                    $updatedFields[$key] = $field;
+                }
+              }
+
+              $fileName = $this->generateRandomString();
+              $applicant = User::where('id', $application->user_id)->first();
+              $updatedFields["date"] = date('d-m-Y');
+              $updatedFields["id"] = $application->id;
+              $updatedFields["applicant_name"] = $applicant->sur_name.' '.$applicant->first_name.' '.$applicant->middle_name;
+              $updatedFields = $this->add_app_columns($updatedFields, $tableName, $application->id);
+              $updatedFields = $this->get_test_values($updatedFields);
+
+              $userName = Auth::user()->sur_name.' '.Auth::user()->first_name.' '.Auth::user()->middle_name;
+              $roleName = Auth::user()->role->name;
+              $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
+              $content = view($pathToView, compact('updatedFields', 'userName', 'roleName'))->render();
+              $mpdf = new Mpdf();
+              $mpdf->WriteHTML($content);
+              $mpdf->Output(storage_path(). $storagePathToPDF, \Mpdf\Output\Destination::FILE);
+              $docPath = 'final_docs/'. $fileName . '.pdf';
+              DB::table($template->table_name)->where('application_id', $request->application_id)
+                ->update(['pdf_url' => $docPath]);
+            }
 
             $currentRoleOrder = $application->current_order;
             $processRoles = $this->getProcessStatuses($tableName, $request->application_id);
@@ -430,7 +460,7 @@ class ApplicationController extends Controller
             DB::rollBack();
             return Redirect::to('docs')->with('status', $e->getMessage());
         }
-    } //HERE!!!
+    }
 
     public function deleteCurrentRoleAddChildren($process, $processRoles, $children, $currentRoleOrder, $table_id, $appl_id, $answer, $tableName){
       $response = array();
@@ -478,7 +508,7 @@ class ApplicationController extends Controller
       }
 
       return $processRoles;
-    }  //HERE!!!
+    }
 
     public function checkArrayOfServicesOrRoles($servicesOrRoles, $process, $currentRoleOrder, $table_id, $appl_id){
       $resultingRoles = [];
@@ -614,8 +644,17 @@ class ApplicationController extends Controller
         }
     }
 
-    public function search(Request $request) //HERE!!!
+    public function search(Request $request)
     {
+        $validator = Validator::make($request->all(),[
+            'processId' => ['required'],
+        ]);
+        if ($validator->fails()) {
+          return Response::json(array(
+              'error' => $validator->getMessageBag()->toArray()
+          ), 400);
+        }
+
         $process = Process::find($request->processId);
         $routes = $this->getRolesWithoutParent($process->id);
         $arrRoutes = json_decode($routes, true);
@@ -657,10 +696,22 @@ class ApplicationController extends Controller
         return Redirect::to('docs')->with('status', 'Заявки Успешно созданы (' . $countApp . ')');
     }
 
-    public function toCitizen(Request $request) //HERE!!!
+    public function toCitizen(Request $request)
     {
       try {
           DB::beginTransaction();
+
+          $validator = Validator::make($request->all(),[
+              'application_id' => ['required'],
+              'process_id' => ['required'],
+              'comments' => ['required', 'min:3'],
+              'answer' => ['required']
+          ]);
+          if ($validator->fails()) {
+            return Response::json(array(
+                'error' => $validator->getMessageBag()->toArray()
+            ), 400);
+          }
 
           $role = Auth::user()->role;
           $applicationId = $request->application_id;
@@ -701,10 +752,22 @@ class ApplicationController extends Controller
         return $randomString;
     }
 
-    public function reject(Request $request) //HERE!!!
+    public function reject(Request $request)
     {
         try {
             DB::beginTransaction();
+
+            $validator = Validator::make($request->all(),[
+                'application_id' => ['required'],
+                'process_id' => ['required'],
+                'rejectReason' => ['required', 'min:3'],
+            ]);
+            if ($validator->fails()) {
+              return Response::json(array(
+                  'error' => $validator->getMessageBag()->toArray()
+              ), 400);
+            }
+
             $process = Process::find($request->process_id);
             $tableName = $process->table_name;
             $application = DB::table($tableName)->where('id', $request->application_id)->first();
@@ -759,10 +822,22 @@ class ApplicationController extends Controller
         }
     }
 
-    public function revision(Request $request) //HERE!!!
+    public function revision(Request $request)
     {
       try {
           DB::beginTransaction();
+
+          $validator = Validator::make($request->all(),[
+              'application_id' => ['required'],
+              'processId' => ['required'],
+              'revisionReason' => ['required', 'min:3'],
+              'roleToRevise' => ['required']
+          ]);
+          if ($validator->fails()) {
+            return Response::json(array(
+                'error' => $validator->getMessageBag()->toArray()
+            ), 400);
+          }
 
           $roleToRevise = $request->roleToRevise; //Роль, которому форма отправляется на доработку
           $process = Process::find($request->processId);
@@ -799,7 +874,6 @@ class ApplicationController extends Controller
         return response()->json(['message' => $e->getMessage()], 500);
       }
     }
-
 
     private function getSeveralStatuses($process, $table) {
         $statuses = [];
@@ -842,7 +916,7 @@ class ApplicationController extends Controller
         return $roleWithIndex;
     }
 
-    private function insertLogs($role_name, $status_n, $table_id, $application_id, $role_id, $order, $answer, $to_role = '', $comment = '') //HERE!!!
+    private function insertLogs($role_name, $status_n, $table_id, $application_id, $role_id, $order, $answer, $to_role = '', $comment = '')
     {
       $role_status = DB::table('role_statuses')->where('role_name', $role_name)->where('status_id', $status_n)->first();
       $logsArray = [];
@@ -861,7 +935,7 @@ class ApplicationController extends Controller
       return false;
     }
 
-    private function insertTemplateFields($fieldValues, $applicationId, $template) //HERE!!!
+     private function insertTemplateFields($fieldValues, $applicationId, $template)
     {
         try {
             DB::beginTransaction();

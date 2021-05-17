@@ -26,7 +26,6 @@
                             <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal">{{$item->item}}
                                 <input type="hidden" id="itemId" value = {{$item->id}}>
                             </li>
-
                             @endforeach
                         </ul>
                     </div>
