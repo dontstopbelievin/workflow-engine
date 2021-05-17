@@ -15,52 +15,54 @@
   @endif
   var lyrView
 
-  require([
-    "esri/config",
-    "esri/Map",
-    "esri/views/MapView",
-    "esri/layers/GraphicsLayer",
-    "esri/widgets/LayerList",
-    "esri/widgets/Fullscreen",
-    "esri/identity/IdentityManager",
-    ], function(esriConfig, Map, MapView, GraphicsLayer, 
-      LayerList, Fullscreen, IdentityManager) {
-
-  esriConfig.portalUrl = "https://gis.esaulet.kz/portal";
-  query_layer = new GraphicsLayer({});
-
-  window.map = new Map({
-      basemap: "streets"
+  document.addEventListener("DOMContentLoaded", () => {
+    arcgis_login()
   });
-
-  window.view = new MapView({
-      container: "viewDiv",
-      map: window.map,
-      center: [71.423, 51.148],
-      ui: {
-          components: []
-      },
-      highlightOptions: {
-	    color: [255,69,0],
-	    fillOpacity: 0.4
-	  },
-      scale: 100000
-  })
-
-  window.map.add(query_layer)
-
-  arcgis_login()
-
-  let fullscreen = new Fullscreen({
-    view: window.view
-  });
-  window.view.ui.add(fullscreen, "top-right");
- });
 
   const load_layer = () => {
     require([
       "esri/layers/FeatureLayer",
-    ], function(FeatureLayer) {
+      "esri/layers/TileLayer",
+      "esri/config",
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/GraphicsLayer",
+      "esri/widgets/Fullscreen",
+    ], function(FeatureLayer, TileLayer, esriConfig, Map, MapView, GraphicsLayer, Fullscreen) {
+
+      esriConfig.portalUrl = "https://gis.esaulet.kz/portal";
+      query_layer = new GraphicsLayer({});
+
+      let layers = [];
+      let t_layer = new TileLayer({
+        url: "https://gis.esaulet.kz/server/rest/services/Hosted/1_20/MapServer"
+      });
+      layers.push(t_layer);
+      for (var i = 1; i <= 9; i++) {
+        let t_layer = new TileLayer({
+          url: "https://gis.esaulet.kz/server/rest/services/Hosted/"+i+"/MapServer"
+        });
+        layers.push(t_layer);
+      }
+
+      window.map = new Map({ layers: layers});
+
+      window.view = new MapView({
+        container: "viewDiv",
+        map: window.map,
+        center: [71.423, 51.148],
+        ui: {
+            components: []
+        },
+        highlightOptions: {
+          color: [255,69,0],
+          fillOpacity: 0.4
+        },
+        scale: 100000
+      })
+
+      window.map.add(query_layer)
+
       let url = layer_url+'/'+layer_id
 
       land_layer = new FeatureLayer({
@@ -69,10 +71,10 @@
       })
       existLayerReplace(land_layer)
 
-    window.view.whenLayerView(land_layer).then(function(layerView) {
-      lyrView = layerView;
-      queryLayer().then(displayResults)
-    });
+      window.view.whenLayerView(land_layer).then(function(layerView) {
+        lyrView = layerView;
+        queryLayer().then(displayResults)
+      });
 
       land_layer.when(() => {
         var template = {
@@ -87,12 +89,17 @@
         show_object.innerHTML = "Показать объект";
         show_object.onclick = function () {
   		    queryLayer().then(displayResults)
-		    };
+  	    };
         view.ui.add(show_object,{
            position: "top-left"
         });
         window.view.ui.components=["zoom"];
       })
+
+      let fullscreen = new Fullscreen({
+        view: window.view
+      });
+      window.view.ui.add(fullscreen, "top-right");
     })
   }
 

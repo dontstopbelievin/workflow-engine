@@ -7,80 +7,59 @@
   var query_layer = null;
   var g_layer = null;
 
-  require([
-    "esri/config",
-    "esri/Map",
-    "esri/views/MapView",
-    "esri/layers/GraphicsLayer",
-    "esri/widgets/LayerList",
-    "esri/layers/GraphicsLayer",
-    "esri/widgets/Fullscreen",
-    "esri/identity/IdentityManager",
-    ], function(esriConfig,Map, MapView, GraphicsLayer, LayerList, GraphicsLayer, 
-      Fullscreen, IdentityManager) {
-
-  esriConfig.portalUrl = "https://gis.esaulet.kz/arcgis";
-  g_layer = new GraphicsLayer({});
-  query_layer = new GraphicsLayer({});
-
-  window.map = new Map({
-      basemap: "streets"
-  });
-
-  window.view = new MapView({
-      container: "viewDiv",
-      map: window.map,
-      center: [71.423, 51.148],
-      ui: {
-          components: []
-      },
-      scale: 100000
-  })
-
-  window.map.add(g_layer)
-  window.map.add(query_layer)
-
-  arcgis_login()
-
-  let fullscreen = new Fullscreen({
-    view: window.view
-  });
-  window.view.ui.add(fullscreen, "top-right");
-
-  // window.view.when(function() {
-  //   var layerList = new LayerList({
-  //     view: window.view
-  //   });
-  //   window.view.ui.add(layerList, "top-right");
-  // });
+  document.addEventListener("DOMContentLoaded", () => {
+    arcgis_login()
   });
 
   const load_layer = () => {
-    // // let url = 'https://services5.arcgis.com/F4L2sw7TTOlSm1OJ/arcgis/rest/services/Слои_по_карте_земельных_отношений/FeatureServer'
-    // for (var i = 0; i < 1; i++){
-    //     add_layer(url+'/'+i)
-    // }
-    // const add_layer = (url) => {
-    //   let layer = new FeatureLayer({
-    //       url: url,
-    //   })
-    //   existLayerReplace(layer)
-    //   layer.when(() => {
-    //     var template = {
-    //         lastEditInfoEnabled: false,
-    //         title: layer.name,
-    //         content: get_fields(layer.fields)
-    //     }
-    //     layer.popupTemplate = template
-    //     existLayerReplace(layer)
-    //   });
-    // }
     require([
       "esri/layers/FeatureLayer",
+      "esri/layers/TileLayer",
       "esri/widgets/Sketch",
       "esri/tasks/GeometryService",
       "esri/tasks/support/AreasAndLengthsParameters",
-    ], function(FeatureLayer, Sketch, GeometryService, AreasAndLengthsParameters) {
+      "esri/config",
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/GraphicsLayer",
+      "esri/widgets/Fullscreen",
+    ], function(FeatureLayer, TileLayer, Sketch, GeometryService, AreasAndLengthsParameters, esriConfig,Map, MapView, GraphicsLayer, Fullscreen) {
+      esriConfig.portalUrl = "https://gis.esaulet.kz/arcgis";
+      g_layer = new GraphicsLayer({});
+      query_layer = new GraphicsLayer({});
+
+      let layers = [];
+      let t_layer = new TileLayer({
+        url: "https://gis.esaulet.kz/server/rest/services/Hosted/1_20/MapServer"
+      });
+      layers.push(t_layer);
+      for (var i = 1; i <= 9; i++) {
+        let t_layer = new TileLayer({
+          url: "https://gis.esaulet.kz/server/rest/services/Hosted/"+i+"/MapServer"
+        });
+        layers.push(t_layer);
+      }
+
+      window.map = new Map({ layers: layers});
+
+      window.view = new MapView({
+          container: "viewDiv",
+          map: window.map,
+          center: [71.423, 51.148],
+          ui: {
+              components: []
+          },
+          scale: 100000
+      })
+
+      window.map.add(g_layer)
+      window.map.add(query_layer)
+
+      let fullscreen = new Fullscreen({
+        view: window.view
+      });
+      window.view.ui.add(fullscreen, "top-right");
+
       let geometryService = new GeometryService({
         url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/Geometry/GeometryServer'});
       let url = 'https://gis.esaulet.kz/server/rest/services/Hosted/Пустой_слой/FeatureServer/0'

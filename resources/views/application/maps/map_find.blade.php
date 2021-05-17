@@ -14,51 +14,52 @@
   var layer_url = "https://gis.esaulet.kz/server/rest/services/Hosted/Административные_объекты_14042021/FeatureServer"
   var layer_id = 9
 
-  require([
-    "esri/config",
-    "esri/Map",
-    "esri/views/MapView",
-    "esri/layers/GraphicsLayer",
-    "esri/widgets/LayerList",
-    "esri/widgets/Fullscreen",
-    "esri/layers/MapImageLayer",
-    "esri/identity/IdentityManager",
-    ], function(esriConfig, Map, MapView, GraphicsLayer, 
-      LayerList, Fullscreen, MapImageLayer, IdentityManager) {
-
-  esriConfig.portalUrl = "https://gis.esaulet.kz/portal";
-  query_layer = new GraphicsLayer({});
-
-  window.map = new Map({
-      basemap: "streets"
+  document.addEventListener("DOMContentLoaded", () => {
+    arcgis_login()
   });
 
-  window.view = new MapView({
-      container: "viewDiv",
-      map: window.map,
-      center: [71.423, 51.148],
-      ui: {
-          components: []
-      },
-      scale: 100000
-  })
-
-  window.map.add(query_layer)
-
-  arcgis_login()
-
-  let fullscreen = new Fullscreen({
-    view: window.view
-  });
-  window.view.ui.add(fullscreen, "top-right");
- });
-
-  const load_layer = () => {
+  const load_layers = () => {
     require([
+      "esri/Map",
+      "esri/views/MapView",
       "esri/layers/FeatureLayer",
+      "esri/layers/TileLayer",
       "esri/widgets/Sketch",
+      "esri/widgets/Fullscreen",
       'esri/widgets/Search',
-    ], function(FeatureLayer, Sketch, Search) {
+      "esri/config",
+      "esri/layers/GraphicsLayer",
+    ], function(Map, MapView, FeatureLayer, TileLayer, Sketch, Fullscreen, Search, esriConfig, GraphicsLayer) {
+
+      esriConfig.portalUrl = "https://gis.esaulet.kz/portal";
+      query_layer = new GraphicsLayer({});
+
+      let layers = [];
+      let t_layer = new TileLayer({
+        url: "https://gis.esaulet.kz/server/rest/services/Hosted/1_20/MapServer"
+      });
+      layers.push(t_layer);
+      for (var i = 1; i <= 9; i++) {
+        let t_layer = new TileLayer({
+          url: "https://gis.esaulet.kz/server/rest/services/Hosted/"+i+"/MapServer"
+        });
+        layers.push(t_layer);
+      }
+
+      window.map = new Map({ layers: layers});
+
+      window.view = new MapView({
+          container: "viewDiv",
+          map: window.map,
+          center: [71.423, 51.148],
+          ui: {
+              components: []
+          },
+          scale: 100000
+      })
+
+      window.map.add(query_layer)
+
       let url = layer_url+'/'+layer_id
 
       land_layer = new FeatureLayer({
@@ -164,20 +165,10 @@
           position: "top-left",
           index: 1
         }])
-      })
-    })
-  }
-
-  const register_token = (data) => {
-    require([
-    "esri/identity/IdentityManager"
-    ], function(IdentityManager) {
-      IdentityManager.registerToken({
-        "userId": data.user,
-        "token": data.token,
-        "server": "https://gis.esaulet.kz/portal/sharing/rest",
-        "expires": data.expires,
-        "ssl": data.ssl,
+        let fullscreen = new Fullscreen({
+          view: window.view
+        });
+        window.view.ui.add(fullscreen, "top-right");
       })
     })
   }
@@ -196,7 +187,7 @@
         }else{
           console.log('success')
           register_token(res)
-          load_layer()
+          load_layers()
         }
       }else{
         console.log('error')
@@ -205,6 +196,20 @@
       }
     }.bind(this)
     xhr.send();
+  }
+
+  const register_token = (data) => {
+    require([
+    "esri/identity/IdentityManager"
+    ], function(IdentityManager) {
+      IdentityManager.registerToken({
+        "userId": data.user,
+        "token": data.token,
+        "server": "https://gis.esaulet.kz/portal/sharing/rest",
+        "expires": data.expires,
+        "ssl": data.ssl,
+      })
+    })
   }
 
   const get_fields = (fields) => {
