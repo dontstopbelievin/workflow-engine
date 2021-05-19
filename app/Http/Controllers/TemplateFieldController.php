@@ -15,6 +15,7 @@ use App\Traits\dbQueries;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Response;
 use App\DictDefaultValues;
 
 class TemplateFieldController extends Controller
@@ -69,7 +70,7 @@ class TemplateFieldController extends Controller
             DB:rollBack();
             return response()->json(['message' => $e->getMessage()], 500);
         }
-    } // HERE!!!
+    }
 
     public function def_value($field_id) {
 
@@ -101,7 +102,7 @@ class TemplateFieldController extends Controller
         }
     } // HERE!!!
 
-    public function delete($id)  // HERE!!!
+    public function delete($id)
     {
         try {
             $item = DictDefaultValues::find($id);

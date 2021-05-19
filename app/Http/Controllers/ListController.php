@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Response;
 use App\Item;
 
 class ListController extends Controller
@@ -13,7 +15,7 @@ class ListController extends Controller
         return view('list.list', compact('items'));
     }
 
-    public function create(Request $request) // HERE!!!
+    public function create(Request $request)
     {
         $item = new Item;
         $item->item = $request->text;
@@ -22,9 +24,8 @@ class ListController extends Controller
     }
 
     public function delete(Request $request) {
-
-        Item::where('id', $request->id)->delete();
-    } // HERE!!!
+      Item::where('id', $request->id)->delete();
+    }
 
     public function update(Request $request) {
 
@@ -32,7 +33,7 @@ class ListController extends Controller
         $item->item = $request->value;
         $item->update();
         return $request->all();
-    } // HERE!!!
+    }
 
     public function search(Request $request) {
         $term = $request->term;
@@ -45,6 +46,5 @@ class ListController extends Controller
             }
         }
         return $searchResult;
-//
     }
 }

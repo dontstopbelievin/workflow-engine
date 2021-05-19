@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Response;
 
 class ProcessController extends Controller
 {
@@ -33,7 +34,7 @@ class ProcessController extends Controller
         return view('process.create');
     }
 
-    public function store(Request $request) // HERE!!!
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
             'name' => 'required',
@@ -68,13 +69,16 @@ class ProcessController extends Controller
         }
     }
 
-    public function update(Request $request, Process $process) // HERE!!!
+    public function update(Request $request, Process $process)
     {
         $records = $request->all();
         $validator = Validator::make( $records,[
             'name' => ['required', 'string', 'max:255'],
             'deadline' => ['required', 'string', 'max:2', 'min:1'],
         ]);
+        if ($validator->fails()) {
+            return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', $validator->errors());
+        }
 
         if ((intval($request->deadline) === 0) || (intval($request->deadline) === Null)){
             return Redirect::action([ProcessController::class, 'edit'], [$process])->with('failure', 'Пожалуйста, введите правильный срок');
@@ -180,7 +184,7 @@ class ProcessController extends Controller
             DB::rollBack();
             return response()->json(['message' => $e->getMessage()], 500);
         }
-    } // HERE!!!
+    }
 
     public function addRole(Request $request, Process $process) {
         try {
@@ -322,7 +326,7 @@ class ProcessController extends Controller
         }
     } // attach???
 
-    public function addOrganization(Request $request, Process $process) // HERE!!!!
+    public function addOrganization(Request $request, Process $process)
     {
         if (!$request->mainOrganization) {
             echo 'Пожалуйста, выберите организацию';
@@ -333,7 +337,7 @@ class ProcessController extends Controller
         return Redirect::action([ProcessController::class, 'edit'], [$process])->with('status', 'Организация успешно изменена.');
     }
 
-    public function update_process_role(Request $request, Process $process) // HERE!!!
+    public function update_process_role(Request $request, Process $process)
     {
         try {
             $validator = Validator::make($request->all(),[
@@ -352,7 +356,7 @@ class ProcessController extends Controller
         }
     }
 
-    public function delete_process_role(Request $request, Process $process) // HERE!!!
+    public function delete_process_role(Request $request, Process $process)
     {
         try {
             $validator = Validator::make($request->all(),[
@@ -370,7 +374,7 @@ class ProcessController extends Controller
         }
     }
 
-    public function delete(Process $process) // HERE!!!
+    public function delete(Process $process)
     {
         if(DB::table($process->table_name)->count() > 0){
             return  Redirect::to('process')->with('failure', 'Не удалось удалить процесс, удалите данные.');
@@ -383,7 +387,7 @@ class ProcessController extends Controller
         return Redirect::to('process')->with('status', 'Процесс успешно удален');
     }
 
-    public function map(Request $request, Process $process) // HERE!!!
+    public function map(Request $request, Process $process)
     {
         $validator = Validator::make($request->all(),[
             'need_map' => 'required|integer',

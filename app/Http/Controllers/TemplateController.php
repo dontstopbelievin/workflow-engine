@@ -14,6 +14,7 @@ use App\Traits\dbQueries;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Response;
 
 class TemplateController extends Controller
 {
@@ -76,7 +77,7 @@ class TemplateController extends Controller
             DB::rollBack();
             return response()->json(['message' => $e->getMessage()], 500);
         }
-    } // HERE!!!
+    }
 
     public function edit(Template $template) {
 
@@ -84,6 +85,12 @@ class TemplateController extends Controller
     }
 
     public function update($id, Request $request) {
+        $validator = Validator::make($request->all(),[
+            'name' => ['required', 'min:3'],
+        ]);
+        if ($validator->fails()) {
+            return Redirect::back()->with('failure', $validator->errors());
+        }
         $isTouch = isset($request->file_input);
         if($isTouch){
           $docPath = request()->file_input->store('templates', 'public');
@@ -93,11 +100,14 @@ class TemplateController extends Controller
         }
 
         return 'Шаблон успешно обновлен';
-    } // HERE!!!
+    }
 
     public function delete($id) {
         try {
             DB::beginTransaction();
+            if(!isset($id)){
+              return Redirect::back()->with('failure', 'Укажите id шаблона!');
+            }
             $template = Template::where('id', $id)->first();
             if(!Schema::hasTable($template->table_name)){
                 return Redirect::back()->with('failure', 'Таблица шаблона не найдена.');
@@ -115,5 +125,5 @@ class TemplateController extends Controller
             DB::rollBack();
             return Redirect::back()->with('errors', $e->getMessage());
         }
-    } // HERE!!!
+    }
 }

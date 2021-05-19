@@ -18,6 +18,9 @@
                 <h4 class="page-title text-center">Справочник</h4>
               </div>
             </div>
+            <div class="alert alert-danger" id="error_box" style="display:none;">
+              <!-- errors HERE -->
+            </div>
           </div>
           <div class="card-body">
             <table class="table table-hover" id="items">
@@ -173,25 +176,58 @@
                   alert('Выберите тип сохранения');
                   return;
               }
-              $.post("{{url('admin/dictionary/create')}}", {'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, '_token':$('input[name=_token]').val()}, function(data){
-                  console.log(data);
-                  $('#items').load(location.href + ' #items');
+              $.post("{{url('admin/dictionary/create')}}", {'fieldName':text,'labelName': labelName,'inputItem': inputItem, 'insertItem': insertItem, 'processId': processId, 'selectedOptions':selectedOptions, '_token':$('input[name=_token]').val()})
+              .done(function(data){
+                $('#error_box').hide('400');
+                $('#items').load(location.href + ' #items');
+              })
+              .fail(function(xhr, textStatus, errorThrown){
+                var response = JSON.parse(xhr.responseText);
+                var errorString = '';
+                $.each( response.error, function( key, value) {
+                    errorString += '<li>' + value + '</li>';
+                });
+                console.log(errorString);
+                document.getElementById("error_box").innerHTML = errorString;
+                $('#error_box').show('400');
               });
           });
 
           $('#delete').click(function(event) {
               var id = $('#id').val();
-              $.post('admin/list/delete', {'id':id, '_token':$('input[name=_token]').val()}, function(data){
-                  console.log(data);
-                  $('#items').load(location.href + ' #items');
+              $.post('admin/list/delete', {'id':id, '_token':$('input[name=_token]').val()})
+              .done(function(data){
+                $('#error_box').hide('400');
+                $('#items').load(location.href + ' #items');
+              })
+              .fail(function(xhr, textStatus, errorThrown){
+                var response = JSON.parse(xhr.responseText);
+                var errorString = '';
+                $.each( response.error, function( key, value) {
+                    errorString += '<li>' + value + '</li>';
+                });
+                console.log(errorString);
+                document.getElementById("error_box").innerHTML = errorString;
+                $('#error_box').show('400');
               });
           });
           $('#saveChanges').click(function(event) {
               var id = $('#id').val();
               var value = $('#addItem').val();
-              $.post('admin/list/update ', {'id':id, 'value':value,'_token':$('input[name=_token]').val()}, function(data){
-                  console.log(data);
-                  $('#items').load(location.href + ' #items');
+              $.post('admin/list/update ', {'id':id, 'value':value,'_token':$('input[name=_token]').val()})
+              .done(function(data){
+                $('#error_box').hide('400');
+                $('#items').load(location.href + ' #items');
+              })
+              .fail(function(xhr, textStatus, errorThrown){
+                var response = JSON.parse(xhr.responseText);
+                var errorString = 'Error: ';
+                $.each( response.error, function( key, value) {
+                    errorString += '<li>' + value + '</li>';
+                });
+                console.log(errorString);
+                document.getElementById("error_box").innerHTML = errorString;
+                $('#error_box').show('400');
               });
           });
 
