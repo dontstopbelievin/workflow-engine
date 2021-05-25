@@ -118,10 +118,11 @@
 
             $.post('/agreement_accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
                 $('#acceptModal').modal('hide');
-                if(data.message)
-                {location.reload();}
-                else{
-                  alert('Ошибка');  
+                console.log(data);
+                if(data.message){
+                  location.reload();
+                }else{
+                  alert('Ошибка');
                 }
             });
         });
@@ -130,10 +131,11 @@
 
             $.post('/agreement_accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
                 $('#acceptModalId').modal('hide');
-                if(data.message)
-                {location.reload();}
-                else{
-                  alert('Ошибка');  
+                console.log(data);
+                if(data.message){
+                  location.reload();
+                }else{
+                  alert('Ошибка');
                 }
             });
         });

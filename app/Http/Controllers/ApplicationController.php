@@ -276,11 +276,9 @@ class ApplicationController extends Controller
             'accepted' => ['required'],
         ]);
         if ($validator->fails()) {
-          return Response::json(array(
-              'error' => $validator->getMessageBag()->toArray()
-          ), 400);
+          return response()->json(['message' => false], 400);
         }
-        if ($request->accepted) {
+        if ($request->accepted == 'true') {
             $user = Auth::user();
             $user->has_not_accepted_agreement = false;
             $user->update();
@@ -290,19 +288,17 @@ class ApplicationController extends Controller
     }
 
     public function approveReject(Request $request){
+      $validator = Validator::make($request->all(),[
+          'application_id' => ['required'],
+          'process_id' => ['required'],
+      ]);
+      if ($validator->fails()) {
+        return Response::json(array(
+            'error' => $validator->getMessageBag()->toArray()
+        ), 400);
+      }
       try {
           DB::beginTransaction();
-
-          $validator = Validator::make($request->all(),[
-              'application_id' => ['required'],
-              'process_id' => ['required'],
-          ]);
-          if ($validator->fails()) {
-            return Response::json(array(
-                'error' => $validator->getMessageBag()->toArray()
-            ), 400);
-          }
-
           $process = Process::find($request->process_id);
           $tableName = $process->table_name;
           $application = DB::table($tableName)->where('id', $request->application_id)->first();
@@ -337,20 +333,18 @@ class ApplicationController extends Controller
     }
 
     public function approve(Request $request) {
+      $validator = Validator::make($request->all(),[
+          'application_id' => ['required'],
+          'process_id' => ['required'],
+          'comments' => ['required', 'min:3'],
+      ]);
+      if ($validator->fails()) {
+        return Response::json(array(
+            'error' => $validator->getMessageBag()->toArray()
+        ), 400);
+      }
         try {
             DB::beginTransaction();
-
-            $validator = Validator::make($request->all(),[
-                'application_id' => ['required'],
-                'process_id' => ['required'],
-                'comments' => ['required', 'min:3'],
-            ]);
-            if ($validator->fails()) {
-              return Response::json(array(
-                  'error' => $validator->getMessageBag()->toArray()
-              ), 400);
-            }
-
             $fieldValues = $request->all();
             if ($fieldValues) {
                 foreach($fieldValues as $key=>$val) {
@@ -698,21 +692,19 @@ class ApplicationController extends Controller
 
     public function toCitizen(Request $request)
     {
+      $validator = Validator::make($request->all(),[
+          'application_id' => ['required'],
+          'process_id' => ['required'],
+          'comments' => ['required', 'min:3'],
+          'answer' => ['required']
+      ]);
+      if ($validator->fails()) {
+        return Response::json(array(
+            'error' => $validator->getMessageBag()->toArray()
+        ), 400);
+      }
       try {
           DB::beginTransaction();
-
-          $validator = Validator::make($request->all(),[
-              'application_id' => ['required'],
-              'process_id' => ['required'],
-              'comments' => ['required', 'min:3'],
-              'answer' => ['required']
-          ]);
-          if ($validator->fails()) {
-            return Response::json(array(
-                'error' => $validator->getMessageBag()->toArray()
-            ), 400);
-          }
-
           $role = Auth::user()->role;
           $applicationId = $request->application_id;
           $process = Process::find($request->process_id);
@@ -754,20 +746,18 @@ class ApplicationController extends Controller
 
     public function reject(Request $request)
     {
+      $validator = Validator::make($request->all(),[
+          'application_id' => ['required'],
+          'process_id' => ['required'],
+          'rejectReason' => ['required', 'min:3'],
+      ]);
+      if ($validator->fails()) {
+        return Response::json(array(
+            'error' => $validator->getMessageBag()->toArray()
+        ), 400);
+      }
         try {
             DB::beginTransaction();
-
-            $validator = Validator::make($request->all(),[
-                'application_id' => ['required'],
-                'process_id' => ['required'],
-                'rejectReason' => ['required', 'min:3'],
-            ]);
-            if ($validator->fails()) {
-              return Response::json(array(
-                  'error' => $validator->getMessageBag()->toArray()
-              ), 400);
-            }
-
             $process = Process::find($request->process_id);
             $tableName = $process->table_name;
             $application = DB::table($tableName)->where('id', $request->application_id)->first();
@@ -824,21 +814,19 @@ class ApplicationController extends Controller
 
     public function revision(Request $request)
     {
+      $validator = Validator::make($request->all(),[
+          'application_id' => ['required'],
+          'processId' => ['required'],
+          'revisionReason' => ['required', 'min:3'],
+          'roleToRevise' => ['required']
+      ]);
+      if ($validator->fails()) {
+        return Response::json(array(
+            'error' => $validator->getMessageBag()->toArray()
+        ), 400);
+      }
       try {
           DB::beginTransaction();
-
-          $validator = Validator::make($request->all(),[
-              'application_id' => ['required'],
-              'processId' => ['required'],
-              'revisionReason' => ['required', 'min:3'],
-              'roleToRevise' => ['required']
-          ]);
-          if ($validator->fails()) {
-            return Response::json(array(
-                'error' => $validator->getMessageBag()->toArray()
-            ), 400);
-          }
-
           $roleToRevise = $request->roleToRevise; //Роль, которому форма отправляется на доработку
           $process = Process::find($request->processId);
           $tableName = $process->table_name;
