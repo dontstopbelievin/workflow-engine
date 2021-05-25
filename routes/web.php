@@ -200,6 +200,7 @@ Route::group(['prefix' => '/admin', 'middleware' => ['admin', 'auth']], function
 
     Route::prefix('user')->group(function () {
         Route::get('/new_user', 'Admin\DashboardController@new_user');
+        Route::post('/add', 'Admin\DashboardController@add_user');
     });
 
     Route::prefix('user_role')->group(function () {
