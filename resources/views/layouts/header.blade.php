@@ -73,7 +73,7 @@
                 {{-- <li class="nav-item">
                     <b>ОТЧЕТЫ</b>
                 </li> --}}
-                @if (Auth::check() && Auth::user()->usertype === 'admin')
+                @if (Auth::check() && Auth::user()->role->name === 'Admin')
                     <li onclick="window.location='{{ url('admin/process') }}'"
                         class="nav-item {{ request()->segment(2) == 'process' ? 'active' : '' }}">
                         <b>АДМИНИСТРИРОВАНИЕ</b>

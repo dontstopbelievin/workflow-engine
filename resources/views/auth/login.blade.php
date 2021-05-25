@@ -42,7 +42,7 @@
                                 <div class="g-recaptcha mt-4 text-sm" data-sitekey="6LcOIv4ZAAAAAOH6sKrJvbkej4SoRlrOI6dw0yeU" data-size="invisible"></div>
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <p>
-                                        <a href="auth/reset-password/">Забыли пароль?</a>
+                                        <a href="{{ route('password.request') }}">Забыли пароль?</a>
                                     </p>
                                 </div>
                                 <div class="text-center pb-2">

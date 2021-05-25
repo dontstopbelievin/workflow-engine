@@ -12,7 +12,7 @@
   				<div class="card-header">
             <div class="row">
               <div class="col-md-3">
-                <button type="button" id="addNew" class="btn btn-info">Добавить пользователя</button>
+                <a href="{{ url('admin/user/new_user') }}" class="btn btn-info">Добавить пользователя</a>
               </div>
               <div class="col-md-6">
                 <h4 class="page-title text-center">Пользователи</h4>

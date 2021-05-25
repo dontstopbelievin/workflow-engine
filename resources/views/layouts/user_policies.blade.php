@@ -1,4 +1,4 @@
-@if(Auth::user()->has_not_accepted_agreement == 1 && Auth::user()->usertype !== 'admin')
+@if(Auth::user()->has_not_accepted_agreement == 1 && Auth::user()->role->name !== 'Admin')
     <div id="acceptModalId" class="modal" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -19,7 +19,7 @@
         </div>
     </div>
 @endif
-@if (Auth::user()->has_not_accepted_agreement && Auth::user()->usertype == 'admin')
+@if (Auth::user()->has_not_accepted_agreement && Auth::user()->role->name == 'Admin')
     <div id="acceptModal" class="modal" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -74,7 +74,7 @@
         </div>
     </div>
 @endif
-@if (Auth::user()->has_not_accepted_agreement === 1 && Auth::user()->usertype !== 'admin')
+@if (Auth::user()->has_not_accepted_agreement === 1 && Auth::user()->role->name !== 'Admin')
     <div id="acceptModalId" class="modal" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
