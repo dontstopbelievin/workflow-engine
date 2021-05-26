@@ -21,7 +21,7 @@
 
                         <p>ФИО: {{$user->sur_name}} {{$user->first_name}} {{$user->middle_name}}</p>
                         <p>Роль: {{$user->role->name}}</p>
-                        <p>Номер Телефона: {{$user->phone}}</p>
+                        <p>Номер Телефона: {{$user->telephone}}</p>
                         <p>Почтовый адрес: {{$user->email}}</p>
 
                         <a class="btn btn-info" href="{{ url('user/edit', ['user' => $user]) }}">Редактировать данные</a>

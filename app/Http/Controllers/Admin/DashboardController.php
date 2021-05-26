@@ -23,6 +23,47 @@ class DashboardController extends Controller
         return view('admin.register')->with('users', $users);
     }
 
+    public function new_user(){
+      $roles = Role::all();
+      return view('admin.new_user')->with('roles', $roles);
+    }
+
+    public function add_user(Request $request){
+      $validator = Validator::make( $request->all(),[
+          'sur_name' => ['required', 'string', 'max:255'],
+          'first_name' => ['required', 'string', 'max:255'],
+          'middle_name' => ['nullable', 'string', 'max:255'],
+          'role_id' => ['required', 'integer'],
+          'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+          'iin' => 'required_without_all:bin',
+          'bin' => 'required_without_all:iin',
+          'telephone' => 'nullable|string',
+          'password' => 'required|regex:/^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!$@#%]).*$/|min:8|confirmed',
+          'password_confirmation' => 'required',
+      ]);
+      if ($validator->fails()) {
+          return Redirect::back()->with('error', $validator->errors()->all());
+      }
+      
+      $user = new User();
+      $user->sur_name = $request->sur_name;
+      $user->first_name = $request->first_name;
+      $user->middle_name = $request->middle_name;
+      $user->role_id = $request->role_id;
+      $user->email = $request->email;
+      if($request->iin){
+        $user->iin = $request->iin;
+      }
+      if($request->bin){
+        $user->bin = $request->bin;
+      }
+      $user->telephone = $request->telephone;
+      $user->password = \Hash::make($request->password);
+      $user->save();
+
+      return Redirect::to('admin/user_role/register')->with('status','Пользователь добавлен.');
+    }
+
     public function registeredit(User $user)
     {
         if(isset($user->role)) {
@@ -40,9 +81,15 @@ class DashboardController extends Controller
           'first_name' => ['required', 'string', 'max:255'],
           'middle_name' => ['nullable', 'string', 'max:255'],
           'role_id' => ['required', 'integer'],
+          'email' => ['required', 'string', 'email', 'max:255'],
+          'iin' => 'required_without_all:bin',
+          'bin' => 'required_without_all:iin',
+          'telephone' => 'nullable|string',
+          'password' => 'nullable|regex:/^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!$@#%]).*$/|min:8|confirmed',
+          'password_confirmation' => 'nullable',
       ]);
       if ($validator->fails()) {
-          return Redirect::back()->with('status', $validator->errors());
+          return Redirect::back()->with('error', $validator->errors()->all());
       }
       $roleName = '';
       if ($user->role) {
@@ -53,6 +100,15 @@ class DashboardController extends Controller
       $user->first_name = $request->first_name;
       $user->middle_name = $request->middle_name;
       $user->role_id = $request->role_id;
+      $user->email = $request->email;
+      if($request->iin){
+        $user->iin = $request->iin;
+      }
+      if($request->bin){
+        $user->bin = $request->bin;
+      }
+      $user->telephone = $request->telephone;
+      $user->password = \Hash::make($request->password);
       $user->update();
 
       $admin = Auth::user()->sur_name.' '.Auth::user()->first_name;

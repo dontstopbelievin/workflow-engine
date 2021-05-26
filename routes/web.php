@@ -198,6 +198,11 @@ Route::group(['prefix' => '/admin', 'middleware' => ['admin', 'auth']], function
         Route::get('/search', 'CityManagementController@search');
     });
 
+    Route::prefix('user')->group(function () {
+        Route::get('/new_user', 'Admin\DashboardController@new_user');
+        Route::post('/add', 'Admin\DashboardController@add_user');
+    });
+
     Route::prefix('user_role')->group(function () {
         Route::get('/dashboard', 'Admin\DashboardController@index');
         Route::get('/register', 'Admin\DashboardController@registered');

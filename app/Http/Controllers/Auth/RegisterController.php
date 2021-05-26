@@ -57,8 +57,8 @@ class RegisterController extends Controller
             'iin' => 'required_without_all:bin',
             'bin' => 'required_without_all:iin',
             'telephone' => 'nullable|string',
-            // 'password' => 'required|password|regex:/^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!$#%]).*$/|min:8|confirmed',
-            'password' => 'required|confirmed',
+            'password' => 'required|regex:/^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!$@#%]).*$/|min:8|confirmed',
+            // 'password' => 'required|confirmed',
             'password_confirmation' => 'required',
             'policy' => 'required|integer',
         ]);

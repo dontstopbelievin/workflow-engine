@@ -232,6 +232,10 @@ class RoleSeeder extends Seeder
                 'city_management_id' => 1,
                 'name' => 'Отдел земельной комиссии', // 35
             ],
+            [
+                'city_management_id' => 1,
+                'name' => 'Admin', // 36
+            ],
         ]);
     }
 }
