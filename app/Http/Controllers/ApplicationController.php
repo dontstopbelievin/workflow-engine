@@ -377,7 +377,7 @@ class ApplicationController extends Controller
             $tableName = $process->table_name;
             $table = CreatedTable::where('name', $tableName)->first();
             $application = DB::table($tableName)->where('id', $request->application_id)->first();
-            $template = Template::where('role_id', Auth::user()->role_id)->where('order', $application->current_order)->first();
+            $template = Template::where('role_id', Auth::user()->role_id)->where('order', $application->current_order)->where('process_id', $process->id)->first();
             $comment = $request->comments;
 
             $pathToView = 'PDFtemplates.empty';//to skip template doc creation if non template exist
@@ -405,6 +405,8 @@ class ApplicationController extends Controller
                 }
               }
 
+              $QR_text = $_SERVER['HTTP_HOST'] . "/verification/" . $process->id . "/" . $application->id . "/" . $template->id;
+
               $fileName = $this->generateRandomString();
               $applicant = User::where('id', $application->user_id)->first();
               $updatedFields["date"] = date('d-m-Y');
@@ -416,7 +418,7 @@ class ApplicationController extends Controller
               $userName = Auth::user()->sur_name.' '.Auth::user()->first_name.' '.Auth::user()->middle_name;
               $roleName = Auth::user()->role->name;
               $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
-              $content = view($pathToView, compact('updatedFields', 'userName', 'roleName'))->render();
+              $content = view($pathToView, compact('updatedFields', 'userName', 'roleName', 'QR_text'))->render();
               $mpdf = new Mpdf();
               $mpdf->WriteHTML($content);
               $mpdf->Output(storage_path(). $storagePathToPDF, \Mpdf\Output\Destination::FILE);
