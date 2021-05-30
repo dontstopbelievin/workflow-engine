@@ -47,7 +47,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('123123Aa@'),
                 'created_at' => \Carbon\Carbon::now(),
                 'updated_at' => \Carbon\Carbon::now(),
-                'role_id' => 1,
+                'role_id' => 44,
             ],
             [
                 'first_name' => 'Нуржан',

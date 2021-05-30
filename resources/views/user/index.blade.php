@@ -19,16 +19,16 @@
                     @endif
                     <div class="card-body" id="items">
 
-                        <p>ФИО: {{$user->sur_name}} {{$user->first_name}} {{$user->middle_name}}</p>
-                        <p>Роль: {{$user->role->name}}</p>
-                        <p>Номер Телефона: {{$user->telephone}}</p>
-                        <p>Почтовый адрес: {{$user->email}}</p>
+                        <p><b>ФИО</b>: {{$user->sur_name}} {{$user->first_name}} {{$user->middle_name}}</p>
+                        <p><b>Роль</b>: {{$user->role->name}}</p>
+                        <p><b>Номер Телефона</b>: {{$user->telephone}}</p>
+                        <p><b>Почтовый адрес</b>: {{$user->email}}</p>
 
-                        <a class="btn btn-info" href="{{ url('user/edit', ['user' => $user]) }}">Редактировать данные</a>
+                        <a class="btn btn-primary" href="{{ url('user/edit', ['user' => $user]) }}">Редактировать данные</a>
                         <br>
                         <br>
                         @if (Route::has('password.request'))
-                            <a class="btn btn-default"  class="flex flex-wrap text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline" href="{{ route('password.request') }}">
+                            <a class="btn btn-primary"  class="flex flex-wrap text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline" href="{{ route('password.request') }}">
                                 {{ __('Сменить пароль') }}
                             </a>
                         @endif

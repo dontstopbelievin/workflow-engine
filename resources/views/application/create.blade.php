@@ -142,6 +142,72 @@
 @section('scripts')
 <script type="text/javascript">
 
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        let radio_btns = document.getElementsByName("zakaz4ik_fiz_ur");
+        for (var i = 0; i < radio_btns.length; i++) {
+            radio_btns[i].addEventListener('click', check_zayavitel_type);
+        }
+        let radio_btns2 = document.getElementsByName("zakaz4ik_drugoi");
+        for (var i = 0; i < radio_btns2.length; i++) {
+            radio_btns2[i].addEventListener('click', check_zakaz4ik);
+        }
+    });
+
+    const check_zakaz4ik = (e) => {
+        if(e.target.value == 'Заявитель является Заказчиком'){
+            if(document.getElementById("name_organization")){
+                document.getElementById("name_organization").disabled = true
+            }
+            if(document.getElementById("name_ur_zakaz4ika")){
+                document.getElementById("name_ur_zakaz4ika").disabled = true
+            }
+            if(document.getElementById("bin_zakaz4ika")){
+                document.getElementById("bin_zakaz4ika").disabled = true
+            }
+            if(document.getElementById("iin_zakaz4ika")){
+                document.getElementById("iin_zakaz4ika").disabled = false
+            }
+            if(document.getElementById("name_fiz_zakaz4ika")){
+                document.getElementById("name_fiz_zakaz4ika").disabled = false
+            }
+        }else{
+            if(document.getElementById("name_organization")){
+                document.getElementById("name_organization").disabled = false
+            }
+            if(document.getElementById("name_ur_zakaz4ika")){
+                document.getElementById("name_ur_zakaz4ika").disabled = false
+            }
+            if(document.getElementById("bin_zakaz4ika")){
+                document.getElementById("bin_zakaz4ika").disabled = false
+            }
+            if(document.getElementById("iin_zakaz4ika")){
+                document.getElementById("iin_zakaz4ika").disabled = true
+            }
+            if(document.getElementById("name_fiz_zakaz4ika")){
+                document.getElementById("name_fiz_zakaz4ika").disabled = true
+            }
+        }
+    }
+
+    const check_zayavitel_type = (e) => {
+        if(e.target.value == 'Заказчик физическое лицо'){
+            if(document.getElementById("bin")){
+                document.getElementById("bin").disabled = true
+            }
+            if(document.getElementById("iin")){
+                document.getElementById("iin").disabled = false
+            }
+        }else{
+            if(document.getElementById("bin")){
+                document.getElementById("bin").disabled = false
+            }
+            if(document.getElementById("iin")){
+                document.getElementById("iin").disabled = true
+            }
+        }
+    }
+
     const submit_form = () => {
         add_land()
     }

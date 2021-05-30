@@ -43,21 +43,36 @@ class UserController extends Controller
 
     public function update(Request $request, User $user) // HERE!!!
     {
+        if($user->email == $request->email){
+            $request->offsetUnset('email');
+        }
         $validator = Validator::make( $request->all(),[
             'sur_name' => ['required', 'string', 'max:255'],
             'first_name' => ['required', 'string', 'max:255'],
             'middle_name' => ['nullable', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:10', 'min:10'],
+            'phone' => ['nullable', 'string', 'max:10', 'min:10'],
+            'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users'],
+            'iin' => 'required_without_all:bin',
+            'bin' => 'required_without_all:iin',
         ]);
         if ($validator->fails()) {
-            return Redirect::back()->with('status', 'Введите правильные данные');
+            return Redirect::back()->with('error', $validator->errors()->all());
         }
         $user->sur_name = $request->sur_name;
         $user->first_name = $request->first_name;
         $user->middle_name = $request->middle_name;
-        $user->phone = $request->phone;
+        $user->telephone = $request->phone;
+        if($request->email){
+            $user->email = $request->email;
+        }
+        if($request->iin){
+            $user->iin = $request->iin;
+        }
+        if($request->bin){
+            $user->bin = $request->bin;
+        }
         $user->update();
-        return Redirect::to('user/personal_area')->with('status', 'Данные успешно обновлены');
+        return Redirect::back()->with('status', 'Данные успешно обновлены');
     }
 
     public function filter(Request $request){
