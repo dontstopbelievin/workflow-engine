@@ -276,11 +276,9 @@ class ApplicationController extends Controller
             'accepted' => ['required'],
         ]);
         if ($validator->fails()) {
-          return Response::json(array(
-              'error' => $validator->getMessageBag()->toArray()
-          ), 400);
+          return response()->json(['message' => false], 400);
         }
-        if ($request->accepted) {
+        if ($request->accepted == 'true') {
             $user = Auth::user();
             $user->has_not_accepted_agreement = false;
             $user->update();
@@ -290,19 +288,17 @@ class ApplicationController extends Controller
     }
 
     public function approveReject(Request $request){
+      $validator = Validator::make($request->all(),[
+          'application_id' => ['required'],
+          'process_id' => ['required'],
+      ]);
+      if ($validator->fails()) {
+        return Response::json(array(
+            'error' => $validator->getMessageBag()->toArray()
+        ), 400);
+      }
       try {
           DB::beginTransaction();
-
-          $validator = Validator::make($request->all(),[
-              'application_id' => ['required'],
-              'process_id' => ['required'],
-          ]);
-          if ($validator->fails()) {
-            return Response::json(array(
-                'error' => $validator->getMessageBag()->toArray()
-            ), 400);
-          }
-
           $process = Process::find($request->process_id);
           $tableName = $process->table_name;
           $application = DB::table($tableName)->where('id', $request->application_id)->first();
@@ -337,20 +333,18 @@ class ApplicationController extends Controller
     }
 
     public function approve(Request $request) {
+      $validator = Validator::make($request->all(),[
+          'application_id' => ['required'],
+          'process_id' => ['required'],
+          'comments' => ['required', 'min:3'],
+      ]);
+      if ($validator->fails()) {
+        return Response::json(array(
+            'error' => $validator->getMessageBag()->toArray()
+        ), 400);
+      }
         try {
             DB::beginTransaction();
-
-            $validator = Validator::make($request->all(),[
-                'application_id' => ['required'],
-                'process_id' => ['required'],
-                'comments' => ['required', 'min:3'],
-            ]);
-            if ($validator->fails()) {
-              return Response::json(array(
-                  'error' => $validator->getMessageBag()->toArray()
-              ), 400);
-            }
-
             $fieldValues = $request->all();
             if ($fieldValues) {
                 foreach($fieldValues as $key=>$val) {
@@ -383,7 +377,7 @@ class ApplicationController extends Controller
             $tableName = $process->table_name;
             $table = CreatedTable::where('name', $tableName)->first();
             $application = DB::table($tableName)->where('id', $request->application_id)->first();
-            $template = Template::where('role_id', Auth::user()->role_id)->where('order', $application->current_order)->first();
+            $template = Template::where('role_id', Auth::user()->role_id)->where('order', $application->current_order)->where('process_id', $process->id)->first();
             $comment = $request->comments;
 
             $pathToView = 'PDFtemplates.empty';//to skip template doc creation if non template exist
@@ -411,6 +405,8 @@ class ApplicationController extends Controller
                 }
               }
 
+              $QR_text = $_SERVER['HTTP_HOST'] . "/verification/" . $process->id . "/" . $application->id . "/" . $template->id;
+
               $fileName = $this->generateRandomString();
               $applicant = User::where('id', $application->user_id)->first();
               $updatedFields["date"] = date('d-m-Y');
@@ -422,7 +418,7 @@ class ApplicationController extends Controller
               $userName = Auth::user()->sur_name.' '.Auth::user()->first_name.' '.Auth::user()->middle_name;
               $roleName = Auth::user()->role->name;
               $storagePathToPDF ='/app/public/final_docs/' . $fileName . '.pdf';
-              $content = view($pathToView, compact('updatedFields', 'userName', 'roleName'))->render();
+              $content = view($pathToView, compact('updatedFields', 'userName', 'roleName', 'QR_text'))->render();
               $mpdf = new Mpdf();
               $mpdf->WriteHTML($content);
               $mpdf->Output(storage_path(). $storagePathToPDF, \Mpdf\Output\Destination::FILE);
@@ -698,21 +694,19 @@ class ApplicationController extends Controller
 
     public function toCitizen(Request $request)
     {
+      $validator = Validator::make($request->all(),[
+          'application_id' => ['required'],
+          'process_id' => ['required'],
+          'comments' => ['required', 'min:3'],
+          'answer' => ['required']
+      ]);
+      if ($validator->fails()) {
+        return Response::json(array(
+            'error' => $validator->getMessageBag()->toArray()
+        ), 400);
+      }
       try {
           DB::beginTransaction();
-
-          $validator = Validator::make($request->all(),[
-              'application_id' => ['required'],
-              'process_id' => ['required'],
-              'comments' => ['required', 'min:3'],
-              'answer' => ['required']
-          ]);
-          if ($validator->fails()) {
-            return Response::json(array(
-                'error' => $validator->getMessageBag()->toArray()
-            ), 400);
-          }
-
           $role = Auth::user()->role;
           $applicationId = $request->application_id;
           $process = Process::find($request->process_id);
@@ -754,20 +748,18 @@ class ApplicationController extends Controller
 
     public function reject(Request $request)
     {
+      $validator = Validator::make($request->all(),[
+          'application_id' => ['required'],
+          'process_id' => ['required'],
+          'rejectReason' => ['required', 'min:3'],
+      ]);
+      if ($validator->fails()) {
+        return Response::json(array(
+            'error' => $validator->getMessageBag()->toArray()
+        ), 400);
+      }
         try {
             DB::beginTransaction();
-
-            $validator = Validator::make($request->all(),[
-                'application_id' => ['required'],
-                'process_id' => ['required'],
-                'rejectReason' => ['required', 'min:3'],
-            ]);
-            if ($validator->fails()) {
-              return Response::json(array(
-                  'error' => $validator->getMessageBag()->toArray()
-              ), 400);
-            }
-
             $process = Process::find($request->process_id);
             $tableName = $process->table_name;
             $application = DB::table($tableName)->where('id', $request->application_id)->first();
@@ -824,21 +816,19 @@ class ApplicationController extends Controller
 
     public function revision(Request $request)
     {
+      $validator = Validator::make($request->all(),[
+          'application_id' => ['required'],
+          'processId' => ['required'],
+          'revisionReason' => ['required', 'min:3'],
+          'roleToRevise' => ['required']
+      ]);
+      if ($validator->fails()) {
+        return Response::json(array(
+            'error' => $validator->getMessageBag()->toArray()
+        ), 400);
+      }
       try {
           DB::beginTransaction();
-
-          $validator = Validator::make($request->all(),[
-              'application_id' => ['required'],
-              'processId' => ['required'],
-              'revisionReason' => ['required', 'min:3'],
-              'roleToRevise' => ['required']
-          ]);
-          if ($validator->fails()) {
-            return Response::json(array(
-                'error' => $validator->getMessageBag()->toArray()
-            ), 400);
-          }
-
           $roleToRevise = $request->roleToRevise; //Роль, которому форма отправляется на доработку
           $process = Process::find($request->processId);
           $tableName = $process->table_name;

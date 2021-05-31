@@ -147,9 +147,17 @@ function signXmlBack(result) {
                 xhr.setRequestHeader("Authorization", "Bearer " + $('input[name=_token]').val() );
                 xhr.onload = function () {
                     if(xhr.status == 200){
+                        $('#error_box').hide('400');
                         location.reload();
                     }else{
-                        console.log(xhr.responseText);
+                      console.log(xhr);
+                      var errors = JSON.parse(xhr.responseText);
+                      var errorString = '';
+                      $.each(errors.error, function( key, value) {
+                          errorString += '<li>' + value + '</li>';
+                      });
+                      document.getElementById("error_box").innerHTML = errorString;
+                      $('#error_box').show('400');
                     }
                 }.bind(this)
                 xhr.send(formData);

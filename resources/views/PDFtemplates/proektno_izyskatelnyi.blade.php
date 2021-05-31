@@ -100,9 +100,7 @@
                         <p style="display: none">{{ $role3 = utf8_encode('Сагнаев Арман') }}</p>
                         <p style="display: none">{{ $role4 = utf8_encode('Аяпова Альбина') }}</p>
                         <div style="padding: 15px; align-content: center">
-                            <barcode code="{{ implode(' ', [$role3]) }}" type="QR" class="barcode" size="1" error="M" />
-                            <barcode code="{{ implode(' ', [$role3]) }}" type="QR" class="barcode" size="1" error="M" />
-                            <barcode code="{{ implode(' ', [$role3]) }}" type="QR" class="barcode" size="1" error="M" />
+                            <barcode code="{{ implode(' ', [$QR_text]) }}" type="QR" class="barcode" size="1" error="M" />
                         </div>
                     </div>
                 </div>

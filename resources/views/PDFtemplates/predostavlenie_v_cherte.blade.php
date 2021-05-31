@@ -19,7 +19,7 @@
 
 <tr class="header_bottom">
     <td>
-        № «{{ {{ $updatedFields['id'] }} }}»<br />
+        № «{{ $updatedFields['id'] }}»<br />
     </td>
     <td></td>
     <td style="text-align: right;">
@@ -70,4 +70,4 @@
     </b>
 </p>
 
-<barcode code="{{ implode(' ', [$variable]) }}" type="QR" class="barcode" size="1" error="M" />
+<barcode code="{{ implode(' ', [$QR_text]) }}" type="QR" class="barcode" size="1" error="M" />

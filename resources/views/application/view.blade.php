@@ -67,6 +67,9 @@
                             </div>
                         @endif
                     </div>
+                    <div class="alert alert-danger" id="error_box" style="display:none;">
+                      <!-- errors HERE -->
+                    </div>
                     <div class="card-body" id="items">
                         <div class="tab">
                             <button class="tablinks" id="mybutton" onclick="openTab(event, 'applicationInfo')">Заявление</button>
@@ -540,9 +543,22 @@
                       signXmlCall();
                   });
                 } else{
-                  $.post('/docs/reject', payload, function(data){
-                      location.reload();
-                  });
+                  $.post('/docs/reject', payload)
+                    .done( function(data) {
+                        console.log(data);
+                        $('#error_box').hide('400');
+                        $('#items').load(location.href + ' #items');
+                     })
+                    .fail( function(xhr, textStatus, errorThrown) {
+                      var response = JSON.parse(xhr.responseText);
+                      var errorString = '';
+                      $.each( response.error, function( key, value) {
+                          errorString += '<li>' + value + '</li>';
+                      });
+                      console.log(errorString);
+                      document.getElementById("error_box").innerHTML = errorString;
+                      $('#error_box').show('400');
+                    });
                 }
 
             });
@@ -572,9 +588,21 @@
                       signXmlCall();
                   });
                 }else{
-                  $.post('/docs/approveReject', payload, function(data){
-                    // console.log(data)
-                      location.reload();
+                  $.post('/docs/approveReject', payload)
+                  .done( function(data) {
+                      console.log(data);
+                      $('#error_box').hide('400');
+                      $('#items').load(location.href + ' #items');
+                   })
+                  .fail( function(xhr, textStatus, errorThrown) {
+                    var response = JSON.parse(xhr.responseText);
+                    var errorString = '';
+                    $.each( response.error, function( key, value) {
+                        errorString += '<li>' + value + '</li>';
+                    });
+                    console.log(errorString);
+                    document.getElementById("error_box").innerHTML = errorString;
+                    $('#error_box').show('400');
                   });
                 }
 
@@ -597,8 +625,21 @@
                       signXmlCall();
                   });
                 }else{
-                  $.post('/docs/toCitizen', {'answer':$('#answer').val(),'process_id':processId,'application_id':application_id, 'comments': $('#lastComments').val(), '_token':$('input[name=_token]').val()}, function(data){
-                    location.reload();
+                  $.post('/docs/toCitizen', {'answer':$('#answer').val(),'process_id':processId,'application_id':application_id, 'comments': $('#lastComments').val(), '_token':$('input[name=_token]').val()})
+                  .done( function(data) {
+                      console.log(data);
+                      $('#error_box').hide('400');
+                      $('#items').load(location.href + ' #items');
+                   })
+                  .fail( function(xhr, textStatus, errorThrown) {
+                    var response = JSON.parse(xhr.responseText);
+                    var errorString = '';
+                    $.each( response.error, function( key, value) {
+                        errorString += '<li>' + value + '</li>';
+                    });
+                    console.log(errorString);
+                    document.getElementById("error_box").innerHTML = errorString;
+                    $('#error_box').show('400');
                   });
                 }
 
@@ -611,8 +652,21 @@
                 var roleToRevise = $( "#roleToRevise option:selected" ).text();
                 var processId = $('#processId').val();
                 var application_id = $('#application_id').val();
-                $.post('/docs/revision', {'revisionReason':revisionReason,'processId':processId,'application_id':application_id,'roleToRevise':roleToRevise, '_token':$('input[name=_token]').val()}, function(data){
-                    location.reload();
+                $.post('/docs/revision', {'revisionReason':revisionReason,'processId':processId,'application_id':application_id,'roleToRevise':roleToRevise, '_token':$('input[name=_token]').val()})
+                .done( function(data) {
+                    console.log(data);
+                    $('#error_box').hide('400');
+                    $('#items').load(location.href + ' #items');
+                 })
+                .fail( function(xhr, textStatus, errorThrown) {
+                  var response = JSON.parse(xhr.responseText);
+                  var errorString = '';
+                  $.each( response.error, function( key, value) {
+                      errorString += '<li>' + value + '</li>';
+                  });
+                  console.log(errorString);
+                  document.getElementById("error_box").innerHTML = errorString;
+                  $('#error_box').show('400');
                 });
             });
 

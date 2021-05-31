@@ -121,11 +121,12 @@
 
             $.post('/agreement_accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
                 $('#acceptModal').modal('hide');
+
                 if(data.message){
                     $("#acceptModal").modal('hide');
                 }
                 else{
-                  alert('Ошибка');  
+                  alert('Ошибка');
                 }
             });
         });
@@ -134,6 +135,7 @@
 
             $.post('/agreement_accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
                 $('#acceptModalId').modal('hide');
+
                 if(data.message){
                     $("#acceptModalId").modal('hide');
                 }
