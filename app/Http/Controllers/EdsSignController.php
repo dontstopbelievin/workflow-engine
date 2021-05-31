@@ -9,6 +9,7 @@ use App\Libs\PhpNCANode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use App\Traits\dbQueries;
+use Illuminate\Support\Carbon;
 
 class EdsSignController extends Controller
 {
@@ -31,17 +32,46 @@ class EdsSignController extends Controller
                 $aCertRaws = $oPkcs12Info->getRaw();
                 if (isset($aCertRaws['subject']['iin'])) {
                     $sIin = $aCertRaws['subject']['iin'];
-                    $aUser = User::where('iin', $sIin)->first();
+                    $user = User::where('iin', $sIin)->first();
                 } else if (isset($aCertRaws['subject']['bin'])) {
                     $sBin = $aCertRaws['subject']['bin'];
-                    $aUser = User::where('bin', $sBin)->first();
+                    $user = User::where('bin', $sBin)->first();
                 }
-                if (isset($aUser)) {
-                    Auth::login($aUser);
-                    if($aUser->new_password){
+                if (isset($user)) {
+                    Auth::login($user);
+                    $new_sessid   = \Session::getId(); //get new session_id after user sign in
+
+                    if ($user->session_id != '') {
+                        $last_session = \Session::getHandler()->read($user->session_id);
+
+                        if ($last_session) {
+                            if (\Session::getHandler()->destroy($user->session_id)) {
+                                $user = auth()->guard('web')->user();
+                                $mytime = Carbon::now()->toDateTimeString();
+
+                                $txt = $mytime . ' ' . $user->sur_name.' '.$user->first_name.' '.$user->middle_name. ' '. $user->email . ' ' . "Попытка параллельного входа в систему\r\n";
+                                file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
+                            }
+                        }
+                    }
+
+                    \DB::table('users')->where('id', $user->id)->update(['session_id' => $new_sessid]);
+
+                    $user = auth()->guard('web')->user();
+                    $mytime = Carbon::now()->toDateTimeString();
+
+                    $txt = $mytime . ' ' . $user->sur_name.' '.$user->first_name.' '.$user->middle_name. ' ' . $user->email . ' ' . "Успешный вход в систему\r\n";
+                    file_put_contents(storage_path('logs/logfile.txt'), $txt, FILE_APPEND | LOCK_EX);
+
+                    $user->update([
+                        'last_login_at' => $user->current_login_at,
+                        'current_login_at' => Carbon::now()->toDateTimeString(),
+                        'last_login_ip' => $request->getClientIp(),
+                    ]);
+                    if($user->new_password){
                         session()->put('new_password', 1);
                     }
-                    if($aUser->role->name == "Заявитель"){
+                    if($user->role->name == "Заявитель"){
                         return response()->json(['redirect' => 'docs'], 200);
                     }else{
                         return response()->json(['redirect' => 'docs/services/incoming'], 200);
