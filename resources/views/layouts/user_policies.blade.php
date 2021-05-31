@@ -79,7 +79,7 @@
     </div>
 @endif
 
-@if (Auth::user()->new_password == 1 && Auth::user()->role->name != 'Admin')
+@if (Session::get('new_password') == 1 && Auth::user()->role->name != 'Admin')
     <div id="new_password" class="modal" data-backdrop="static" style="z-index:1041;">
         <div class="modal-dialog">
             <div class="modal-content text-center">
@@ -98,6 +98,7 @@
             </div>
         </div>
     </div>
+    {{session()->forget('new_password')}}
 @endif
 
 @section('scripts')
@@ -116,16 +117,13 @@
         $("#acceptModal").modal('show');
         $("#acceptModalId").modal('show');
 
-        $('#new_password').click(function(event) {
-
-        })
-
         $('#acceptButton').click(function(event) {
 
             $.post('/agreement_accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
                 $('#acceptModal').modal('hide');
-                if(data.message)
-                {location.reload();}
+                if(data.message){
+                    $("#acceptModal").modal('hide');
+                }
                 else{
                   alert('Ошибка');  
                 }
@@ -136,8 +134,9 @@
 
             $.post('/agreement_accept', {accepted:true, '_token':$('input[name=_token]').val()}, function(data){
                 $('#acceptModalId').modal('hide');
-                if(data.message)
-                {location.reload();}
+                if(data.message){
+                    $("#acceptModalId").modal('hide');
+                }
                 else{
                   alert('Ошибка');  
                 }

@@ -11,7 +11,7 @@
         <div class="container-fluid">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title font-weight-bold text-center">Редактирование Данных</h3>
+                        <h3 class="card-title font-weight-bold text-center">Изменение пароля</h3>
                         @if (session('status'))
                             <div class="alert alert-success" role="alert">
                                 {{ session('status') }}

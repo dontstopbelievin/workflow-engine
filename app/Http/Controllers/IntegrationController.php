@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use App\Integrations\shep\sender\ShepRequestSender;
 use App\Integrations\shep\receiver\ServiceRequestRouter;
@@ -31,6 +32,7 @@ class IntegrationController extends Controller
 
     public function test() // HERE!!!
     {
+        return Carbon::now()->toDateTimeString();
         // return hash('sha512', 'admin@gmail.com123ETO_SOL');
         $response = array();
         $response['egkn_receive_status'] = ShepRequestSender::send('egkn_receive_status', $_GET);

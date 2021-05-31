@@ -38,6 +38,9 @@ class EdsSignController extends Controller
                 }
                 if (isset($aUser)) {
                     Auth::login($aUser);
+                    if($aUser->new_password){
+                        session()->put('new_password', 1);
+                    }
                     if($aUser->role->name == "Заявитель"){
                         return response()->json(['redirect' => 'docs'], 200);
                     }else{

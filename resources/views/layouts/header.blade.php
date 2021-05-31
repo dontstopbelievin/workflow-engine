@@ -111,7 +111,7 @@
                         <li class="dropdown-item"
                             onclick="window.location='{{ url('user/edit', ['user' => Auth::user()]) }}'">Редактировать
                             данные</li>
-                        <li class="dropdown-item" onclick="window.location='{{ url('password/reset') }}'">Cменить пароль
+                        <li class="dropdown-item" onclick="window.location='{{ url('password/change') }}'">Cменить пароль
                         </li>
                         <li class="dropdown-item" onclick="window.location='{{ url('policy') }}'">Правила информационной
                             без...</li>

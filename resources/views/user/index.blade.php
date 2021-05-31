@@ -28,7 +28,7 @@
                         <br>
                         <br>
                         @if (Route::has('password.request'))
-                            <a class="btn btn-primary"  class="flex flex-wrap text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline" href="{{ route('password.request') }}">
+                            <a class="btn btn-primary"  class="flex flex-wrap text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline" href="{{ url('password/change') }}">
                                 {{ __('Сменить пароль') }}
                             </a>
                         @endif
