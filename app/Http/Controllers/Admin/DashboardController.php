@@ -108,6 +108,9 @@ class DashboardController extends Controller
         $user->bin = $request->bin;
       }
       $user->telephone = $request->telephone;
+      if(!\Hash::check($user->password, $request->password)){
+        $user->new_password = 1;
+      }
       $user->password = \Hash::make($request->password);
       $user->update();
 

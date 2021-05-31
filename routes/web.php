@@ -62,6 +62,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/get_token', 'HomeController@get_token');
 
     Route::prefix('password')->group(function () {
+        Route::get('/change', 'UserController@change_pass');
+        Route::post('/change_password', 'UserController@change_password');
         Route::get('/expired', 'Auth\ExpiredPasswordController@expired');
         Route::post('/post_expired', 'Auth\ExpiredPasswordController@postExpired');
     });

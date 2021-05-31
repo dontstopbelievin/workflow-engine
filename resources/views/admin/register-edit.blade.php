@@ -71,14 +71,14 @@
                                   </div>
                                   <div class="form-group" id="pass1" style="padding: 0px;display: none;">
                                     <label data-error="wrong" data-success="right" for="password"><b>Придумайте пароль</b></label><br/>
-                                    <input type="password" id="password" name="password" autocomplete="new-password" class="form-control"/ style="margin: 0px;width: 80%!important;">
+                                    <input type="password" id="password" name="password" autocomplete="new-password" class="form-control" style="margin: 0px;width: 80%!important;">
                                     <small id="emailHelp" class="form-text text-muted" style="text-align: left;">1.Длина пароля должна быть не менее 8 символов</small>
                                     <small id="emailHelp" class="form-text text-muted" style="text-align: left;">2.Пароль должен состоять из букв латинского алфавита (A-z) и арабских цифр (0-9)</small>
-                                    <small id="emailHelp" class="form-text text-muted" style="text-align: left;">3. Пароль должен содержать не менее одного из следующих символов:( !$#% ).</small>
+                                    <small id="emailHelp" class="form-text text-muted" style="text-align: left;">3. Пароль должен содержать не менее одного из следующих символов:( !$@#% ).</small>
                                   </div>
                                   <div class="form-group" id="pass2" style="padding: 0px;display: none;">
                                       <label data-error="wrong" data-success="right" for="confirm_password"><b>Повторите пароль</b></label><br/>
-                                      <input class="form-control" placeholder="***************" type="password" id="confirm_password"  name="password_confirmation" / style="display: inline-block;width: 80%!important;">
+                                      <input class="form-control" placeholder="***************" type="password" id="confirm_password"  name="password_confirmation" style="display: inline-block;width: 80%!important;">
                                       <img id="check_pass" src="" style="width: 0px;margin-left: 10px;"/>
                                   </div>
 

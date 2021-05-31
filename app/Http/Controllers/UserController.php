@@ -75,6 +75,34 @@ class UserController extends Controller
         return Redirect::back()->with('status', 'Данные успешно обновлены');
     }
 
+    public function change_pass(User $user)
+    {
+        return view('user.change_pass', compact('user'));
+    }
+
+    public function change_password(Request $request)
+    {
+        $validator = Validator::make( $request->all(),[
+            'cur_password' => 'required',
+            'password' => 'required|regex:/^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!$@#%]).*$/|min:8|confirmed',
+            'password_confirmation' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return Redirect::back()->with('error', $validator->errors()->all());
+        }
+
+        $user = Auth::user();
+        if(\Hash::check($user->password, $request->cur_password)){
+            return Redirect::back()->with('error', 'Текущий пароль не верный!');   
+        }
+
+        $user->password = \Hash::make($request->password);
+        $user->new_password = 0;
+        $user->update();
+
+        return Redirect::back()->with('status', 'Пароль успешно изменен');
+    }
+
     public function filter(Request $request){
         $validator = Validator::make($request->all(),[
             'process' => 'required|int',

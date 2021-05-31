@@ -35,6 +35,7 @@ class CreateUsersTable extends Migration
             $table->string('last_login_ip')->nullable();
             $table->string('last_failed_login_ip')->nullable();
             $table->boolean('has_not_accepted_agreement')->default(1);
+            $table->boolean('new_password')->default(1);
             $table->rememberToken();
             $table->string('session_id')->nullable();
             $table->timestamps();

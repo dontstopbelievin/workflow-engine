@@ -1,4 +1,4 @@
-@if(Auth::user()->has_not_accepted_agreement == 1 && Auth::user()->role->name !== 'Admin')
+@if (Auth::user()->has_not_accepted_agreement === 1 && Auth::user()->role->name !== 'Admin')
     <div id="acceptModalId" class="modal" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -7,11 +7,14 @@
 
                 </div>
                 <div class="modal-body">
-                    <p>Ведется логирование вашей учетной записи. Ваши действия записываются в базу данных. За любые противоправные действия на Портале, вы несете ответственность в соответствии с законодательством Республики Казахстан.
+                    <p>Ведется логирование вашей учетной записи. Ваши действия записываются в базу
+                        данных. За любые противоправные действия на Портале, вы несете
+                        ответственность в соответствии с законодательством Республики Казахстан.
                 </div>
                 <div class="modal-footer" style="display: flex;justify-content: space-between;">
                     <div class="pull-right">
-                        <button type="submit" class="btn btn-info btn-lg" id="acceptModalButton">Я согласен</button>
+                        <button type="submit" class="btn btn-info btn-lg" id="acceptModalButton">
+                            Я согласен</button>
                     </div>
 
                 </div>
@@ -19,6 +22,7 @@
         </div>
     </div>
 @endif
+
 @if (Auth::user()->has_not_accepted_agreement && Auth::user()->role->name == 'Admin')
     <div id="acceptModal" class="modal" data-backdrop="static">
         <div class="modal-dialog">
@@ -74,30 +78,28 @@
         </div>
     </div>
 @endif
-@if (Auth::user()->has_not_accepted_agreement === 1 && Auth::user()->role->name !== 'Admin')
-    <div id="acceptModalId" class="modal" data-backdrop="static">
+
+@if (Auth::user()->new_password == 1 && Auth::user()->role->name != 'Admin')
+    <div id="new_password" class="modal" data-backdrop="static" style="z-index:1041;">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content text-center">
                 <div class="modal-header">
                     <h5 class="modal-title">Внимание!</h5>
-
                 </div>
                 <div class="modal-body">
-                    <p>Ведется логирование вашей учетной записи. Ваши действия записываются в базу
-                        данных. За любые противоправные действия на Портале, вы несете
-                        ответственность в соответствии с законодательством Республики Казахстан.
+                    <p>У вас временный пароль.</p>
+                    <p>Пожалуйста смените пароль.</p>
                 </div>
-                <div class="modal-footer" style="display: flex;justify-content: space-between;">
-                    <div class="pull-right">
-                        <button type="submit" class="btn btn-info btn-lg" id="acceptModalButton">
-                            Я согласен</button>
-                    </div>
-
+                <div class="modal-footer">
+                    <a class="btn btn-primary" href="{{ url('password/change') }}">
+                        {{ __('Сменить пароль') }}
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 @endif
+
 @section('scripts')
 <script>
     $(document).ready(function(){
@@ -106,13 +108,17 @@
             if (inputCheck == false) {
                 $('#acceptButton').prop("disabled","true");
             } else if(inputCheck == true){
-
                 $('#acceptButton').removeAttr("disabled");
-                // $('#acceptButton').prop("disabled","false");
             };
         });
+
+        $("#new_password").modal('show');
         $("#acceptModal").modal('show');
         $("#acceptModalId").modal('show');
+
+        $('#new_password').click(function(event) {
+
+        })
 
         $('#acceptButton').click(function(event) {
 

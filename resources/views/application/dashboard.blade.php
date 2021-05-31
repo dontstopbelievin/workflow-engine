@@ -3,6 +3,7 @@
 @section('title')
 Государственные услуги
 @endsection
+
 <style type="text/css">
   .table td{
     font-size: 16px!important;
@@ -56,6 +57,7 @@
         background: #ebebeb;
     }
 </style>
+
 @section('content')
     <div class="main-panel">
         <div class="content">
@@ -124,3 +126,6 @@
         </div>
     </div>
 @endsection
+
+@section('scripts')
+@append
