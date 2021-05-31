@@ -50,6 +50,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ( $exception instanceof \Illuminate\Http\Exceptions\ThrottleRequestsException) {
+            return redirect()->back()->with('error', 'Вы превысили число попыток, попробуйте повторно через 1 минуту!');
+        }
         if( $exception instanceof \Illuminate\Validation\ValidationException){
             $messages = $exception->errors();
             $res = [];

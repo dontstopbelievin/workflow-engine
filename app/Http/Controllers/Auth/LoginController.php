@@ -46,13 +46,14 @@ class LoginController extends Controller
 
     /**
      * Create a new controller instance.
-     * 
+     *
      *
      * @return void
      */
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+        $this->middleware('throttle:3,1')->only('login');
     }
 
 
@@ -71,12 +72,12 @@ class LoginController extends Controller
 
         $user = \DB::table('users')->where('email', $request->input('email'))->first();
         if(!$user){
-            return redirect()->back()->with('error', 'Ваша почта или пароль неверно введены!');
+            return redirect()->to('/login')->with('error', 'Ваша почта или пароль неверно введены!');
         }
 
         if (auth()->guard('web')->attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
 
-            $new_sessid   = \Session::getId(); //get new session_id after user sign in
+            $new_sessid  = \Session::getId(); //get new session_id after user sign in
 
             if ($user->session_id != '') {
                 $last_session = \Session::getHandler()->read($user->session_id);
