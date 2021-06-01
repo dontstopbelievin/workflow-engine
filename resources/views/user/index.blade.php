@@ -35,15 +35,15 @@
                         <br>
                         <br>
                         <p>Дата последнего удачного входа:
-                            @if ($user->last_login_at)
-                                {{date('Y-m-d', strtotime($user->last_login_at))}}
+                            @if ($user->current_login_at)
+                                {{date('Y-m-d', strtotime($user->current_login_at))}}
                             @else
                                 -
                             @endif
                         </p>
                         <p>Время последнего удачного входа:
-                            @if ($user->last_login_at)
-                                {{date('H:i:s', strtotime($user->last_login_at))}}
+                            @if ($user->current_login_at)
+                                {{date('H:i:s', strtotime($user->current_login_at))}}
                             @else
                                 -
                             @endif
