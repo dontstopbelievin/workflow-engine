@@ -44,7 +44,13 @@
                         <td>{{$user->phone}}</td>
                         <td>{{$user->email}}</td>
                         @if ($user->role)
-                        <td>{{$user->role->name}}</td>
+                        <td>
+                          @if($user->usertype == "super_admin")
+                                Супер Админ
+                            @else
+                                {{ $user->role->name }}
+                            @endif
+                        </td>
                         @else
                         <td>-</td>
                         @endif
