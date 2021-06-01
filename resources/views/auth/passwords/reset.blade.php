@@ -27,8 +27,8 @@
             
                                     <input type="hidden" name="token" value="{{ $token }}">
             
-                                    <div class="form-group py-2">
-                                        <div class="col-md-6 offset-md-3">
+                                    <div class="form-group">
+                                        <div class="col-md-12">
                                             <label for="password" class="mb-4 font-normal text-gray-700 dark:text-gray-200">{{ __('Новый пароль') }}</label>
                                             <input id="password" type="password" class="form-control @error('password') is-invalid @enderror border rounded-md block w-full px-12 py-1 mt-2 leading-2" name="password" required autocomplete="new-password">
             
@@ -37,18 +37,21 @@
                                                     <strong>{{ $message }}</strong>
                                                 </span>
                                             @enderror
+                                            <small id="emailHelp" class="form-text text-muted" style="text-align: left;"><b>1.</b>Длина пароля должна быть не менее 8 символов</small>
+                                            <small id="emailHelp" class="form-text text-muted" style="text-align: left;"><b>2.</b>Пароль должен состоять из букв латинского алфавита (A-z) и арабских цифр (0-9)</small>
+                                            <small id="emailHelp" class="form-text text-muted" style="text-align: left;"><b>3.</b> Пароль должен содержать не менее одного из следующих символов:( !$#% ).</small>
                                         </div>
                                     </div>
             
-                                    <div class="form-group row py-2">
-                                        <div class="col-md-6 offset-md-3">
+                                    <div class="form-group">
+                                        <div class="col-md-12">
                                             <label for="password-confirm" class="mb-4 font-normal text-gray-700 dark:text-gray-200">{{ __('Повторите пароль') }}</label>
                                             <input id="password-confirm" type="password" class="form-control border rounded-md block w-full px-12 py-1 mt-2 leading-2" name="password_confirmation" required autocomplete="new-password">
                                         </div>
                                     </div>
 
-                                    <div class="form-group row">
-                                        <div class="col-md-6 offset-md-3">
+                                    <div class="form-group">
+                                        <div class="col-md-12">
                                             <input id="email" type="hidden" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus>
             
                                             @error('email')
@@ -60,9 +63,9 @@
                                     </div>
             
                                     <div class="form-group row mb-0">
-                                        <div class="col-md-6 offset-md-3">
+                                        <div class="col-md-12">
                                             <button type="submit" class="btn btn-primary">
-                                                {{ __('Сбросить пароль') }}
+                                                {{ __('Изменить пароль') }}
                                             </button>
                                         </div>
                                     </div>

@@ -21,6 +21,19 @@ class ResetPasswordController extends Controller
 
     use ResetsPasswords;
 
+    protected function rules() {
+        return [
+            'password' => 'required|regex:/^.*(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!$@#%]).*$/|min:8|confirmed',
+            'password_confirmation' => 'required',
+        ];
+    }
+
+    protected function setUserPassword($user, $password)
+    {
+        $user->password = \Hash::make($password);
+        $user->new_password = 0;
+    }
+
     /**
      * Where to redirect users after resetting their password.
      *
