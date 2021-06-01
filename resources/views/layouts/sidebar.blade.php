@@ -112,6 +112,14 @@
                 <p>Логи сервиса</p>
             </a>
           </li>
+          @if(Auth::user()->usertype == 'super_admin')
+          <li class="nav-item {{request()->is('admin/super_admin') ? 'active' : ''}}">
+            <a href="{{ url('admin/super_admin') }}">
+                <i class="la la-github-alt"></i>
+                <p>Супер Админ</p>
+            </a>
+          </li>
+          @endif
       </ul>
     </div>
     @endif

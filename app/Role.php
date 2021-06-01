@@ -20,6 +20,4 @@ class Role extends Model
     public function cityManagement() {
         return $this->belongsTo(CityManagement::class);
     }
-
-
 }

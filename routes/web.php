@@ -174,6 +174,10 @@ Route::group(['prefix' => '/admin', 'middleware' => ['admin', 'auth']], function
 
     Route::get('send', 'HomeController@sendNotification');
     Route::get('logs', 'ProcessController@logs');
+    Route::group(['middleware' => ['super_admin']], function () {
+        Route::get('super_admin', 'HomeController@super_admin');
+        Route::post('super_admin', 'HomeController@change_super_admin');
+    });
     Route::get('report', 'HomeController@report');
     Route::post('report', 'HomeController@get_report');
 

@@ -8,6 +8,9 @@ use App\Process;
 use App\Dictionary;
 use App\Role;
 use Notification;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Notifications\ApproveNotification;
 use Illuminate\Support\Facades\Validator;
 
@@ -69,6 +72,36 @@ class HomeController extends Controller
         $processes = Process::all();
         $roles = Role::all();
         return view('application.reports', compact('processes', 'roles'));
+    }
+
+    public function super_admin(){
+        return view('admin.super_admin');
+    }
+
+    public function change_super_admin(Request $request){
+        $validator = Validator::make( $request->all(),[
+          'email' => ['required', 'string', 'email', 'max:255', 'exists:users'],
+        ]);
+        if ($validator->fails()) {
+            return Redirect::back()->with('error', $validator->errors()->all());
+        }
+        DB::beginTransaction();
+        try {
+            $user = User::where('email', $request->email)->first();
+            if($user->role->name != 'Admin'){
+                return Redirect::back()->with('error', 'Этот пользователь не является админом!');       
+            }
+            $user->usertype = 'super_admin';
+            $user->update();
+            $cur_user = Auth::user();
+            $cur_user->usertype = null;
+            $cur_user->update();
+            DB::commit();
+            return Redirect::to('admin/user_role/register')->with('status', 'Возможности супер админа успешно переданы.');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return Redirect::back()->with('error', $e->getMessage());
+        }
     }
 
     public function get_token(){

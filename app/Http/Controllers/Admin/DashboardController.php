@@ -24,7 +24,11 @@ class DashboardController extends Controller
     }
 
     public function new_user(){
-      $roles = Role::all();
+      if(Auth::user()->usertype == 'super_admin'){
+        $roles = Role::all();
+      }else{
+        $roles = Role::where('name', '!=', 'Admin')->get();
+      }
       return view('admin.new_user')->with('roles', $roles);
     }
 
@@ -66,11 +70,11 @@ class DashboardController extends Controller
 
     public function registeredit(User $user)
     {
-        if(isset($user->role)) {
-            $roles = Role::all()->whereNotIn('id', [$user->role->id]);
-        } else {
-            $roles = Role::all();
-        }
+      if(Auth::user()->usertype == 'super_admin'){
+        $roles = Role::whereNotIn('id', [$user->role->id])->get();
+      }else{
+        $roles = Role::whereNotIn('id', [$user->role->id])->where('name', '!=', 'Admin')->get();
+      }
       return view('admin.register-edit', compact('user', 'roles'));
     }
 

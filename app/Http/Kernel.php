@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'role' => \App\Http\Middleware\RoleMiddleware::class,
         'password_expired' => \App\Http\Middleware\PasswordExpired::class,
+        'super_admin' =>\App\Http\Middleware\super_admin::class,
     ];
 }
