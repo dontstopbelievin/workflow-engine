@@ -16,7 +16,7 @@ class RoleMiddleware
 
     public function handle($request, Closure $next, ...$roles)
     {
-        if ($request->user()->usertype === 'admin') {
+        if ($request->user()->role->name === 'Admin') {
             return $next($request);
         } else if (in_array($request->user()->role_id, $roles)) {
             return $next($request);

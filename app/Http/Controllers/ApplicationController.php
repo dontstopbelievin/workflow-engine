@@ -41,9 +41,8 @@ class ApplicationController extends Controller
     public function service()
     {
         $processes = Process::all();
-        $modalPopup = User::where('usertype', 'admin')->first()->has_not_accepted_agreement;
 
-        return view('application.dashboard', compact('processes', 'modalPopup'));
+        return view('application.dashboard', compact('processes'));
     }
 
     public function index(Process $process) {
