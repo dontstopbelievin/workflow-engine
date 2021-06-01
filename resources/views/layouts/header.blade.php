@@ -101,7 +101,11 @@
                                 <b>({{ mb_substr(Auth::user()->role->name, 0, 25, 'utf-8') }}...)</b>
                             </span>
                         @else
-                            <b>({{ Auth::user()->role->name }})</b>
+                            @if(Auth::user()->usertype == "super_admin")
+                                <b>(Супер Админ)</b>
+                            @else
+                                <b>({{ Auth::user()->role->name }})</b>
+                            @endif
                         @endif
                     </small>
 

@@ -20,7 +20,13 @@
                     <div class="card-body" id="items">
 
                         <p><b>ФИО</b>: {{$user->sur_name}} {{$user->first_name}} {{$user->middle_name}}</p>
-                        <p><b>Роль</b>: {{$user->role->name}}</p>
+                        <p><b>Роль</b>:
+                            @if(Auth::user()->usertype == "super_admin")
+                                Супер Админ
+                            @else
+                                {{ Auth::user()->role->name }}
+                            @endif
+                        </p>
                         <p><b>Номер Телефона</b>: {{$user->telephone}}</p>
                         <p><b>Почтовый адрес</b>: {{$user->email}}</p>
 
