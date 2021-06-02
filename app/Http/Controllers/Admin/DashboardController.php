@@ -95,6 +95,12 @@ class DashboardController extends Controller
       if ($validator->fails()) {
           return Redirect::back()->with('error', $validator->errors()->all());
       }
+      if($user->usertype == 'super_admin'){
+        $new_role = Role::find($request->role_id)->name;
+        if($new_role != 'Admin'){
+          return Redirect::back()->with('error', 'Роль супер админа невозможно изменить');
+        }
+      }
       $roleName = '';
       if ($user->role) {
           $roleName = $user->role->name;
