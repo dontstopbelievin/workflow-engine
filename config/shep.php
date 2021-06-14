@@ -3,6 +3,6 @@
 return [
     'login' => 'uagso',
     'password' => 'uagso',
-    'sync_url' => 'https://vshep:19023/bip-sync-wss-gost/',
-    'async_url' => 'https://vshep:19023/bip-async/'
+    'sync_url' => 'https://vshep/bip-sync-wss-gost/',
+    'async_url' => 'https://vshep/bip-async/'
 ];
