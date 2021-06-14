@@ -32,7 +32,7 @@ class IntegrationController extends Controller
 
     public function test() // HERE!!!
     {
-        return Carbon::now()->toDateTimeString();
+        // return Carbon::now()->toDateTimeString();
         // return hash('sha512', 'admin@gmail.com123ETO_SOL');
         $response = array();
         $response['egkn_receive_status'] = ShepRequestSender::send('egkn_receive_status', $_GET);
