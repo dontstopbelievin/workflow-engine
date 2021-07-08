@@ -554,7 +554,8 @@ class ApplicationController extends Controller
                 unset($applicationTableFields['_token']);
             }
             $process = Process::find($request->process_id);
-
+            $tableColumns = $this->getColumns($process->table_name);
+            $aRowNameRows = $this->getAllDictionaries(array_values($tableColumns));
           //         $notifyUsers = $role->users;
           //         foreach($notifyUsers as $notifyUser) {
           //             $details = [
@@ -574,7 +575,6 @@ class ApplicationController extends Controller
           //             ];
           //             Notification::send($notifyUser, new ApproveNotification($details));
           //         }
-
             $tableName = $process->table_name;
             $table = CreatedTable::where('name', $tableName)->first();
             $applicationTableFields["statuses"] = $this->get_roles_of_order($process->id, 1);
@@ -582,20 +582,15 @@ class ApplicationController extends Controller
             $applicationTableFields["status_id"] = 0;
             $applicationTableFields["user_id"] = Auth::user()->id;
             $applicationTableFields["deadline_date"] = $this->holiday_diff_in_date($process->deadline);
-            // return response()->json(['error' => $applicationTableFields], 500);
-            foreach ($applicationTableFields as $key => $value) {
-                $dictionary = Dictionary::where('name', $key)->first();
-                if(isset($dictionary) && $dictionary->required == 1){
-                  $validator = Validator::make($request->input(),[
-                      $key => 'required|not_in:null',
-                  ]);
-                  //dd($validator);
-                  if ($validator->fails()) {
-                    return Response::json(array(
-                        'error' => $validator->getMessageBag()->toArray()
-                    ), 400);
-                  }
-                }
+
+            $rules = $this->getFieldRules($applicationTableFields, $aRowNameRows);
+
+            $validator = Validator::make($request->input(), $rules);
+            //dd($validator);
+            if ($validator->fails()) {
+                return Response::json(array(
+                    'error' => $validator->getMessageBag()->toArray()
+                ), 400);
             }
             $application_id = DB::table($tableName)->insertGetId($applicationTableFields);
 
@@ -1021,5 +1016,52 @@ class ApplicationController extends Controller
         } catch (\Exception $e) {
             return view('application.verification')->with('error', $e->getMessage());
         }
+    }
+    public function getFieldRules($requestFields, $dbFields){
+        $rules = [];
+        foreach ($dbFields as $field) {
+            if($field->required == 1){
+                switch ($field->name){
+                    case 'name_organization':
+                        if($requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо'){
+                            $rules[$field->name] = 'required|not_in:null';
+                        }
+                        break;
+                    case 'name_ur_zakaz4ika':
+                        if($requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо'){
+                            $rules[$field->name] = 'required|not_in:null';
+                        }
+                        break;
+                    case 'bin_zakaz4ika':
+                        if($requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо'){
+                            $rules[$field->name] = 'required|not_in:null';
+                        }
+                        break;
+                    case 'iin_zakaz4ika':
+                        if($requestFields['zakaz4ik_drugoi'] == 'Заявитель является Заказчиком'){
+                            $rules[$field->name] = 'required|not_in:null';
+                        }
+                        break;
+                    case 'name_fiz_zakaz4ika':
+                        if($requestFields['zakaz4ik_drugoi'] == 'Заявитель является Заказчиком'){
+                            $rules[$field->name] = 'required|not_in:null';
+                        }
+                        break;
+                    case 'iin':
+                        if($requestFields['zakaz4ik_fiz_ur'] == 'Заказчик физическое лицо'){
+                            $rules[$field->name] = 'required|not_in:null';
+                        }
+                        break;
+                    case 'bin':
+                        if($requestFields['zakaz4ik_fiz_ur'] == 'Заказчик юридическое лицо'){
+                            $rules[$field->name] = 'required|not_in:null';
+                        }
+                        break;
+                    default:
+                        $rules[$field->name] = 'required|not_in:null';
+                }
+            }
+        }
+        return $rules;
     }
 }

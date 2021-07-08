@@ -142,7 +142,7 @@
 @section('scripts')
 <script type="text/javascript">
 
-    
+
     document.addEventListener("DOMContentLoaded", () => {
         let radio_btns = document.getElementsByName("zakaz4ik_fiz_ur");
         for (var i = 0; i < radio_btns.length; i++) {
@@ -237,13 +237,11 @@
                   formData.set(this.name, this.value);
                 }
               }
-
             }else{
              formData.append(this.name, $(this).val());
             }
         });
         // end of forming the formData
-
         // send to corresponding function of ApplicationController
         var xhr = new XMLHttpRequest();
         xhr.open("post", "/docs/store", true);
