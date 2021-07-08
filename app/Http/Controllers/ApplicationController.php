@@ -202,6 +202,7 @@ class ApplicationController extends Controller
         }
 
         $tableColumns = $this->getColumns($process->table_name);
+        $tableColumns = $this->checkFieldRules($application, $tableColumns);
         $aRowNameRows = $this->getAllDictionaries(array_values($tableColumns));
 
         $template = Template::where('role_id', Auth::user()->role_id)->where('order', $application->current_order)->first();
@@ -1063,5 +1064,42 @@ class ApplicationController extends Controller
             }
         }
         return $rules;
+    }
+
+    public function checkFieldRules($app_fields, $tableColumns){
+        if($app_fields->zakaz4ik_drugoi == 'Заявитель является Заказчиком'){
+            if (($key = array_search('name_organization', $tableColumns)) !== false) {
+                unset($tableColumns[$key]);
+            }
+            if (($key = array_search('name_ur_zakaz4ika', $tableColumns)) !== false) {
+                unset($tableColumns[$key]);
+            }
+            if (($key = array_search('bin_zakaz4ika', $tableColumns)) !== false) {
+                unset($tableColumns[$key]);
+            }
+        }else{
+            if (($key = array_search('iin_zakaz4ika', $tableColumns)) !== false) {
+                unset($tableColumns[$key]);
+            }
+            if (($key = array_search('name_fiz_zakaz4ika', $tableColumns)) !== false) {
+                unset($tableColumns[$key]);
+            }
+        }
+        if($app_fields->zakaz4ik_fiz_ur == 'Заказчик физическое лицо'){
+            if (($key = array_search('bin', $tableColumns)) !== false) {
+                unset($tableColumns[$key]);
+            }
+        }else{
+            if (($key = array_search('iin', $tableColumns)) !== false) {
+                unset($tableColumns[$key]);
+            }
+        }
+        if (($key = array_search('zakaz4ik_drugoi', $tableColumns)) !== false) {
+            unset($tableColumns[$key]);
+        }
+        if (($key = array_search('zakaz4ik_fiz_ur', $tableColumns)) !== false) {
+            unset($tableColumns[$key]);
+        }
+        return $tableColumns;
     }
 }
