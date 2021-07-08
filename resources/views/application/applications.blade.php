@@ -41,6 +41,9 @@
                               $date2=date_create($app->deadline_date);
                               if($date->diff($date2)->days == 0) {$opac = 0;}
                               else {$opac = 1 - $date2->diff(date_create(date("Y-m-d")))->days / $date->diff($date2)->days;}
+                              if($date2 < date_create(date("Y-m-d"))){
+                                  $opac = 1;
+                              };
                               $deadline_color = '#1abf29';
                               if($opac > 0.4 && $opac < 0.7){
                                 $deadline_color = '#ff6';
