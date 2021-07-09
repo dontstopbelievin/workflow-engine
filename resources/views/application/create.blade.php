@@ -83,7 +83,7 @@
                                 <label class="in_label">{{$item->labelName}}</label>
                                 <input type="file" name={{$item->name}} class="form-control" multiple>
                             @elseif($item->inputName === 'text')
-                                <label class="in_label">{{$item->labelName}}</label>
+                                <label class="in_label" id={{'label'.$item->name}}>{{$item->labelName}}</label>
                                 <input type="text" name={{$item->name}} id={{$item->name}} value="{{Auth::user()->{$item->name} ?? ''}}" class="form-control">
                             @elseif($item->inputName === 'hidden')
                                 <input type="hidden" name={{$item->name}} id={{$item->name}} class="form-control">
@@ -154,61 +154,105 @@
         }
     });
 
-    const check_zakaz4ik = (e) => {
-        if(e.target.value == 'Заявитель является Заказчиком'){
+    const check_zakaz4ik = () => {
+        if(document.getElementsByName("zakaz4ik_drugoi")[0].checked){
             if(document.getElementById("name_organization")){
-                document.getElementById("name_organization").disabled = true
+                document.getElementById("name_organization").style.display = 'none'
+                document.getElementById("labelname_organization").style.display = 'none'
             }
             if(document.getElementById("name_ur_zakaz4ika")){
-                document.getElementById("name_ur_zakaz4ika").disabled = true
+                document.getElementById("name_ur_zakaz4ika").style.display = 'none'
+                document.getElementById("labelname_ur_zakaz4ika").style.display = 'none'
             }
             if(document.getElementById("bin_zakaz4ika")){
-                document.getElementById("bin_zakaz4ika").disabled = true
+                document.getElementById("bin_zakaz4ika").style.display = 'none'
+                document.getElementById("labelbin_zakaz4ika").style.display = 'none'
             }
             if(document.getElementById("iin_zakaz4ika")){
-                document.getElementById("iin_zakaz4ika").disabled = false
+                document.getElementById("iin_zakaz4ika").style.display = 'none'
+                document.getElementById("labeliin_zakaz4ika").style.display = 'none'
             }
             if(document.getElementById("name_fiz_zakaz4ika")){
-                document.getElementById("name_fiz_zakaz4ika").disabled = false
+                document.getElementById("name_fiz_zakaz4ika").style.display = 'none'
+                document.getElementById("labelname_fiz_zakaz4ika").style.display = 'none'
             }
         }else{
-            if(document.getElementById("name_organization")){
-                document.getElementById("name_organization").disabled = false
+            if(document.getElementsByName("zakaz4ik_fiz_ur")[1].checked){
+                if(document.getElementById("name_organization")){
+                    document.getElementById("name_organization").style.display = 'block'
+                    document.getElementById("labelname_organization").style.display = 'block'
+                }
+                if(document.getElementById("name_ur_zakaz4ika")){
+                    document.getElementById("name_ur_zakaz4ika").style.display = 'block'
+                    document.getElementById("labelname_ur_zakaz4ika").style.display = 'block'
+                }
+                if(document.getElementById("bin_zakaz4ika")){
+                    document.getElementById("bin_zakaz4ika").style.display = 'block'
+                    document.getElementById("labelbin_zakaz4ika").style.display = 'block'
+                }
+                if(document.getElementById("iin_zakaz4ika")){
+                    document.getElementById("iin_zakaz4ika").style.display = 'none'
+                    document.getElementById("labeliin_zakaz4ika").style.display = 'none'
+                }
+                if(document.getElementById("name_fiz_zakaz4ika")){
+                    document.getElementById("name_fiz_zakaz4ika").style.display = 'none'
+                    document.getElementById("labelname_fiz_zakaz4ika").style.display = 'none'
+                }
             }
-            if(document.getElementById("name_ur_zakaz4ika")){
-                document.getElementById("name_ur_zakaz4ika").disabled = false
-            }
-            if(document.getElementById("bin_zakaz4ika")){
-                document.getElementById("bin_zakaz4ika").disabled = false
-            }
-            if(document.getElementById("iin_zakaz4ika")){
-                document.getElementById("iin_zakaz4ika").disabled = true
-            }
-            if(document.getElementById("name_fiz_zakaz4ika")){
-                document.getElementById("name_fiz_zakaz4ika").disabled = true
+            if(document.getElementsByName("zakaz4ik_fiz_ur")[0].checked){
+                if(document.getElementById("iin_zakaz4ika")){
+                    document.getElementById("iin_zakaz4ika").style.display = 'block'
+                    document.getElementById("labeliin_zakaz4ika").style.display = 'block'
+                }
+                if(document.getElementById("name_fiz_zakaz4ika")){
+                    document.getElementById("name_fiz_zakaz4ika").style.display = 'block'
+                    document.getElementById("labelname_fiz_zakaz4ika").style.display = 'block'
+                }
+                if(document.getElementById("name_organization")){
+                    document.getElementById("name_organization").style.display = 'none'
+                    document.getElementById("labelname_organization").style.display = 'none'
+                }
+                if(document.getElementById("name_ur_zakaz4ika")){
+                    document.getElementById("name_ur_zakaz4ika").style.display = 'none'
+                    document.getElementById("labelname_ur_zakaz4ika").style.display = 'none'
+                }
+                if(document.getElementById("bin_zakaz4ika")){
+                    document.getElementById("bin_zakaz4ika").style.display = 'none'
+                    document.getElementById("labelbin_zakaz4ika").style.display = 'none'
+                }
             }
         }
     }
 
-    const check_zayavitel_type = (e) => {
-        if(e.target.value == 'Заказчик физическое лицо'){
+    const check_zayavitel_type = () => {
+        if(document.getElementsByName("zakaz4ik_fiz_ur")[0].checked){
             if(document.getElementById("bin")){
-                document.getElementById("bin").disabled = true
+                document.getElementById("bin").style.display = 'none'
+                document.getElementById("labelbin").style.display = 'none'
             }
             if(document.getElementById("iin")){
-                document.getElementById("iin").disabled = false
+                document.getElementById("iin").style.display = 'block'
+                document.getElementById("labeliin").style.display = 'block'
             }
+            check_zakaz4ik()
         }else{
             if(document.getElementById("bin")){
-                document.getElementById("bin").disabled = false
+                document.getElementById("bin").style.display = 'block'
+                document.getElementById("labelbin").style.display = 'block'
             }
             if(document.getElementById("iin")){
-                document.getElementById("iin").disabled = true
+                document.getElementById("iin").style.display = 'none'
+                document.getElementById("labeliin").style.display = 'none'
             }
+            check_zakaz4ik()
         }
     }
 
     const submit_form = () => {
+        if(!to_add_graphic){
+            alert('Вы не выбрали землю');
+            return 0;
+        }
         add_land()
     }
 
@@ -217,7 +261,6 @@
         let formData = new FormData();
         formData.append('_token', $('input[name=_token]').val());
         let inputs = $('#templateFieldsId :input');
-
         inputs.each(function() {
             if ('files' in $(this)[0] && $(this)[0].files != null) {
                 var file = $('input[type=file]')[0].files[0];

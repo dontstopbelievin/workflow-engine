@@ -44,7 +44,7 @@ class ProcessScript extends Seeder
         //create process application table
         $request = new \Illuminate\Http\Request();
 
-        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'applicant_address', 'region', 'iin', 'bin', 'telephone', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'name_organization', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'object_address', 'object_name', 'area', 'cadastral_number', 'pravo_ru', 'construction_name_before', 'construction_name_after', 'pri4ina_i_c_n', 'identific_doc_num', 'identific_doc_date', 'identific_doc', 'pravoustan_doc_num', 'pravoustan_doc_date', 'pravoustan_doc', 'act_opred_oceno4_stoim', 'gosakt', 'postanovlenie', 'dogovor_kup_prodaj']]);
+        $request->replace(['fields' => ['zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'first_name', 'middle_name', 'sur_name', 'applicant_address', 'region', 'iin', 'bin', 'telephone', 'name_organization', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'object_address', 'object_name', 'area', 'cadastral_number', 'pravo_ru', 'construction_name_before', 'construction_name_after', 'pri4ina_i_c_n', 'identific_doc_num', 'identific_doc_date', 'identific_doc', 'pravoustan_doc_num', 'pravoustan_doc_date', 'pravoustan_doc', 'act_opred_oceno4_stoim', 'gosakt', 'postanovlenie', 'dogovor_kup_prodaj']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Руководитель архитектурно-планировочного отдела')->first();
@@ -133,7 +133,7 @@ class ProcessScript extends Seeder
         //create process application table
         $request = new \Illuminate\Http\Request();
 
-        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'applicant_address', 'region', 'iin', 'bin', 'telephone', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'name_organization', 'object_address', 'object_name', 'area', 'dictionary_purpose']]);
+        $request->replace(['fields' => ['zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'first_name', 'middle_name', 'sur_name', 'applicant_address', 'region', 'iin', 'bin', 'telephone', 'name_organization', 'object_address', 'object_name', 'area', 'dictionary_purpose']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Специалист отдела земельного кадастра')->first();
@@ -198,7 +198,7 @@ class ProcessScript extends Seeder
         //create process application table
         $request = new \Illuminate\Http\Request();
 
-        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'applicant_address', 'region', 'iin', 'bin', 'telephone', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'name_organization', 'object_address', 'object_name', 'area', 'dictionary_purpose']]);
+        $request->replace(['fields' => ['zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'first_name', 'middle_name', 'sur_name', 'applicant_address', 'region', 'iin', 'bin', 'telephone', 'name_organization', 'object_address', 'object_name', 'area', 'dictionary_purpose']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Специалист отдела выдачи разрешительных документов на реконструкцию, градостроительного кадастра и учета введенных в эксплуатацию объектов, договоров долевого участия')->first();
@@ -266,7 +266,7 @@ class ProcessScript extends Seeder
         //create process application table
         $request = new \Illuminate\Http\Request();
 
-        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'applicant_address', 'region', 'iin', 'telephone', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'designer', 'gsl_number', 'gsl_date', 'object_address', 'object_name', 'cadastral_number', 'eskiz_proekt']]);
+        $request->replace(['fields' => ['zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'first_name', 'middle_name', 'sur_name', 'applicant_address', 'region', 'iin', 'telephone', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'designer', 'gsl_number', 'gsl_date', 'object_address', 'object_name', 'cadastral_number', 'eskiz_proekt']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Руководитель отдела рассмотрения эскизных проектов и наружной рекламы')->first();
@@ -426,7 +426,7 @@ class ProcessScript extends Seeder
         //create process application table
         $request = new \Illuminate\Http\Request();
 
-        $request->replace(['fields' => ['region', 'first_name', 'middle_name', 'sur_name', 'iin', 'bin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number', 'shema_isprash_u4astka']]);
+        $request->replace(['fields' => ['zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'region', 'first_name', 'middle_name', 'sur_name', 'iin', 'bin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number', 'shema_isprash_u4astka']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Заместитель директора ТОО "Астанагорархитектура"')->first();
@@ -483,25 +483,25 @@ class ProcessScript extends Seeder
         $template_doc = TemplateDoc::where('name', 'Без шаблона')->first();
         $request->replace(['template_state' => 1, 'table_name' => 'p7_files_apo', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role2->id, 'order' => 2, 'to_citizen' => 1]);
         app('App\Http\Controllers\TemplateController')->store($request);
-        
+
         //add template field
         $request = new \Illuminate\Http\Request();
         $template = Template::where('table_name', 'p7_files_apo')->first();
         $request->replace(['fieldName' => 'files_apo', 'labelName' => 'Файлы', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
-        
+
         //create template
         $request = new \Illuminate\Http\Request();
         $template_doc = TemplateDoc::where('name', 'Без шаблона')->first();
         $request->replace(['template_state' => 1, 'table_name' => 'p7_files_monitoring', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role3->id, 'order' => 3, 'to_citizen' => 1]);
         app('App\Http\Controllers\TemplateController')->store($request);
-        
+
         //add template field
         $request = new \Illuminate\Http\Request();
         $template = Template::where('table_name', 'p7_files_monitoring')->first();
         $request->replace(['fieldName' => 'files_monitoring', 'labelName' => 'Файлы', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
-        
+
         //final doc template
         $request = new \Illuminate\Http\Request();
         $template_doc = TemplateDoc::where('name', 'Шаблон 1 часть приобретение прав на ЗУ')->first();
@@ -520,7 +520,7 @@ class ProcessScript extends Seeder
         //create process application table
         $request = new \Illuminate\Http\Request();
 
-        $request->replace(['fields' => ['region', 'first_name', 'middle_name', 'sur_name', 'iin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number', 'vypiska_protokola']]);
+        $request->replace(['fields' => ['zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'region', 'first_name', 'middle_name', 'sur_name', 'iin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number', 'vypiska_protokola']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Руководитель отдела организации работы земельной комиссии')->first();
@@ -572,7 +572,7 @@ class ProcessScript extends Seeder
             'can_motiv_otkaz' => 0,
             'order' => 6
         ]);
-        
+
         $request = new \Illuminate\Http\Request();
         $template_doc = TemplateDoc::where('name', 'Шаблон 2 часть приобретение прав на ЗУ')->first();
         $request->replace(['template_state' => 1, 'table_name' => 'p17_vypiska', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role1->id, 'order' => 1, 'to_citizen' => 1]);
@@ -583,15 +583,15 @@ class ProcessScript extends Seeder
         $template_doc = TemplateDoc::where('name', 'Без шаблона')->first();
         $request->replace(['template_state' => 1, 'table_name' => 'p17_agreement', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role4->id, 'order' => 4, 'to_citizen' => 1]);
         app('App\Http\Controllers\TemplateController')->store($request);
-        
+
         //add template field
         $request = new \Illuminate\Http\Request();
         $template = Template::where('table_name', 'p17_agreement')->first();
         $request->replace(['fieldName' => 'agreement', 'labelName' => 'Договор', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
-        
+
     }
-    
+
     public function create_formirovanie_zu(){
         //Утверждение землеустроительных проектов по формированию земельных участков
         $process = Process::where('name', 'Утверждение землеустроительных проектов по формированию земельных участков')->first();
@@ -603,7 +603,7 @@ class ProcessScript extends Seeder
         //create process application table
         $request = new \Illuminate\Http\Request();
 
-        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'iin', 'telephone', 'applicant_address', 'object_address', 'area', 'region', 'dictionary_purpose', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number']]);
+        $request->replace(['fields' => ['zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'first_name', 'middle_name', 'sur_name', 'iin', 'telephone', 'applicant_address', 'object_address', 'area', 'region', 'dictionary_purpose', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Специалист отдела земельного кадастра')->first();
@@ -657,7 +657,7 @@ class ProcessScript extends Seeder
         //create process application table
         $request = new \Illuminate\Http\Request();
 
-        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'iin', 'bin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number']]);
+        $request->replace(['fields' => ['zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'first_name', 'middle_name', 'sur_name', 'iin', 'bin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Заместитель директора ТОО "Астанагорархитектура"')->first();
@@ -714,13 +714,13 @@ class ProcessScript extends Seeder
         $template_doc = TemplateDoc::where('name', 'Без шаблона')->first();
         $request->replace(['template_state' => 1, 'table_name' => 'p6_files_apo', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role2->id, 'order' => 2, 'to_citizen' => 1]);
         app('App\Http\Controllers\TemplateController')->store($request);
-        
+
         //add template field
         $request = new \Illuminate\Http\Request();
         $template = Template::where('table_name', 'p6_files_apo')->first();
         $request->replace(['fieldName' => 'shema_apo', 'labelName' => 'Схема', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
-    
+
         //add template field
         $request = new \Illuminate\Http\Request();
         $template = Template::where('table_name', 'p6_files_apo')->first();
@@ -732,7 +732,7 @@ class ProcessScript extends Seeder
         $template_doc = TemplateDoc::where('name', 'Без шаблона')->first();
         $request->replace(['template_state' => 1, 'table_name' => 'p6_files_monitoring', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role3->id, 'order' => 3, 'to_citizen' => 1]);
         app('App\Http\Controllers\TemplateController')->store($request);
-        
+
         //add template field
         $request = new \Illuminate\Http\Request();
         $template = Template::where('table_name', 'p6_files_monitoring')->first();
@@ -744,7 +744,7 @@ class ProcessScript extends Seeder
         $template = Template::where('table_name', 'p6_files_monitoring')->first();
         $request->replace(['fieldName' => 'spravka_monitoring', 'labelName' => 'Справка', 'inputItem' => 2, 'insertItem' => 1, 'temp_id' => $template->id]);
         app('App\Http\Controllers\TemplateFieldController')->store($request);
-        
+
         //final doc template
         $request = new \Illuminate\Http\Request();
         $template_doc = TemplateDoc::where('name', 'Шаблон изыскательных работ')->first();
@@ -763,7 +763,7 @@ class ProcessScript extends Seeder
         //create process application table
         $request = new \Illuminate\Http\Request();
 
-        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'iin', 'bin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number']]);
+        $request->replace(['fields' => [ 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'first_name', 'middle_name', 'sur_name', 'iin', 'bin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose','iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Специалист отдела выдачи разрешительных документов на реконструкцию, градостроительного кадастра и учета введенных в эксплуатацию объектов, договоров долевого участия')->first();
@@ -831,7 +831,7 @@ class ProcessScript extends Seeder
         //create process application table
         $request = new \Illuminate\Http\Request();
 
-        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'iin', 'bin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number']]);
+        $request->replace(['fields' => ['zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'first_name', 'middle_name', 'sur_name', 'iin', 'bin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Руководитель управления архитектуры, градостроительства и земельных отношений города Нур-Султан')->first();
@@ -894,7 +894,7 @@ class ProcessScript extends Seeder
         //create process application table
         $request = new \Illuminate\Http\Request();
 
-        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'iin', 'bin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number']]);
+        $request->replace(['fields' => ['zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'first_name', 'middle_name', 'sur_name', 'iin', 'bin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Канцелярия Акимата')->first();
@@ -932,7 +932,7 @@ class ProcessScript extends Seeder
         ]);
         $role5 = Role::where('name', 'Заместитель руководителя управления архитектуры, градостроительства и земельных отношений города Нур-Султан')->first();
         $process->roles()->attach($role5->id, [
-            'can_reject' => 1,  
+            'can_reject' => 1,
             'can_send_to_revision' => 1,
             'can_ecp_sign' => 1,
             'can_motiv_otkaz' => 0,
@@ -965,7 +965,7 @@ class ProcessScript extends Seeder
         //create process application table
         $request = new \Illuminate\Http\Request();
 
-        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'iin', 'bin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number']]);
+        $request->replace(['fields' => ['zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'first_name', 'middle_name', 'sur_name', 'iin', 'bin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Канцелярия Акимата')->first();
@@ -1003,7 +1003,7 @@ class ProcessScript extends Seeder
         ]);
         $role5 = Role::where('name', 'Заместитель директора ТОО "Астанагорархитектура"')->first();
         $process->roles()->attach($role5->id, [
-            'can_reject' => 1,  
+            'can_reject' => 1,
             'can_send_to_revision' => 1,
             'can_ecp_sign' => 1,
             'can_motiv_otkaz' => 0,
@@ -1047,7 +1047,7 @@ class ProcessScript extends Seeder
         $template_doc = TemplateDoc::where('name', 'Без шаблона')->first();
         $request->replace(['template_state' => 1, 'table_name' => 'p11_shema_monitoring', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role4->id, 'order' => 4, 'to_citizen' => 1]);
         app('App\Http\Controllers\TemplateController')->store($request);
-        
+
         //add template field
         $request = new \Illuminate\Http\Request();
         $template = Template::where('table_name', 'p11_shema_monitoring')->first();
@@ -1072,7 +1072,7 @@ class ProcessScript extends Seeder
         //create process application table
         $request = new \Illuminate\Http\Request();
 
-        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'iin', 'bin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose', 'zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number']]);
+        $request->replace(['fields' => ['zakaz4ik_drugoi', 'zakaz4ik_fiz_ur', 'first_name', 'middle_name', 'sur_name', 'iin', 'bin', 'telephone', 'applicant_address', 'object_address', 'pravo_ru', 'area', 'dictionary_purpose', 'iin_zakaz4ika', 'name_fiz_zakaz4ika', 'bin_zakaz4ika', 'name_ur_zakaz4ika', 'cadastral_number']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Канцелярия Акимата')->first();
@@ -1110,7 +1110,7 @@ class ProcessScript extends Seeder
         ]);
         $role5 = Role::where('name', 'Заместитель директора ТОО "Астанагорархитектура"')->first();
         $process->roles()->attach($role5->id, [
-            'can_reject' => 1,  
+            'can_reject' => 1,
             'can_send_to_revision' => 1,
             'can_ecp_sign' => 1,
             'can_motiv_otkaz' => 0,
@@ -1154,7 +1154,7 @@ class ProcessScript extends Seeder
         $template_doc = TemplateDoc::where('name', 'Без шаблона')->first();
         $request->replace(['template_state' => 1, 'table_name' => 'p2_shema_monitoring', 'process_id' => $process->id, 'template_doc_id' => $template_doc->id, 'role_id' => $role4->id, 'order' => 4, 'to_citizen' => 1]);
         app('App\Http\Controllers\TemplateController')->store($request);
-        
+
         //add template field
         $request = new \Illuminate\Http\Request();
         $template = Template::where('table_name', 'p2_shema_monitoring')->first();
