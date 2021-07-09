@@ -203,8 +203,7 @@ class ApplicationController extends Controller
 
         $tableColumns = $this->getColumns($process->table_name);
         $tableColumns = $this->removeViewFieldRules($application, $tableColumns);
-        $aRowNameRows = $this->getAllDictionaries(array_values($tableColumns));
-        return response()->json(['arr1' => $aRowNameRows, 'arr2' => $tableColumns]);
+        $aRowNameRows = $this->get_dic_in_order(array_values($tableColumns));
 
         $template = Template::where('role_id', Auth::user()->role_id)->where('order', $application->current_order)->first();
         $templateFields = [];

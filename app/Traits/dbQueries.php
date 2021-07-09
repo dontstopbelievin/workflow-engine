@@ -353,7 +353,8 @@ trait dbQueries
             $result[] = DB::table('dictionaries')
             ->join('input_types', 'dictionaries.input_type_id', '=', 'input_types.id')
             ->join('insert_types', 'dictionaries.insert_type_id', '=', 'insert_types.id')
-            ->select('dictionaries.name','dictionaries.label_name as labelName', 'input_types.name as inputName', 'insert_types.name as insertName', 'dictionaries.select_dic')
+            ->select('dictionaries.name','dictionaries.label_name as labelName', 'input_types.name as inputName',
+                'insert_types.name as insertName', 'dictionaries.select_dic', 'dictionaries.required')
             ->where('dictionaries.name', $item)
             ->first();
         }
