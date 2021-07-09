@@ -204,6 +204,7 @@ class ApplicationController extends Controller
         $tableColumns = $this->getColumns($process->table_name);
         $tableColumns = $this->removeViewFieldRules($application, $tableColumns);
         $aRowNameRows = $this->getAllDictionaries(array_values($tableColumns));
+        return response()->json(['arr1' => $aRowNameRows, 'arr2' => $tableColumns]);
 
         $template = Template::where('role_id', Auth::user()->role_id)->where('order', $application->current_order)->first();
         $templateFields = [];
@@ -336,7 +337,6 @@ class ApplicationController extends Controller
       $validator = Validator::make($request->all(),[
           'application_id' => ['required'],
           'process_id' => ['required'],
-          'comments' => ['required', 'min:3'],
       ]);
       if ($validator->fails()) {
         return Response::json(array(
