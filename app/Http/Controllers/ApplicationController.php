@@ -202,7 +202,7 @@ class ApplicationController extends Controller
         }
 
         $tableColumns = $this->getColumns($process->table_name);
-        $tableColumns = $this->checkFieldRules($application, $tableColumns);
+        $tableColumns = $this->removeViewFieldRules($application, $tableColumns);
         $aRowNameRows = $this->getAllDictionaries(array_values($tableColumns));
 
         $template = Template::where('role_id', Auth::user()->role_id)->where('order', $application->current_order)->first();
@@ -1024,27 +1024,27 @@ class ApplicationController extends Controller
             if($field->required == 1){
                 switch ($field->name){
                     case 'name_organization':
-                        if($requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо'){
+                        if($requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо' && $requestFields['zakaz4ik_fiz_ur'] == 'Заказчик юридическое лицо'){
                             $rules[$field->name] = 'required|not_in:null';
                         }
                         break;
                     case 'name_ur_zakaz4ika':
-                        if($requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо'){
+                        if($requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо' && $requestFields['zakaz4ik_fiz_ur'] == 'Заказчик юридическое лицо'){
                             $rules[$field->name] = 'required|not_in:null';
                         }
                         break;
                     case 'bin_zakaz4ika':
-                        if($requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо'){
+                        if($requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо' && $requestFields['zakaz4ik_fiz_ur'] == 'Заказчик юридическое лицо'){
                             $rules[$field->name] = 'required|not_in:null';
                         }
                         break;
                     case 'iin_zakaz4ika':
-                        if($requestFields['zakaz4ik_drugoi'] == 'Заявитель является Заказчиком'){
+                        if($requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо' && $requestFields['zakaz4ik_fiz_ur'] == 'Заказчик физическое лицо'){
                             $rules[$field->name] = 'required|not_in:null';
                         }
                         break;
                     case 'name_fiz_zakaz4ika':
-                        if($requestFields['zakaz4ik_drugoi'] == 'Заявитель является Заказчиком'){
+                        if($requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо' && $requestFields['zakaz4ik_fiz_ur'] == 'Заказчик физическое лицо'){
                             $rules[$field->name] = 'required|not_in:null';
                         }
                         break;
@@ -1066,7 +1066,7 @@ class ApplicationController extends Controller
         return $rules;
     }
 
-    public function checkFieldRules($app_fields, $tableColumns){
+    public function removeViewFieldRules($app_fields, $tableColumns){
         if($app_fields->zakaz4ik_drugoi == 'Заявитель является Заказчиком'){
             if (($key = array_search('name_organization', $tableColumns)) !== false) {
                 unset($tableColumns[$key]);
@@ -1077,12 +1077,30 @@ class ApplicationController extends Controller
             if (($key = array_search('bin_zakaz4ika', $tableColumns)) !== false) {
                 unset($tableColumns[$key]);
             }
-        }else{
             if (($key = array_search('iin_zakaz4ika', $tableColumns)) !== false) {
                 unset($tableColumns[$key]);
             }
             if (($key = array_search('name_fiz_zakaz4ika', $tableColumns)) !== false) {
                 unset($tableColumns[$key]);
+            }
+        }else{
+            if($app_fields->zakaz4ik_fiz_ur  == 'Заказчик физическое лицо'){
+                if (($key = array_search('name_organization', $tableColumns)) !== false) {
+                    unset($tableColumns[$key]);
+                }
+                if (($key = array_search('name_ur_zakaz4ika', $tableColumns)) !== false) {
+                    unset($tableColumns[$key]);
+                }
+                if (($key = array_search('bin_zakaz4ika', $tableColumns)) !== false) {
+                    unset($tableColumns[$key]);
+                }
+            }else{
+                if (($key = array_search('iin_zakaz4ika', $tableColumns)) !== false) {
+                    unset($tableColumns[$key]);
+                }
+                if (($key = array_search('name_fiz_zakaz4ika', $tableColumns)) !== false) {
+                    unset($tableColumns[$key]);
+                }
             }
         }
         if($app_fields->zakaz4ik_fiz_ur == 'Заказчик физическое лицо'){
