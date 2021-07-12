@@ -1066,7 +1066,7 @@ class ApplicationController extends Controller
     }
 
     public function removeViewFieldRules($app_fields, $tableColumns){
-        if($app_fields->zakaz4ik_drugoi == 'Заявитель является Заказчиком'){
+        if(isset($app_fields->zakaz4ik_drugoi) && $app_fields->zakaz4ik_drugoi == 'Заявитель является Заказчиком'){
             if (($key = array_search('name_organization', $tableColumns)) !== false) {
                 unset($tableColumns[$key]);
             }
@@ -1083,7 +1083,7 @@ class ApplicationController extends Controller
                 unset($tableColumns[$key]);
             }
         }else{
-            if($app_fields->zakaz4ik_fiz_ur  == 'Заказчик физическое лицо'){
+            if(isset($app_fields->zakaz4ik_fiz_ur) && $app_fields->zakaz4ik_fiz_ur  == 'Заказчик физическое лицо'){
                 if (($key = array_search('name_organization', $tableColumns)) !== false) {
                     unset($tableColumns[$key]);
                 }
@@ -1102,7 +1102,7 @@ class ApplicationController extends Controller
                 }
             }
         }
-        if($app_fields->zakaz4ik_fiz_ur == 'Заказчик физическое лицо'){
+        if(isset($app_fields->zakaz4ik_fiz_ur) && $app_fields->zakaz4ik_fiz_ur == 'Заказчик физическое лицо'){
             if (($key = array_search('bin', $tableColumns)) !== false) {
                 unset($tableColumns[$key]);
             }
