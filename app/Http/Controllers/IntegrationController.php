@@ -51,7 +51,7 @@ class IntegrationController extends Controller
             $response['ais_gzk_get_relevance'] = ShepRequestSender::send('ais_gzk_get_relevance', $_GET);
             return view('test')->with('data', $response);
         } catch (\Exception $e) {
-            return $e->getMessage()->all();
+            return $e->getMessage();
         }
     }
 

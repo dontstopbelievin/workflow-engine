@@ -165,7 +165,7 @@ class ShepUtil
             app_path('Integrations/shep/lib/java/xml_signer2'),
             storage_path('app/' . $sFilePath),
             app_path('Integrations/shep/cert/company_key_gost.p12'),
-            'Aa123456'
+            'Qq123456'
         ), $aOutput);
         Storage::disk('local')->delete($sFilePath);
         $aExecRes = json_decode($aOutput[0], true);
@@ -188,7 +188,7 @@ class ShepUtil
             app_path('Integrations/shep/lib/java/xml_signer'),
             storage_path('app/' . $sFilePath),
             app_path('Integrations/shep/cert/company_key_gost.p12'),
-            'Aa123456'
+            'Qq123456'
         ));
         Storage::disk('local')->delete($sFilePath);
         $sXml = Storage::disk('local')->get($sFilePath . '_sign');
