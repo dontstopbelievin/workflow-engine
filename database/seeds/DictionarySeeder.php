@@ -279,7 +279,7 @@ class DictionarySeeder extends Seeder
             [
                 'name' => 'dictionary_purpose',
                 'label_name' => 'Целевое назначение земельного участка',
-                'input_type_id' => 3,
+                'input_type_id' => 1,
                 'insert_type_id' => 1
             ],
             [
@@ -455,7 +455,7 @@ class DictionarySeeder extends Seeder
                 'label_name' => 'ФИО заказчика',
                 'input_type_id' => 1,
                 'insert_type_id' => 1
-            ],            
+            ],
             [
                 'name' => 'shema_isprash_u4astka',
                 'label_name' => 'Схема (план) испрашиваемого земельного участка',
@@ -492,6 +492,18 @@ class DictionarySeeder extends Seeder
                 'input_type_id' => 1,
                 'insert_type_id' => 1
             ],
+             [
+             'name' => 'delimost_gos_akt',
+             'label_name' => 'Правоустанавливающие документы(решение о предоставлении ЗУ, гос акт, идентификационный документ)',
+             'input_type_id' => 2,
+             'insert_type_id' => 1
+            ],
+             [
+                 'name' => 'delimost_prava',
+                 'label_name' => 'Справка о зарегистрированных правах на недвижимое имущество',
+                 'input_type_id' => 2,
+                 'insert_type_id' => 1
+             ],
             [
                 'name' => 'vypiska_protokola',
                 'label_name' => 'Выписка из протокола',

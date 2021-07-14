@@ -327,7 +327,8 @@ class ProcessScript extends Seeder
         $process->save();
         //create process application table
         $request = new \Illuminate\Http\Request();
-        $request->replace(['fields' => ['first_name', 'middle_name', 'sur_name', 'applicant_address', 'region', 'ulica_mestop_z_u', 'dictionary_purpose', 'pravo_ru', 'object_name', 'cadastral_number', 'cel_razdela']]);
+        $request->replace(['fields' => ['zakaz4ik_drugoi', 'first_name', 'middle_name', 'sur_name', 'iin', 'telephone', 'applicant_address', 'iin_zakaz4ika', 'name_fiz_zakaz4ika',
+            'cadastral_number', 'ulica_mestop_z_u', 'pravo_ru', 'area', 'object_name', 'region', 'dictionary_purpose', 'cel_razdela', 'delimost_gos_akt', 'delimost_prava']]);
         app('App\Http\Controllers\ProcessController')->createProcessTable($request, $process);
         //add process roles
         $role1 = Role::where('name', 'Руководитель архитектурно-планировочного отдела')->first();

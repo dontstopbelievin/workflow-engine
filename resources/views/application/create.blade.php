@@ -177,7 +177,8 @@
                 document.getElementById("labelname_fiz_zakaz4ika").style.display = 'none'
             }
         }else{
-            if(document.getElementsByName("zakaz4ik_fiz_ur")[1].checked){
+            if((document.getElementsByName("zakaz4ik_fiz_ur")[1] !== undefined && document.getElementsByName("zakaz4ik_fiz_ur")[1].checked)
+                || document.getElementsByName("zakaz4ik_fiz_ur")[1] === undefined){
                 if(document.getElementById("name_organization")){
                     document.getElementById("name_organization").style.display = 'block'
                     document.getElementById("labelname_organization").style.display = 'block'
@@ -199,7 +200,7 @@
                     document.getElementById("labelname_fiz_zakaz4ika").style.display = 'none'
                 }
             }
-            if(document.getElementsByName("zakaz4ik_fiz_ur")[0].checked){
+            if((document.getElementsByName("zakaz4ik_fiz_ur")[0] !== undefined && document.getElementsByName("zakaz4ik_fiz_ur")[0].checked) || document.getElementsByName("zakaz4ik_fiz_ur")[0] === undefined){
                 if(document.getElementById("iin_zakaz4ika")){
                     document.getElementById("iin_zakaz4ika").style.display = 'block'
                     document.getElementById("labeliin_zakaz4ika").style.display = 'block'
