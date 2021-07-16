@@ -66,6 +66,7 @@ class ShepUtil
 
     public static function sendShepXmlRequest($sSignedXML, $sShepUrl = null)
     {
+        return $sShepUrl;
         $sPostData = $sSignedXML;
         $sProcessId = self::randomString(6);
         $oCurl = curl_init();

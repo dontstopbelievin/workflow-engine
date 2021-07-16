@@ -585,7 +585,7 @@ class ApplicationController extends Controller
 
             $rules = $this->getFieldRules($applicationTableFields, $aRowNameRows);
 
-            $validator = Validator::make($request->input(), $rules);
+            $validator = Validator::make($request->all(), $rules);
             //dd($validator);
             if ($validator->fails()) {
                 return Response::json(array(
@@ -1023,37 +1023,42 @@ class ApplicationController extends Controller
             if($field->required == 1){
                 switch ($field->name){
                     case 'name_organization':
-                        if($requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо' && $requestFields['zakaz4ik_fiz_ur'] == 'Заказчик юридическое лицо'){
+                        if(isset($app_fields->zakaz4ik_drugoi) && isset($app_fields->zakaz4ik_fiz_ur) && $requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо'
+                            && $requestFields['zakaz4ik_fiz_ur'] == 'Заказчик юридическое лицо'){
                             $rules[$field->name] = 'required|not_in:null';
                         }
                         break;
                     case 'name_ur_zakaz4ika':
-                        if($requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо' && $requestFields['zakaz4ik_fiz_ur'] == 'Заказчик юридическое лицо'){
+                        if(isset($app_fields->zakaz4ik_drugoi) && isset($app_fields->zakaz4ik_fiz_ur) && $requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо'
+                            && $requestFields['zakaz4ik_fiz_ur'] == 'Заказчик юридическое лицо'){
                             $rules[$field->name] = 'required|not_in:null';
                         }
                         break;
                     case 'bin_zakaz4ika':
-                        if($requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо' && $requestFields['zakaz4ik_fiz_ur'] == 'Заказчик юридическое лицо'){
+                        if(isset($app_fields->zakaz4ik_drugoi) && isset($app_fields->zakaz4ik_fiz_ur) && $requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо'
+                            && $requestFields['zakaz4ik_fiz_ur'] == 'Заказчик юридическое лицо'){
                             $rules[$field->name] = 'required|not_in:null';
                         }
                         break;
                     case 'iin_zakaz4ika':
-                        if($requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо' && $requestFields['zakaz4ik_fiz_ur'] == 'Заказчик физическое лицо'){
+                        if(isset($app_fields->zakaz4ik_drugoi) && isset($app_fields->zakaz4ik_fiz_ur) && $requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо'
+                            && $requestFields['zakaz4ik_fiz_ur'] == 'Заказчик физическое лицо'){
                             $rules[$field->name] = 'required|not_in:null';
                         }
                         break;
                     case 'name_fiz_zakaz4ika':
-                        if($requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо' && $requestFields['zakaz4ik_fiz_ur'] == 'Заказчик физическое лицо'){
+                        if(isset($app_fields->zakaz4ik_drugoi) && isset($app_fields->zakaz4ik_fiz_ur) && $requestFields['zakaz4ik_drugoi'] == 'Заказчик другое лицо'
+                            && $requestFields['zakaz4ik_fiz_ur'] == 'Заказчик физическое лицо'){
                             $rules[$field->name] = 'required|not_in:null';
                         }
                         break;
                     case 'iin':
-                        if($requestFields['zakaz4ik_fiz_ur'] == 'Заказчик физическое лицо'){
+                        if(isset($app_fields->zakaz4ik_fiz_ur) && $requestFields['zakaz4ik_fiz_ur'] == 'Заказчик физическое лицо'){
                             $rules[$field->name] = 'required|not_in:null';
                         }
                         break;
                     case 'bin':
-                        if($requestFields['zakaz4ik_fiz_ur'] == 'Заказчик юридическое лицо'){
+                        if(isset($app_fields->zakaz4ik_fiz_ur) && $requestFields['zakaz4ik_fiz_ur'] == 'Заказчик юридическое лицо'){
                             $rules[$field->name] = 'required|not_in:null';
                         }
                         break;

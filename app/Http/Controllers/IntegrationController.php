@@ -38,17 +38,17 @@ class IntegrationController extends Controller
         try {
             $response = array();
             $response['egkn_receive_status'] = ShepRequestSender::send('egkn_receive_status', $_GET);
-            $response['egkn_receive_order'] = ShepRequestSender::send('egkn_receive_order', $_GET);
-            $response['geoportal_egkn_receive_layer'] = ShepRequestSender::send('geoportal_egkn_receive_layer', $_GET);
-            $response['egkn_geoportal_actualization'] = ShepRequestSender::send('egkn_geoportal_actualization', $_GET);
-            $response['eds_temp_files'] = ShepRequestSender::send('eds_temp_files', $_GET);
-            $data = [];
-            $data['correlationId'] = '-1';
-            $data['messageType'] = '-1';
-            $data['data'] = [];
-            $response['geoportal_pep_async'] = ShepRequestSender::send('geoportal_pep_async', $data);
-            $response['ais_gzk_get_data'] = ShepRequestSender::send('ais_gzk_get_data', $_GET);
-            $response['ais_gzk_get_relevance'] = ShepRequestSender::send('ais_gzk_get_relevance', $_GET);
+//            $response['egkn_receive_order'] = ShepRequestSender::send('egkn_receive_order', $_GET);
+//            $response['geoportal_egkn_receive_layer'] = ShepRequestSender::send('geoportal_egkn_receive_layer', $_GET);
+//            $response['egkn_geoportal_actualization'] = ShepRequestSender::send('egkn_geoportal_actualization', $_GET);
+//            $response['eds_temp_files'] = ShepRequestSender::send('eds_temp_files', $_GET);
+//            $data = [];
+//            $data['correlationId'] = '-1';
+//            $data['messageType'] = '-1';
+//            $data['data'] = [];
+//            $response['geoportal_pep_async'] = ShepRequestSender::send('geoportal_pep_async', $data);
+//            $response['ais_gzk_get_data'] = ShepRequestSender::send('ais_gzk_get_data', $_GET);
+//            $response['ais_gzk_get_relevance'] = ShepRequestSender::send('ais_gzk_get_relevance', $_GET);
             return view('test')->with('data', $response);
         } catch (\Exception $e) {
             return $e->getMessage();
