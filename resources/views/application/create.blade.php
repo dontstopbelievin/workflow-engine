@@ -264,7 +264,7 @@
         let inputs = $('#templateFieldsId :input');
         inputs.each(function() {
             if ('files' in $(this)[0] && $(this)[0].files != null) {
-                var file = $('input[type=file]')[0].files[0];
+                var file = $(this)[0].files[0];
                 if(file!==undefined) {
                     formData.append(this.name, file);
                 }
@@ -285,6 +285,9 @@
              formData.append(this.name, $(this).val());
             }
         });
+        for (var pair of formData.entries()) {
+            console.log(pair[0]+ ', ' + pair[1]);
+        }
         // end of forming the formData
         // send to corresponding function of ApplicationController
         var xhr = new XMLHttpRequest();

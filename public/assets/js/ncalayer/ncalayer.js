@@ -16,8 +16,10 @@ function blockScreen() {
 }
 
 function openDialog() {
-    if (confirm("Ошибка при подключении к NCALayer. Запустите NCALayer и нажмите ОК") === true) {
-        location.reload();
+    if(window.location.pathname.includes('docs/services/incoming/view') || window.location.pathname.includes('loginwithecp')){
+        if (confirm("Ошибка при подключении к NCALayer. Запустите NCALayer и нажмите ОК") === true) {
+            location.reload();
+        }
     }
 }
 
