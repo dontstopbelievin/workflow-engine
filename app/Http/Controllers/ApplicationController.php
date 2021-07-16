@@ -544,12 +544,20 @@ class ApplicationController extends Controller
     {
         try {
             DB::beginTransaction();
-            $input = $request->input();
+            $input = $request->all();
             // return response()->json(['data'=>$input], 200);
-            if ($request->hasFile('attachment')) {
-                $input["attachment"] = $request->file('attachment')->store('applicant-attachments','public');
-            }
+//            if ($request->hasFile('attachment')) {
+//                $input["attachment"] = $request->file('attachment')->store('applicant-attachments','public');
+//            }
             $applicationTableFields = $input;
+            if ($applicationTableFields) {
+                foreach($applicationTableFields as $key=>$val) {
+                    if (is_file($val)) {
+                        $path = $request->file($key)->store('application-docs','public');
+                        $applicationTableFields[$key] = $path;
+                    }
+                }
+            }
             if(isset($applicationTableFields['_token'])){
                 unset($applicationTableFields['_token']);
             }
