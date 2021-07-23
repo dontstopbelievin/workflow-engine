@@ -92,8 +92,8 @@ class UserController extends Controller
         }
 
         $user = Auth::user();
-        if(!\Hash::check($user->password, $request->cur_password)){
-            return Redirect::back()->with('error', 'Текущий пароль не верный!');   
+        if(!\Hash::check($request->cur_password, $user->password)){
+            return Redirect::back()->with('error', 'Текущий пароль не верный!');
         }
 
         $user->password = \Hash::make($request->password);

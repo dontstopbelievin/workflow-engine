@@ -67,8 +67,8 @@
                                 <div class="md-form md-outline reg_form">
                                     <label data-error="wrong" data-success="right" for="password"><b>Придумайте пароль</b></label><br/>
                                     <input type="password" id="password" name="password" required autocomplete="new-password" class="form-control"/ style="margin: 0px;width: 80%!important;">
-                                    <small id="emailHelp" class="form-text text-muted" style="text-align: left;">1.Длина пароля должна быть не менее 8 символов</small>
-                                    <small id="emailHelp" class="form-text text-muted" style="text-align: left;">2.Пароль должен состоять из букв латинского алфавита (A-z) и арабских цифр (0-9)</small>
+                                    <small id="emailHelp" class="form-text text-muted" style="text-align: left;">1. Длина пароля должна быть не менее 8 символов</small>
+                                    <small id="emailHelp" class="form-text text-muted" style="text-align: left;">2. Пароль должен состоять из букв латинского алфавита (A-z) и арабских цифр (0-9)</small>
                                     <small id="emailHelp" class="form-text text-muted" style="text-align: left;">3. Пароль должен содержать не менее одного из следующих символов:( !$#% ).</small>
                                 </div>
                                 <div class="md-form md-outline reg_form">
@@ -91,7 +91,7 @@
                                         <a class="flex flex-wrap text-sm font-medium text-blue-800 hover:underline"
                                        href="/login">
                                         Уже есть аккаунт? Авторизуйтесь
-                                        </a> 
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -139,7 +139,7 @@
         document.getElementById("iin").value = iin;
     }
     if(bin){
-        document.getElementById("bin").value = bin;   
+        document.getElementById("bin").value = bin;
     }
     document.getElementById("firstname").value = first_name;
     document.getElementById("surname").value = sur_name;
