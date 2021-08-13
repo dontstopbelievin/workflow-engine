@@ -57,7 +57,12 @@
           },
           scale: 100000
       })
-
+        //
+        // const land_layer2 = new FeatureLayer({
+        //     url: "http://192.168.101.202:6080/arcgis/rest/services/DPA/FeatureServer/0",
+        // })
+        // existLayerReplace(land_layer2)
+        // console.log(land_layer2)
       window.map.add(query_layer)
 
       let url = layer_url+'/'+layer_id

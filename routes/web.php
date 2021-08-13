@@ -40,7 +40,10 @@ Route::middleware(['guest'])->group(function () {
     Route::post('loginwithecp/bar', 'EdsSignController@loginByCert');
     Route::get('/loginwithecp', function () {return view('auth.loginwithecp');});
     Route::get('/dataformater','AuctionController@dataFormater');
-    Route::get('/test', 'IntegrationController@test');
+//    Route::get('/test', 'IntegrationController@test');
+    Route::get('/test', function (){
+        return view('pdf.pdf');
+    });
 
     Route::prefix('integrations')->group(function () {
 
