@@ -32,7 +32,7 @@ class IntegrationController extends Controller
 
     public function test() // HERE!!!
     {
-//        return view('test');
+       // return view('test');
         // return Carbon::now()->toDateTimeString();
         // return hash('sha512', 'admin@gmail.com123ETO_SOL');
         try {
