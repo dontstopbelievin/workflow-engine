@@ -106,6 +106,7 @@ class ShepUtil
             } else {
                 file_put_contents(sprintf('%s/file_out_%s.request', $sFolder, $sProcessId), $sPostData);
                 file_put_contents(sprintf('%s/file_out_%s.response', $sFolder, $sProcessId), $sResult);
+                file_put_contents(sprintf('%s/file_out_%s.URL', $sFolder, $sProcessId), $sShepUrl);
             }
             echo json_encode(array('status' => 0, 'data' => 'shep internal error: http-' . $iHttpCode));
         }
