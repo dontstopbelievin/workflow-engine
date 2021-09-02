@@ -28,6 +28,21 @@ class UserSeeder extends Seeder
 
         DB::table('users')->insert([
             [
+                'first_name' => 'test',
+                'sur_name' => 'test',
+                'middle_name' => 'test',
+                'telephone' => '7771234567',
+                'email' => 'test@gmail.com',
+                'iin' => '123123123123',
+                'password' => Hash::make('123123Aa@'),
+                'created_at' => \Carbon\Carbon::now(),
+                'updated_at' => \Carbon\Carbon::now(),
+                'role_id' => 1,
+            ],
+        ]);
+
+        DB::table('users')->insert([
+            [
                 'first_name' => 'Admin',
                 'sur_name' => 'Admin',
                 'middle_name' => 'Admin',
