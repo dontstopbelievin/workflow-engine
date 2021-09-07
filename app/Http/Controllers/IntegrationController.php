@@ -38,7 +38,7 @@ class IntegrationController extends Controller
         try {
             $response = array();
            $response['egkn_receive_status'] = ShepRequestSender::send('egkn_receive_status', $_GET);
-           $response['egkn_receive_order'] = ShepRequestSender::send('egkn_receive_order', $_GET);
+           // $response['egkn_receive_order'] = ShepRequestSender::send('egkn_receive_order', $_GET);
 //            $response['geoportal_egkn_receive_layer'] = ShepRequestSender::send('geoportal_egkn_receive_layer', $_GET);
 //            $response['egkn_geoportal_actualization'] = ShepRequestSender::send('egkn_geoportal_actualization', $_GET);
 //            $response['eds_temp_files'] = ShepRequestSender::send('eds_temp_files', $_GET);
