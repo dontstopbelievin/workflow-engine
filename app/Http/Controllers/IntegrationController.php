@@ -45,11 +45,19 @@ class IntegrationController extends Controller
             // $data = [];
             // $data['correlationId'] = '-1999';
             // $data['messageType'] = '-1999';
-            // $data['data'] = [];
+            // $data['data'] = ['test' => 'test'];
             // $response['geoportal_pep_async'] = ShepRequestSender::send('geoportal_pep_async', $data);
             // $response['ais_gzk_get_data'] = ShepRequestSender::send('ais_gzk_get_data', $_GET);
             // $response['ais_gzk_get_relevance'] = ShepRequestSender::send('ais_gzk_get_relevance', $_GET);
             return view('test')->with('data', $response);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function test_async(Request $request){
+        try{
+            return ServiceRequestRouter::route($request);
         } catch (\Exception $e) {
             return $e->getMessage();
         }
