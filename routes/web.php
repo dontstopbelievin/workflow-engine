@@ -42,6 +42,8 @@ Route::middleware(['guest'])->group(function () {
     Route::get('/dataformater','AuctionController@dataFormater');
     Route::get('/test', 'IntegrationController@test');
     Route::get('/test_async', 'IntegrationController@test_async');
+    Route::get('/pep_send_response', 'IntegrationController@pep_send_response');
+    
     // Route::get('/test', function (){return view('pdf.pdf');});
 
     Route::prefix('integrations')->group(function () {

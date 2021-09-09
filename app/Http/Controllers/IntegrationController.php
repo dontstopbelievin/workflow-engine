@@ -63,6 +63,43 @@ class IntegrationController extends Controller
         }
     }
 
+    public function pep_send_response(Request $request){
+        try{
+            $aData = array(
+                'responseMessage' => array(
+                    'SystemInfo' => array(
+                        'RequestNumber' => '10000000000000005764',
+                        'ChainId' => '10000000000000005764',
+                        'RequestDate' => '2020-06-23T14:22:54.719+06:00'
+                    ),
+                    'ResponseData' => array(
+                        'RequestNumber' => 'request number here',
+                        'CurrentStatus' => '001',
+                        'FirstStepResponse' => array(
+                            'Act' => array(
+                                'CodeType' => 'ZKR4',
+                                'FileName' => 'Акт выбора окончательные либо отказ.pdf',
+                                'FileId' => '00000000-0000-7071-6571-dc6e265c080b',
+                                'DocNumber' => '115',
+                                'DocDate' => '2020-07-23+06:00',
+                                'FileType' => 'ActReconcilation_or_RefuseAct'
+                            )
+                        )
+                    )
+                )
+            );
+            $aPreparedData = array(
+                'correlationId' => 'Correlation Id here',
+                'data' => $aData,
+                'messageType' => 'RESPONSE'
+            );
+            $response['geoportal_pep_async'] = ShepRequestSender::send('geoportal_pep_async', $aPreparedData);
+            return view('test')->with('data', $response);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
     public function receive(Request $request)
     {
         ServiceRequestRouter::route($request);
