@@ -32,12 +32,12 @@ class IntegrationController extends Controller
 
     public function test() // HERE!!!
     {
-       return 'asdf';
+       // return 'asdf';
         // return Carbon::now()->toDateTimeString();
         // return hash('sha512', 'admin@gmail.com123ETO_SOL');
         try {
             $response = array();
-            $response['egkn_receive_status'] = ShepRequestSender::send('egkn_receive_status', $_GET);
+            // $response['egkn_receive_status'] = ShepRequestSender::send('egkn_receive_status', $_GET);
             // $response['egkn_receive_order'] = ShepRequestSender::send('egkn_receive_order', $_GET);
             // $response['geoportal_egkn_receive_layer'] = ShepRequestSender::send('geoportal_egkn_receive_layer', $_GET);
             // $response['egkn_geoportal_actualization'] = ShepRequestSender::send('egkn_geoportal_actualization', $_GET);
@@ -46,7 +46,25 @@ class IntegrationController extends Controller
             // $data['correlationId'] = '-1999';
             // $data['messageType'] = '-1999';
             // $data['data'] = ['test' => 'test'];
-            // $response['geoportal_pep_async'] = ShepRequestSender::send('geoportal_pep_async', $data);
+
+            $system_info = new \stdClass();
+            $system_info->RequestNumber = "10000000000000005764";
+            $system_info->ChainId = "10000000000000005764";
+            $system_info->RequestDate = "2020-06-23T14:22:54.719+06:00";
+            $response_data = new \stdClass();
+            $response_data->RequestNumber = "10000000000000005764";
+            $response_data->CurrentStatus = "001";
+            $response_data->CurrentStatusText = "Заявка успешно создана";
+            $data = new \stdClass();
+            $response_message = new \stdClass();
+            $response_message->SystemInfo = $system_info;
+            $response_message->ResponseData = $response_data;
+            $data->responseMessage = $response_message;
+            $to_send = new \stdClass();
+            $to_send->correlationId = "3376387";
+            $to_send->data = $data;
+            $to_send->messageType = "NOTIFICATION";
+            $response['geoportal_pep_async'] = ShepRequestSender::send('geoportal_pep_async', $to_send);
             // $response['ais_gzk_get_data'] = ShepRequestSender::send('ais_gzk_get_data', $_GET);
             // $response['ais_gzk_get_relevance'] = ShepRequestSender::send('ais_gzk_get_relevance', $_GET);
             return view('test')->with('data', $response);
