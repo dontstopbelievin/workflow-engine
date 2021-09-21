@@ -37,9 +37,9 @@ class GeoportalPEPAsyncService extends ShepService implements XmlBuilderInterfac
         }
         $sXml = str_replace('<ns3:' . $sType . '>', '<' . $sType . ' xmlns:ns3="http://newshep.get_app_ZU_egov_Aktobe.egov.kz">', $sXml);
         $sXml = str_replace('</ns3:' . $sType . '>', '</' . $sType . '>', $sXml);
-        $sXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' . $sXml;
+        $sXml = '<?xml version="1.0" ?>' . $sXml;
         $sXml = str_replace('<', '&lt;', $sXml);
-        $sRequestXml = ShepXmlUtil::getSoapAsyncRequest(self::SERVICE_ID, $sXml, $aPreparedData['messageType'], $aPreparedData['correlationId']);
+        $sRequestXml = ShepXmlUtil::get_ZU_RGIS_UniversalService(self::SERVICE_ID, $sXml, $aPreparedData['messageType'], $aPreparedData['correlationId']);
         $sRequestXml = str_replace('<data>', '<data xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">', $sRequestXml);
 
         return $sRequestXml;
