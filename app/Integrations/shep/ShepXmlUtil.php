@@ -33,16 +33,16 @@ class ShepXmlUtil
         if (mb_strlen($sCorrelationId) > 0) {
             $sCorrelationIdTag = '<correlationId>' . $sCorrelationId . '</correlationId>';
         }
-        return '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soapenv:Body><typ:sendMessageResponse xmlns:typ="http://bip.bee.kz/AsyncChannel/v10/Types"><request><messageInfo>' . $sCorrelationIdTag . '<serviceId>' . $sServiceId . '</serviceId><messageType>' . $sMessageType . '</messageType><messageDate>' . ShepUtil::getTimestampWithTimeZone() . '</messageDate><sender><senderId>' . config('shep.login') . '</senderId><password>' . config('shep.password') . '</password></sender></messageInfo><messageData><data>' . $sXml . '</data></messageData></request></typ:sendMessageResponse></soapenv:Body></soapenv:Envelope>';
+        return '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soapenv:Body><typ:sendMessage xmlns:typ="http://bip.bee.kz/AsyncChannel/v10/Types"><request><messageInfo>' . $sCorrelationIdTag . '<serviceId>' . $sServiceId . '</serviceId><messageType>' . $sMessageType . '</messageType><messageDate>' . ShepUtil::getTimestampWithTimeZone() . '</messageDate><sender><senderId>' . config('shep.login') . '</senderId><password>' . config('shep.password') . '</password></sender></messageInfo><messageData><data>' . $sXml . '</data></messageData></request></typ:sendMessage></soapenv:Body></soapenv:Envelope>';
     }
 
-    public static function get_ZU_RGIS_UniversalService($sServiceId, $sXml, $sMessageType = 'REQUEST', $sCorrelationId = '')
+    public static function getSoapAsyncRequest2($sServiceId, $sXml, $sMessageType = 'REQUEST', $sCorrelationId = '')
     {
         $sCorrelationIdTag = '';
         if (mb_strlen($sCorrelationId) > 0) {
             $sCorrelationIdTag = '<correlationId>' . $sCorrelationId . '</correlationId>';
         }
-        return '<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/"xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><S:Body><ns2:sendMessage xmlns:typ="http://bip.bee.kz/AsyncChannel/v10/Types"><request xmlns=""><messageInfo>' . $sCorrelationIdTag . '<serviceId>' . $sServiceId . '</serviceId><messageType>' . $sMessageType . '</messageType><routeId>R_NurSultan</routeId><messageDate>' . ShepUtil::getTimestampWithTimeZone() . '</messageDate><sender><senderId>' . config('shep.login') . '</senderId><password>' . config('shep.password') . '</password></sender></messageInfo><messageData><data>' . $sXml . '</data></messageData></request></ns2:sendMessage></soapenv:Body></S:Envelope>';
+        return '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soapenv:Body><ns2:sendMessage xmlns:ns2="http://bip.bee.kz/AsyncChannel/v10/Types"><request><messageInfo>' . $sCorrelationIdTag . '<serviceId>' . $sServiceId . '</serviceId><messageType>' . $sMessageType . '</messageType><routeId>R_NurSultan</routeId><messageDate>' . ShepUtil::getTimestampWithTimeZone() . '</messageDate><sender><senderId>' . config('shep.login') . '</senderId><password>' . config('shep.password') . '</password></sender></messageInfo><messageData><data>' . $sXml . '</data></messageData></request></ns2:sendMessage></soapenv:Body></soapenv:Envelope>';
     }
 
     public static function getSoapAsyncResponse($sCorrelationId)
