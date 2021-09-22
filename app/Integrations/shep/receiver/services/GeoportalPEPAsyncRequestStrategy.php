@@ -42,7 +42,7 @@ class GeoportalPEPAsyncRequestStrategy implements ShepServiceStrategyInterface
         $aPreparedData = array(
             'correlationId' => $sCorrelationId,
             'data' => $aData,
-            'messageType' => 'NOTIFICATION'
+            'messageType' => 'RESPONSE'
         );
         $sXml = (new GeoportalPEPAsyncService())->buildXml($aPreparedData);
 

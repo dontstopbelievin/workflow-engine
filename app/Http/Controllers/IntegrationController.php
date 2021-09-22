@@ -81,6 +81,35 @@ class IntegrationController extends Controller
         }
     }
 
+    public function pep_send_notification(Request $request){
+        try{
+            $aData = array(
+                'responseMessage' => array(
+                    'SystemInfo' => array(
+                        'RequestNumber' => '10000000000000005764',
+                        'ChainId' => '10000000000000005764',
+                        'RequestDate' => '2020-06-23T14:22:54.719+06:00'
+                    ),
+                    'ResponseData' => array(
+                        'RequestNumber' => '10000000000000005764',
+                        'CurrentStatus' => '001',
+                        'CurrentStatusText' => 'Заявка успешно создана'
+                    )
+                )
+            );
+            $aPreparedData = array(
+                'correlationId' => $request['sCorrelationId'],
+                'data' => $aData,
+                'messageType' => 'NOTIFICATION'
+            );
+
+            $response['geoportal_pep_async'] = ShepRequestSender::send('geoportal_pep_async', $aPreparedData);
+            return $response;
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
     public function pep_send_response(Request $request){
         try{
             $aData = array(
