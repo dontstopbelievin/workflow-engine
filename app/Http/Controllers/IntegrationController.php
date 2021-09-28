@@ -86,12 +86,12 @@ class IntegrationController extends Controller
             $aData = array(
                 'responseMessage' => array(
                     'SystemInfo' => array(
-                        'RequestNumber' => '10000000000000005764',
-                        'ChainId' => '10000000000000005764',
-                        'RequestDate' => '2020-06-23T14:22:54.719+06:00'
+                        'RequestNumber' => $request['RequestNumber'],
+                        'ChainId' => $request['ChainId'],
+                        'RequestDate' => $request['RequestDate']
                     ),
                     'ResponseData' => array(
-                        'RequestNumber' => '10000000000000005764',
+                        'RequestNumber' => $request['RequestNumber'],
                         'CurrentStatus' => '001',
                         'CurrentStatusText' => 'Заявка успешно создана'
                     )
