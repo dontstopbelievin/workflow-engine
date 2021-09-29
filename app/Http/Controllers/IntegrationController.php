@@ -6,18 +6,25 @@ use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use App\Integrations\shep\sender\ShepRequestSender;
 use App\Integrations\shep\receiver\ServiceRequestRouter;
-
+use App\Integrations\shep\ShepUtil;
 use App\Process;
 
 class IntegrationController extends Controller
 {
-    public function index($type)
+    public function index(Request $request, $type)
     {
+        $array_data = [];
+        foreach($request['data'] as $key => $value){
+            $array_data[$key] = $value;
+        }
+        // $sUnsignedXml = ShepUtil::arrayToXML($array_data);
+        // return $sUnsignedXml;
+        // return $array_data['request']['RequestData'][0]['ServicesType'][0];
         $response = array();
         switch ($type) {
             case 'shep':
-                if (isset($_GET['service'])) {
-                    $response = ShepRequestSender::send($_GET['service'], $_GET);
+                if (isset($request['service'])) {
+                    $response = ShepRequestSender::send($request['service'], $array_data);
                 } else {
                     echo 'no service found';
                 }
@@ -68,14 +75,6 @@ class IntegrationController extends Controller
             // $response['ais_gzk_get_data'] = ShepRequestSender::send('ais_gzk_get_data', $_GET);
             // $response['ais_gzk_get_relevance'] = ShepRequestSender::send('ais_gzk_get_relevance', $_GET);
             return view('test')->with('data', $response);
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
-
-    public function test_async(Request $request){
-        try{
-            return ServiceRequestRouter::route($request);
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -145,6 +144,12 @@ class IntegrationController extends Controller
         } catch (\Exception $e) {
             return $e->getMessage();
         }
+    }
+
+    public function json_to_array($json_obj)
+    {
+
+        return 'asd';
     }
 
     public function receive(Request $request)
