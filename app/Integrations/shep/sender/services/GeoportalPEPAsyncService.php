@@ -40,7 +40,7 @@ class GeoportalPEPAsyncService extends ShepService implements XmlBuilderInterfac
         $sXml = '<?xml version="1.0" ?>' . $sXml;
         $sXml = str_replace('<', '&lt;', $sXml);
         if($aPreparedData['messageType'] == 'RESPONSE'){
-            $sRequestXml = ShepXmlUtil::getSoapAsyncResponse2(self::SERVICE_ID, $sXml, $aPreparedData['messageType'], $aPreparedData['correlationId']);
+            $sRequestXml = ShepXmlUtil::getSoapAsyncResponse2($aPreparedData['correlationId']);
         }else{
             $sRequestXml = ShepXmlUtil::getSoapAsyncRequest_pep(self::SERVICE_ID, $sXml, $aPreparedData['messageType'], $aPreparedData['correlationId']);
         }

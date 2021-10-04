@@ -109,7 +109,7 @@ class IntegrationController extends Controller
         }
     }
 
-    public function pep_send_response(Request $request){
+    public function pepaResponseData_send_response(Request $request){
         try{
             $aData = array(
                 'responseMessage' => array(

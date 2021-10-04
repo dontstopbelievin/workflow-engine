@@ -7,6 +7,7 @@ use App\Integrations\shep\receiver\services\GeoportalGzkGetDataStrategy;
 use App\Integrations\shep\receiver\services\GeoportalGzkGetRelevanceStrategy;
 use App\Integrations\shep\receiver\services\GeoportalPEPAsyncRequestStrategy;
 use App\Integrations\shep\receiver\services\GetGeoDataFromGzkToGeoportalStrategy;
+use App\Integrations\shep\receiver\services\EgknUniversalReceiveOrder;
 use App\Integrations\shep\ShepUtil;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -42,6 +43,9 @@ class ServiceRequestRouter
                     break;
                 case 'GeoportalGzkGetRelevance':
                     $oShepServiceStrategy = new GeoportalGzkGetRelevanceStrategy($aResponseData);
+                    break;
+                case 'EgknUniversalReceiveOrder':
+                    $oShepServiceStrategy = new EgknUniversalReceiveOrder($aResponseData);
                     break;
                 default:
                     throw new \SoapFault('Server', 'No service found');
