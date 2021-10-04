@@ -1,0 +1,393 @@
+diff --git a/app/DictDefaultValues.php b/app/DictDefaultValues.php
+old mode 100644
+new mode 100755
+diff --git a/app/EgknService.php b/app/EgknService.php
+old mode 100644
+new mode 100755
+diff --git a/app/Exports/ApplicationsExport.php b/app/Exports/ApplicationsExport.php
+old mode 100644
+new mode 100755
+diff --git a/app/File.php b/app/File.php
+old mode 100644
+new mode 100755
+diff --git a/app/FileCategory.php b/app/FileCategory.php
+old mode 100644
+new mode 100755
+diff --git a/app/HolidayCalendar.php b/app/HolidayCalendar.php
+old mode 100644
+new mode 100755
+diff --git a/app/Http/Controllers/EgknServiceController.php b/app/Http/Controllers/EgknServiceController.php
+old mode 100644
+new mode 100755
+diff --git a/app/Http/Controllers/TemplateDocController.php b/app/Http/Controllers/TemplateDocController.php
+old mode 100644
+new mode 100755
+diff --git a/app/Http/Controllers/UtilController.php b/app/Http/Controllers/UtilController.php
+old mode 100644
+new mode 100755
+diff --git a/app/Http/Middleware/super_admin.php b/app/Http/Middleware/super_admin.php
+old mode 100644
+new mode 100755
+diff --git a/app/Integrations/shep/arrays/gzk-getter-from-mio.php b/app/Integrations/shep/arrays/gzk-getter-from-mio.php
+old mode 100644
+new mode 100755
+diff --git a/app/Integrations/shep/cert/company_key_gost.p12 b/app/Integrations/shep/cert/company_key_gost.p12
+old mode 100644
+new mode 100755
+diff --git a/app/Integrations/shep/receiver/services/GeoportalGzkGetDataStrategy.php b/app/Integrations/shep/receiver/services/GeoportalGzkGetDataStrategy.php
+old mode 100644
+new mode 100755
+diff --git a/app/Integrations/shep/receiver/services/GeoportalGzkGetRelevanceStrategy.php b/app/Integrations/shep/receiver/services/GeoportalGzkGetRelevanceStrategy.php
+old mode 100644
+new mode 100755
+diff --git a/app/Integrations/shep/receiver/services/GetGeoDataFromGzkToGeoportalStrategy.php b/app/Integrations/shep/receiver/services/GetGeoDataFromGzkToGeoportalStrategy.php
+old mode 100644
+new mode 100755
+diff --git a/app/Integrations/shep/sender/services/AisGzkGetterFromMioService.php b/app/Integrations/shep/sender/services/AisGzkGetterFromMioService.php
+old mode 100644
+new mode 100755
+diff --git a/app/Log.php b/app/Log.php
+old mode 100644
+new mode 100755
+diff --git a/app/Service.php b/app/Service.php
+old mode 100644
+new mode 100755
+diff --git a/app/TemplateDoc.php b/app/TemplateDoc.php
+old mode 100644
+new mode 100755
+diff --git a/config/dompdf.php b/config/dompdf.php
+old mode 100644
+new mode 100755
+diff --git a/config/excel.php b/config/excel.php
+old mode 100644
+new mode 100755
+diff --git a/database/migrations/2020_06_23_150914_create_template_docs_table.php b/database/migrations/2020_06_23_150914_create_template_docs_table.php
+old mode 100644
+new mode 100755
+diff --git a/database/migrations/2020_09_07_042747_role_statuses.php b/database/migrations/2020_09_07_042747_role_statuses.php
+old mode 100644
+new mode 100755
+diff --git a/database/migrations/2020_09_07_064207_create_logs_table.php b/database/migrations/2020_09_07_064207_create_logs_table.php
+old mode 100644
+new mode 100755
+diff --git a/database/migrations/2021_01_12_102544_create_egkn_services_table.php b/database/migrations/2021_01_12_102544_create_egkn_services_table.php
+old mode 100644
+new mode 100755
+diff --git a/database/migrations/2021_03_01_035542_dict_def_values.php b/database/migrations/2021_03_01_035542_dict_def_values.php
+old mode 100644
+new mode 100755
+diff --git a/database/migrations/2021_03_11_094845_create_services_table.php b/database/migrations/2021_03_11_094845_create_services_table.php
+old mode 100644
+new mode 100755
+diff --git a/database/migrations/2021_03_15_103041_create_files_table.php b/database/migrations/2021_03_15_103041_create_files_table.php
+old mode 100644
+new mode 100755
+diff --git a/database/migrations/2021_05_11_041831_create_holiday_calendars_table.php b/database/migrations/2021_05_11_041831_create_holiday_calendars_table.php
+old mode 100644
+new mode 100755
+diff --git a/database/seeds/EgknServiceSeeder.php b/database/seeds/EgknServiceSeeder.php
+old mode 100644
+new mode 100755
+diff --git a/database/seeds/FileCategorySeeder.php b/database/seeds/FileCategorySeeder.php
+old mode 100644
+new mode 100755
+diff --git a/database/seeds/HolidayCalendarSeeder.php b/database/seeds/HolidayCalendarSeeder.php
+old mode 100644
+new mode 100755
+diff --git a/database/seeds/Organizations.php b/database/seeds/Organizations.php
+old mode 100644
+new mode 100755
+diff --git a/database/seeds/ProcessScript.php b/database/seeds/ProcessScript.php
+old mode 100644
+new mode 100755
+diff --git a/database/seeds/RoleStatusesSeeder.php b/database/seeds/RoleStatusesSeeder.php
+old mode 100644
+new mode 100755
+diff --git a/database/seeds/ServiceSeeder.php b/database/seeds/ServiceSeeder.php
+old mode 100644
+new mode 100755
+diff --git a/database/seeds/TemplateDocSeeder.php b/database/seeds/TemplateDocSeeder.php
+old mode 100644
+new mode 100755
+diff --git a/public/assets/js/ncalayer/jquery.blockUI.js b/public/assets/js/ncalayer/jquery.blockUI.js
+old mode 100644
+new mode 100755
+diff --git a/public/assets/js/ncalayer/jquery.js b/public/assets/js/ncalayer/jquery.js
+old mode 100644
+new mode 100755
+diff --git a/public/assets/js/ncalayer/jquery.serializejson.min.js b/public/assets/js/ncalayer/jquery.serializejson.min.js
+old mode 100644
+new mode 100755
+diff --git a/public/assets/js/ncalayer/loading.gif b/public/assets/js/ncalayer/loading.gif
+old mode 100644
+new mode 100755
+diff --git a/public/assets/js/ncalayer/ncalayer.js b/public/assets/js/ncalayer/ncalayer.js
+old mode 100644
+new mode 100755
+diff --git a/public/assets/js/ncalayer/process-ncalayer-calls.js b/public/assets/js/ncalayer/process-ncalayer-calls.js
+old mode 100644
+new mode 100755
+diff --git a/public/css/custom.css b/public/css/custom.css
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/HELP-US-OUT.txt b/public/css/font_awesome/HELP-US-OUT.txt
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/css/font-awesome.css b/public/css/font_awesome/css/font-awesome.css
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/css/font-awesome.min.css b/public/css/font_awesome/css/font-awesome.min.css
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/fonts/FontAwesome.otf b/public/css/font_awesome/fonts/FontAwesome.otf
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/fonts/fontawesome-webfont.eot b/public/css/font_awesome/fonts/fontawesome-webfont.eot
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/fonts/fontawesome-webfont.svg b/public/css/font_awesome/fonts/fontawesome-webfont.svg
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/fonts/fontawesome-webfont.ttf b/public/css/font_awesome/fonts/fontawesome-webfont.ttf
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/fonts/fontawesome-webfont.woff b/public/css/font_awesome/fonts/fontawesome-webfont.woff
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/fonts/fontawesome-webfont.woff2 b/public/css/font_awesome/fonts/fontawesome-webfont.woff2
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/less/animated.less b/public/css/font_awesome/less/animated.less
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/less/bordered-pulled.less b/public/css/font_awesome/less/bordered-pulled.less
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/less/core.less b/public/css/font_awesome/less/core.less
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/less/fixed-width.less b/public/css/font_awesome/less/fixed-width.less
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/less/font-awesome.less b/public/css/font_awesome/less/font-awesome.less
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/less/icons.less b/public/css/font_awesome/less/icons.less
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/less/larger.less b/public/css/font_awesome/less/larger.less
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/less/list.less b/public/css/font_awesome/less/list.less
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/less/mixins.less b/public/css/font_awesome/less/mixins.less
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/less/path.less b/public/css/font_awesome/less/path.less
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/less/rotated-flipped.less b/public/css/font_awesome/less/rotated-flipped.less
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/less/screen-reader.less b/public/css/font_awesome/less/screen-reader.less
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/less/stacked.less b/public/css/font_awesome/less/stacked.less
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/less/variables.less b/public/css/font_awesome/less/variables.less
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/scss/_animated.scss b/public/css/font_awesome/scss/_animated.scss
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/scss/_bordered-pulled.scss b/public/css/font_awesome/scss/_bordered-pulled.scss
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/scss/_core.scss b/public/css/font_awesome/scss/_core.scss
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/scss/_fixed-width.scss b/public/css/font_awesome/scss/_fixed-width.scss
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/scss/_icons.scss b/public/css/font_awesome/scss/_icons.scss
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/scss/_larger.scss b/public/css/font_awesome/scss/_larger.scss
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/scss/_list.scss b/public/css/font_awesome/scss/_list.scss
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/scss/_mixins.scss b/public/css/font_awesome/scss/_mixins.scss
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/scss/_path.scss b/public/css/font_awesome/scss/_path.scss
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/scss/_rotated-flipped.scss b/public/css/font_awesome/scss/_rotated-flipped.scss
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/scss/_screen-reader.scss b/public/css/font_awesome/scss/_screen-reader.scss
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/scss/_stacked.scss b/public/css/font_awesome/scss/_stacked.scss
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/scss/_variables.scss b/public/css/font_awesome/scss/_variables.scss
+old mode 100644
+new mode 100755
+diff --git a/public/css/font_awesome/scss/font-awesome.scss b/public/css/font_awesome/scss/font-awesome.scss
+old mode 100644
+new mode 100755
+diff --git a/public/images/GERBBB.jpg b/public/images/GERBBB.jpg
+old mode 100644
+new mode 100755
+diff --git a/public/images/done.png b/public/images/done.png
+old mode 100644
+new mode 100755
+diff --git a/public/images/header.jpg b/public/images/header.jpg
+old mode 100644
+new mode 100755
+diff --git a/public/images/house.png b/public/images/house.png
+old mode 100644
+new mode 100755
+diff --git a/public/images/logo.png b/public/images/logo.png
+old mode 100644
+new mode 100755
+diff --git a/public/images/warning.png b/public/images/warning.png
+old mode 100644
+new mode 100755
+diff --git a/public/js/jquery_3.6.js b/public/js/jquery_3.6.js
+old mode 100644
+new mode 100755
+diff --git a/public/js/jquery_migrate_1.2.1.js b/public/js/jquery_migrate_1.2.1.js
+old mode 100644
+new mode 100755
+diff --git a/public/js/jquery_migrate_3.3.2.js b/public/js/jquery_migrate_3.3.2.js
+old mode 100644
+new mode 100755
+diff --git a/public/test.pdf b/public/test.pdf
+old mode 100644
+new mode 100755
+diff --git a/public/test.xml b/public/test.xml
+old mode 100644
+new mode 100755
+diff --git a/resources/lang/ru/auth.php b/resources/lang/ru/auth.php
+old mode 100644
+new mode 100755
+diff --git a/resources/lang/ru/pagination.php b/resources/lang/ru/pagination.php
+old mode 100644
+new mode 100755
+diff --git a/resources/lang/ru/passwords.php b/resources/lang/ru/passwords.php
+old mode 100644
+new mode 100755
+diff --git a/resources/lang/ru/validation-inline.php b/resources/lang/ru/validation-inline.php
+old mode 100644
+new mode 100755
+diff --git a/resources/lang/ru/validation.php b/resources/lang/ru/validation.php
+old mode 100644
+new mode 100755
+diff --git a/resources/sass/custom.scss b/resources/sass/custom.scss
+old mode 100644
+new mode 100755
+diff --git a/resources/views/PDFtemplates/1_priobretenie_prav_na_zu.blade.php b/resources/views/PDFtemplates/1_priobretenie_prav_na_zu.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/PDFtemplates/2_priobretenie_prav_na_zu.blade.php b/resources/views/PDFtemplates/2_priobretenie_prav_na_zu.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/PDFtemplates/delimost_nedilimost.blade.php b/resources/views/PDFtemplates/delimost_nedilimost.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/PDFtemplates/empty.blade.php b/resources/views/PDFtemplates/empty.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/PDFtemplates/postanovka_poluchenie_zu.blade.php b/resources/views/PDFtemplates/postanovka_poluchenie_zu.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/PDFtemplates/postutilizaciya.blade.php b/resources/views/PDFtemplates/postutilizaciya.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/PDFtemplates/predostavlenie_v_cherte.blade.php b/resources/views/PDFtemplates/predostavlenie_v_cherte.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/PDFtemplates/prodaja_zu_edinovremenno.blade.php b/resources/views/PDFtemplates/prodaja_zu_edinovremenno.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/admin/new_user.blade.php b/resources/views/admin/new_user.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/admin/super_admin.blade.php b/resources/views/admin/super_admin.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/application/applications.blade.php b/resources/views/application/applications.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/application/maps/map_draw_polygon.blade.php b/resources/views/application/maps/map_draw_polygon.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/application/maps/map_find.blade.php b/resources/views/application/maps/map_find.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/application/maps/map_spec.blade.php b/resources/views/application/maps/map_spec.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/application/reports.blade.php b/resources/views/application/reports.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/application/verification.blade.php b/resources/views/application/verification.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/auction/map.blade.php b/resources/views/auction/map.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/auction/view.blade.php b/resources/views/auction/view.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/egknservice/index.blade.php b/resources/views/egknservice/index.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/egknservice/view.blade.php b/resources/views/egknservice/view.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/filter.blade.php b/resources/views/filter.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/layouts/footer.blade.php b/resources/views/layouts/footer.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/layouts/header.blade.php b/resources/views/layouts/header.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/layouts/map.blade.php b/resources/views/layouts/map.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/layouts/messages.blade.php b/resources/views/layouts/messages.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/layouts/user_policies.blade.php b/resources/views/layouts/user_policies.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/pdf/pdf.blade.php b/resources/views/pdf/pdf.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/pdf_viewer.blade.php b/resources/views/pdf_viewer.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/process/process_roles_list.blade.php b/resources/views/process/process_roles_list.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/templatefield/def_value.blade.php b/resources/views/templatefield/def_value.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/test.blade.php b/resources/views/test.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/test/testpage.blade.php b/resources/views/test/testpage.blade.php
+old mode 100644
+new mode 100755
+diff --git a/resources/views/user/change_pass.blade.php b/resources/views/user/change_pass.blade.php
+old mode 100644
+new mode 100755
