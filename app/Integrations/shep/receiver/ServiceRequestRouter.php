@@ -51,8 +51,8 @@ class ServiceRequestRouter
                     throw new \SoapFault('Server', 'No service found');
             }
             $sUnsignedResponse = (new ShepServiceExecutor($oShepServiceStrategy))->execute();
-            // $sSignedResponse = ShepUtil::signXml($sUnsignedResponse);
-            $sSignedResponse = $sUnsignedResponse;
+            $sSignedResponse = ShepUtil::signXml($sUnsignedResponse);
+            // $sSignedResponse = $sUnsignedResponse;
             Storage::disk('local')->put('responses/'. $sFolder . '/' . $sFileName . '.xml', $sSignedResponse);
             header('Content-Type: application/soap+xml; charset=utf-8');
             echo $sSignedResponse;
