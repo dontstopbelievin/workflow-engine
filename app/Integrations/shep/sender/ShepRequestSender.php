@@ -13,6 +13,7 @@ class ShepRequestSender
         $oService = ShepServiceFactory::create($sServiceName);
         $sShepRequestXML = (new ShepRequestXmlBuilder($oService))->build($aRequestData);
         // $sSignedXML = ShepUtil::signXml($sShepRequestXML);
+        $sSignedXML = $sShepRequestXML;
         return ShepUtil::sendShepXmlRequest($sSignedXML, $oService->sShepUrl);
     }
 }
