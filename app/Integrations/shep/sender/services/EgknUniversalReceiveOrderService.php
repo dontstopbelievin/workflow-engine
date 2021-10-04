@@ -23,6 +23,7 @@ class EgknUniversalReceiveOrderService extends ShepService implements XmlBuilder
         $sUnsignedXml = ShepUtil::arrayToXML($aArguments['xml']);
         $sUnsignedXml = str_replace('<request>', '<request xmlns="http://newshep.EgknUniversalReceiveOrder.egkn.tamur.kz">', $sUnsignedXml);
         // $sSignedBusinessDataXml = ShepUtil::signXmlJar($sUnsignedXml);
+        $sSignedBusinessDataXml = $sUnsignedXml;
         $sSignedBusinessDataXml = str_replace('<', '&lt;', $sSignedBusinessDataXml);
         $sRequestXml = ShepXmlUtil::getSoapAsyncRequest(self::SERVICE_ID, $sSignedBusinessDataXml, 'REQUEST',
             $aArguments['correlationId'] ?? '');
