@@ -16,7 +16,7 @@ class ShepRequestSender
         $sSignedXML = ShepUtil::signXml($sShepRequestXML);
         // $sSignedXML = $sShepRequestXML;
         // $sSignedXML = ShepUtil::signXmlJar($sShepRequestXML);
-        return $sSignedXML;
+        // return $sSignedXML;
         return ShepUtil::sendShepXmlRequest($sSignedXML, $oService->sShepUrl);
     }
 }
