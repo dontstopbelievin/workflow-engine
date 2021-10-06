@@ -22,7 +22,7 @@ class EgknUniversalReceiveStatusService extends ShepService implements XmlBuilde
         $sUnsignedXml = ShepUtil::arrayToXML($aArguments);
         $sUnsignedXml = str_replace('<Request>', '<ns3:Request>', $sUnsignedXml);
         $sUnsignedXml = str_replace('</Request>', '</ns3:Request>', $sUnsignedXml);
-        $sUnsignedXml = str_replace('<ns3:Request>', '<ns3:Request xmlns:ns3="http://getstatus.pep.egkn.tamur.kz">', $sUnsignedXml);
+        $sUnsignedXml = str_replace('<ns3:Request>', '<ns3:Request xmlns:ns3="http://getstatus.pep.egkn.tamur.kz" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#">', $sUnsignedXml);
         $sSignedBusinessDataXml = ShepUtil::signXmlJar($sUnsignedXml);
         $sSignedBusinessDataXml = str_replace('<', '&lt;', $sSignedBusinessDataXml);
         $sRequestXml = ShepXmlUtil::getSoapRequest_egkn_status(self::SERVICE_ID, $sSignedBusinessDataXml);
