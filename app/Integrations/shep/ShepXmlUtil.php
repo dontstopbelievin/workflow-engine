@@ -45,15 +45,6 @@ class ShepXmlUtil
         return '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Header/><soap:Body><ns:sendMessage xmlns:ns="http://bip.bee.kz/AsyncChannel/v10/Types"><request><messageInfo><messageId>' . Uuid::generateV4() . '</messageId>' . $sCorrelationIdTag . '<serviceId>' . $sServiceId . '</serviceId><messageType>' . $sMessageType . '</messageType><routeId/><messageDate>' . ShepUtil::getTimestampWithTimeZone() . '</messageDate><sender><senderId>' . config('shep.login') . '</senderId><password>' . config('shep.password') . '</password></sender></messageInfo><messageData><data>' . $sXml . '</data></messageData></request></ns:sendMessage></soap:Body></soap:Envelope>';
     }
 
-    public static function getSoapAsyncRequest_egkn_order2($sServiceId, $sXml, $sMessageType = 'REQUEST', $sCorrelationId = '')
-    {
-        $sCorrelationIdTag = '';
-        if (mb_strlen($sCorrelationId) > 0) {
-            $sCorrelationIdTag = '<correlationId>' . $sCorrelationId . '</correlationId>';
-        }
-        return '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Header xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"/><SOAP-ENV:Body><ns2:sendMessage xmlns:ns2="http://bip.bee.kz/AsyncChannel/v10/Types"><request xmlns=""><messageInfo><messageId>' . Uuid::generateV4() . '</messageId><serviceId>' . $sServiceId . '</serviceId><messageType>' . $sMessageType . '</messageType><messageDate>' . ShepUtil::getTimestampWithTimeZone() . '</messageDate><sender><senderId>' . config('shep.login') . '</senderId><password>' . config('shep.password') . '</password></sender></messageInfo><messageData><data>' . $sXml . '</data></messageData></request></ns2:sendMessage></SOAP-ENV:Body></soap:Envelope>';
-    }
-
     public static function getSoapAsyncRequest_pep($sServiceId, $sXml, $sMessageType = 'REQUEST', $sCorrelationId = '')
     {
         $sCorrelationIdTag = '';

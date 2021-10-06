@@ -27,9 +27,9 @@ class EgknUniversalReceiveOrderService extends ShepService implements XmlBuilder
         // $sSignedBusinessDataXml = $sUnsignedXml;
         $sSignedBusinessDataXml = str_replace('<', '&lt;', $sSignedBusinessDataXml);
         // return $sSignedBusinessDataXml;
-        $sRequestXml = ShepXmlUtil::getSoapAsyncRequest_egkn_order2(self::SERVICE_ID, $sSignedBusinessDataXml, 'REQUEST',
+        $sRequestXml = ShepXmlUtil::getSoapAsyncRequest_egkn_order(self::SERVICE_ID, $sSignedBusinessDataXml, 'REQUEST',
             $aArguments['correlationId'] ?? '');
-        $sRequestXml = str_replace('<data>', '<data xmlns:xs="http://www.w3.org/2001/XMLSchema">', $sRequestXml);
+        $sRequestXml = str_replace('<data>', '<data xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">', $sRequestXml);
 
         return $sRequestXml;
     }
