@@ -42,7 +42,7 @@ class ShepXmlUtil
         if (mb_strlen($sCorrelationId) > 0) {
             $sCorrelationIdTag = '<correlationId>' . $sCorrelationId . '</correlationId>';
         }
-        return '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Header/><soap:Body><ns:sendMessage xmlns:ns="http://bip.bee.kz/AsyncChannel/v10/Types"><request><messageInfo><messageId>' . Uuid::generateV4() . '</messageId>' . $sCorrelationIdTag . '<serviceId>' . $sServiceId . '</serviceId><messageType>' . $sMessageType . '</messageType><routeId/><messageDate>' . ShepUtil::getTimestampWithTimeZone() . '</messageDate><sender><senderId>' . config('shep.login') . '</senderId><password>' . config('shep.password') . '</password></sender></messageInfo><messageData><data>' . $sXml . '</data></messageData></request></ns:sendMessage></soap:Body></soap:Envelope>';
+        return '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Header/><soap:Body><ns:sendMessage xmlns:ns="http://bip.bee.kz/AsyncChannel/v10/Types"><request><messageInfo><messageId>' . Uuid::generateV4() . '</messageId><serviceId>' . $sServiceId . '</serviceId><messageType>' . $sMessageType . '</messageType><routeId/><messageDate>' . ShepUtil::getTimestampWithTimeZone() . '</messageDate><sender><senderId>' . config('shep.login') . '</senderId><password>' . config('shep.password') . '</password></sender></messageInfo><messageData><data>' . $sXml . '</data></messageData></request></ns:sendMessage></soap:Body></soap:Envelope>';
     }
 
     public static function getSoapAsyncRequest_pep($sServiceId, $sXml, $sMessageType = 'REQUEST', $sCorrelationId = '')
