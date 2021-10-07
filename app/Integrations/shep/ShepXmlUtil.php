@@ -38,7 +38,7 @@ class ShepXmlUtil
 
     public static function getSoapRequest_egkn_status($sServiceId, $sXml)
     {
-        return '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><ns2:SendMessage xmlns:ns2="http://bip.bee.kz/SyncChannel/v10/Types"><request><requestInfo><messageId>' . Uuid::generateV4() . '</messageId><serviceId>' . $sServiceId . '</serviceId><messageDate>' . ShepUtil::getTimestampWithTimeZone() . '</messageDate><sender><senderId>' . config('shep.login') . '</senderId><password>' . config('shep.password') . '</password></sender></requestInfo><requestData><data>' . $sXml . '</data></requestData></request></ns2:SendMessage></soap:Body></soap:Envelope>';
+        return '<soap:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Header xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"/><SOAP-ENV:Body><ns4:SendMessage xmlns:ns2="http://newshep.geoportal.free.gbdrn.tamur.kz" xmlns:ns3="http://www.w3.org/2000/09/xmldsig#" xmlns:ns4="http://bip.bee.kz/SyncChannel/v10/Types"><request><requestInfo><messageId>' . Uuid::generateV4() . '</messageId><serviceId>' . $sServiceId . '</serviceId><messageDate>' . ShepUtil::getTimestampWithTimeZone() . '</messageDate><sender><senderId>' . config('shep.login') . '</senderId><password>' . config('shep.password') . '</password></sender></requestInfo><requestData><data>' . $sXml . '</data></requestData></request></ns4:SendMessage></SOAP-ENV:Body></soap:Envelope>';
     }
 
     public static function getSoapAsyncRequest_egkn_order($sServiceId, $sXml, $sMessageType = 'REQUEST')
