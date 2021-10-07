@@ -19,11 +19,10 @@ class EdsTempFilesService extends ShepService implements XmlBuilderInterface
     public function buildXml(array $aArguments)
     {
         //TODO: use real data from $aArguments param
-        include_once app_path('Integrations/shep/arrays/eds-temp-files.php');
+        // include_once app_path('Integrations/shep/arrays/eds-temp-files.php');
         // $sUnsignedXml = ShepUtil::arrayToXML($aData);
         $sUnsignedXml = ShepUtil::arrayToXML($aArguments);
         $sRequestXml = ShepXmlUtil::getSoapRequest(self::SERVICE_ID, $sUnsignedXml);
-        
         return $sRequestXml;
     }
 }

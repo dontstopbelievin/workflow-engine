@@ -27,6 +27,12 @@ class ShepXmlUtil
         return '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:typ="http://bip.bee.kz/SyncChannel/v10/Types" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xenc="http://www.w3.org/2001/04/xmlenc#"><soapenv:Body><typ:SendMessage><request><requestInfo><messageId>' . Uuid::generateV4() . '</messageId><correlationId></correlationId><serviceId>' . $sServiceId . '</serviceId><messageDate>' . ShepUtil::getTimestampWithTimeZone() . '</messageDate><routeId></routeId><sender><senderId>' . config('shep.login') . '</senderId><password>' . config('shep.password') . '</password></sender><properties></properties><sessionId></sessionId></requestInfo><requestData>' . $sDataTag . $sXml . '</data></requestData></request></typ:SendMessage></soapenv:Body></soapenv:Envelope>';
     }
 
+    public static function getSoapRequest_egkn_rec_layer($sServiceId, $sXml)
+    {
+        $sDataTag = '<data>';
+        return '<soap:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Header xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"/><SOAP-ENV:Body><ns4:SendMessage xmlns:ns2="http://newshep.geoportal.free.gbdrn.tamur.kz" xmlns:ns3="http://www.w3.org/2000/09/xmldsig#" xmlns:ns4="http://bip.bee.kz/SyncChannel/v10/Types"><request><requestInfo><messageId>' . Uuid::generateV4() . '</messageId><serviceId>' . $sServiceId . '</serviceId><messageDate>' . ShepUtil::getTimestampWithTimeZone() . '</messageDate><sender><senderId>' . config('shep.login') . '</senderId><password>' . config('shep.password') . '</password></sender><sessionId></sessionId></requestInfo><requestData>' . $sDataTag . $sXml . '</data></requestData></request></ns4:SendMessage></SOAP-ENV:Body></soap:Envelope>';
+    }
+
     public static function getSoapAsyncRequest($sServiceId, $sXml, $sMessageType = 'REQUEST', $sCorrelationId = '')
     {
         $sCorrelationIdTag = '';
