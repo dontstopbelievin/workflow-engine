@@ -39,10 +39,19 @@ class GeoportalPEPAsyncService extends ShepService implements XmlBuilderInterfac
         $sXml = str_replace('</ns3:' . $sType . '>', '</' . $sType . '>', $sXml);
         $sXml = '<?xml version="1.0" ?>' . $sXml;
         $sXml = str_replace('<', '&lt;', $sXml);
-        if($aPreparedData['messageType'] == 'RESPONSE'){
-            $sRequestXml = ShepXmlUtil::getSoapAsyncResponse2($aPreparedData['correlationId']);
-        }else{
-            $sRequestXml = ShepXmlUtil::getSoapAsyncRequest_pep(self::SERVICE_ID, $sXml, $aPreparedData['messageType'], $aPreparedData['correlationId']);
+        switch ($aPreparedData['messageType']) {
+            case 'RESPONSE_PEP':
+                $sRequestXml = ShepXmlUtil::getSoapAsyncRequest_pep_res(self::SERVICE_ID, $sXml, 'RESPONSE', $aPreparedData['correlationId']);
+                break;
+            case 'RESPONSE':
+                $sRequestXml = ShepXmlUtil::getSoapAsyncResponse2($aPreparedData['correlationId']);
+                break;
+            case 'NOTIFICATION':
+                $sRequestXml = ShepXmlUtil::getSoapAsyncRequest_pep(self::SERVICE_ID, $sXml, $aPreparedData['messageType'], $aPreparedData['correlationId']);
+                break;
+            default:
+                // code...
+                break;
         }
         $sRequestXml = str_replace('<data>', '<data xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">', $sRequestXml);
 

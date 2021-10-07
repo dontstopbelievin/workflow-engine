@@ -55,6 +55,15 @@ class ShepXmlUtil
         return '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Header xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"/><soap:Body><ns2:sendMessage xmlns:ns2="http://bip.bee.kz/AsyncChannel/v10/Types"><request><messageInfo><messageId>' . Uuid::generateV4() . '</messageId>' . $sCorrelationIdTag . '<serviceId>' . $sServiceId . '</serviceId><routeId>R_NurSultan</routeId><messageDate>' . ShepUtil::getTimestampWithTimeZone() . '</messageDate><messageType>' . $sMessageType . '</messageType><sender><senderId>' . config('shep.login') . '</senderId><password>' . config('shep.password') . '</password></sender></messageInfo><messageData><data>' . $sXml . '</data></messageData></request></ns2:sendMessage></soap:Body></soap:Envelope>';
     }
 
+    public static function getSoapAsyncRequest_pep_res($sServiceId, $sXml, $sMessageType = 'REQUEST', $sCorrelationId = '')
+    {
+        $sCorrelationIdTag = '';
+        if (mb_strlen($sCorrelationId) > 0) {
+            $sCorrelationIdTag = '<correlationId>' . $sCorrelationId . '</correlationId>';
+        }
+        return '<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Header/><S:Body><ns2:sendMessage xmlns:ns2="http://bip.bee.kz/AsyncChannel/v10/Types"><request><messageInfo><messageId>' . Uuid::generateV4() . '</messageId>' . $sCorrelationIdTag . '<serviceId>' . $sServiceId . '</serviceId><messageType>' . $sMessageType . '</messageType><messageDate>' . ShepUtil::getTimestampWithTimeZone() . '</messageDate><sender><senderId>' . config('shep.login') . '</senderId><password>' . config('shep.password') . '</password></sender></messageInfo><messageData><data>' . $sXml . '</data></messageData></request></ns2:sendMessage></S:Body></S:Envelope>';
+    }
+
     public static function getSoapAsyncResponse2($sCorrelationId = '')
     {
         return '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:typ="http://bip.bee.kz/AsyncChannel/v10/Types"><soapenv:Header xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"/><soap:Body><typ:sendMessageResponse xmlns:ns2="http://bip.bee.kz/AsyncChannel/v10/Types"><response><messageId>' . Uuid::generateV4() . '</messageId><correlationId>' . $sCorrelationId . '</correlationId><responseDate>' . date('Y-m-d').'T'. date('H:i:sP') . '</responseDate></response></typ:sendMessageResponse></soap:Body></soap:Envelope>';
