@@ -21,9 +21,9 @@ class ShepXmlUtil
         return '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:typ="http://bip.bee.kz/SyncChannel/v10/Types"><soapenv:Body><typ:SendMessageResponse><response><responseInfo><messageId>' . Uuid::generateV4() . '</messageId><responseDate>' . date('Y-m-d').'T'. date('H:i:sP') . '</responseDate><status><code>' . $sCode . '</code><message>' . $sSuccess . '</message></status></responseInfo><responseData><data>' . $sXml . '</data></responseData></response></typ:SendMessageResponse></soapenv:Body></soapenv:Envelope>';
     }
 
-    public static function getSoapResponse_egkn_actualization($sCode, $sSuccess, $sXml, $correlationId)
+    public static function getSoapResponse_egkn_actualization($sCode, $sSuccess, $sXml)
     {
-        return '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><ns2:SendMessageResponse xmlns:ns2="http://bip.bee.kz/SyncChannel/v10/Types" xmlns:ns3="http://egov.bee.kz/eds/tempstorage/v2/"><response><responseInfo><messageId>' . Uuid::generateV4() . '</messageId><correlationId>'.$correlationId.'</correlationId><responseDate>' . date('Y-m-d').'T'. date('H:i:sP') . '</responseDate><status><code>' . $sCode . '</code><message>' . $sSuccess . '</message></status></responseInfo><responseData><data>' . $sXml . '</data></responseData></response></ns2:SendMessageResponse></soap:Body></soap:Envelope>';
+        return '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><ns2:SendMessageResponse xmlns:ns2="http://bip.bee.kz/SyncChannel/v10/Types" xmlns:ns3="http://egov.bee.kz/eds/tempstorage/v2/"><response><responseInfo><messageId>' . Uuid::generateV4() . '</messageId><responseDate>' . date('Y-m-d').'T'. date('H:i:sP') . '</responseDate><status><code>' . $sCode . '</code><message>' . $sSuccess . '</message></status></responseInfo><responseData><data>' . $sXml . '</data></responseData></response></ns2:SendMessageResponse></soap:Body></soap:Envelope>';
     }
 
     public static function getSoapRequest($sServiceId, $sXml)
