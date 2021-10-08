@@ -19,6 +19,7 @@ class EgknGeoportalActualizationStrategy implements ShepServiceStrategyInterface
     public function receive()
     {
         //TODO: save data to DB from EGKN
+        $sCorrelationId = $this->aRequestData['request']['messageInfo']['correlationId'];
         $aResponse = array(
             'Response' => array(
                 'BusinessData' => array(
@@ -32,11 +33,11 @@ class EgknGeoportalActualizationStrategy implements ShepServiceStrategyInterface
         $sResponseXml = ShepUtil::arrayToXML($aResponse);
         $sResponseXml = str_replace('<Response>', '<ns3:Response>', $sResponseXml);
         $sResponseXml = str_replace('</Response>', '</ns3:Response>', $sResponseXml);
-        $sResponseXml = str_replace('<ns3:Response>', '<ns3:Response xmlns:ns3="http://tamur.kz/schemes/egkn/egkngeoportalactualization">', $sResponseXml);
+        $sResponseXml = str_replace('<ns3:Response>', '<ns3:Response xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://tamur.kz/schemes/egkn/egkngeoportalactualization">', $sResponseXml);
         $sResponseXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' . $sResponseXml;
         $sResponseXml = str_replace('<', '&lt;', $sResponseXml);
-        $sResponseXml = ShepXmlUtil::getSoapResponse('SCSS001', 'Запрос выполнен успешно', $sResponseXml);
-        $sResponseXml = str_replace('<data>', '<data xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:type="xs:string">', $sResponseXml);
+        $sResponseXml = ShepXmlUtil::getSoapResponse_egkn_actualization('SCSS001', 'Запрос выполнен успешно', $sResponseXml, $sCorrelationId);
+        $sResponseXml = str_replace('<data>', '<data xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">', $sResponseXml);
         return $sResponseXml;
     }
 }
