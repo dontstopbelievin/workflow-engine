@@ -61,3 +61,7 @@ egkn -> akt sverki notif EgknUniversalReceiveOrder -> ob4ni otvet rgis<br/>
 rgis -> okon akt vybora EgknUniversalReceiveStatus -> obi4ni otvet egkn<br/>
 rgis -> okon akt vybora get_ZU_RGIS_UniversalService -> obi4ni otvet pep<br/>
 rgis -> na torgi geoportal_egkn_receive_layer -> obi4ni otvet egkn<br/>
+251449 - Байконыр<br/>
+107989 - Сарыарка<br/>
+108584 - Есиль<br/>
+107193 - Алматы<br/>
