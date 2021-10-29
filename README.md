@@ -52,3 +52,12 @@ php artisan passport:install - генерирует ключи<br/>
     2) process_id - идентивикационный номер процесса <br/>
     3) aplication_id - идентивикационный номер заявки <br/>
     
+EGKN PEP Интеграция:<br/>
+2 сценария: 1) заявитель сам на торги 2)мио сам готовит зу и на торги; координаты цель , ТУ заполняет мио; - по Recieve Layer без egknId, до начала торг можно изменть данные ЗУ - еще раз запрос;<br/>
+2) pep ->заявка на (situac sxema, kad ocenka) get_ZU_RGIS_UniversalService -> obi4ni response = rgis<br/>
+rgis -> notif na get_ZU_RGIS_UniversalService -> obi4ni response pep<br/>
+rgis -> akt vybora EgknUniversalReceiveOrder -> ob4ni response egkn<br/>
+egkn -> akt sverki notif EgknUniversalReceiveOrder -> ob4ni otvet rgis<br/>
+rgis -> okon akt vybora EgknUniversalReceiveStatus -> obi4ni otvet egkn<br/>
+rgis -> okon akt vybora get_ZU_RGIS_UniversalService -> obi4ni otvet pep<br/>
+rgis -> na torgi geoportal_egkn_receive_layer -> obi4ni otvet egkn<br/>
