@@ -51,8 +51,9 @@ php artisan passport:install - генерирует ключи<br/>
     1) template_id - идентивикационный номер динамически созданных в пункте 5 <br/>
     2) process_id - идентивикационный номер процесса <br/>
     3) aplication_id - идентивикационный номер заявки <br/>
-    
+    <br/>
 EGKN PEP Интеграция:<br/>
+POSTMAN по интеграции: файл workflow_shep.postman_collection.json
 2 сценария: 1) заявитель сам на торги 2)мио сам готовит зу и на торги; координаты цель , ТУ заполняет мио; - по Recieve Layer без egknId, до начала торг можно изменть данные ЗУ - еще раз запрос;<br/>
 2) pep ->заявка на (situac sxema, kad ocenka) get_ZU_RGIS_UniversalService -> obi4ni response = rgis<br/>
 rgis -> notif na get_ZU_RGIS_UniversalService -> obi4ni response pep<br/>
